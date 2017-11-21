@@ -26,7 +26,11 @@ class PeripheralModel
         WHERE uuid = :uuid";
     private const CREATE_SQL = "INSERT INTO peripherals (uuid, build_date, public_key)
         VALUES (:uuid, :build_date, :public_key)";
-    private const UPDATE_SQL =  "SELECT display_name, build_date, add_date, public_key, property_id, room_id, last_updated
+    private const PULL_SQL =  "SELECT display_name, build_date, add_date, public_key, property_id, room_id, last_updated
+        FROM peripherals
+        WHERE uuid = :uuid";
+    private const PUSH_SQL = "UPDATE peripherals
+        SET display_name = :display_name, build_date = :build_date, add_date = :add_date, property_id = :property_id, room_id = :room_id, last_updated = :last_updated
         FROM peripherals
         WHERE uuid = :uuid";
 
@@ -34,7 +38,7 @@ class PeripheralModel
     private static $attachToRoomStatement = null;
     private static $attachToPropertyStatement = null;
     private static $createStatement = null;
-    private static $updateStatement = null;
+    private static $pullStatement = null;
 
     // Constructor initialises prepared statements
     private function __construct()
@@ -57,8 +61,8 @@ class PeripheralModel
             self::$createStatement = self::$db->prepare(self::CREATE_SQL, $pdo_params);
         }
 
-        if (self::$updateStatement == null) {
-            self::$updateStatement = self::$db->prepare(self::UPDATE_SQL, $pdo_params);
+        if (self::$pullStatement == null) {
+            self::$pullStatement = self::$db->prepare(self::PULL_SQL, $pdo_params);
         }
     }
 
@@ -129,7 +133,7 @@ class PeripheralModel
     public function pull()
     {
         // Execute query
-        $sth = self::$db->prepare(self::UPDATE_SQL, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
+        $sth = self::$db->prepare(self::PULL_SQL, array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
         $sth->execute(array(':uuid' => $this->uuid));
 
         // Retrieve
@@ -189,9 +193,6 @@ class PeripheralModel
                 throw new Exception("More than 1 affected record, this is not normal, aborting !");
                 break;
         }
-
-        // Pull data
-        $this->pull();
     }
 }
 
