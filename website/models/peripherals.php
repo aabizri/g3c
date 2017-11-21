@@ -10,12 +10,12 @@ use \Helpers\DB;
 use \Helpers\UUID;
 
 /**
-* PeripheralModel class is the Model class for Peripherals
+* Peripheral class is the Model class for Peripherals
 *
 * @package livewell
 * @author Alexandre A. Bizri <alexandre@bizri.fr>
 */
-class PeripheralModel
+class Peripheral
 {
     // Database
     private static $db = null;

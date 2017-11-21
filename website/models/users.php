@@ -9,12 +9,12 @@ use \Helpers\DB;
 use \PDO;
 
 /**
-* UserModel est la classe modèle pour les utilisateurs
+* User est la classe modèle pour les utilisateurs
 *
 * @package livewell
 * @author Alexandre A. Bizri <alexandre@bizri.fr>
 */
-class UserModel
+class User
 {
     // Base de donnée
     private static $db = null;
