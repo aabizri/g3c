@@ -1,7 +1,13 @@
 <?php
 
-require_once("../connection.php");
-require_once("../uuid.php");
+namespace Model;
+
+// ONLY FOR DEBUG
+require_once("../index.php");
+
+use \PDO;
+use \Helpers\DB;
+use \Helpers\UUID;
 
 /**
 * PeripheralModel class is the Model class for Peripherals
