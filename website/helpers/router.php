@@ -1,4 +1,7 @@
 <?php
+
+namespace Helpers;
+
 class Router
 {
     // routes stores all routes in an array

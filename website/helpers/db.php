@@ -1,5 +1,14 @@
 <?php
-// Database singleton
+
+namespace Helpers;
+
+use \PDO;
+
+/**
+* Database singleton
+*
+* To call it DB::getInstance()
+*/
 class DB
 {
     private const HOST = "localhost";
