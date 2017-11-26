@@ -6,10 +6,6 @@ use \Entities;
 use \PDO;
 
 class User extends Repository {
-    // Requêtes SQL
-    private const CREATE_SQL= "INSERT INTO users (display, nick, birth_date, email, password, phone)
-        VALUES (:display, :nick, :birth_date, :email, :password, :phone)";
-
     /**
      * Insert inserts a new user to the database
      *
@@ -17,14 +13,32 @@ class User extends Repository {
      */
     public static function insert(Entities\User $u)
     {
+        // Prepare data to be updated
+        $data = array(
+            ':display' => $u->display,
+            ':nick' => $u->nick,
+            ':birth_date' => $u->birth_date,
+            ':email' => $u->email,
+            ':password' => $u->password_hashed,
+            ':phone' => $u->phone,
+        );
+
+        // SQL
+        $sql = "INSERT INTO users (display, nick, birth_date, email, password, phone)
+        VALUES (:display, :nick, :birth_date, :email, :password, :phone)";
+
         // Prepare statement
-        $sth = parent::db()->prepare(self::CREATE_SQL, parent::$pdo_params);
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute creation query
-        $sth->execute(array(':display' => $u->display, ':nick' => $u->nick, ':birth_date' => $u->birth_date, ':email' => $u->email, ':password' => $u->password_hashed, ':phone' => $u->phone));
+        $sth->execute($data);
+
+        // Get ID of the insert
+        $id = parent::db()->lastInsertId();
+        $u->id = $id;
 
         // We should now pull to populate ID & Times
-        // TODO
+        self::pull($u);
     }
 
     /* TODO:
