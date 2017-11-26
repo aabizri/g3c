@@ -118,4 +118,102 @@ class Users extends Repository {
         $u->password_hashed = $data["password"];
         $u->last_updated = $data["last_updated"];
     }
+
+    /**
+     * Find a Model\User by email
+     *
+     * @param string $email the email with which to find the given Entity\User ID
+     *
+     * @return int the ID of the user in question, or null if none are found
+     *
+     * @throws \Exception if there is more than one user found with this email
+    */
+    public static function findByEmail(string $email): int {
+        // SQL for counting
+        $sql = "SELECT count(*)
+            FROM users
+            WHERE email = :email";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute query
+        $sth->execute(array(':email' => $email));
+
+        // Fetch
+        $count = $sth->fetchColumn(0);
+
+        // If count is zero, then we return null
+        if ($count == 0) {
+            return null;
+        } else if ($count > 1) {
+            throw new \Exception("More than one row shares this e-mail !");
+        }
+
+        // SQL for selecting
+        $sql = "SELECT id
+            FROM users
+            WHERE email = :email";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute query
+        $sth->execute(array(':email' => $email));
+
+        // Fetch
+        $id = $sth->fetchColumn(0);
+
+        // Return this ID
+        return $id;
+    }
+
+    /**
+     * Find a Model\User by its nickname
+     *
+     * @param string $nick the nick with which to find the given Entity\User ID
+     *
+     * @return int the ID of the user in question, or null if none are found
+     *
+     * @throws \Exception if there is more than one user found with this nickname
+     */
+    public static function findByNick(string $nick): int {
+        // SQL for counting
+        $sql = "SELECT count(*)
+            FROM users
+            WHERE nick = :nick";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute query
+        $sth->execute(array(':email' => $nick));
+
+        // Fetch
+        $count = $sth->fetchColumn(0);
+
+        // If count is zero, then we return null
+        if ($count == 0) {
+            return null;
+        } else if ($count > 1) {
+            throw new \Exception("More than one row shares this e-mail !");
+        }
+
+        // SQL for selecting
+        $sql = "SELECT id
+            FROM users
+            WHERE nick = :nick";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute query
+        $sth->execute(array(':nick' => $nick));
+
+        // Fetch
+        $id = $sth->fetchColumn(0);
+
+        // Return this ID
+        return $id;
+    }
 }
