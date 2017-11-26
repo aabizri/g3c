@@ -30,13 +30,6 @@ class Peripherals extends Repository
       FROM peripherals
       WHERE uuid = :uuid;";
 
-    // Constructor initialises prepared statements
-    public function __construct()
-    {
-        // Call parent constructor
-        parent::__construct();
-    }
-
     /**
      * Insert a new Peripheral to the database
      *
