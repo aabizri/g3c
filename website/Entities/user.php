@@ -1,6 +1,6 @@
 <?php
 
-namespace Model;
+namespace Entities;
 
 // ONLY FOR DEBUG
 require_once("../index.php");

@@ -1,11 +1,11 @@
 <?php
 
-namespace Model;
+namespace Entities;
 
 // ONLY FOR DEBUG
 require_once("../index.php");
 
-use \Repository;
+use \Repositories;
 use \Helpers\UUID;
 
 /**
@@ -44,7 +44,7 @@ class Peripheral
      */
     public function pull()
     {
-        Repository\Peripheral::pull($this);
+        Repositories\Peripherals::pull($this);
     }
 
     /**
@@ -55,7 +55,7 @@ class Peripheral
      * @return void
      */
     public function push() {
-        Repository\Peripheral::push($this);
+        Repositories\Peripherals::push($this);
     }
 
     /**
@@ -66,7 +66,7 @@ class Peripheral
      * @throws \Exception if not found
      */
     public function sync() {
-        Repository\Peripheral::sync($this);
+        Repositories\Peripherals::sync($this);
     }
 
     /**
@@ -79,7 +79,7 @@ class Peripheral
      * @return void
      */
     public function attachToRoom(int $roomID) {
-        Repository\Peripheral::attachToRoom($this,$roomID);
+        Repositories\Peripherals::attachToRoom($this,$roomID);
     }
 
     /**
@@ -91,7 +91,7 @@ class Peripheral
      * @return void
      */
     public function attachToProperty(int $propertyID) {
-        Repository\Peripheral::attachToProperty($this,$propertyID);
+        Repositories\Peripherals::attachToProperty($this,$propertyID);
     }
 }
 

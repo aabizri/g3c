@@ -1,11 +1,11 @@
 <?php
-namespace Repository;
+namespace Repositories;
 
-use \Model;
+use \Entities;
 use \PDO;
 use \Exception;
 
-class Peripheral extends Repository
+class Peripherals extends Repository
 {
     // SQL Queries
     private const ATTACH_TO_ROOM_SQL = "UPDATE peripherals
@@ -42,9 +42,9 @@ class Peripheral extends Repository
      *
      * If it already exists, it fails.
      *
-     * @param Model\Peripheral the Peripheral to insert
+     * @param Entities\Peripheral the Peripheral to insert
      */
-    public static function insert(Model\Peripheral $p)
+    public static function insert(Entities\Peripheral $p)
     {
         // Prepare data to be inserted
         $data = [
@@ -70,9 +70,9 @@ class Peripheral extends Repository
     /**
      * Push an existing Model\Peripheral to the database
      *
-     * @param Model\Peripheral the Peripheral to push
+     * @param Entities\Peripheral the Peripheral to push
      */
-    public static function push(Model\Peripheral $p)
+    public static function push(Entities\Peripheral $p)
     {
         // Prepare data to be updated
         $data = [
@@ -98,11 +98,11 @@ class Peripheral extends Repository
     /**
      * Pull an existing Model\Peripheral from the database
      *
-     * @param Model\Peripheral the peripheral to pull
+     * @param Entities\Peripheral the peripheral to pull
      *
      * @return void
      */
-    public static function pull(Model\Peripheral $p)
+    public static function pull(Entities\Peripheral $p)
     {
         // Execute query
         $sth = parent::db()->prepare(self::PULL_SQL, parent::pdo_params);
@@ -129,13 +129,13 @@ class Peripheral extends Repository
     /**
      * Syncs a Model\Peripheral with the database, executing a Pull or a Push on a last_updated timestamp basis
      *
-     * @param Model\Peripheral to be synced
+     * @param Entities\Peripheral to be synced
      *
      * @return void
      *
      * @throws \Exception if not found
      */
-    public static function sync(Model\Peripheral $p)
+    public static function sync(Entities\Peripheral $p)
     {
         // Prepare statement
         $sth = parent::db()->prepare(self::GET_LAST_UPDATED_SQL, parent::$pdo_params);
@@ -172,12 +172,12 @@ class Peripheral extends Repository
      *
      * @param string UUID of the Peripheral to retrieve
      *
-     * @return Model\Peripheral the peripheral if found, null if not
+     * @return Entities\Peripheral the peripheral if found, null if not
      */
     public static function retrieve($uuid)
     {
         // Create a Model\Peripheral
-        $p = new Model\Peripheral;
+        $p = new Entities\Peripheral;
 
         // Set the UUID
         $p->uuid=$uuid;
@@ -206,12 +206,12 @@ class Peripheral extends Repository
      *
      * It checks if the Room is linked to the same Property as the Peripheral, returns an Exception if it fails.
      *
-     * @param Model\Peripheral $p is the peripheral to link
+     * @param Entities\Peripheral $p is the peripheral to link
      * @param int $roomID is the ID of the Room this Peripheral should be attached to
      *
      * @return void
      */
-    public static function attachToRoom(Model\Peripheral $p, int $roomID)
+    public static function attachToRoom(Entities\Peripheral $p, int $roomID)
     {
         $sth = parent::db()->prepare(self::ATTACH_TO_ROOM_SQL, parent::$pdo_params);
         $sth->execute(array('room_id' => $roomID, ':uuid' => $p->uuid));
@@ -238,7 +238,7 @@ class Peripheral extends Repository
      *
      * @return void
      */
-    public static function attachToProperty(Model\Peripheral $p, int $propertyID)
+    public static function attachToProperty(Entities\Peripheral $p, int $propertyID)
     {
         $sth = parent::db()->prepare(self::ATTACH_TO_PROPERTY_SQL, parent::$pdo_params);
         $sth->execute(array(':property_id' => $propertyID, ':uuid' => $p->uuid));
