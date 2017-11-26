@@ -7,28 +7,6 @@ use \Exception;
 
 class Peripherals extends Repository
 {
-    // SQL Queries
-    private const ATTACH_TO_ROOM_SQL = "UPDATE peripherals
-        SET room_id = :room_id
-        WHERE uuid = :uuid AND property_id =
-            (SELECT property_id
-                FROM rooms
-                WHERE id = :room_id);";
-    private const ATTACH_TO_PROPERTY_SQL = "UPDATE peripherals
-        SET property_id = :property_id
-        WHERE uuid = :uuid;";
-    private const CREATE_SQL = "INSERT INTO peripherals (uuid, build_date, public_key)
-        VALUES (:uuid, :build_date, :public_key);";
-    private const PULL_SQL =  "SELECT display_name, build_date, add_date, public_key, property_id, room_id, last_updated
-        FROM peripherals
-        WHERE uuid = :uuid;";
-    private const PUSH_SQL = "UPDATE peripherals
-        SET display_name = :display_name, build_date = :build_date, add_date = :add_date, property_id = :property_id, room_id = :room_id, last_updated = :last_updated
-        WHERE uuid = :uuid;";
-    private const GET_LAST_UPDATED_SQL = "SELECT last_updated
-      FROM peripherals
-      WHERE uuid = :uuid;";
-
     /**
      * Insert a new Peripheral to the database
      *
@@ -49,14 +27,18 @@ class Peripherals extends Repository
             ':last_updated' => $p->last_updated,
         ];
 
+        // SQL
+        $sql = "INSERT INTO peripherals (uuid, build_date, public_key)
+        VALUES (:uuid, :build_date, :public_key);";
+
         // Prepare statement
-        $sth = parent::db()->prepare(self::CREATE_SQL, parent::pdo_params);
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
         $sth->execute($data);
 
-        // Return
-        return;
+        // Pull
+        self::pull($p);
     }
 
     /**
@@ -77,14 +59,19 @@ class Peripherals extends Repository
             ':last_updated' => $p->last_updated,
         ];
 
+        // SQL
+        $sql = "UPDATE peripherals
+        SET display_name = :display_name, build_date = :build_date, add_date = :add_date, property_id = :property_id, room_id = :room_id, last_updated = :last_updated
+        WHERE uuid = :uuid;";
+
         // Prepare statement
-        $sth = parent::db()->prepare(self::PUSH_SQL, parent::$pdo_params);
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
         $sth->execute($data);
 
-        // Return
-        return;
+        // Pull
+        self::pull($p);
     }
 
     /**
@@ -98,8 +85,15 @@ class Peripherals extends Repository
      */
     public static function pull(Entities\Peripheral $p)
     {
-        // Execute query
-        $sth = parent::db()->prepare(self::PULL_SQL, parent::pdo_params);
+        // SQL
+        $sql =  "SELECT display_name, build_date, add_date, public_key, property_id, room_id, last_updated
+        FROM peripherals
+        WHERE uuid = :uuid;";
+
+        // Prepare statement
+        $sth = parent::db()->prepare(self::PULL_SQL, parent::$pdo_params);
+
+        // Execute statement
         $sth->execute(array(':uuid' => $p->uuid));
 
         // Retrieve
@@ -131,8 +125,13 @@ class Peripherals extends Repository
      */
     public static function sync(Entities\Peripheral $p)
     {
+        // SQL to get last_updated on given peripheral
+        $sql= "SELECT last_updated
+          FROM peripherals
+          WHERE uuid = :uuid;";
+
         // Prepare statement
-        $sth = parent::db()->prepare(self::GET_LAST_UPDATED_SQL, parent::$pdo_params);
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
         $sth->execute(array(':uuid' => $p->uuid));
@@ -209,7 +208,18 @@ class Peripherals extends Repository
      */
     public static function attachToRoom(Entities\Peripheral $p, int $roomID)
     {
-        $sth = parent::db()->prepare(self::ATTACH_TO_ROOM_SQL, parent::$pdo_params);
+        // SQL
+        $sql = "UPDATE peripherals
+        SET room_id = :room_id
+        WHERE uuid = :uuid AND property_id =
+            (SELECT property_id
+                FROM rooms
+                WHERE id = :room_id);";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute query
         $sth->execute(array('room_id' => $roomID, ':uuid' => $p->uuid));
 
         // Check for sane row count of affected rows
@@ -224,6 +234,9 @@ class Peripherals extends Repository
                 throw new Exception("More than 1 affected record, this is not normal, aborting !");
                 break;
         }
+
+        // Pull
+        self::pull($p);
     }
 
     /**
@@ -236,7 +249,16 @@ class Peripherals extends Repository
      */
     public static function attachToProperty(Entities\Peripheral $p, int $propertyID)
     {
-        $sth = parent::db()->prepare(self::ATTACH_TO_PROPERTY_SQL, parent::$pdo_params);
+        // SQL
+        $sql = "UPDATE peripherals
+        SET property_id = :property_id
+        WHERE uuid = :uuid;";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
         $sth->execute(array(':property_id' => $propertyID, ':uuid' => $p->uuid));
+
+        // Pull
+        self::pull($p);
     }
 }
