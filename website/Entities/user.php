@@ -61,4 +61,20 @@ class User
         // Calculer le hash associé au mot de passe via BCRYPT, le salt étant généré automatiquement
         $this->password_hashed = password_hash($clear, PASSWORD_BCRYPT);
     }
+
+    /**
+     * Validate that this is correct
+     *
+     * @return boolean true if correct, false if incorrect
+     */
+    public function validate() {
+        return is_int($this->id) &&
+            is_string($this->display) &&
+            is_string($this->nick) &&
+            is_string($this->birth_date) &&
+            is_string($this->creation_date) &&
+            is_string($this->email) &&
+            is_string($this->phone) &&
+            is_string($this->last_updated);
+    }
 }
