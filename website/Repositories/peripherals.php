@@ -24,7 +24,6 @@ class Peripherals extends Repository
         WHERE uuid = :uuid;";
     private const PUSH_SQL = "UPDATE peripherals
         SET display_name = :display_name, build_date = :build_date, add_date = :add_date, property_id = :property_id, room_id = :room_id, last_updated = :last_updated
-        FROM peripherals
         WHERE uuid = :uuid;";
     private const GET_LAST_UPDATED_SQL = "SELECT last_updated
       FROM peripherals
