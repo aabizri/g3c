@@ -2,7 +2,7 @@
 /**
  * Charge une classe en utilisant son Namespace comme structure de dossier
  *
- * @param $classname
+ * @param string $classname
  * @throws Exception
  */
 function __autoload($classname)
