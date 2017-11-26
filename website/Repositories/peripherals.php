@@ -42,7 +42,7 @@ class Peripherals extends Repository
      *
      * If it already exists, it fails.
      *
-     * @param Entities\Peripheral the Peripheral to insert
+     * @param Entities\Peripheral $p the Peripheral to insert
      */
     public static function insert(Entities\Peripheral $p)
     {
@@ -70,7 +70,7 @@ class Peripherals extends Repository
     /**
      * Push an existing Model\Peripheral to the database
      *
-     * @param Entities\Peripheral the Peripheral to push
+     * @param Entities\Peripheral $p the Peripheral to push
      */
     public static function push(Entities\Peripheral $p)
     {
@@ -96,11 +96,13 @@ class Peripherals extends Repository
     }
 
     /**
-     * Pull an existing Model\Peripheral from the database
+     * Pull an existing Entities\Peripheral from the database
      *
-     * @param Entities\Peripheral the peripheral to pull
+     * @param Entities\Peripheral $p the peripheral to pull
      *
      * @return void
+     *
+     * @throws Exception if there is no such Model\Peripheral
      */
     public static function pull(Entities\Peripheral $p)
     {
@@ -129,7 +131,7 @@ class Peripherals extends Repository
     /**
      * Syncs a Model\Peripheral with the database, executing a Pull or a Push on a last_updated timestamp basis
      *
-     * @param Entities\Peripheral to be synced
+     * @param Entities\Peripheral $p to be synced
      *
      * @return void
      *
@@ -210,6 +212,8 @@ class Peripherals extends Repository
      * @param int $roomID is the ID of the Room this Peripheral should be attached to
      *
      * @return void
+     *
+     * @throws Exception if the conditions aren't set
      */
     public static function attachToRoom(Entities\Peripheral $p, int $roomID)
     {
