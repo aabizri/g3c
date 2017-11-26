@@ -51,6 +51,11 @@ class User
         $this->setPassword($password);
     }
 
+    /**
+     * Set the password, hashing & salting it via BCRYPT
+     *
+     * @param string $clear is the password
+     */
     public function setPassword(string $clear)
     {
         // Calculer le hash associé au mot de passe via BCRYPT, le salt étant généré automatiquement
