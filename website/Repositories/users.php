@@ -100,7 +100,7 @@ class Users extends Repository {
 
         // If nil, we throw an error
         if ($data == null) {
-            throw new Exception("No such Model\User found");
+            throw new \Exception("No such Model\User found");
         }
 
         // Store
