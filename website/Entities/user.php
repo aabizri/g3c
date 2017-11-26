@@ -30,24 +30,17 @@ class User
     /**
      * User constructor.
      *
-     * @param string $birth_date
+     * @param string $nick
+     * @param string $email
      * @param string $password
      *
      * @throws \Exception if the birth date is invalid
      */
-    public function __construct(string $display, string $nick, string $email, string $phone, string $birth_date, string $password)
+    public function __construct(string $nick, string $email, string $password)
     {
-        // Verifier que $birth_date est inférieur à la date actuelle
-        if (strtotime($birth_date) > time()) {
-            throw new \Exception("Birth Date invalid");
-        }
-
         // Set the values
-        $this->display = $display;
         $this->nick = $nick;
         $this->email = $email;
-        $this->phone = $phone;
-        $this->birth_date = $birth_date;
         $this->setPassword($password);
     }
 
@@ -68,6 +61,11 @@ class User
      * @return boolean true if correct, false if incorrect
      */
     public function validate() {
+        // Verifier que $birth_date est inférieur à la date actuelle
+        if (strtotime($this->birth_date) > time()) {
+            return false; // Birth Date invalid
+        }
+
         return is_int($this->id) &&
             is_string($this->display) &&
             is_string($this->nick) &&
