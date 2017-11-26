@@ -5,7 +5,7 @@ namespace Repositories;
 use \Entities;
 use \PDO;
 
-class User extends Repository {
+class Users extends Repository {
     /**
      * Insert inserts a new user to the database
      *
