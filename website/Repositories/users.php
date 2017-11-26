@@ -10,6 +10,8 @@ class Users extends Repository {
      * Insert inserts a new user to the database
      *
      * @param Entities\User $u the user to be inserted
+     *
+     * @throws \Exception if the subsequent pull fails
      */
     public static function insert(Entities\User $u)
     {
@@ -50,6 +52,8 @@ class Users extends Repository {
      * Push an existing Model\User to the database
      *
      * @param Entities\User $u the user to push
+     *
+     * @throws \Exception if the subsequent pull fails
      */
     public static function push(Entities\User $u)
     {
@@ -82,6 +86,8 @@ class Users extends Repository {
      * Pull an existing Model\User from the database
      *
      * @param Entities\User $u the user to pull
+     *
+     * @throws \Exception if no such Model\User is found
      */
     public static function pull(Entities\User $u) {
         // SQL
