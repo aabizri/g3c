@@ -55,8 +55,8 @@ class Peripherals extends Repository
         // Execute query
         $sth->execute($data);
 
-        // Return
-        return;
+        // Pull
+        self::pull($p);
     }
 
     /**
@@ -83,8 +83,8 @@ class Peripherals extends Repository
         // Execute query
         $sth->execute($data);
 
-        // Return
-        return;
+        // Pull
+        self::pull($p);
     }
 
     /**
@@ -224,6 +224,9 @@ class Peripherals extends Repository
                 throw new Exception("More than 1 affected record, this is not normal, aborting !");
                 break;
         }
+
+        // Pull
+        self::pull($p);
     }
 
     /**
@@ -238,5 +241,8 @@ class Peripherals extends Repository
     {
         $sth = parent::db()->prepare(self::ATTACH_TO_PROPERTY_SQL, parent::$pdo_params);
         $sth->execute(array(':property_id' => $propertyID, ':uuid' => $p->uuid));
+
+        // Pull
+        self::pull($p);
     }
 }
