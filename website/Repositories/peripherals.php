@@ -168,7 +168,7 @@ class Peripherals extends Repository
      *
      * @return Entities\Peripheral the peripheral if found, null if not
      */
-    public static function retrieve($uuid)
+    public static function retrieve(string $uuid)
     {
         // Create a Model\Peripheral
         $p = new Entities\Peripheral;
