@@ -114,7 +114,8 @@ class Room
 
     /* BUSINESS LOGIC */
 
-    public function attachToProperty(int $property_id): bool {
+    public function attachToProperty(int $property_id): bool
+    {
         return false;
     }
 }

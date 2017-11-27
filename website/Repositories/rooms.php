@@ -8,7 +8,7 @@
 
 namespace Repositories;
 
-use \Entities;
+use Entities;
 
 class Rooms extends Repository
 {
@@ -83,7 +83,7 @@ class Rooms extends Repository
     public static function pull(Entities\Room $r)
     {
         // SQL
-        $sql =  "SELECT property_id, name, creation_date, last_updated
+        $sql = "SELECT property_id, name, creation_date, last_updated
         FROM rooms
         WHERE id = :id;";
 
@@ -108,6 +108,6 @@ class Rooms extends Repository
             "setCreationDate" => $data["creation_date"],
             "setLastUpdated" => $data["last_updated"],
         );
-        parent::executeSetterArray($r,$arr);
+        parent::executeSetterArray($r, $arr);
     }
 }

@@ -1,9 +1,10 @@
 <?php
+
 namespace Repositories;
 
-use \Entities;
-use \PDO;
-use \Exception;
+use Entities;
+use Exception;
+use PDO;
 
 class Peripherals extends Repository
 {
@@ -85,7 +86,7 @@ class Peripherals extends Repository
     public static function pull(Entities\Peripheral $p)
     {
         // SQL
-        $sql =  "SELECT display_name, build_date, add_date, public_key, property_id, room_id, last_updated
+        $sql = "SELECT display_name, build_date, add_date, public_key, property_id, room_id, last_updated
         FROM peripherals
         WHERE uuid = :uuid;";
 
@@ -113,7 +114,7 @@ class Peripherals extends Repository
             "setRoomId" => $data["room_id"],
             "setLastUpdated" => $data["last_updated"],
         );
-        parent::executeSetterArray($p,$arr);
+        parent::executeSetterArray($p, $arr);
     }
 
     /**
@@ -128,7 +129,7 @@ class Peripherals extends Repository
     public static function sync(Entities\Peripheral $p)
     {
         // SQL to get last_updated on given peripheral
-        $sql= "SELECT last_updated
+        $sql = "SELECT last_updated
           FROM peripherals
           WHERE uuid = :uuid;";
 

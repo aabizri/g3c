@@ -8,9 +8,9 @@
 
 namespace Repositories;
 
-    use \Entities;
-    use \PDO;
-    use \Exception;
+use Entities;
+use Exception;
+use PDO;
 
 
 class Sessions extends Repository
@@ -51,7 +51,7 @@ class Sessions extends Repository
     public static function pull(Entities\Session $s)
     {
         // SQL
-        $sql =  "SELECT id, user, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, cookie, last_updated
+        $sql = "SELECT id, user, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, cookie, last_updated
         FROM sessions
         WHERE id = :id;";
 
@@ -82,8 +82,8 @@ class Sessions extends Repository
             "setCookie" => $data["cookie"],
             "setLastUpdated" => $data["last_updated"],
         );
-        parent::executeSetterArray($s,$arr);
+        parent::executeSetterArray($s, $arr);
     }
 
-    }
+}
 

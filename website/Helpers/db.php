@@ -2,13 +2,13 @@
 
 namespace Helpers;
 
-use \PDO;
+use PDO;
 
 /**
-* Database singleton
-*
-* To call it DB::getInstance()
-*/
+ * Database singleton
+ *
+ * To call it DB::getInstance()
+ */
 class DB
 {
     private const HOST = "localhost";
@@ -30,7 +30,7 @@ class DB
     {
         if (!isset(self::$instance)) {
             $pdo_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-            $dsn = 'mysql:host='.self::HOST.';dbname='.self::DBNAME;
+            $dsn = 'mysql:host=' . self::HOST . ';dbname=' . self::DBNAME;
             self::$instance = new PDO($dsn, self::USERNAME, self::PASSWORD, $pdo_options);
         }
         return self::$instance;

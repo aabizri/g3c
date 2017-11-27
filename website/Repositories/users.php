@@ -2,10 +2,11 @@
 
 namespace Repositories;
 
-use \Entities;
-use \PDO;
+use Entities;
+use PDO;
 
-class Users extends Repository {
+class Users extends Repository
+{
     /**
      * Insert inserts a new user to the database
      *
@@ -64,7 +65,7 @@ class Users extends Repository {
         SET display = :display, nick = :nick, birth_date = :birth_date, email = :email, password = :password, phone = :phone";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql,parent::$pdo_params);
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
         $data = array(
@@ -91,7 +92,8 @@ class Users extends Repository {
      *
      * @throws \Exception if no such Model\User is found
      */
-    public static function pull(Entities\User $u) {
+    public static function pull(Entities\User $u)
+    {
         // SQL
         $sql = "SELECT display, nick, birth_date, email, password, phone, last_updated
         FROM users
@@ -121,7 +123,7 @@ class Users extends Repository {
             "setPasswordHashed" => $data["password"],
             "setLastUpdated" => $data["last_updated"],
         );
-        parent::executeSetterArray($u,$arr);
+        parent::executeSetterArray($u, $arr);
     }
 
     /**
@@ -130,12 +132,13 @@ class Users extends Repository {
      * @return Entities\User
      * @throws \Exception
      */
-    public static function retrieve(int $id): Entities\User{
+    public static function retrieve(int $id): Entities\User
+    {
         // Create a User entity
         $u = new Entities\User();
 
         // Set the ID
-        $u->id=$id;
+        $u->id = $id;
 
         // Call Pull on it
         try {
@@ -156,8 +159,9 @@ class Users extends Repository {
      * @return int the ID of the user in question, or null if none are found
      *
      * @throws \Exception if there is more than one user found with this email
-    */
-    public static function findByEmail(string $email): int {
+     */
+    public static function findByEmail(string $email): int
+    {
         // SQL for counting
         $sql = "SELECT count(*)
             FROM users
@@ -206,7 +210,8 @@ class Users extends Repository {
      *
      * @throws \Exception if there is more than one user found with this nickname
      */
-    public static function findByNick(string $nick): int {
+    public static function findByNick(string $nick): int
+    {
         // SQL for counting
         $sql = "SELECT count(*)
             FROM users

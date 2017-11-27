@@ -1,7 +1,8 @@
 <?php
+
 namespace Controllers;
 
-use \Repositories;
+use Repositories;
 
 /**
  * Class User
@@ -13,12 +14,13 @@ class User
      * join subscribes a user
      * @throws \Exception
      */
-    public function join() {
+    public function join()
+    {
         // Get the data
         $nick = $_POST["nick"];
         $email = $_POST["email"];
         $password_clear = $_POST["password"];
-        $display = $_POST["name"]." ".$_POST["surname"];
+        $display = $_POST["name"] . " " . $_POST["surname"];
         $phone = $_POST["phone"];
 
         // Check if an entity with the same nick exists
@@ -47,21 +49,22 @@ class User
         try {
             Repositories\Users::insert($u);
         } catch (\Exception $e) {
-            echo "Error inserting user".$e;
+            echo "Error inserting user" . $e;
         }
     }
 
     /**
      * Connexion
      */
-    public function connexion() {
+    public function connexion()
+    {
         // Récupérer les données
         $nick = $_POST['nick'];
         $password_clear = $_POST['password'];
 
         //Vérifier la présence du nick
         $id = \Repositories\Users::findByNick($nick); //trouve l'id lié au nickname
-        if ($id==-1) {
+        if ($id == -1) {
             echo "CE LOGIN N'EXISTE PAS";
             return;
         }

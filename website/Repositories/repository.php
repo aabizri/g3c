@@ -1,8 +1,9 @@
 <?php
+
 namespace Repositories;
 
-use \PDO;
-use \Helpers\DB;
+use Helpers\DB;
+use PDO;
 
 abstract class Repository
 {
@@ -33,11 +34,12 @@ abstract class Repository
      * @return void
      * @throws \Exception
      * */
-    public static function executeSetterArray($element, array $arr): void {
+    public static function executeSetterArray($element, array $arr): void
+    {
         foreach ($arr as $setter => $datum) {
             $success = $element->$setter($datum);
             if ($success == false) {
-                throw new \Exception("Error with setter ".$setter." with value : ".$datum." (".gettype($datum).")");
+                throw new \Exception("Error with setter " . $setter . " with value : " . $datum . " (" . gettype($datum) . ")");
             }
         }
     }

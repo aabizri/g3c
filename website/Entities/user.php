@@ -7,11 +7,11 @@ require_once("../index.php");
 
 
 /**
-* User est la classe entité pour les utilisateurs
-*
-* @package livewell
-* @author Alexandre A. Bizri <alexandre@bizri.fr>
-*/
+ * User est la classe entité pour les utilisateurs
+ *
+ * @package livewell
+ * @author Alexandre A. Bizri <alexandre@bizri.fr>
+ */
 class User
 {
 
@@ -41,7 +41,8 @@ class User
      * @param string $id
      * @return bool
      */
-    public function setId(string $id): bool{
+    public function setId(string $id): bool
+    {
         $this->id = $id;
         return true;
     }
@@ -171,7 +172,8 @@ class User
     /**
      * @return string
      */
-    public function getPasswordHashed(): string {
+    public function getPasswordHashed(): string
+    {
         return $this->password_hashed;
     }
 
@@ -179,7 +181,8 @@ class User
      * @param string $hashed
      * @return bool
      */
-    public function setPasswordHashed(string $hashed): bool{
+    public function setPasswordHashed(string $hashed): bool
+    {
         $this->password_hashed = $hashed;
         return true;
     }
@@ -215,7 +218,8 @@ class User
      * @param string $last_updated
      * @return bool
      */
-    public function setLastUpdated(string $last_updated): bool{
+    public function setLastUpdated(string $last_updated): bool
+    {
         $this->last_updated = $last_updated;
         return true;
     }
@@ -227,9 +231,10 @@ class User
      *
      * @return bool
      */
-    public function validatePassword(string $clear): bool {
+    public function validatePassword(string $clear): bool
+    {
         // Validate the password
-        $ok = password_verify($clear,$this->password_hashed);
+        $ok = password_verify($clear, $this->password_hashed);
         return $ok;
     }
 
@@ -238,7 +243,8 @@ class User
      *
      * @return bool true if correct, false if incorrect
      */
-    public function validate(): bool {
+    public function validate(): bool
+    {
         // Verifier que $birth_date est inférieur à la date actuelle
         if (strtotime($this->birth_date) > time()) {
             return false; // Birth Date invalid

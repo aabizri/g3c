@@ -5,8 +5,8 @@ namespace Entities;
 // ONLY FOR DEBUG
 require_once("../index.php");
 
-use \Repositories;
-use \Helpers\UUID;
+use Helpers\UUID;
+use Repositories;
 
 /**
  * Peripheral class is the entity class for Peripherals
@@ -39,8 +39,8 @@ class Peripheral
     }
 
     /**
-    * @return string
-    */
+     * @return string
+     */
     public function getUUID(): string
     {
         return $this->uuid;
@@ -213,7 +213,8 @@ class Peripheral
      *
      * @return void
      */
-    public function push(): void {
+    public function push(): void
+    {
         Repositories\Peripherals::push($this);
     }
 
@@ -224,7 +225,8 @@ class Peripheral
      *
      * @throws \Exception if not found
      */
-    public function sync(): void {
+    public function sync(): void
+    {
         Repositories\Peripherals::sync($this);
     }
 
@@ -237,8 +239,9 @@ class Peripheral
      *
      * @return void
      */
-    public function attachToRoom(int $roomID): void {
-        Repositories\Peripherals::attachToRoom($this,$roomID);
+    public function attachToRoom(int $roomID): void
+    {
+        Repositories\Peripherals::attachToRoom($this, $roomID);
     }
 
     /**
@@ -248,8 +251,9 @@ class Peripheral
      *
      * @return void
      */
-    public function attachToProperty(int $propertyID): void {
-        Repositories\Peripherals::attachToProperty($this,$propertyID);
+    public function attachToProperty(int $propertyID): void
+    {
+        Repositories\Peripherals::attachToProperty($this, $propertyID);
     }
 }
 
