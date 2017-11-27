@@ -15,25 +15,22 @@ namespace Repositories;
 
 class Sessions extends Repository
 {
-    public static function insert(\Entities\Sessions $s)
+    public static function insert(\Entities\Session $s)
     {   // On prépare les données qui vont être insérées
         $data = [
-            'id' => $s->id,
-            'user' => $s->user,
-            'started' => $s->started,
-            'expiry' => $s->expiry,
-            'canceled' => $s->canceled,
-            'ip' => $s->ip,
-            'user_agent_txt' => $s->user_agent_txt,
-            'user_agent_hash' => $s->user_agent_hash,
-            'cookie' => $s->cookie,
-            'last_updated' => $s->last_updated,
-
+            'user' => $s->getUser(),
+            'started' => $s->getStarted(),
+            'expiry' => $s->getExpiry(),
+            'canceled' => $s->getCancelled(),
+            'ip' => $s->getIp(),
+            'user_agent_txt' => $s->getUserAgentTxt(),
+            'user_agent_hash' => $s->getUserAgentHash(),
+            'cookie' => $s->getCookie(),
         ];
 
         //On exécute une reqûete SQL
-        $sql = "INSERT INTO sessions (id, user, ip, cookie)
-        VALUES (:id, :user, :ip, :cookie);";
+        $sql = "INSERT INTO sessions (user, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, cookie)
+        VALUES (:user, :started, :expiry, :canceled, :ip, :user_agent_txt, :user_agent_hash, :cookie);";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
@@ -45,7 +42,7 @@ class Sessions extends Repository
         self::pull($s);
     }
 
-    public static function pull(Entities\Sessions $s)
+    public static function pull(Entities\Session $s)
     {
         // SQL
         $sql =  "SELECT id, user, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, cookie, last_updated
@@ -53,10 +50,10 @@ class Sessions extends Repository
         WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare(self::PULL_SQL, parent::$pdo_params);
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':id' => $s->id));
+        $sth->execute(array(':id' => $s->getId()));
 
         // Retrieve
         $data = $sth->fetch(PDO::FETCH_ASSOC);
@@ -67,17 +64,24 @@ class Sessions extends Repository
         }
 
         // Store
-        $s->id = $data["id"];
-        $s->user = $data["user"];
-        $s->started = $data["started"];
-        $s->expiry = $data["expiry"];
-        $s->cancelled = $data["cancelled"];
-        $s->ip = $data["ip"];
-        $s->user_agent_txt = $data["user_agent_txt"];
-        $s->user_agent_hash = $data["user_agent_hash"]
-        $s->cookie = $data["cookie"]
-        $s->last_updated = $data["last_updated"]
-
+        $arr = array(
+            "setId" => $data["id"],
+            "setUser" => $data["user"],
+            "setStarted" => $data["started"],
+            "setExpiry" => $data["expiry"],
+            "setCancelled" => $data["canceled"],
+            "setIp" => $data["ip"],
+            "setUserAgentTxt" => $data["user_agent_txt"],
+            "setUserAgentHash" => $data["user_agent_hash"],
+            "setCookie" => $data["cookie"],
+            "setLastUpdated" => $data["last_updated"],
+        );
+        foreach ($arr as $setter => $datum) {
+            $success = $s->$setter($datum);
+            if ($success == false) {
+                throw new \Exception("Error with setter ".$setter." with value : ".$datum." (".gettype($datum).")");
+            }
+        }
     }
 
     }
