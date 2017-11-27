@@ -38,6 +38,12 @@ class Sessions extends Repository
         // Execute query
         $sth->execute($data);
 
+        // Get ID of the insert
+        $id = parent::db()->lastInsertId();
+        if ($s->setId($id) == false) {
+            throw new \Exception("error setting id");
+        }
+
         // Pull
         self::pull($s);
     }
