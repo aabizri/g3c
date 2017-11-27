@@ -9,6 +9,7 @@ class User
 {
     /**
      * join subscribes a user
+     * @throws \Exception
      */
     public function join() {
         // Get the data
