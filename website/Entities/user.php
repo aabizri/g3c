@@ -30,23 +30,6 @@ class User
     public $last_updated;
 
     /**
-     * User constructor.
-     *
-     * @param string $nick
-     * @param string $email
-     * @param string $password
-     *
-     * @throws \Exception if the birth date is invalid
-     */
-    public function __construct(string $nick, string $email, string $password)
-    {
-        // Set the values
-        $this->nick = $nick;
-        $this->email = $email;
-        $this->setPassword($password);
-    }
-
-    /**
      * @return int
      */
     public function getId(): int
