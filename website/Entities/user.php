@@ -16,42 +16,19 @@ use \PDO;
 */
 class User
 {
-    /**
-     * @var int
-     */
+
     public $id;
-    /**
-     * @var string
-     */
     public $display;
-    /**
-     * @var string
-     */
     public $nick;
-    /**
-     * @var string
-     */
     public $birth_date;
-    /**
-     * @var string
-     */
     public $creation_date;
-    /**
-     * @var string
-     */
     public $email;
     /**
      * Password hashed & salted with BCrypt
      * @var string
      */
     public $password_hashed;
-    /**
-     * @var string
-     */
     public $phone;
-    /**
-     * @var string
-     */
     public $last_updated;
 
     /**
