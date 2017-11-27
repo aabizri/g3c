@@ -15,19 +15,19 @@ require_once("../index.php");
 class User
 {
 
-    public $id;
-    public $display;
-    public $nick;
-    public $birth_date;
-    public $creation_date;
-    public $email;
+    private $id;
+    private $display;
+    private $nick;
+    private $birth_date;
+    private $creation_date;
+    private $email;
     /**
      * Password hashed & salted with BCrypt
      * @var string
      */
-    public $password_hashed;
-    public $phone;
-    public $last_updated;
+    private $password_hashed;
+    private $phone;
+    private $last_updated;
 
     /**
      * @return int
