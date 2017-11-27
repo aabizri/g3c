@@ -14,7 +14,7 @@ class Router
     }
     
     // dispatch executes the route given an URI
-    public function dispatch(string $uri)
+    public function dispatch(string $uri): mixed
     {
         // check all routes
         foreach ($this->routes as $pattern => $callback) {
@@ -24,5 +24,6 @@ class Router
                 return call_user_func_array($callback, array_values($params));
             }
         }
+        return false;
     }
 }

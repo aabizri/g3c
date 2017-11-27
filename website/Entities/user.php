@@ -5,8 +5,6 @@ namespace Entities;
 // ONLY FOR DEBUG
 require_once("../index.php");
 
-use \Helpers\DB;
-use \PDO;
 
 /**
 * User est la classe entité pour les utilisateurs
@@ -75,10 +73,12 @@ class User
 
     /**
      * @param string $display
+     * @return bool
      */
     public function setDisplay(string $display): bool
     {
         $this->display = $display;
+        return true;
     }
 
     /**
@@ -91,6 +91,7 @@ class User
 
     /**
      * @param string $nick
+     * @return bool
      */
     public function setNick(string $nick): bool
     {
@@ -191,9 +192,12 @@ class User
         return $this->password_hashed;
     }
 
-    /** Set the hashed password */
+    /** Set the hashed password
+     * @param string $hashed
+     * @return bool
+     */
     public function setPasswordHashed(string $hashed): bool{
-        $this->password_hashed($hashed);
+        $this->password_hashed = $hashed;
         return true;
     }
 

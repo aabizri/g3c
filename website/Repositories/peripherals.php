@@ -197,7 +197,7 @@ class Peripherals extends Repository
     /**
      * Retrieve All Model\Peripheral s from the database, ordered by build time
      *
-     * @param string Date to start listing from
+     * @param string $start_date date to start listing from
      *
      * @return array of Model\Peripheral with the peripherals
      */
