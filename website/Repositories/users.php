@@ -15,16 +15,6 @@ class Users extends Repository {
      */
     public static function insert(Entities\User $u)
     {
-        // Prepare data to be updated
-        $data = array(
-            ':display' => $u->display,
-            ':nick' => $u->nick,
-            ':birth_date' => $u->birth_date,
-            ':email' => $u->email,
-            ':password' => $u->password_hashed,
-            ':phone' => $u->phone,
-        );
-
         // SQL
         $sql = "INSERT INTO users (display, nick, birth_date, email, password, phone)
         VALUES (:display, :nick, :birth_date, :email, :password, :phone)";
@@ -32,12 +22,24 @@ class Users extends Repository {
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
+        // Prepare data to be updated
+        $data = [
+            ':display' => $u->getDisplay(),
+            ':nick' => $u->getNick(),
+            ':birth_date' => $u->getBirthDate(),
+            ':email' => $u->getEmail(),
+            ':password' => $u->getPasswordHashed(),
+            ':phone' => $u->getPhone(),
+        ];
+
         // Execute creation query
         $sth->execute($data);
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        $u->id = $id;
+        if ($u->setId($id) == false) {
+            throw new \Exception("error setting id");
+        }
 
         // We should now pull to populate ID & Times
         self::pull($u);
@@ -57,23 +59,23 @@ class Users extends Repository {
      */
     public static function push(Entities\User $u)
     {
-        // Prepare data to be updated
-        $data = array(
-            ':id' => $u->id,
-            ':display' => $u->display,
-            ':nick' => $u->nick,
-            ':birth_date' => $u->birth_date,
-            ':email' => $u->email,
-            ':password' => $u->password_hashed,
-            ':phone' => $u->phone,
-            );
-
         // SQL
         $sql = "UPDATE users
         SET display = :display, nick = :nick, birth_date = :birth_date, email = :email, password = :password, phone = :phone";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql,parent::$pdo_params);
+
+        // Prepare data to be updated
+        $data = array(
+            ':id' => $u->getId(),
+            ':display' => $u->getDisplay(),
+            ':nick' => $u->getNick(),
+            ':birth_date' => $u->getBirthDate(),
+            ':email' => $u->getEmail(),
+            ':password' => $u->getPasswordHashed(),
+            ':phone' => $u->getPhone(),
+        );
 
         // Execute query
         $sth->execute($data);
@@ -99,7 +101,7 @@ class Users extends Repository {
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':id' => $u->id));
+        $sth->execute(array(':id' => $u->getId()));
 
         // Fetch
         $data = $sth->fetch(PDO::FETCH_ASSOC);
@@ -110,13 +112,21 @@ class Users extends Repository {
         }
 
         // Store
-        $u->display = $data["display"];
-        $u->nick = $data["nick"];
-        $u->birth_date = $data["birth_date"];
-        $u->email = $data["email"];
-        $u->phone = $data["phone"];
-        $u->password_hashed = $data["password"];
-        $u->last_updated = $data["last_updated"];
+        $arr = array(
+            "setDisplay" => $data["display"],
+            "setNick" => $data["nick"],
+            "setBirthDate" => $data["birth_date"],
+            "setEmail" => $data["email"],
+            "setPhone" => $data["phone"],
+            "setPasswordHashed" => $data["password"],
+            "setLastUpdated" => $data["last_updated"],
+        );
+        foreach ($arr as $setter => $datum) {
+            $success = $u->$setter($datum);
+            if ($success == false) {
+                throw new \Exception("Error with setter ".$setter." with value : ".$datum." (".gettype($datum).")");
+            }
+        }
     }
 
     /**
