@@ -161,7 +161,7 @@ class Peripherals extends Repository
     }
 
     /**
-     * Retrieve a Model\Peripheral from the database
+     * Retrieve a peripheral from the database given its id
      *
      * @param string $uuid UUID of the Peripheral to retrieve
      * @return Entities\Peripheral the peripheral if found, null if not
@@ -169,6 +169,25 @@ class Peripherals extends Repository
      */
     public static function retrieve(string $uuid)
     {
+        // SQL for counting
+        $sql = "SELECT count(*)
+            FROM peripherals
+            WHERE uuid = :uuid";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute query
+        $sth->execute(array(':uuid' => $uuid));
+
+        // Fetch
+        $count = $sth->fetchColumn(0);
+
+        // If count is zero, then we return null
+        if ($count == 0) {
+            return null;
+        }
+
         // Create a Model\Peripheral
         $p = new Entities\Peripheral;
 
@@ -179,11 +198,7 @@ class Peripherals extends Repository
         }
 
         // Call Pull on it
-        try {
-            self::pull($p);
-        } catch (Exception $e) {
-            return null;
-        }
+        self::pull($p);
 
         // Return the peripheral
         return $p;
