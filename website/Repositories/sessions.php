@@ -85,5 +85,97 @@ class Sessions extends Repository
         parent::executeSetterArray($s, $arr);
     }
 
+    /**
+     * Retrieve a session from the database given its id
+     *
+     * @param int $id of the session to retrieve
+     * @return Entities\Session the it is found, null if not
+     * @throws \Exception
+     */
+    public static function retrieve(int $id): Entities\Session
+    {
+        // SQL for counting
+        $sql = "SELECT count(*)
+            FROM sessions
+            WHERE id = :id";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute query
+        $sth->execute(array(':id' => $id));
+
+        // Fetch
+        $count = $sth->fetchColumn(0);
+
+        // If count is zero, then we return null
+        if ($count == 0) {
+            return null;
+        }
+
+        // Create an entity
+        $s = new Entities\Session;
+
+        // Set the ID
+        $s->setId($id);
+
+        // Call Pull on it
+        self::pull($s);
+
+        // Return it
+        return $s;
+    }
+
+    /**
+     * Retrieves all IDs for session belonging to that user
+     *
+     * @param int $user_id
+     * @return int[] array of session ids
+     */
+    public static function findAllByUserID(int $user_id): array
+    {
+        // SQL
+        $sql = "SELECT id
+            FROM sessions
+            WHERE user = :user_id;";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute statement
+        $sth->execute([":user_id" => $user_id]);
+
+        // Fetch all results
+        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+        // Return the set
+        return $set;
+    }
+
+    /**
+     * Retrieves all IDs for session started by that IP
+     *
+     * @param string $ip
+     * @return int[] array of session ids
+     */
+    public static function findAllByIP(string $ip): array
+    {
+        // SQL
+        $sql = "SELECT id
+            FROM sessions
+            WHERE ip = :ip;";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute statement
+        $sth->execute([":ip" => $ip]);
+
+        // Fetch all results
+        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+        // Return the set
+        return $set;
+    }
 }
 

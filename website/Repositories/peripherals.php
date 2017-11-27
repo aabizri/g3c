@@ -205,12 +205,56 @@ class Peripherals extends Repository
     }
 
     /**
-     * Retrieve All Model\Peripheral s from the database, ordered by build time
+     * Retrieves all IDs for peripherals belonging to that property
      *
-     * @param string $start_date date to start listing from
-     *
-     * @return array of Model\Peripheral with the peripherals
+     * @param int $property_id
+     * @return string[] array of uuids
      */
+    public static function findAllByPropertyID(int $property_id): array
+    {
+        // SQL
+        $sql = "SELECT uuid
+            FROM peripherals
+            WHERE property_id = :property_id;";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute statement
+        $sth->execute([":property_id" => $property_id]);
+
+        // Fetch all results
+        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+        // Return the set
+        return $set;
+    }
+
+    /**
+     * Retrieves all IDs for peripherals belonging to that room
+     *
+     * @param int $room_id
+     * @return string[] array of uuids
+     */
+    public static function findAllByRoomID(int $room_id): array
+    {
+        // SQL
+        $sql = "SELECT uuid
+            FROM peripherals
+            WHERE room_id = :room_id;";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute statement
+        $sth->execute([":room_id" => $room_id]);
+
+        // Fetch all results
+        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+        // Return the set
+        return $set;
+    }
 
     /**
      * Attach the Peripheral to a Room
