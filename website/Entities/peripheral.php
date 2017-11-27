@@ -92,6 +92,10 @@ class Peripheral
      */
     public function setBuildDate(string $build_date): bool
     {
+        // Verifier que $creation_date est inférieure à la date actuelle
+        if (strtotime($build_date) > time()) {
+            return false;
+        }
         $this->build_date = $build_date;
         return true;
     }
@@ -110,6 +114,10 @@ class Peripheral
      */
     public function setAddDate(string $add_date): bool
     {
+        // Verifier que $add_date est inférieure à la date actuelle
+        if (strtotime($add_date) > time()) {
+            return false;
+        }
         $this->add_date = $add_date;
         return true;
     }
