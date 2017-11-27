@@ -9,7 +9,18 @@
 namespace Repositories;
 
 
-class Sessions
+class Sessions extends Repository
 {
+    public static function insert(\Entities\Sessions $s)
+    {
+        $data = [
+            'id' => $s->id,
+            'user' => $s->user,
+            'started' => $s->started,
+            'expiry' => $s->expiry,
+            'canceled' =>$s->canceled,
+
+        ];
+    }
 
 }
