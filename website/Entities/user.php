@@ -28,23 +28,6 @@ class User
     public $last_updated;
 
     /**
-     * User constructor.
-     *
-     * @param string $nick
-     * @param string $email
-     * @param string $password
-     *
-     * @throws \Exception if the birth date is invalid
-     */
-    public function __construct(string $nick, string $email, string $password)
-    {
-        // Set the values
-        $this->nick = $nick;
-        $this->email = $email;
-        $this->setPassword($password);
-    }
-
-    /**
      * Set the password, hashing & salting it via BCRYPT
      *
      * @param string $clear is the password
@@ -53,6 +36,19 @@ class User
     {
         // Calculer le hash associé au mot de passe via BCRYPT, le salt étant généré automatiquement
         $this->password_hashed = password_hash($clear, PASSWORD_BCRYPT);
+    }
+
+    /**
+     * Validate the password
+     *
+     * @param string $clear is the password
+     *
+     * @return bool
+     */
+    public function validatePassword(string $clear): bool {
+        // Validate the password
+        $ok = password_verify($clear,$this->password_hashed);
+        return $ok;
     }
 
     /**
