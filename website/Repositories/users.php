@@ -121,12 +121,7 @@ class Users extends Repository {
             "setPasswordHashed" => $data["password"],
             "setLastUpdated" => $data["last_updated"],
         );
-        foreach ($arr as $setter => $datum) {
-            $success = $u->$setter($datum);
-            if ($success == false) {
-                throw new \Exception("Error with setter ".$setter." with value : ".$datum." (".gettype($datum).")");
-            }
-        }
+        parent::executeSetterArray($u,$arr);
     }
 
     /**

@@ -82,12 +82,7 @@ class Sessions extends Repository
             "setCookie" => $data["cookie"],
             "setLastUpdated" => $data["last_updated"],
         );
-        foreach ($arr as $setter => $datum) {
-            $success = $s->$setter($datum);
-            if ($success == false) {
-                throw new \Exception("Error with setter ".$setter." with value : ".$datum." (".gettype($datum).")");
-            }
-        }
+        parent::executeSetterArray($s,$arr);
     }
 
     }

@@ -108,11 +108,6 @@ class Rooms extends Repository
             "setCreationDate" => $data["creation_date"],
             "setLastUpdated" => $data["last_updated"],
         );
-        foreach ($arr as $setter => $datum) {
-            $success = $r->$setter($datum);
-            if ($success == false) {
-                throw new \Exception("Error with setter ".$setter." with value : ".$datum." (".gettype($datum).")");
-            }
-        }
+        parent::executeSetterArray($r,$arr);
     }
 }

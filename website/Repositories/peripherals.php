@@ -113,12 +113,7 @@ class Peripherals extends Repository
             "setRoomId" => $data["room_id"],
             "setLastUpdated" => $data["last_updated"],
         );
-        foreach ($arr as $setter => $datum) {
-            $success = $p->$setter($datum);
-            if ($success == false) {
-                throw new \Exception("Error with setter ".$setter." with value : ".$datum." (".gettype($datum).")");
-            }
-        }
+        parent::executeSetterArray($p,$arr);
     }
 
     /**
