@@ -46,11 +46,6 @@ class Users extends Repository
         self::pull($u);
     }
 
-    /* TODO:
-        - retrieve
-        - sync
-    */
-
     /**
      * Push an existing Model\User to the database
      *
@@ -127,25 +122,40 @@ class Users extends Repository
     }
 
     /**
-     * Récupérer l'id d'un nick
+     * Récupérer l'id d'un user
      * @param int $id
-     * @return Entities\User
+     * @return Entities\User ou null si rien n'est trouvé
      * @throws \Exception
      */
     public static function retrieve(int $id): Entities\User
     {
+        // SQL for counting
+        $sql = "SELECT count(*)
+            FROM users
+            WHERE id = :id";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute query
+        $sth->execute(array(':id' => $id));
+
+        // Fetch
+        $count = $sth->fetchColumn(0);
+
+        // If count is zero, then we return null
+        if ($count == 0) {
+            return null;
+        }
+
         // Create a User entity
         $u = new Entities\User();
 
         // Set the ID
-        $u->id = $id;
+        $u->setId($id);
 
         // Call Pull on it
-        try {
-            self::pull($u);
-        } catch (\Exception $e) {
-            return null;
-        }
+        self::pull($u);
 
         // Return the user
         return $u;
