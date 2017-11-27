@@ -16,6 +16,13 @@ class Peripherals extends Repository
      */
     public static function insert(Entities\Peripheral $p)
     {
+        // SQL
+        $sql = "INSERT INTO peripherals (uuid, build_date, add_date, public_key, property_id, room_id)
+        VALUES (:uuid, :build_date, :add_date, :public_key, :property_id, :room_id);";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
         // Prepare data to be inserted
         $data = [
             ':uuid' => $p->getUUID(),
@@ -24,15 +31,7 @@ class Peripherals extends Repository
             ':public_key' => $p->getPublicKey(),
             ':property_id' => $p->getPropertyId(),
             ':room_id' => $p->getRoomId(),
-            ':last_updated' => $p->getLastUpdated(),
         ];
-
-        // SQL
-        $sql = "INSERT INTO peripherals (uuid, build_date, public_key)
-        VALUES (:uuid, :build_date, :public_key);";
-
-        // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
         $sth->execute($data);
@@ -48,6 +47,14 @@ class Peripherals extends Repository
      */
     public static function push(Entities\Peripheral $p)
     {
+        // SQL
+        $sql = "UPDATE peripherals
+        SET display_name = :display_name, build_date = :build_date, add_date = :add_date, property_id = :property_id, room_id = :room_id
+        WHERE uuid = :uuid;";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
         // Prepare data to be updated
         $data = [
             ':uuid' => $p->getUUID(),
@@ -56,16 +63,8 @@ class Peripherals extends Repository
             ':public_key' => $p->getPublicKey(),
             ':property_id' => $p->getPropertyId(),
             ':room_id' => $p->getRoomId(),
-            ':last_updated' => $p->getLastUpdated(),
         ];
 
-        // SQL
-        $sql = "UPDATE peripherals
-        SET display_name = :display_name, build_date = :build_date, add_date = :add_date, property_id = :property_id, room_id = :room_id, last_updated = :last_updated
-        WHERE uuid = :uuid;";
-
-        // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
         $sth->execute($data);
