@@ -66,6 +66,11 @@ class User
             return false; // Birth Date invalid
         }
 
+        // Verifier que le courriel est correct
+        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            return false; // Email invalid
+        }
+
         return is_int($this->id) &&
             is_string($this->display) &&
             is_string($this->nick) &&
