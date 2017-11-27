@@ -145,15 +145,12 @@ class Peripherals extends Repository
         $sth->execute(array(':uuid' => $p->getUUID()));
 
         // Retrieve
-        $data = $sth->fetch(PDO::FETCH_ASSOC);
+        $db_last_updated = $sth->fetchColumn(0);
 
         // If nil, we throw an exception
         if ($db_last_updated == null) {
             throw new Exception("No such Peripheral found");
         }
-
-        // Retrieve the date
-        $db_last_updated = $data["last_updated"];
 
         // If empty, that's an Exception
         if ($db_last_updated == "") {
