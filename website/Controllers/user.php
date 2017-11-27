@@ -1,6 +1,8 @@
 <?php
 namespace Controllers;
 
+use \Repositories;
+
 /**
  * Class User
  * @package Controllers
@@ -17,11 +19,18 @@ class User
         $email = $_POST["email"];
         $password_clear = $_POST["password"];
 
-        // Check if an entity with the same e-mail and/or nickname exists
-        if (\Repositories\Users::findByNick($nick) != null) {
+        // Check if an entity with the same nick exists
+        $nickDuplicate = Repositories\Users::findByNick($nick) != null;
+        if ($nickDuplicate) {
             echo "A user with this nick already exists";
-        } else if (\Repositories\Users::findByEmail($email) != null) {
+            return;
+        }
+
+        // Check if an entity with the same email exists
+        $emailDuplicate = Repositories\Users::findByEmail($email) != null;
+        if ($emailDuplicate) {
             echo "A user with this email already exists";
+            return;
         }
 
         // Create the entity
@@ -29,7 +38,7 @@ class User
 
         // Insert it
         try {
-            \Repositories\Users::insert($u);
+            Repositories\Users::insert($u);
         } catch (\Exception $e) {
             echo "Error inserting user".$e;
         }
