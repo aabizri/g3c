@@ -238,6 +238,19 @@ class User
     }
 
     /**
+     * Validate the password
+     *
+     * @param string $clear is the password
+     *
+     * @return bool
+     */
+    public function validatePassword(string $clear): bool {
+        // Validate the password
+        $ok = password_verify($clear,$this->password_hashed);
+        return $ok;
+    }
+
+    /**
      * Validate that this is correct
      *
      * @return bool true if correct, false if incorrect
@@ -248,7 +261,10 @@ class User
             return false; // Birth Date invalid
         }
 
-
+        // Verifier que le courriel est correct
+        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+            return false; // Email invalid
+        }
 
         return is_int($this->id) &&
             is_string($this->display) &&

@@ -130,6 +130,30 @@ class Users extends Repository {
     }
 
     /**
+     * Récupérer l'id d'un nick
+     * @param int $id
+     * @return Entities\User
+     * @throws \Exception
+     */
+    public static function retrieve(int $id): Entities\User{
+        // Create a User entity
+        $u = new Entities\User();
+
+        // Set the ID
+        $u->id=$id;
+
+        // Call Pull on it
+        try {
+            self::pull($u);
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        // Return the user
+        return $u;
+    }
+
+    /**
      * Find a Model\User by email
      *
      * @param string $email the email with which to find the given Entity\User ID
@@ -197,7 +221,7 @@ class Users extends Repository {
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':email' => $nick));
+        $sth->execute(array(':nick' => $nick));
 
         // Fetch
         $count = $sth->fetchColumn(0);
@@ -206,7 +230,7 @@ class Users extends Repository {
         if ($count == 0) {
             return null;
         } else if ($count > 1) {
-            throw new \Exception("More than one row shares this e-mail !");
+            throw new \Exception("More than one row shares this nickname !");
         }
 
         // SQL for selecting
