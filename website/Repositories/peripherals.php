@@ -91,7 +91,7 @@ class Peripherals extends Repository
         WHERE uuid = :uuid;";
 
         // Prepare statement
-        $sth = parent::db()->prepare(self::PULL_SQL, parent::$pdo_params);
+        $sth = parent::db()->prepare(sql, parent::$pdo_params);
 
         // Execute statement
         $sth->execute(array(':uuid' => $p->uuid));
