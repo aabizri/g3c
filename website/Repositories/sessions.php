@@ -49,6 +49,41 @@ class Sessions extends Repository
         self::pull($s);
     }
 
+    /**
+     * Push an existing session to the database
+     *
+     * @param Entities\Session $s the room to push
+     */
+    public static function push(Entities\Session $s): void
+    {
+        // SQL
+        $sql = "UPDATE sessions
+        SET user = :user, started = :started, expiry = :expiry, canceled = :canceled, ip = :ip, user_agent_txt = :user_agent_txt, user_agent_hash = :user_agent_hash, cookie = :cookie
+        WHERE id = :id;";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Data for the request
+        $data = [
+            "id" => $s->getId(),
+            'user' => $s->getUser(),
+            'started' => $s->getStarted(),
+            'expiry' => $s->getExpiry(),
+            'canceled' => $s->getCancelled(),
+            'ip' => $s->getIp(),
+            'user_agent_txt' => $s->getUserAgentTxt(),
+            'user_agent_hash' => $s->getUserAgentHash(),
+            'cookie' => $s->getCookie(),
+        ];
+
+        // Execute query
+        $sth->execute($data);
+
+        // Pull
+        self::pull($s);
+    }
+
     public static function pull(Entities\Session $s)
     {
         // SQL
@@ -83,6 +118,49 @@ class Sessions extends Repository
             "setLastUpdated" => $data["last_updated"],
         );
         parent::executeSetterArray($s, $arr);
+    }
+
+    /**
+     * Syncs a session with the database, executing a Pull or a Push on a last_updated timestamp basis
+     *
+     * @param Entities\Session $s to be synced
+     *
+     * @return void
+     *
+     * @throws \Exception if not found
+     */
+    public static function sync(Entities\Session $s)
+    {
+        // SQL to get last_updated on given peripheral
+        $sql = "SELECT last_updated
+          FROM sessions
+          WHERE id = :id;";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute
+        $sth->execute(array(':id' => $s->getId()));
+
+        // Retrieve
+        $db_last_updated = $sth->fetchColumn(0);
+
+        // If nil, we throw an exception
+        if ($db_last_updated == null) {
+            throw new \Exception("No such session found");
+        }
+
+        // If empty, that's an Exception
+        if ($db_last_updated == "") {
+            throw new \Exception("Empty last_updated");
+        }
+
+        // If the DB was updated BEFORE the last update to the peripheral, push
+        if (strtotime($db_last_updated) < strtotime($s->getLastUpdated())) {
+            self::push($s);
+        } else {
+            self::pull($s);
+        }
     }
 
     /**

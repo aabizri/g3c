@@ -122,6 +122,49 @@ class Users extends Repository
     }
 
     /**
+     * Syncs a user with the database, executing a Pull or a Push on a last_updated timestamp basis
+     *
+     * @param Entities\User $u to be synced
+     *
+     * @return void
+     *
+     * @throws \Exception if not found
+     */
+    public static function sync(Entities\User $u)
+    {
+        // SQL to get last_updated on given peripheral
+        $sql = "SELECT last_updated
+          FROM users
+          WHERE id = :id;";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute
+        $sth->execute(array(':id' => $u->getId()));
+
+        // Retrieve
+        $db_last_updated = $sth->fetchColumn(0);
+
+        // If nil, we throw an exception
+        if ($db_last_updated == null) {
+            throw new \Exception("No such session found");
+        }
+
+        // If empty, that's an Exception
+        if ($db_last_updated == "") {
+            throw new \Exception("Empty last_updated");
+        }
+
+        // If the DB was updated BEFORE the last update to the peripheral, push
+        if (strtotime($db_last_updated) < strtotime($u->getLastUpdated())) {
+            self::push($u);
+        } else {
+            self::pull($u);
+        }
+    }
+
+    /**
      * Récupérer l'id d'un user
      * @param int $id
      * @return Entities\User ou null si rien n'est trouvé
