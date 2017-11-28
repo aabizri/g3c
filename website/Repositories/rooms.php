@@ -124,7 +124,7 @@ class Rooms extends Repository
     {
         // SQL to get last_updated on given peripheral
         $sql = "SELECT last_updated
-          FROM room
+          FROM rooms
           WHERE id = :id;";
 
         // Prepare statement
