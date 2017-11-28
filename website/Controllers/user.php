@@ -23,14 +23,20 @@ class User
         $display = $_POST["name"] . " " . $_POST["surname"];
         $phone = $_POST["phone"];
 
-        // Check if an entity with the same nick exists
+        /**
+         * Check if an entity with the same nick exists
+         * @var int $nickDuplicate
+         */
         $nickDuplicate = Repositories\Users::findByNick($nick) != null;
         if ($nickDuplicate) {
             echo "A user with this nick already exists";
             return;
         }
 
-        // Check if an entity with the same email exists
+        /**
+         * Check if an entity with the same email exists
+         * @var int $emailDuplicate
+         */
         $emailDuplicate = Repositories\Users::findByEmail($email) != null;
         if ($emailDuplicate) {
             echo "A user with this email already exists";
@@ -62,14 +68,20 @@ class User
         $nick = $_POST['nick'];
         $password_clear = $_POST['password'];
 
-        //Vérifier la présence du nick
+        /**
+         * Vérifier la présence du nick
+         * @var int $id
+         */
         $id = \Repositories\Users::findByNick($nick); //trouve l'id lié au nickname
         if ($id == -1) {
             echo "CE LOGIN N'EXISTE PAS";
             return;
         }
 
-        // Avec cet ID, on récupère l'entité User
+        /**
+         * Avec cet ID, on récupère l'entité User
+         * @var \Repositories\Users $u
+         */
         $u = \Repositories\Users::retrieve($id);
 
         // Validate
