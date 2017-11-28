@@ -106,7 +106,7 @@ class Peripherals extends Repository
 
         // Store
         $arr = array(
-            "setDisplay" => $data["display"],
+            "setDisplayName" => $data["display_name"],
             "setBuildDate" => $data["build_date"],
             "setAddDate" => $data["add_date"],
             "setPublicKey" => $data["public_key"],
