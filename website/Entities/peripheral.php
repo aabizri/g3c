@@ -194,41 +194,7 @@ class Peripheral
         return true;
     }
 
-    /**
-     * Pull the new values
-     *
-     * This is a helper allowing us to call the repository directly
-     *
-     * @return void
-     */
-    public function pull(): void
-    {
-        Repositories\Peripherals::pull($this);
-    }
-
-    /**
-     * Push the new values
-     *
-     * This is a helper allowing us to call the repository directly
-     *
-     * @return void
-     */
-    public function push(): void
-    {
-        Repositories\Peripherals::push($this);
-    }
-
-    /**
-     * Syncs a Model\Peripheral with the database, executing a Pull or a Push on a last_updated timestamp basis
-     *
-     * @return void
-     *
-     * @throws \Exception if not found
-     */
-    public function sync(): void
-    {
-        Repositories\Peripherals::sync($this);
-    }
+    /* BUSINESS LOGIC */
 
     /**
      * Attach the Peripheral to a Room

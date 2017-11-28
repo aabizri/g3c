@@ -8,6 +8,7 @@
 
 namespace Entities;
 
+use Repositories;
 
 class Room
 {
@@ -116,6 +117,8 @@ class Room
 
     public function attachToProperty(int $property_id): bool
     {
+        // Check if it exists
+        // Use setPropertyId
         return false;
     }
 }
