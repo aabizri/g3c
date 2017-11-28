@@ -15,7 +15,15 @@ use PDO;
 
 class Sessions extends Repository
 {
-    public static function insert(\Entities\Session $s)
+    /**
+     * Inserts a Session to the database
+     *
+     * The Entities\Session doesn't have to have its ID set
+     *
+     * @param Entities\Session $s
+     * @throws Exception
+     */
+    public static function insert(\Entities\Session $s): void
     {
         //On écrit une reqûete SQL
         $sql = "INSERT INTO sessions (user, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, cookie)
@@ -52,7 +60,7 @@ class Sessions extends Repository
     /**
      * Push an existing session to the database
      *
-     * @param Entities\Session $s the room to push
+     * @param Entities\Session $s
      */
     public static function push(Entities\Session $s): void
     {
@@ -84,7 +92,13 @@ class Sessions extends Repository
         self::pull($s);
     }
 
-    public static function pull(Entities\Session $s)
+    /**
+     * Pull an existing session from the database
+     *
+     * @param Entities\Session $s
+     * @throws Exception
+     */
+    public static function pull(Entities\Session $s): void
     {
         // SQL
         $sql = "SELECT user, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, cookie, last_updated
