@@ -80,7 +80,7 @@ class Rooms extends Repository
      *
      * @throws \Exception if there is no such Model\Peripheral
      */
-    public static function pull(Entities\Room $r)
+    public static function pull(Entities\Room $r): void
     {
         // SQL
         $sql = "SELECT property_id, name, creation_date, last_updated
@@ -120,7 +120,7 @@ class Rooms extends Repository
      *
      * @throws \Exception if not found
      */
-    public static function sync(Entities\Room $r)
+    public static function sync(Entities\Room $r): void
     {
         // SQL to get last_updated on given peripheral
         $sql = "SELECT last_updated

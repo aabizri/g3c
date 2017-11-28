@@ -17,7 +17,7 @@ abstract class Repository
      *
      * @return PDO
      */
-    public static function db()
+    public static function db(): PDO
     {
         if (self::$db_instance == null) {
             self::$db_instance = DB::getInstance();

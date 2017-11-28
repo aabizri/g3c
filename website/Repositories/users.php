@@ -14,7 +14,7 @@ class Users extends Repository
      *
      * @throws \Exception if the subsequent pull fails
      */
-    public static function insert(Entities\User $u)
+    public static function insert(Entities\User $u): void
     {
         // SQL
         $sql = "INSERT INTO users (display, nick, birth_date, email, password, phone)
@@ -53,7 +53,7 @@ class Users extends Repository
      *
      * @throws \Exception if the subsequent pull fails
      */
-    public static function push(Entities\User $u)
+    public static function push(Entities\User $u): void
     {
         // SQL
         $sql = "UPDATE users
@@ -87,7 +87,7 @@ class Users extends Repository
      *
      * @throws \Exception if no such Model\User is found
      */
-    public static function pull(Entities\User $u)
+    public static function pull(Entities\User $u): void
     {
         // SQL
         $sql = "SELECT display, nick, birth_date, email, password, phone, last_updated
@@ -130,7 +130,7 @@ class Users extends Repository
      *
      * @throws \Exception if not found
      */
-    public static function sync(Entities\User $u)
+    public static function sync(Entities\User $u): void
     {
         // SQL to get last_updated on given peripheral
         $sql = "SELECT last_updated

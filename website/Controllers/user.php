@@ -15,7 +15,7 @@ class User
      * join subscribes a user
      * @throws \Exception
      */
-    public function join()
+    public function join(): void
     {
         // Get the data
         $nick = $_POST["nick"];
@@ -63,7 +63,7 @@ class User
     /**
      * Connexion
      */
-    public function connexion()
+    public function connexion(): void
     {
         // Récupérer les données
         $nick = $_POST['nick'];

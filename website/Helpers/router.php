@@ -8,7 +8,7 @@ class Router
     private $routes = array();
 
     // register registers a new route with a function to be called in that case
-    public function register(string $pattern, callable $callback)
+    public function register(string $pattern, callable $callback): void
     {
         $this->routes[$pattern] = $callback;
     }

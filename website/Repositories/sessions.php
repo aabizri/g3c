@@ -129,7 +129,7 @@ class Sessions extends Repository
      *
      * @throws \Exception if not found
      */
-    public static function sync(Entities\Session $s)
+    public static function sync(Entities\Session $s): void
     {
         // SQL to get last_updated on given peripheral
         $sql = "SELECT last_updated
