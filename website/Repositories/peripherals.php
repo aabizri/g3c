@@ -1,9 +1,10 @@
 <?php
+
 namespace Repositories;
 
-use \Entities;
-use \PDO;
-use \Exception;
+use Entities;
+use Exception;
+use PDO;
 
 class Peripherals extends Repository
 {
@@ -16,23 +17,22 @@ class Peripherals extends Repository
      */
     public static function insert(Entities\Peripheral $p)
     {
-        // Prepare data to be inserted
-        $data = [
-            ':uuid' => $p->uuid,
-            ':build_date' => $p->build_date,
-            ':add_date' => $p->add_date,
-            ':public_key' => $p->public_key,
-            ':property_id' => $p->property_id,
-            ':room_id' => $p->room_id,
-            ':last_updated' => $p->last_updated,
-        ];
-
         // SQL
-        $sql = "INSERT INTO peripherals (uuid, build_date, public_key)
-        VALUES (:uuid, :build_date, :public_key);";
+        $sql = "INSERT INTO peripherals (uuid, build_date, add_date, public_key, property_id, room_id)
+        VALUES (:uuid, :build_date, :add_date, :public_key, :property_id, :room_id);";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Prepare data to be inserted
+        $data = [
+            ':uuid' => $p->getUUID(),
+            ':build_date' => $p->getBuildDate(),
+            ':add_date' => $p->getAddDate(),
+            ':public_key' => $p->getPublicKey(),
+            ':property_id' => $p->getPropertyId(),
+            ':room_id' => $p->getRoomId(),
+        ];
 
         // Execute query
         $sth->execute($data);
@@ -48,24 +48,24 @@ class Peripherals extends Repository
      */
     public static function push(Entities\Peripheral $p)
     {
-        // Prepare data to be updated
-        $data = [
-            ':uuid' => $p->uuid,
-            ':build_date' => $p->build_date,
-            ':add_date' => $p->add_date,
-            ':public_key' => $p->public_key,
-            ':property_id' => $p->property_id,
-            ':room_id' => $p->room_id,
-            ':last_updated' => $p->last_updated,
-        ];
-
         // SQL
         $sql = "UPDATE peripherals
-        SET display_name = :display_name, build_date = :build_date, add_date = :add_date, property_id = :property_id, room_id = :room_id, last_updated = :last_updated
+        SET display_name = :display_name, build_date = :build_date, add_date = :add_date, property_id = :property_id, room_id = :room_id
         WHERE uuid = :uuid;";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Prepare data to be updated
+        $data = [
+            ':uuid' => $p->getUUID(),
+            ':build_date' => $p->getBuildDate(),
+            ':add_date' => $p->getAddDate(),
+            ':public_key' => $p->getPublicKey(),
+            ':property_id' => $p->getPropertyId(),
+            ':room_id' => $p->getRoomId(),
+        ];
+
 
         // Execute query
         $sth->execute($data);
@@ -86,15 +86,15 @@ class Peripherals extends Repository
     public static function pull(Entities\Peripheral $p)
     {
         // SQL
-        $sql =  "SELECT display_name, build_date, add_date, public_key, property_id, room_id, last_updated
+        $sql = "SELECT display_name, build_date, add_date, public_key, property_id, room_id, last_updated
         FROM peripherals
         WHERE uuid = :uuid;";
 
         // Prepare statement
-        $sth = parent::db()->prepare(self::PULL_SQL, parent::$pdo_params);
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':uuid' => $p->uuid));
+        $sth->execute(array(':uuid' => $p->getUUID()));
 
         // Retrieve
         $data = $sth->fetch(PDO::FETCH_ASSOC);
@@ -105,13 +105,16 @@ class Peripherals extends Repository
         }
 
         // Store
-        $p->display_name = $data["display_name"];
-        $p->build_date = $data["build_date"];
-        $p->add_date = $data["add_date"];
-        $p->public_key = $data["public_key"];
-        $p->property_id = $data["property_id"];
-        $p->room_id = $data["room_id"];
-        $p->last_updated = $data["last_updated"];
+        $arr = array(
+            "setDisplay" => $data["display"],
+            "setBuildDate" => $data["build_date"],
+            "setAddDate" => $data["add_date"],
+            "setPublicKey" => $data["public_key"],
+            "setPropertyId" => $data["property_id"],
+            "setRoomId" => $data["room_id"],
+            "setLastUpdated" => $data["last_updated"],
+        );
+        parent::executeSetterArray($p, $arr);
     }
 
     /**
@@ -126,7 +129,7 @@ class Peripherals extends Repository
     public static function sync(Entities\Peripheral $p)
     {
         // SQL to get last_updated on given peripheral
-        $sql= "SELECT last_updated
+        $sql = "SELECT last_updated
           FROM peripherals
           WHERE uuid = :uuid;";
 
@@ -134,18 +137,15 @@ class Peripherals extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(array(':uuid' => $p->uuid));
+        $sth->execute(array(':uuid' => $p->getUUID()));
 
         // Retrieve
-        $data = $sth->fetch(PDO::FETCH_ASSOC);
+        $db_last_updated = $sth->fetchColumn(0);
 
         // If nil, we throw an exception
-        if ($data == null) {
+        if ($db_last_updated == null) {
             throw new Exception("No such Peripheral found");
         }
-
-        // Retrieve the date
-        $db_last_updated = $data["last_updated"];
 
         // If empty, that's an Exception
         if ($db_last_updated == "") {
@@ -153,7 +153,7 @@ class Peripherals extends Repository
         }
 
         // If the DB was updated BEFORE the last update to the peripheral, push
-        if (strtotime($db_last_updated) < strtotime($p->last_updated)) {
+        if (strtotime($db_last_updated) < strtotime($p->getLastUpdated())) {
             self::push($p);
         } else {
             self::pull($p);
@@ -161,38 +161,100 @@ class Peripherals extends Repository
     }
 
     /**
-     * Retrieve a Model\Peripheral from the database
+     * Retrieve a peripheral from the database given its id
      *
-     * @param string UUID of the Peripheral to retrieve
-     *
+     * @param string $uuid UUID of the Peripheral to retrieve
      * @return Entities\Peripheral the peripheral if found, null if not
+     * @throws Exception
      */
     public static function retrieve(string $uuid)
     {
+        // SQL for counting
+        $sql = "SELECT count(*)
+            FROM peripherals
+            WHERE uuid = :uuid";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute query
+        $sth->execute(array(':uuid' => $uuid));
+
+        // Fetch
+        $count = $sth->fetchColumn(0);
+
+        // If count is zero, then we return null
+        if ($count == 0) {
+            return null;
+        }
+
         // Create a Model\Peripheral
         $p = new Entities\Peripheral;
 
         // Set the UUID
-        $p->uuid=$uuid;
+        $ok = $p->setUUID($uuid);
+        if ($ok == false) {
+            throw new Exception("Error setting UUID in Peripheral");
+        }
 
         // Call Pull on it
-        try {
-            self::pull($p);
-        } catch (Exception $e) {
-            return null;
-        }
+        self::pull($p);
 
         // Return the peripheral
         return $p;
     }
 
     /**
-     * Retrieve All Model\Peripheral s from the database, ordered by build time
+     * Retrieves all IDs for peripherals belonging to that property
      *
-     * @param string Date to start listing from
-     *
-     * @return array of Model\Peripheral with the peripherals
+     * @param int $property_id
+     * @return string[] array of uuids
      */
+    public static function findAllByPropertyID(int $property_id): array
+    {
+        // SQL
+        $sql = "SELECT uuid
+            FROM peripherals
+            WHERE property_id = :property_id;";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute statement
+        $sth->execute([":property_id" => $property_id]);
+
+        // Fetch all results
+        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+        // Return the set
+        return $set;
+    }
+
+    /**
+     * Retrieves all IDs for peripherals belonging to that room
+     *
+     * @param int $room_id
+     * @return string[] array of uuids
+     */
+    public static function findAllByRoomID(int $room_id): array
+    {
+        // SQL
+        $sql = "SELECT uuid
+            FROM peripherals
+            WHERE room_id = :room_id;";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute statement
+        $sth->execute([":room_id" => $room_id]);
+
+        // Fetch all results
+        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+        // Return the set
+        return $set;
+    }
 
     /**
      * Attach the Peripheral to a Room
@@ -220,7 +282,7 @@ class Peripherals extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array('room_id' => $roomID, ':uuid' => $p->uuid));
+        $sth->execute(array('room_id' => $roomID, ':uuid' => $p->getUUID()));
 
         // Check for sane row count of affected rows
         $rc = $sth->rowCount();
@@ -242,7 +304,7 @@ class Peripherals extends Repository
     /**
      * Attach the Peripheral to a Property
      *
-     * @parem Model\Peripheral $p is the Peripheral to be attached to a Property
+     * @param Entities\Peripheral $p is the Peripheral to be attached to a Property
      * @param int $propertyID is the ID of the Property this Peripheral should be attached to
      *
      * @return void
@@ -256,7 +318,7 @@ class Peripherals extends Repository
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
-        $sth->execute(array(':property_id' => $propertyID, ':uuid' => $p->uuid));
+        $sth->execute(array(':property_id' => $propertyID, ':uuid' => $p->getUUID()));
 
         // Pull
         self::pull($p);
