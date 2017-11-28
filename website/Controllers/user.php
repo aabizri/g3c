@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Repositories;
+use Entities;
 
 /**
  * Class User
@@ -44,7 +45,7 @@ class User
         }
 
         // Create the entity
-        $u = new \Entities\User();
+        $u = new Entities\User();
         $u->setNick($nick);
         $u->setEmail($email);
         $u->setPassword($password_clear);
@@ -69,24 +70,27 @@ class User
         $password_clear = $_POST['password'];
 
         /**
-         * Vérifier la présence du nick
+         * Vérifier que le nick et/ou e-mail existe
          * @var int $id
          */
-        $id = \Repositories\Users::findByNick($nick); //trouve l'id lié au nickname
+        $id = Repositories\Users::findByNick($nick); //trouve l'id lié au nickname
         if ($id == -1) {
-            echo "CE LOGIN N'EXISTE PAS";
+            $id = Repositories\Users::findByEmail($nick);
+        }
+        if ($id == -1) {
+            echo "Ce login n'existe pas";
             return;
         }
 
         /**
          * Avec cet ID, on récupère l'entité User
-         * @var \Repositories\Users $u
+         * @var Entities\User $u
          */
-        $u = \Repositories\Users::retrieve($id);
+        $u = Repositories\Users::retrieve($id);
 
         // Validate
         if ($u->validatePassword($password_clear) == false) {
-            echo "MOT DE PASSE INCORRECT";
+            echo "Mot de passe incorrect";
             return;
         }
 
