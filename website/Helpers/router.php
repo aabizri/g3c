@@ -13,7 +13,13 @@ class Router
         $this->routes[$pattern] = $callback;
     }
 
-    // dispatch executes the route given an URI
+
+    /**
+     * dispatch executes the route given an URI
+     *
+     * @param string $uri
+     * @return mixed
+     */
     public function dispatch(string $uri): mixed
     {
         // check all routes
