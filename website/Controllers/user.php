@@ -39,11 +39,11 @@ class User
 
         // Create the entity
         $u = new \Entities\User();
-        $u->nick = $nick;
-        $u->email = $email;
+        $u->setNick($nick);
+        $u->setEmail($email);
         $u->setPassword($password_clear);
-        $u->display = $display;
-        $u->phone = $phone;
+        $u->setDisplay($display);
+        $u->setPhone($phone);
 
         // Insert it
         try {
