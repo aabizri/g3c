@@ -53,7 +53,6 @@ header {
 	position: absolute;
 	right: 100px;
 	top: 8px;
-
 }
 
 #Menu  {
@@ -108,12 +107,14 @@ header {
 	background-color: #d9c4b19b ;
 	border: 1px solid #955252 ;
 	padding-top: 5px;
-	padding-bottom: 700px;
+	padding-bottom: 680px;
 	padding-left: 475px;
 	width: 595px;
 	left:15.5%;
 	top: 70px;
 	border-radius: 5px;
+	font-size: x-large;
+
 }
 
 footer {
