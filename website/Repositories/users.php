@@ -2,10 +2,11 @@
 
 namespace Repositories;
 
-use \Entities;
-use \PDO;
+use Entities;
+use PDO;
 
-class Users extends Repository {
+class Users extends Repository
+{
     /**
      * Insert inserts a new user to the database
      *
@@ -15,16 +16,6 @@ class Users extends Repository {
      */
     public static function insert(Entities\User $u)
     {
-        // Prepare data to be updated
-        $data = array(
-            ':display' => $u->display,
-            ':nick' => $u->nick,
-            ':birth_date' => $u->birth_date,
-            ':email' => $u->email,
-            ':password' => $u->password_hashed,
-            ':phone' => $u->phone,
-        );
-
         // SQL
         $sql = "INSERT INTO users (display, nick, birth_date, email, password, phone)
         VALUES (:display, :nick, :birth_date, :email, :password, :phone)";
@@ -32,21 +23,28 @@ class Users extends Repository {
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
+        // Prepare data to be updated
+        $data = [
+            ':display' => $u->getDisplay(),
+            ':nick' => $u->getNick(),
+            ':birth_date' => $u->getBirthDate(),
+            ':email' => $u->getEmail(),
+            ':password' => $u->getPasswordHashed(),
+            ':phone' => $u->getPhone(),
+        ];
+
         // Execute creation query
         $sth->execute($data);
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        $u->id = $id;
+        if ($u->setId($id) == false) {
+            throw new \Exception("error setting id");
+        }
 
         // We should now pull to populate ID & Times
         self::pull($u);
     }
-
-    /* TODO:
-        - retrieve
-        - sync
-    */
 
     /**
      * Push an existing Model\User to the database
@@ -57,23 +55,23 @@ class Users extends Repository {
      */
     public static function push(Entities\User $u)
     {
-        // Prepare data to be updated
-        $data = array(
-            ':id' => $u->id,
-            ':display' => $u->display,
-            ':nick' => $u->nick,
-            ':birth_date' => $u->birth_date,
-            ':email' => $u->email,
-            ':password' => $u->password_hashed,
-            ':phone' => $u->phone,
-            );
-
         // SQL
         $sql = "UPDATE users
         SET display = :display, nick = :nick, birth_date = :birth_date, email = :email, password = :password, phone = :phone";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql,parent::$pdo_params);
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Prepare data to be updated
+        $data = array(
+            ':id' => $u->getId(),
+            ':display' => $u->getDisplay(),
+            ':nick' => $u->getNick(),
+            ':birth_date' => $u->getBirthDate(),
+            ':email' => $u->getEmail(),
+            ':password' => $u->getPasswordHashed(),
+            ':phone' => $u->getPhone(),
+        );
 
         // Execute query
         $sth->execute($data);
@@ -89,7 +87,8 @@ class Users extends Repository {
      *
      * @throws \Exception if no such Model\User is found
      */
-    public static function pull(Entities\User $u) {
+    public static function pull(Entities\User $u)
+    {
         // SQL
         $sql = "SELECT display, nick, birth_date, email, password, phone, last_updated
         FROM users
@@ -99,7 +98,7 @@ class Users extends Repository {
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':id' => $u->id));
+        $sth->execute(array(':id' => $u->getId()));
 
         // Fetch
         $data = $sth->fetch(PDO::FETCH_ASSOC);
@@ -110,13 +109,56 @@ class Users extends Repository {
         }
 
         // Store
-        $u->display = $data["display"];
-        $u->nick = $data["nick"];
-        $u->birth_date = $data["birth_date"];
-        $u->email = $data["email"];
-        $u->phone = $data["phone"];
-        $u->password_hashed = $data["password"];
-        $u->last_updated = $data["last_updated"];
+        $arr = array(
+            "setDisplay" => $data["display"],
+            "setNick" => $data["nick"],
+            "setBirthDate" => $data["birth_date"],
+            "setEmail" => $data["email"],
+            "setPhone" => $data["phone"],
+            "setPasswordHashed" => $data["password"],
+            "setLastUpdated" => $data["last_updated"],
+        );
+        parent::executeSetterArray($u, $arr);
+    }
+
+    /**
+     * Récupérer l'id d'un user
+     * @param int $id
+     * @return Entities\User ou null si rien n'est trouvé
+     * @throws \Exception
+     */
+    public static function retrieve(int $id): Entities\User
+    {
+        // SQL for counting
+        $sql = "SELECT count(*)
+            FROM users
+            WHERE id = :id";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute query
+        $sth->execute(array(':id' => $id));
+
+        // Fetch
+        $count = $sth->fetchColumn(0);
+
+        // If count is zero, then we return null
+        if ($count == 0) {
+            return null;
+        }
+
+        // Create a User entity
+        $u = new Entities\User();
+
+        // Set the ID
+        $u->setId($id);
+
+        // Call Pull on it
+        self::pull($u);
+
+        // Return the user
+        return $u;
     }
 
     /**
@@ -127,8 +169,9 @@ class Users extends Repository {
      * @return int the ID of the user in question, or null if none are found
      *
      * @throws \Exception if there is more than one user found with this email
-    */
-    public static function findByEmail(string $email): int {
+     */
+    public static function findByEmail(string $email): int
+    {
         // SQL for counting
         $sql = "SELECT count(*)
             FROM users
@@ -177,7 +220,8 @@ class Users extends Repository {
      *
      * @throws \Exception if there is more than one user found with this nickname
      */
-    public static function findByNick(string $nick): int {
+    public static function findByNick(string $nick): int
+    {
         // SQL for counting
         $sql = "SELECT count(*)
             FROM users
@@ -187,7 +231,7 @@ class Users extends Repository {
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':email' => $nick));
+        $sth->execute(array(':nick' => $nick));
 
         // Fetch
         $count = $sth->fetchColumn(0);
@@ -196,7 +240,7 @@ class Users extends Repository {
         if ($count == 0) {
             return null;
         } else if ($count > 1) {
-            throw new \Exception("More than one row shares this e-mail !");
+            throw new \Exception("More than one row shares this nickname !");
         }
 
         // SQL for selecting
