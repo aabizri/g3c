@@ -8,8 +8,6 @@
 
 namespace Entities;
 
-use Repositories;
-
 class Room
 {
     private $id;
