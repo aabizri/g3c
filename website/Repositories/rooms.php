@@ -23,21 +23,26 @@ class Rooms extends Repository
     public static function insert(Entities\Room $r): void
     {
         // SQL
-        $sql = "INSERT INTO rooms (id, property_id, name)
-        VALUES (:id, :property_id, :name)";
+        $sql = "INSERT INTO rooms (property_id, name)
+        VALUES (:property_id, :name)";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
         $data = [
-            "id" => $r->getId(),
             "property_id" => $r->getPropertyId(),
             "name" => $r->getName(),
         ];
 
         // Execute query
         $sth->execute($data);
+
+        // Get ID of the insert
+        $id = parent::db()->lastInsertId();
+        if ($r->setId($id) == false) {
+            throw new \Exception("error setting id");
+        }
 
         // Pull
         self::pull($r);
