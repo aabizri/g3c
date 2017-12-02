@@ -61,6 +61,7 @@ class Sessions extends Repository
      * Push an existing session to the database
      *
      * @param Entities\Session $s
+     * @throws Exception
      */
     public static function push(Entities\Session $s): void
     {

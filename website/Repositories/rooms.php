@@ -18,6 +18,7 @@ class Rooms extends Repository
      * If it already exists, it fails.
      *
      * @param Entities\Room $r the Room to insert
+     * @throws \Exception
      */
     public static function insert(Entities\Room $r): void
     {
@@ -46,6 +47,7 @@ class Rooms extends Repository
      * Push an existing room to the database
      *
      * @param Entities\Room $r the room to push
+     * @throws \Exception
      */
     public static function push(Entities\Room $r): void
     {
