@@ -225,10 +225,15 @@ class Peripheral
 
 function testPeripheralModel()
 {
+    // Create a new entity
     $p1 = new Peripheral();
     var_dump($p1);
+
+    // Insert it
+    Repositories\Peripherals::insert($p1);
+
+    // Attach
     $p1->attachToProperty(1);
-    var_dump($p1);
     $p1->attachToRoom(1);
 }
 
