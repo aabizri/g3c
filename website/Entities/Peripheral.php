@@ -63,7 +63,7 @@ class Peripheral
     /**
      * @return string
      */
-    public function getDisplayName(): string
+    public function getDisplayName(): ?string
     {
         return $this->display_name;
     }
@@ -81,7 +81,7 @@ class Peripheral
     /**
      * @return string
      */
-    public function getBuildDate(): string
+    public function getBuildDate(): ?string
     {
         return $this->build_date;
     }
@@ -103,7 +103,7 @@ class Peripheral
     /**
      * @return string
      */
-    public function getAddDate(): string
+    public function getAddDate(): ?string
     {
         return $this->add_date;
     }
@@ -125,7 +125,7 @@ class Peripheral
     /**
      * @return string
      */
-    public function getPublicKey(): string
+    public function getPublicKey(): ?string
     {
         return $this->public_key;
     }
@@ -143,7 +143,7 @@ class Peripheral
     /**
      * @return int
      */
-    public function getPropertyId(): int
+    public function getPropertyId(): ?int
     {
         return $this->property_id;
     }
@@ -161,7 +161,7 @@ class Peripheral
     /**
      * @return int
      */
-    public function getRoomId(): int
+    public function getRoomId(): ?int
     {
         return $this->room_id;
     }
@@ -179,7 +179,7 @@ class Peripheral
     /**
      * @return string
      */
-    public function getLastUpdated(): string
+    public function getLastUpdated(): ?string
     {
         return $this->last_updated;
     }
