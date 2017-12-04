@@ -34,7 +34,7 @@ header {
 
 #login {
 	position: absolute;
-	right: 400px;
+	right: 420px;
 	top: 0px;
 }
 
@@ -63,31 +63,41 @@ input {
 
 body {
 	position : relative;
-	height: 1000px;
+	height: 580px;
 	font-family: Verdana, sans-serif;
-	background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
-	background-size: cover;
-	background-position: center;
+	background: url("http://domologis.com/wp-content/uploads/2013/12/462459949_b.jpg") no-repeat center;
+	background-size:cover;
 }
 
-#project {
-	position: absolute;
-	top: 95px;
-	border: 1px solid #000;
-  	text-align: center;
- 	padding: 180px 520px;
-  	margin: 10px;
-  	border-radius: 40px;
+#explications
+{
+	position: relative;
+	display: flex;
+	text-align: center;
+	left:0%;
+	top:20%;
 }
 
-#description1 {
-	position: absolute;
-	top: 510px;
-	border: 1px solid #000;
-  	text-align: center;
- 	padding: 180px 520px;
-  	margin: 10px;
-  	border-radius: 40px;
+#confort, #energie, #securite, #communication
+{
+	border: 1px solid #955252;
+	width: 24%;
+	margin: 10px;
+	background-color: antiquewhite;
+	font-family:didot, serif;
+	border-radius: 10px;
+}
+
+#domisep
+{
+	position: relative;
+	width: 50%;
+	font-family: didot, serif ;
+	font-size: x-large;
+	border-radius: 10px;
+	top:35%;
+	left:5%;
+	text-align: center;
 }
 
 footer {
@@ -95,9 +105,8 @@ footer {
 	font-family: Verdana, sans-serif;
 	color: #955252;
 	position : absolute;
-	left:0px;
 	width: 101.3%;
-	bottom: -7px;
+	bottom: -211px;
 	height: 80px;
 	left: -9px;
 }
