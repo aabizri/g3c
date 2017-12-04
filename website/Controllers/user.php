@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Repositories;
+use Entities;
 
 /**
  * Class User
@@ -79,6 +80,73 @@ class User
         }
 
         // Créer une session
+
+    }
+
+    /**
+     * @param $password
+     * @return bool|void
+     */
+    public function modifiermdp(string $password)
+    {
+        //Récupérer les données
+        $id = $_POST['id'];
+        $current_password = $_POST['current_password'];
+        $new_password = $_POST['new_password'];
+
+        // Avec cet ID, on récupère l'entité User
+        $u = \Repositories\Users::retrieve($id);
+
+        //Validate
+        if ($u->validatePassword($current_password))
+        {
+            $u->setPassword($new_password);
+        }
+    }
+
+    /**
+     * @param string $nick
+     */
+    public function modifierinfo(string $nick, $birth_date, $phone, $email)
+
+    {
+        //Récupérer les données
+        $id = $_POST['id'];
+        $new_birth_date = $_POST['birth_date'];
+        $birth_date = $_POST['birth_date'];
+        $new_nick = $_POST['new_nick'];
+        $nick = $_POST['nick'];
+        $new_phone = $_POST['new_phone'];
+        $phone = $_POST['phone'];
+        $new_email = $_POST['new_email'];
+        $email = $_POST['email'];
+
+        //Avec cet ID, on récupère l'entité User
+        $u = \Repositories\Users::retrieve($id);
+
+        //Validate
+
+        if (isset($nick))
+        {
+            $u->setNick($new_nick);
+        }
+
+        if (isset($birth_date))
+        {
+            $u->setBirthDate($new_birth_date);
+        }
+
+        if (isset($phone))
+        {
+            $u->setPhone($new_phone);
+        }
+
+        if (isset($email))
+        {
+            $u->setEmail($new_email);
+        }
+
+
 
     }
 
