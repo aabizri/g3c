@@ -1,4 +1,9 @@
 <?php
+
+/** Déclaration des constantes pour le fonctionnement global du site */
+// Typage strict
+declare(strict_types=1);
+
 /**
  * Charge une classe en utilisant son Namespace comme structure de dossier
  *
