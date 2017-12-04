@@ -26,7 +26,7 @@
             <h2 id="nompagepieces">Gestion de mes pièces</h2>
 
             <div id="vueinformation">
-            <p id="titreinformationspiece">Informations sur la pièce</p>
+            <h3>Informations sur la pièce</h3>
                 <div id="informationspiece">
                     <p id="temperature">Température</p>
                     <p id="humidite">Humidité</p>
@@ -35,16 +35,27 @@
                 </div>
             </div>
 
-            <p>Actions</p>
-            <p>Modifier température</p>
-            <p>Modifier la luminosité</p>
-            <p>Ouvrir/Fermer volets</p>
+            <div id="action">
+            <h3>Actions</h3>
+                <div id="actionspieces">
+                    <p>Modifier température</p>
+                    <p>Modifier la luminosité</p>
+                    <p>Ouvrir/Fermer volets</p>
+                </div>
+            </div>
 
-            <p>Ajouter une pièce</p>
-            <p>Nom de la pièce</p>
-            <p>Capteurs à ajouter</p>
-            <input type="submit" value="Valider"/>
-
+            <div id="ajouterpieces">
+                <h3>Ajouter une pièce</h3>
+                <div id="champsajouterpiece">
+                    <form>
+                        <label>Nom de la pièce : </label><input type="text" />
+                        <label>Capteurs à ajouter : </label>
+                            <input type="checkbox"> Température
+                            <input type="checkbox"> Présence
+                            <input type="checkbox"> Pression
+                    </form>
+                </div>
+            </div>
 
             
     </body>
