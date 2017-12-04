@@ -202,6 +202,8 @@ class Peripheral
      * @param int $roomID is the ID of the Room this Peripheral should be attached to
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function attachToRoom(int $roomID): void
     {
@@ -214,6 +216,8 @@ class Peripheral
      * @param int $propertyID is the ID of the Property this Peripheral should be attached to
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function attachToProperty(int $propertyID): void
     {
