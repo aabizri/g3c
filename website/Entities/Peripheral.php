@@ -32,10 +32,7 @@ class Peripheral
     public function __construct()
     {
         // Generate UUID
-        $uuid = UUID::v4();
-
-        // Set values in class
-        $this->uuid = $uuid;
+        $this->setUUID(UUID::v4());
     }
 
     /**
