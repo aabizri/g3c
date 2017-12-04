@@ -57,8 +57,9 @@ class Peripheral
         return true;
     }
 
+
     /**
-     * @return string
+     * @return string|null
      */
     public function getDisplayName(): ?string
     {
@@ -76,7 +77,7 @@ class Peripheral
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getBuildDate(): ?string
     {
@@ -98,7 +99,7 @@ class Peripheral
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getAddDate(): ?string
     {
@@ -120,7 +121,7 @@ class Peripheral
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getPublicKey(): ?string
     {
@@ -138,7 +139,7 @@ class Peripheral
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getPropertyId(): ?int
     {
@@ -156,7 +157,7 @@ class Peripheral
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getRoomId(): ?int
     {
@@ -174,7 +175,7 @@ class Peripheral
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getLastUpdated(): ?string
     {
