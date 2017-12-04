@@ -67,10 +67,10 @@ class Peripheral
     }
 
     /**
-     * @param string $display_name
+     * @param string|null $display_name
      * @return bool
      */
-    public function setDisplayName(string $display_name): bool
+    public function setDisplayName(?string $display_name): bool
     {
         $this->display_name = $display_name;
         return true;
@@ -85,10 +85,10 @@ class Peripheral
     }
 
     /**
-     * @param string $build_date
+     * @param string|null $build_date
      * @return bool
      */
-    public function setBuildDate(string $build_date): bool
+    public function setBuildDate(?string $build_date): bool
     {
         // Verifier que $creation_date est inférieure à la date actuelle
         if (strtotime($build_date) > time()) {
@@ -107,10 +107,10 @@ class Peripheral
     }
 
     /**
-     * @param string $add_date
+     * @param string|null $add_date
      * @return bool
      */
-    public function setAddDate(string $add_date): bool
+    public function setAddDate(?string $add_date): bool
     {
         // Verifier que $add_date est inférieure à la date actuelle
         if (strtotime($add_date) > time()) {
@@ -129,10 +129,10 @@ class Peripheral
     }
 
     /**
-     * @param string $public_key
+     * @param string|null $public_key
      * @return bool
      */
-    public function setPublicKey(string $public_key): bool
+    public function setPublicKey(?string $public_key): bool
     {
         $this->public_key = $public_key;
         return true;
@@ -147,10 +147,10 @@ class Peripheral
     }
 
     /**
-     * @param int $property_id
+     * @param int|null $property_id
      * @return bool
      */
-    public function setPropertyId(int $property_id): bool
+    public function setPropertyId(?int $property_id): bool
     {
         $this->property_id = $property_id;
         return true;
@@ -165,10 +165,10 @@ class Peripheral
     }
 
     /**
-     * @param int $room_id
+     * @param int|null $room_id
      * @return bool
      */
-    public function setRoomId(int $room_id): bool
+    public function setRoomId(?int $room_id): bool
     {
         $this->room_id = $room_id;
         return true;
