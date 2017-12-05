@@ -106,7 +106,10 @@ class Role
 
     /* BUSINESS LOGIC */
 
-    /*public function retrievePermissions(): Permission {
-
-    }*/
+    /**
+     * @return int[] the permissions (id) given to the role
+     */
+    public function retrievePermissions(): array {
+        return \Repositories\Permissions::findAllByRole($this->getId());
+    }
 }

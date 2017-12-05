@@ -159,7 +159,7 @@ class Permissions extends Repository
      * @param int $role_id the role id
      * @return int[] array of permission ids
      */
-    public function findAllByRole(int $role_id): array {
+    public static function findAllByRole(int $role_id): array {
             // SQL
             $sql = "SELECT permission_id
             FROM roles_permissions
