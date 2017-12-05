@@ -47,7 +47,7 @@ header {
 body {
 	position : relative;
 	height: 645px;
-	background-image: url(fondsite.jpg);
+	background: url("http://domologis.com/wp-content/uploads/2013/12/462459949_b.jpg") no-repeat center;
 	background-position: center;
 	background-size: cover;
 }
