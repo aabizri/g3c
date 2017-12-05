@@ -103,4 +103,10 @@ class Role
         $this->last_update = $last_update;
         return true;
     }
+
+    /* BUSINESS LOGIC */
+
+    /*public function retrievePermissions(): Permission {
+
+    }*/
 }
