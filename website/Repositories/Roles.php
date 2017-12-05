@@ -12,7 +12,7 @@ class Roles extends Repository
     /**
      * insert adds an entity to the database
      *
-     * @param \Entities\Property $p
+     * @param \Entities\Role $p
      * @throws \Exception
      */
     public static function insert(\Entities\Role $p): void
