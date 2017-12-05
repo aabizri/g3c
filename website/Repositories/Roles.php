@@ -204,6 +204,31 @@ class Roles extends Repository
     }
 
     /**
+     * Find all roles with this permission ID
+     *
+     * @param int $permission_id permission ID
+     * @return int[] array of role ids
+     */
+    public static function findAllByPermissionID(int $permission_id): array {
+        // SQL
+        $sql = "SELECT role_id
+            FROM roles_permissions
+            WHERE permission_id = :permission_id";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute statement
+        $sth->execute([":pid" => $permission_id]);
+
+        // Fetch all results
+        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+        // Return the set
+        return $set;
+    }
+
+    /**
      * Find the role matching a property and a user
      *
      * @param int $uid user id
