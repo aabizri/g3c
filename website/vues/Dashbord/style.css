@@ -56,16 +56,22 @@ header {
 }
 
 #Menu  {
+	position: fixed;
+	list-style: none;
+	left:-49px;
+	top: 20px;
+}
+
+#Menu input
+{
 	background-color: #d9c4b19b;
 	font-family: Verdana, sans-serif;
 	color: #955252;
-	position : fixed;
 	width: 160px;
-	height: 475px;
-	top:55px;
-	left:-5px;
+	height: 95px;
 	font-size:14px;
-	margin: 5px 5px;
+	margin: -25px 0px;
+	cursor: pointer;
 }
 
 #textemenu
@@ -97,7 +103,7 @@ header {
 #ajouterperipherique
 {
 	position: relative;
-	left: 550px;
+	left: 65%;
 	top: 27px;
 }
 
