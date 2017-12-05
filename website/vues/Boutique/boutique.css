@@ -87,12 +87,12 @@ button {
 	left: 30px;
 	border: 1px solid #955252 ;
 	background-color: #d9c4b19b ;
-	margin-right: 50px;
 	padding-bottom: 250px;
 	padding-top: 10px;
 	border-radius: 20px;
 	text-align: center;
 	font-size: 20px;
+	width:95%;
 }
 
 #cemac{
