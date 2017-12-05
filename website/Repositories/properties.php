@@ -4,6 +4,8 @@
 namespace Repositories;
 
 
+use PDO;
+
 class Properties extends Repository
 {
     /**
@@ -44,7 +46,7 @@ class Properties extends Repository
      * Push an existing Property to the database
      *
      * @param \Entities\Property $p the Peripheral to push
-     * @throws Exception
+     * @throws \Exception
      */
 
     public static function push(\Entities\Property $p)
@@ -79,7 +81,7 @@ class Properties extends Repository
      *
      * @return void
      *
-     * @throws Exception if there is no such Model\Peripheral
+     * @throws \Exception if there is no such Model\Peripheral
      */
 
     public static function pull(\Entities\Property $p)
@@ -213,7 +215,7 @@ class Properties extends Repository
      *
      * @throws \Exception if there is more than one user found with this address
      */
-    public static function findByEmail(string $address): int
+    public static function findByAddress(string $address): int
     {
         // SQL for counting
         $sql = "SELECT count(*)
