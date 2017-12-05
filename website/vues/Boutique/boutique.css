@@ -54,20 +54,23 @@ body {
 
 #navigation{
 	position: absolute;
+	display: flex;
 	list-style: none;
 	top: 25px;
-	left: 0px;
+	left: -15px;
 }
 
-#navigation li {
-	display: inline-block;
-  	background-color: #d9c4b19b ;
-  	border: 1px solid #955252 ;
-  	padding: 20px 160px;
- 	margin: -3px;
-  	font-size: 20px;
-	width:6%;
+#accessoire, #camera, #Cemac {
+	padding: 20px 140px;
+	margin: -1px;
+	background: #d9c4b19b;
+	position: relative;
+	left: 20%;
+	font-size: large;
+	float: left;
+	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
+
 
 #form {
 	border-radius: 0px 0px 0px 10px;
