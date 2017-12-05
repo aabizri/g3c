@@ -43,7 +43,7 @@ class Properties extends Repository
     /**
      * Push an existing Property to the database
      *
-     * @param \Entities\Property $p the Peripheral to push
+     * @param \Entities\Property $p the property to push
      * @throws Exception
      */
 
@@ -75,11 +75,11 @@ class Properties extends Repository
     /**
      * Pull an existing Entities\Property from the database
      *
-     * @param \Entities\Property $p the peripheral to pull
+     * @param \Entities\Property $p the property to pull
      *
      * @return void
      *
-     * @throws Exception if there is no such Model\Peripheral
+     * @throws Exception if there is no such Model\Property
      */
 
     public static function pull(\Entities\Property $p)
