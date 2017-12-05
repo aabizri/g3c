@@ -18,8 +18,8 @@ class Roles extends Repository
     public static function insert(\Entities\Role $p): void
     {
         // SQL
-        $sql = "INSERT INTO roles (user_id, property_id, perms)
-          VALUES (:user_id, :property_id, :perms);";
+        $sql = "INSERT INTO roles (user_id, property_id)
+          VALUES (:user_id, :property_id);";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
@@ -28,7 +28,6 @@ class Roles extends Repository
         $data = [
             ":user_id" => $p->getUserId(),
             ":property_id" => $p->getPropertyId(),
-            ":perms" => $p->getPerms()
         ];
 
         // Execute request

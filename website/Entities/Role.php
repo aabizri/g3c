@@ -10,7 +10,6 @@ class Role
     private $user_id;
     private $property_id;
     private $creation_date;
-    private $perms;
     private $last_update;
 
     /* SETTERS AND GETTERS */
@@ -84,24 +83,6 @@ class Role
     public function setCreationDate(string $creation_date): bool
     {
         $this->creation_date = $creation_date;
-        return true;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPerms(): string
-    {
-        return $this->perms;
-    }
-
-    /**
-     * @param string
-     * @return bool
-     */
-    public function setPerms(string $perms): bool
-    {
-        $this->perms = $perms;
         return true;
     }
 
