@@ -45,7 +45,11 @@ class Properties extends Repository
     /**
      * Push an existing Property to the database
      *
+<<<<<<< HEAD
      * @param \Entities\Property $p the Peripheral to push
+=======
+     * @param \Entities\Property $p the property to push
+>>>>>>> 48c44bef2447c0e82228ba5d56baa93099c764c4
      * @throws \Exception
      */
 
@@ -77,11 +81,15 @@ class Properties extends Repository
     /**
      * Pull an existing Entities\Property from the database
      *
-     * @param \Entities\Property $p the peripheral to pull
+     * @param \Entities\Property $p the property to pull
      *
      * @return void
      *
+<<<<<<< HEAD
      * @throws \Exception if there is no such Model\Peripheral
+=======
+     * @throws \Exception if there is no such Model\Property
+>>>>>>> 48c44bef2447c0e82228ba5d56baa93099c764c4
      */
 
     public static function pull(\Entities\Property $p)
@@ -157,9 +165,9 @@ class Properties extends Repository
     }
 
     /**
-     * Find a Model\Property by name
+     * Find a property by name
      *
-     * @param string $name the name with which to find the given Entity\PROPERTY_ID
+     * @param string $name the name with which to find the given property's ID
      *
      * @return int the ID of the user in question, or null if none are found
      *
@@ -207,9 +215,9 @@ class Properties extends Repository
     }
 
     /**
-     * Find a Model\Property by address
+     * Find a property by its address
      *
-     * @param string $address the email with which to find the given Entity\PROPERTY_ID
+     * @param string $address the email with which to find the given Entity\Property via their ID
      *
      * @return int the ID of the user in question, or null if none are found
      *
