@@ -13,28 +13,28 @@ class Session
 {
     private $id;
     private $user;
-    private $started;
-    private $expiry;
-    private $cancelled;
-    private $ip;
-    private $user_agent_txt;
-    private $user_agent_hash;
-    private $cookie;
+    private $value = "";
+    private $started = "";
+    private $expiry = "";
+    private $cancelled = false;
+    private $ip = "";
+    private $user_agent_txt = "";
+    private $user_agent_hash = "";
     private $last_updated;
 
     /**
-     * @return int
+     * @return string
      */
-    public function getId(): int
+    public function getId(): string
     {
         return $this->id;
     }
 
     /**
-     * @param int $id
+     * @param string $id
      * @return bool
      */
-    public function setId(int $id): bool
+    public function setId(string $id): bool
     {
         $this->id = $id;
         return true;
@@ -43,7 +43,7 @@ class Session
     /**
      * @return int
      */
-    public function getUser(): int
+    public function getUser(): ?int
     {
         return $this->user;
     }
@@ -52,7 +52,7 @@ class Session
      * @param int $user
      * @return bool
      */
-    public function setUser(int $user): bool
+    public function setUser(?int $user): bool
     {
         $this->user = $user;
         return true;
@@ -171,18 +171,18 @@ class Session
     /**
      * @return string
      */
-    public function getCookie(): string
+    public function getValue(): string
     {
-        return $this->cookie;
+        return $this->value;
     }
 
     /**
-     * @param string $cookie
+     * @param string $value
      * @return bool
      */
-    public function setCookie(string $cookie): bool
+    public function setValue(string $value): bool
     {
-        $this->cookie = $cookie;
+        $this->value = $value;
         return true;
     }
 
@@ -204,6 +204,8 @@ class Session
         return true;
     }
 
+    /* BUSINESS LOGIC */
+
     /**
      * setUserAgent permet d'enregistrer les informations du navigateur
      * @param string $ua
@@ -221,5 +223,12 @@ class Session
         }
 
         return true;
+    }
+
+    /**
+     * isValid vérifie si cette session est valide: que cancelled n'est pas activé, et que la date d'éxpiration est dans le futur
+     */
+    public function isValid(): bool {
+        return $this->getCancelled() && (time() < strtotime($this->getExpiry()));
     }
 }

@@ -15,14 +15,23 @@ class User
      * join subscribes a user
      * @throws \Exception
      */
-    public function join(): void
+    public function join(array $get, array $post): void
     {
-        // Get the data
-        $nick = $_POST["nick"];
-        $email = $_POST["email"];
-        $password_clear = $_POST["password"];
-        $display = $_POST["name"] . " " . $_POST["surname"];
-        $phone = $_POST["phone"];
+        // Check if the data exists
+        $required = ["nick", "email", "password", "name", "surname", "phone"];
+        foreach ($required as $key) {
+            if (empty($post[$key])){
+                echo "Missing key: ".$key;
+                return;
+            }
+        }
+
+        // Assign values
+        $nick = $post["nick"];
+        $email = $post["email"];
+        $password_clear = $post["password"];
+        $display = $post["name"] . " " . $_POST["surname"];
+        $phone = $post["phone"];
 
         /**
          * Check if an entity with the same nick exists
@@ -63,8 +72,17 @@ class User
     /**
      * Connexion
      */
-    public function connexion(): void
+    public function connexion(array $get, array $post): void
     {
+        // Check if the data exists
+        $required = ["nick", "password"];
+        foreach ($required as $key) {
+            if (empty($post[$key])){
+                echo "Missing key: ".$key;
+                return;
+            }
+        }
+
         // Récupérer les données
         $nick = $_POST['nick'];
         $password_clear = $_POST['password'];

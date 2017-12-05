@@ -26,14 +26,15 @@ class Sessions extends Repository
     public static function insert(\Entities\Session $s): void
     {
         //On écrit une reqûete SQL
-        $sql = "INSERT INTO sessions (user, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, cookie)
-        VALUES (:user, :started, :expiry, :canceled, :ip, :user_agent_txt, :user_agent_hash, :cookie);";
+        $sql = "INSERT INTO sessions (id, user, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, value)
+        VALUES (:id, :user, :started, :expiry, :canceled, :ip, :user_agent_txt, :user_agent_hash, :value);";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // On prépare les données qui vont être insérées
         $data = [
+            'id' => $s->getID(),
             'user' => $s->getUser(),
             'started' => $s->getStarted(),
             'expiry' => $s->getExpiry(),
@@ -41,17 +42,11 @@ class Sessions extends Repository
             'ip' => $s->getIp(),
             'user_agent_txt' => $s->getUserAgentTxt(),
             'user_agent_hash' => $s->getUserAgentHash(),
-            'cookie' => $s->getCookie(),
+            'value' => $s->getValue(),
         ];
 
         // Execute query
         $sth->execute($data);
-
-        // Get ID of the insert
-        $id = parent::db()->lastInsertId();
-        if ($s->setId($id) == false) {
-            throw new \Exception("error setting id");
-        }
 
         // Pull
         self::pull($s);
@@ -67,7 +62,7 @@ class Sessions extends Repository
     {
         // SQL
         $sql = "UPDATE sessions
-        SET user = :user, started = :started, expiry = :expiry, canceled = :canceled, ip = :ip, user_agent_txt = :user_agent_txt, user_agent_hash = :user_agent_hash, cookie = :cookie
+        SET user = :user, started = :started, expiry = :expiry, canceled = :canceled, ip = :ip, user_agent_txt = :user_agent_txt, user_agent_hash = :user_agent_hash, value = :value
         WHERE id = :id;";
 
         // Prepare statement
@@ -83,7 +78,7 @@ class Sessions extends Repository
             'ip' => $s->getIp(),
             'user_agent_txt' => $s->getUserAgentTxt(),
             'user_agent_hash' => $s->getUserAgentHash(),
-            'cookie' => $s->getCookie(),
+            'value' => $s->getValue(),
         ];
 
         // Execute query
@@ -102,7 +97,7 @@ class Sessions extends Repository
     public static function pull(Entities\Session $s): void
     {
         // SQL
-        $sql = "SELECT user, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, cookie, last_updated
+        $sql = "SELECT user, value, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, last_updated
         FROM sessions
         WHERE id = :id;";
 
@@ -123,13 +118,13 @@ class Sessions extends Repository
         // Store
         $arr = array(
             "setUser" => $data["user"],
+            "setValue" => $data["value"],
             "setStarted" => $data["started"],
             "setExpiry" => $data["expiry"],
             "setCancelled" => $data["canceled"],
             "setIp" => $data["ip"],
             "setUserAgentTxt" => $data["user_agent_txt"],
             "setUserAgentHash" => $data["user_agent_hash"],
-            "setCookie" => $data["cookie"],
             "setLastUpdated" => $data["last_updated"],
         );
         parent::executeSetterArray($s, $arr);
@@ -181,11 +176,11 @@ class Sessions extends Repository
     /**
      * Retrieve a session from the database given its id
      *
-     * @param int $id of the session to retrieve
+     * @param string $id of the session to retrieve
      * @return Entities\Session the it is found, null if not
      * @throws \Exception
      */
-    public static function retrieve(int $id): Entities\Session
+    public static function retrieve(string $id): ?Entities\Session
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -223,7 +218,7 @@ class Sessions extends Repository
      * Retrieves all IDs for session belonging to that user
      *
      * @param int $user_id
-     * @return int[] array of session ids
+     * @return string[] array of session ids
      */
     public static function findAllByUserID(int $user_id): array
     {
@@ -249,7 +244,7 @@ class Sessions extends Repository
      * Retrieves all IDs for session started by that IP
      *
      * @param string $ip
-     * @return int[] array of session ids
+     * @return string[] array of session ids
      */
     public static function findAllByIP(string $ip): array
     {
