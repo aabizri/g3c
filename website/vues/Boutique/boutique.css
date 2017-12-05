@@ -60,17 +60,17 @@ body {
 	left: -15px;
 }
 
-#accessoire, #camera, #Cemac {
-	padding: 20px 140px;
-	margin: -1px;
-	background: #d9c4b19b;
-	position: relative;
-	left: 20%;
-	font-size: large;
-	float: left;
+#accessoire:hover {
 	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
 }
 
+#camera:hover {
+	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+#Cemac:hover {
+	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
 
 #form {
 	border-radius: 0px 0px 0px 10px;
@@ -78,6 +78,17 @@ body {
 
 #form2 {
 	border-radius: 0px 0px 10px 0px;
+}
+
+button {
+	padding: 20px 140px;
+	margin: -1px;
+	background: #d9c4b19b;
+	position: relative;
+	left: 20%;
+	font-size: large;
+	float: left;
+	cursor:pointer;
 }
 #cemac, #caméras, #accessoires {
 	position: relative;
