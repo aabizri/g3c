@@ -26,7 +26,7 @@ class DB
     {
     }
 
-    public static function getInstance()
+    public static function getInstance(): PDO
     {
         if (!isset(self::$instance)) {
             $pdo_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;

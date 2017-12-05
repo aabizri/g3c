@@ -4,7 +4,7 @@ namespace Helpers;
 
 class UUID
 {
-    public static function v4()
+    public static function v4(): string
     {
         return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
 
@@ -28,7 +28,7 @@ class UUID
         );
     }
 
-    public static function is_valid($uuid)
+    public static function is_valid(string $uuid): bool
     {
         return preg_match('/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?' .
                 '[0-9a-f]{4}\-?[0-9a-f]{12}\}?$/i', $uuid) === 1;
