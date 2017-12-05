@@ -1,8 +1,5 @@
 <?php
 
-use Entities;
-use Exception;
-use PDO;
 
 namespace Repositories;
 
@@ -121,7 +118,7 @@ class Properties extends Repository
      * @return \Entities\Property ou null si rien n'est trouvé
      * @throws \Exception
      */
-    public static function retrieve(int $id): \Entities\Property
+    public static function retrieve(int $id, $p): \Entities\Property
     {
         // SQL for counting
         $sql = "SELECT count(*)
