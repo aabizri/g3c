@@ -39,7 +39,7 @@ $action = $_GET["a"];
 
 // Récupération des paramètres GET
 $get = $_GET;
-unset($get["c"], $get["a"]);
+unset($get["c"], $get["a"]); // On enlève l'incation de controlleurs et d'action
 
 // Récupération des paramètres POST
 $post = $_POST;
