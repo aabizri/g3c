@@ -238,6 +238,8 @@ class User
         return $ok;
     }
 
+    /* BUSINESS LOGIC */
+
     /**
      * Validate that this is correct
      *

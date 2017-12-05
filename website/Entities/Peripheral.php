@@ -32,10 +32,7 @@ class Peripheral
     public function __construct()
     {
         // Generate UUID
-        $uuid = UUID::v4();
-
-        // Set values in class
-        $this->uuid = $uuid;
+        $this->setUUID(UUID::v4());
     }
 
     /**
@@ -60,37 +57,38 @@ class Peripheral
         return true;
     }
 
+
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDisplayName(): string
+    public function getDisplayName(): ?string
     {
         return $this->display_name;
     }
 
     /**
-     * @param string $display_name
+     * @param string|null $display_name
      * @return bool
      */
-    public function setDisplayName(string $display_name): bool
+    public function setDisplayName(?string $display_name): bool
     {
         $this->display_name = $display_name;
         return true;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getBuildDate(): string
+    public function getBuildDate(): ?string
     {
         return $this->build_date;
     }
 
     /**
-     * @param string $build_date
+     * @param string|null $build_date
      * @return bool
      */
-    public function setBuildDate(string $build_date): bool
+    public function setBuildDate(?string $build_date): bool
     {
         // Verifier que $creation_date est inférieure à la date actuelle
         if (strtotime($build_date) > time()) {
@@ -101,18 +99,18 @@ class Peripheral
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getAddDate(): string
+    public function getAddDate(): ?string
     {
         return $this->add_date;
     }
 
     /**
-     * @param string $add_date
+     * @param string|null $add_date
      * @return bool
      */
-    public function setAddDate(string $add_date): bool
+    public function setAddDate(?string $add_date): bool
     {
         // Verifier que $add_date est inférieure à la date actuelle
         if (strtotime($add_date) > time()) {
@@ -123,63 +121,63 @@ class Peripheral
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getPublicKey(): string
+    public function getPublicKey(): ?string
     {
         return $this->public_key;
     }
 
     /**
-     * @param string $public_key
+     * @param string|null $public_key
      * @return bool
      */
-    public function setPublicKey(string $public_key): bool
+    public function setPublicKey(?string $public_key): bool
     {
         $this->public_key = $public_key;
         return true;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getPropertyId(): int
+    public function getPropertyId(): ?int
     {
         return $this->property_id;
     }
 
     /**
-     * @param int $property_id
+     * @param int|null $property_id
      * @return bool
      */
-    public function setPropertyId(int $property_id): bool
+    public function setPropertyId(?int $property_id): bool
     {
         $this->property_id = $property_id;
         return true;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getRoomId(): int
+    public function getRoomId(): ?int
     {
         return $this->room_id;
     }
 
     /**
-     * @param int $room_id
+     * @param int|null $room_id
      * @return bool
      */
-    public function setRoomId(int $room_id): bool
+    public function setRoomId(?int $room_id): bool
     {
         $this->room_id = $room_id;
         return true;
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getLastUpdated(): string
+    public function getLastUpdated(): ?string
     {
         return $this->last_updated;
     }
@@ -194,41 +192,7 @@ class Peripheral
         return true;
     }
 
-    /**
-     * Pull the new values
-     *
-     * This is a helper allowing us to call the repository directly
-     *
-     * @return void
-     */
-    public function pull(): void
-    {
-        Repositories\Peripherals::pull($this);
-    }
-
-    /**
-     * Push the new values
-     *
-     * This is a helper allowing us to call the repository directly
-     *
-     * @return void
-     */
-    public function push(): void
-    {
-        Repositories\Peripherals::push($this);
-    }
-
-    /**
-     * Syncs a Model\Peripheral with the database, executing a Pull or a Push on a last_updated timestamp basis
-     *
-     * @return void
-     *
-     * @throws \Exception if not found
-     */
-    public function sync(): void
-    {
-        Repositories\Peripherals::sync($this);
-    }
+    /* BUSINESS LOGIC */
 
     /**
      * Attach the Peripheral to a Room
@@ -238,6 +202,8 @@ class Peripheral
      * @param int $roomID is the ID of the Room this Peripheral should be attached to
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function attachToRoom(int $roomID): void
     {
@@ -250,20 +216,59 @@ class Peripheral
      * @param int $propertyID is the ID of the Property this Peripheral should be attached to
      *
      * @return void
+     *
+     * @throws \Exception
      */
     public function attachToProperty(int $propertyID): void
     {
         Repositories\Peripherals::attachToProperty($this, $propertyID);
     }
+
+    public function __toString(): string {
+        return sprintf("Périphérique \"%s\"<br/>
+            UUID:\t\t%s<br/>
+            Display Name:\t\t%s<br/>
+            Build Date:\t\t%s<br/>
+            Add Date:\t\t%s<br/>
+            Public Key:\t\t%s<br/>
+            Property ID: \t\t%s<br/>
+            Room ID:\t\t%s<br/>
+            Last Updated:\t\t%s<br/>",
+            $this->getDisplayName(),
+            $this->getUUID(),
+            $this->getDisplayName(),
+            $this->getBuildDate(),
+            $this->getAddDate(),
+            $this->getPublicKey(),
+            $this->getPropertyId(),
+            $this->getRoomId(),
+            $this->getLastUpdated());
+    }
 }
 
 function testPeripheralModel()
 {
+    // Create a new entity
+    echo "<b>Création d'un nouveau Entities\Peripheral...</b>";
     $p1 = new Peripheral();
-    var_dump($p1);
+    echo "<b>Succès:</b>"."<br/>";
+    echo $p1;
+    echo "<br/>";
+
+    // Insert it
+    echo "<b>Insertion de cet objet dans la BDD...</b>";
+    Repositories\Peripherals::insert($p1);
+    echo "<b>Succès !</b>"."<br/>";
+    echo $p1;
+
+    // Attach
+    echo "<b>Attachement à la propriété...</b>";
     $p1->attachToProperty(1);
-    var_dump($p1);
+    echo "<b>Succès !</b>"."<br/>";
+
+    echo "<b>Attachement à la pièce...";
     $p1->attachToRoom(1);
+    echo "<b>Succès !</b>"."<br/>";
 }
 
 testPeripheralModel();

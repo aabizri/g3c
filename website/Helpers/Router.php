@@ -8,12 +8,18 @@ class Router
     private $routes = array();
 
     // register registers a new route with a function to be called in that case
-    public function register(string $pattern, callable $callback)
+    public function register(string $pattern, callable $callback): void
     {
         $this->routes[$pattern] = $callback;
     }
 
-    // dispatch executes the route given an URI
+
+    /**
+     * dispatch executes the route given an URI
+     *
+     * @param string $uri
+     * @return mixed
+     */
     public function dispatch(string $uri): mixed
     {
         // check all routes

@@ -15,8 +15,24 @@ use PDO;
 
 class Sessions extends Repository
 {
-    public static function insert(\Entities\Session $s)
-    {   // On prépare les données qui vont être insérées
+    /**
+     * Inserts a Session to the database
+     *
+     * The Entities\Session doesn't have to have its ID set
+     *
+     * @param Entities\Session $s
+     * @throws Exception
+     */
+    public static function insert(\Entities\Session $s): void
+    {
+        //On écrit une reqûete SQL
+        $sql = "INSERT INTO sessions (user, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, cookie)
+        VALUES (:user, :started, :expiry, :canceled, :ip, :user_agent_txt, :user_agent_hash, :cookie);";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // On prépare les données qui vont être insérées
         $data = [
             'user' => $s->getUser(),
             'started' => $s->getStarted(),
@@ -27,13 +43,6 @@ class Sessions extends Repository
             'user_agent_hash' => $s->getUserAgentHash(),
             'cookie' => $s->getCookie(),
         ];
-
-        //On exécute une reqûete SQL
-        $sql = "INSERT INTO sessions (user, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, cookie)
-        VALUES (:user, :started, :expiry, :canceled, :ip, :user_agent_txt, :user_agent_hash, :cookie);";
-
-        // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
         $sth->execute($data);
@@ -48,10 +57,52 @@ class Sessions extends Repository
         self::pull($s);
     }
 
-    public static function pull(Entities\Session $s)
+    /**
+     * Push an existing session to the database
+     *
+     * @param Entities\Session $s
+     * @throws Exception
+     */
+    public static function push(Entities\Session $s): void
     {
         // SQL
-        $sql = "SELECT id, user, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, cookie, last_updated
+        $sql = "UPDATE sessions
+        SET user = :user, started = :started, expiry = :expiry, canceled = :canceled, ip = :ip, user_agent_txt = :user_agent_txt, user_agent_hash = :user_agent_hash, cookie = :cookie
+        WHERE id = :id;";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Data for the request
+        $data = [
+            "id" => $s->getId(),
+            'user' => $s->getUser(),
+            'started' => $s->getStarted(),
+            'expiry' => $s->getExpiry(),
+            'canceled' => $s->getCancelled(),
+            'ip' => $s->getIp(),
+            'user_agent_txt' => $s->getUserAgentTxt(),
+            'user_agent_hash' => $s->getUserAgentHash(),
+            'cookie' => $s->getCookie(),
+        ];
+
+        // Execute query
+        $sth->execute($data);
+
+        // Pull
+        self::pull($s);
+    }
+
+    /**
+     * Pull an existing session from the database
+     *
+     * @param Entities\Session $s
+     * @throws Exception
+     */
+    public static function pull(Entities\Session $s): void
+    {
+        // SQL
+        $sql = "SELECT user, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, cookie, last_updated
         FROM sessions
         WHERE id = :id;";
 
@@ -71,7 +122,6 @@ class Sessions extends Repository
 
         // Store
         $arr = array(
-            "setId" => $data["id"],
             "setUser" => $data["user"],
             "setStarted" => $data["started"],
             "setExpiry" => $data["expiry"],
@@ -83,6 +133,49 @@ class Sessions extends Repository
             "setLastUpdated" => $data["last_updated"],
         );
         parent::executeSetterArray($s, $arr);
+    }
+
+    /**
+     * Syncs a session with the database, executing a Pull or a Push on a last_updated timestamp basis
+     *
+     * @param Entities\Session $s to be synced
+     *
+     * @return void
+     *
+     * @throws \Exception if not found
+     */
+    public static function sync(Entities\Session $s): void
+    {
+        // SQL to get last_updated on given peripheral
+        $sql = "SELECT last_updated
+          FROM sessions
+          WHERE id = :id;";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute
+        $sth->execute(array(':id' => $s->getId()));
+
+        // Retrieve
+        $db_last_updated = $sth->fetchColumn(0);
+
+        // If nil, we throw an exception
+        if ($db_last_updated == null) {
+            throw new \Exception("No such session found");
+        }
+
+        // If empty, that's an Exception
+        if ($db_last_updated == "") {
+            throw new \Exception("Empty last_updated");
+        }
+
+        // If the DB was updated BEFORE the last update to the peripheral, push
+        if (strtotime($db_last_updated) < strtotime($s->getLastUpdated())) {
+            self::push($s);
+        } else {
+            self::pull($s);
+        }
     }
 
     /**

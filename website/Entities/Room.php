@@ -8,7 +8,6 @@
 
 namespace Entities;
 
-
 class Room
 {
     private $id;
@@ -116,6 +115,8 @@ class Room
 
     public function attachToProperty(int $property_id): bool
     {
+        // Check if it exists
+        // Use setPropertyId
         return false;
     }
 }

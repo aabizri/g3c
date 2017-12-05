@@ -14,6 +14,7 @@ class Peripherals extends Repository
      * If it already exists, it fails.
      *
      * @param Entities\Peripheral $p the Peripheral to insert
+     * @throws Exception
      */
     public static function insert(Entities\Peripheral $p)
     {
@@ -45,6 +46,7 @@ class Peripherals extends Repository
      * Push an existing Model\Peripheral to the database
      *
      * @param Entities\Peripheral $p the Peripheral to push
+     * @throws Exception
      */
     public static function push(Entities\Peripheral $p)
     {
@@ -106,7 +108,7 @@ class Peripherals extends Repository
 
         // Store
         $arr = array(
-            "setDisplay" => $data["display"],
+            "setDisplayName" => $data["display_name"],
             "setBuildDate" => $data["build_date"],
             "setAddDate" => $data["add_date"],
             "setPublicKey" => $data["public_key"],
@@ -308,6 +310,8 @@ class Peripherals extends Repository
      * @param int $propertyID is the ID of the Property this Peripheral should be attached to
      *
      * @return void
+     *
+     * @throws Exception
      */
     public static function attachToProperty(Entities\Peripheral $p, int $propertyID)
     {
