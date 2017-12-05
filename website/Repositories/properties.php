@@ -85,7 +85,7 @@ class Properties extends Repository
     public static function pull(\Entities\Property $p)
     {
         // SQL
-        $sql = "SELECT name, address
+        $sql = "SELECT name, address, creation_date, last_updated
         FROM properties
         WHERE id = :id;";
 
@@ -107,6 +107,8 @@ class Properties extends Repository
         $arr = array(
             "setName" => $data["name"],
             "setAddress" => $data["address"],
+            "setCreationDate" => $data["creation_date"],
+            "setLastUpdated" => $data["last_updated"],
         );
 
         parent::executeSetterArray($p, $arr);
