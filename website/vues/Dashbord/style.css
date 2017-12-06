@@ -1,11 +1,12 @@
 body {
 	position : relative;
-	height: 1000px;
+	height: 1060px;
 	background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
 	background-size: cover;
 	background-position: center;
 	width: 1030px;
 	font-family: Verdana;
+	overflow-x: hidden;
 }
 
 header {
@@ -167,6 +168,13 @@ header {
 	text-align: center;
 }
 
+#choixsalle
+{
+	position: relative;
+	top: 37px;
+	left: 520px;
+}
+
 #action
 {
 	position: relative;
@@ -221,12 +229,85 @@ header {
 	padding: 20px 40px;
 }
 
+/*Mon compte*/
+
+#titremoncompte
+{
+	position: relative;
+	top: 8%;
+	left:25%;
+}
+
+#infosmoncompte
+{
+	display: flex;
+	position: relative;
+	top:11%;
+	left:18%;
+}
+
+#mesinformations
+{
+	position: relative;
+	border: 1px solid #955252;
+	background-color: #d0c4b19b;
+	padding:5px 10px;
+	margin-right: -70px;
+	text-align: left;
+	height: 280px;
+	width: 40%;
+	border-radius: 20px;
+	left:2%;
+}
+
+#titremesinfos
+{
+	position: relative;
+	left:32%;
+}
+
+#modifiermesinformations
+{
+	position: relative;
+	left: 14%;
+	width: 43%;
+	border: 1px solid #955252;
+	text-align: left;
+	padding: 0px 30px;
+	background-color: #d0c4b19b;
+	border-radius: 20px;
+}
+
+#titremodifierinfos
+{
+	position: relative;
+	left: 25%;
+}
+
+#formdroit
+{
+	position: absolute;
+	right: 30px;
+	width: 200px;
+	border-radius: 5px;
+}
+
+#validermodifinfos
+{
+	position: relative;
+	left:44%;
+	padding: 4px 10px;
+	border-radius:1%;
+}
+
+/*Footer*/
+
 footer {
 	background-color: #d9c4b19b;
 	font-family: Verdana, sans-serif;
 	color: #955252;
 	position :absolute;
-	width: 1245px;
+	width: 1280px;
 	bottom: -10px;
 	height: 80px;
 	left: -9px;
