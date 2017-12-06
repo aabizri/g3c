@@ -25,6 +25,19 @@
 
             <h2 id="nompagepieces">Gestion de mes pièces</h2>
 
+          <form method="post" action="php pour redirection" id="choixsalle">
+            <select name="Choix de la salle">
+                <option value="" >Salon</option>
+                <option value="">Salle de bain</option>
+                <option value="">Cuisine</option>
+                <option value="">Chambre 1</option>
+                <option value="">Chambre 2</option>
+            </select>
+
+              <input type="submit" value="Valider" title="Valider pour accéder à la salle" />
+
+          </form>
+
             <div id="vueinformation">
             <h3>Informations sur la pièce</h3>
                 <div id="informationspiece">
@@ -47,12 +60,18 @@
             <div id="ajouterpieces">
                 <h3>Ajouter une pièce</h3>
                 <div id="champsajouterpiece">
-                    <form>
-                        <label>Nom de la pièce : </label><input type="text" />
-                        <label>Capteurs à ajouter : </label>
+                    <form name="Ajouter une pièce" action="php ajouter pièce">
+                        <label>Nom de la pièce : </label><input type="text" /><br><br>
+                        <label>Capteurs à ajouter : </label><br><br>
                             <input type="checkbox"> Température
                             <input type="checkbox"> Présence
                             <input type="checkbox"> Pression
+                            <input type="checkbox"> Luminosité
+                            <input type="checkbox"> Qualité de l'air
+                            <input type="checkbox"> Humidité
+                        <br>
+                        <br>
+                        <input type="submit" value="Valider" >
                     </form>
                 </div>
             </div>
