@@ -238,11 +238,18 @@ header {
 	left:25%;
 }
 
+#identificationutilisateur
+{
+	position: relative;
+	top: -26.5%;
+	left:25%;
+}
+
 #infosmoncompte
 {
 	display: flex;
 	position: relative;
-	top:11%;
+	top:15%;
 	left:18%;
 }
 
@@ -255,7 +262,7 @@ header {
 	margin-right: -70px;
 	text-align: left;
 	height: 280px;
-	width: 40%;
+	width: 41%;
 	border-radius: 20px;
 	left:2%;
 }
@@ -287,7 +294,7 @@ header {
 #formdroit
 {
 	position: absolute;
-	right: 30px;
+	right: 20px;
 	width: 200px;
 	border-radius: 5px;
 }
@@ -296,8 +303,71 @@ header {
 {
 	position: relative;
 	left:44%;
-	padding: 4px 10px;
 	border-radius:1%;
+}
+
+#creervoirutilisateur
+{
+	display: flex;
+	position: relative;
+	left: 20%;
+	top:7%;
+}
+
+#creerutilisateur
+{
+	position: relative;
+	left: 5%;
+	top: 60px;
+	width: 47%;
+	border:1px solid #955252;
+	border-radius: 20px;
+	padding: 10px;
+	background-color: #d0c4b19b;
+	height: 210px;
+}
+
+#titrecreerutilisateur
+{
+	position: relative;
+	left:32%;
+}
+
+#validercreationutilisateur
+{
+	position: relative;
+	left:43%;
+	border-radius: 1px ;
+}
+
+#voirutilisateurs
+{
+	border:1px solid #955252;
+	background-color: #d0c4b19b;
+	width: 41%;
+	border-radius: 20px;
+	padding: 0px 10px;
+}
+
+#titrelisteutilisateurs
+{
+	position: relative;
+	left: 27%;
+}
+
+#nomsutilisateurs
+{
+	position: relative;
+	left:70px;
+}
+
+#boutonssupprimer
+{
+	position: relative;
+	display: block;
+	right:-200px;
+	top: -17px;
+	border-radius: 1px;
 }
 
 /*Footer*/
