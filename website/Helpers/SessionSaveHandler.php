@@ -11,7 +11,7 @@ namespace Helpers;
 class SessionSaveHandler implements \SessionHandlerInterface
 {
     public const lifetime = 7;
-    private const lifetime_intervalspec = "P".self::lifetime."D";
+    private const lifetime_intervalspec = "P" . self::lifetime . "D";
 
     public function close(): bool
     {
@@ -29,7 +29,7 @@ class SessionSaveHandler implements \SessionHandlerInterface
         $sess = null;
         try {
             $sess = \Repositories\Sessions::retrieve($session_id);
-        }catch (\Throwable $t) {
+        } catch (\Throwable $t) {
             return false;
         }
 
@@ -120,12 +120,6 @@ class SessionSaveHandler implements \SessionHandlerInterface
             $interval = new \DateInterval(self::lifetime_intervalspec);
             $expiry = (new \DateTime())->add($interval);
             $sess->setExpiry($expiry->format(\DateTime::ATOM));
-
-            // User Agent
-            $sess->setUserAgent($_SERVER["HTTP_USER_AGENT"]);
-
-            // IP
-            $sess->setIp($_SERVER["REMOTE_ADDR"]);
 
             // Insert in DB
             try {
