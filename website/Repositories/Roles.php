@@ -159,7 +159,8 @@ class Roles extends Repository
      * @param int $uid the id of the user
      * @return int[] array of role ids
      */
-    public static function findAllByUserID(int $uid): array {
+    public static function findAllByUserID(int $uid): array
+    {
         // SQL
         $sql = "SELECT id
             FROM roles
@@ -184,7 +185,8 @@ class Roles extends Repository
      * @param int $pid property id
      * @return int[] array of role ids
      */
-    public static function findAllByPropertyID(int $pid): array {
+    public static function findAllByPropertyID(int $pid): array
+    {
         // SQL
         $sql = "SELECT id
             FROM roles
@@ -209,7 +211,8 @@ class Roles extends Repository
      * @param int $permission_id permission ID
      * @return int[] array of role ids
      */
-    public static function findAllByPermissionID(int $permission_id): array {
+    public static function findAllByPermissionID(int $permission_id): array
+    {
         // SQL
         $sql = "SELECT role_id
             FROM roles_permissions
@@ -236,7 +239,8 @@ class Roles extends Repository
      * @return int role id
      * @throws Exception
      */
-    public static function findByUserAndProperty(int $uid, int $pid): int {
+    public static function findByUserAndProperty(int $uid, int $pid): int
+    {
         // SQL for counting
         $sql = "SELECT count(*)
             FROM roles

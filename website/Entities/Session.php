@@ -232,7 +232,8 @@ class Session
     /**
      * isValid vérifie si cette session est valide: que canceled n'est pas activé, et que la date d'éxpiration est dans le futur
      */
-    public function isValid(): bool {
+    public function isValid(): bool
+    {
         return $this->getCanceled() && (time() < strtotime($this->getExpiry()));
     }
 }

@@ -11,7 +11,7 @@ namespace Helpers;
 class SessionSaveHandler implements \SessionHandlerInterface
 {
     public const lifetime = 7;
-    private const lifetime_intervalspec = "P".self::lifetime."D";
+    private const lifetime_intervalspec = "P" . self::lifetime . "D";
 
     public function close(): bool
     {
@@ -29,7 +29,7 @@ class SessionSaveHandler implements \SessionHandlerInterface
         $sess = null;
         try {
             $sess = \Repositories\Sessions::retrieve($session_id);
-        }catch (\Throwable $t) {
+        } catch (\Throwable $t) {
             return false;
         }
 

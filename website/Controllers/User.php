@@ -20,8 +20,8 @@ class User
         // Check if the data exists
         $required = ["nick", "email", "password", "name", "surname", "phone"];
         foreach ($required as $key) {
-            if (empty($post[$key])){
-                echo "Missing key: ".$key;
+            if (empty($post[$key])) {
+                echo "Missing key: " . $key;
                 return;
             }
         }
@@ -77,8 +77,8 @@ class User
         // Check if the data exists
         $required = ["nick", "password"];
         foreach ($required as $key) {
-            if (empty($post[$key])){
-                echo "Missing key: ".$key;
+            if (empty($post[$key])) {
+                echo "Missing key: " . $key;
                 return;
             }
         }

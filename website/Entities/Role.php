@@ -109,7 +109,8 @@ class Role
     /**
      * @return int[] the permissions (id) given to the role
      */
-    public function retrievePermissions(): array {
+    public function retrievePermissions(): array
+    {
         return \Repositories\Permissions::findAllByRole($this->getID());
     }
 }

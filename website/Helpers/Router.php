@@ -9,9 +9,10 @@ class Router
      * @param string $action
      * @return bool false if it doesn't exist
      */
-    public static function route(string $category, string $action, array $get, array $post): bool {
+    public static function route(string $category, string $action, array $get, array $post): bool
+    {
         // Get the fully qualified name of the class
-        $classname = "\\Controllers\\".$category;
+        $classname = "\\Controllers\\" . $category;
 
         // Check that the class exists
         // doc: https://secure.php.net/manual/fr/function.class-exists.php

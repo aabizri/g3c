@@ -229,7 +229,8 @@ class Peripheral
         Repositories\Peripherals::attachToProperty($this, $propertyID);
     }
 
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return sprintf("Périphérique \"%s\"<br/>
             UUID:\t\t%s<br/>
             Display Name:\t\t%s<br/>
@@ -256,14 +257,14 @@ function testPeripheralModel()
     // Create a new entity
     echo "<b>Création d'un nouveau Entities\Peripheral...</b>";
     $p1 = new Peripheral();
-    echo "<b>Succès !</b>"."<br/>";
+    echo "<b>Succès !</b>" . "<br/>";
     echo $p1;
     echo "<br/>";
 
     // Insert it
     echo "<b>Insertion de cet objet dans la BDD...</b>";
     Repositories\Peripherals::insert($p1);
-    echo "<b>Succès !</b>"."<br/>";
+    echo "<b>Succès !</b>" . "<br/>";
     echo $p1;
 
     // Change data
@@ -273,24 +274,24 @@ function testPeripheralModel()
     // Push
     echo "<b>Push des dernières modifications...</b>";
     Repositories\Peripherals::push($p1);
-    echo "<b>Succès !</b>"."<br/>";
+    echo "<b>Succès !</b>" . "<br/>";
 
     // Pull
     echo "<b>Pull post-push...</b>";
     Repositories\Peripherals::pull($p1);
-    echo "<b>Succès !</b>"."<br/>";
+    echo "<b>Succès !</b>" . "<br/>";
 
     // Attach to property
     echo "<b>Attachement à la propriété...</b>";
     $p1->attachToProperty(1);
-    echo "<b>Succès !</b>"."<br/>";
+    echo "<b>Succès !</b>" . "<br/>";
     echo $p1;
     echo "<br/>";
 
     // Attach to room
     echo "<b>Attachement à la pièce...</b>";
     $p1->attachToRoom(1);
-    echo "<b>Succès !</b>"."<br/>";
+    echo "<b>Succès !</b>" . "<br/>";
     echo $p1;
     echo "<br/>";
 }

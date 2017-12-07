@@ -5,6 +5,7 @@
  * Date: 27/11/2017
  * Time: 11:46
  */
+
 namespace Entities;
 
 class Property
