@@ -41,9 +41,9 @@ header {
 #Phrasedaccroche {
 	font-family: Verdana, sans-serif;
 	color: white;
-	position: absolute;
-	left:520px;
-	top: 8px;
+	position: relative;
+	left: 500px;
+	top: -45px;
 
 }
 
@@ -51,9 +51,9 @@ header {
 #Nomdelapage {
 	font-family: Verdana, sans-serif;
 	color: white;
-	position: absolute;
-	right: 100px;
-	top: 8px;
+	position: relative;
+	left: 1050px;
+	top: -80px;
 }
 
 #Menu  {
