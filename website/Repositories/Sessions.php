@@ -38,8 +38,8 @@ class Sessions extends Repository
             'user' => $s->getUser(),
             'started' => $s->getStarted(),
             'expiry' => $s->getExpiry(),
-            'canceled' => $s->getCancelled(),
-            'ip' => $s->getIp(),
+            'canceled' => $s->getCanceled(),
+            'ip' => $s->getIP(),
             'user_agent_txt' => $s->getUserAgentTxt(),
             'user_agent_hash' => $s->getUserAgentHash(),
             'value' => $s->getValue(),
@@ -70,12 +70,12 @@ class Sessions extends Repository
 
         // Data for the request
         $data = [
-            "id" => $s->getId(),
+            "id" => $s->getID(),
             'user' => $s->getUser(),
             'started' => $s->getStarted(),
             'expiry' => $s->getExpiry(),
-            'canceled' => $s->getCancelled(),
-            'ip' => $s->getIp(),
+            'canceled' => $s->getCanceled(),
+            'ip' => $s->getIP(),
             'user_agent_txt' => $s->getUserAgentTxt(),
             'user_agent_hash' => $s->getUserAgentHash(),
             'value' => $s->getValue(),
@@ -105,7 +105,7 @@ class Sessions extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':id' => $s->getId()));
+        $sth->execute(array(':id' => $s->getID()));
 
         // Retrieve
         $data = $sth->fetch(PDO::FETCH_ASSOC);
@@ -121,7 +121,7 @@ class Sessions extends Repository
             "setValue" => $data["value"],
             "setStarted" => $data["started"],
             "setExpiry" => $data["expiry"],
-            "setCancelled" => $data["canceled"],
+            "setCanceled" => $data["canceled"],
             "setIp" => $data["ip"],
             "setUserAgentTxt" => $data["user_agent_txt"],
             "setUserAgentHash" => $data["user_agent_hash"],
@@ -150,7 +150,7 @@ class Sessions extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(array(':id' => $s->getId()));
+        $sth->execute(array(':id' => $s->getID()));
 
         // Retrieve
         $db_last_updated = $sth->fetchColumn(0);
@@ -205,7 +205,7 @@ class Sessions extends Repository
         $s = new Entities\Session;
 
         // Set the ID
-        $s->setId($id);
+        $s->setID($id);
 
         // Call Pull on it
         self::pull($s);

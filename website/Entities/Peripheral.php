@@ -16,7 +16,8 @@ use Repositories;
  */
 class Peripheral
 {
-    // Values of this object
+    /* PROPERTIES */
+
     private $uuid;
     private $display_name;
     private $build_date;
@@ -26,6 +27,8 @@ class Peripheral
     private $room_id;
     private $last_updated;
 
+    /* CONSTRUCTOR */
+
     /**
      * Peripheral constructor.
      */
@@ -34,6 +37,8 @@ class Peripheral
         // Generate UUID
         $this->setUUID(UUID::v4());
     }
+
+    /* GETTERS AND SETTERS */
 
     /**
      * @return string

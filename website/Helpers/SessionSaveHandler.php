@@ -39,7 +39,7 @@ class SessionSaveHandler implements \SessionHandlerInterface
         }
 
         // Cancel it
-        $sess->setCancelled(true);
+        $sess->setCanceled(true);
 
         // Push it
         try {
@@ -109,7 +109,7 @@ class SessionSaveHandler implements \SessionHandlerInterface
         if ($sess == null) {
             // Create a new entity
             $sess = new \Entities\Session;
-            $sess->setId($session_id);
+            $sess->setID($session_id);
             $sess->setValue($session_data);
 
             // Started
@@ -125,7 +125,7 @@ class SessionSaveHandler implements \SessionHandlerInterface
             $sess->setUserAgent($_SERVER["HTTP_USER_AGENT"]);
 
             // IP
-            $sess->setIp($_SERVER["REMOTE_ADDR"]);
+            $sess->setIP($_SERVER["REMOTE_ADDR"]);
 
             // Insert in DB
             try {

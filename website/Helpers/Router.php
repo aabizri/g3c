@@ -4,9 +4,6 @@ namespace Helpers;
 
 class Router
 {
-
-    private const depth = 1;
-
     /**
      * @param string $category
      * @param string $action

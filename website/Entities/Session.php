@@ -16,16 +16,18 @@ class Session
     private $value = "";
     private $started = "";
     private $expiry = "";
-    private $cancelled = false;
+    private $canceled = false;
     private $ip = "";
     private $user_agent_txt = "";
     private $user_agent_hash = "";
     private $last_updated;
 
+    /* GETTERS AND SETTERS */
+
     /**
      * @return string
      */
-    public function getId(): string
+    public function getID(): string
     {
         return $this->id;
     }
@@ -34,7 +36,7 @@ class Session
      * @param string $id
      * @return bool
      */
-    public function setId(string $id): bool
+    public function setID(string $id): bool
     {
         $this->id = $id;
         return true;
@@ -97,25 +99,25 @@ class Session
     /**
      * @return bool
      */
-    public function getCancelled(): bool
+    public function getCanceled(): bool
     {
-        return $this->cancelled;
+        return $this->canceled;
     }
 
     /**
-     * @param bool $cancelled
+     * @param bool $canceled
      * @return bool
      */
-    public function setCancelled(bool $cancelled): bool
+    public function setCanceled(bool $canceled): bool
     {
-        $this->cancelled = $cancelled;
+        $this->canceled = $canceled;
         return true;
     }
 
     /**
      * @return string
      */
-    public function getIp(): string
+    public function getIP(): string
     {
         return $this->ip;
     }
@@ -124,7 +126,7 @@ class Session
      * @param string $ip
      * @return bool
      */
-    public function setIp(string $ip): bool
+    public function setIP(string $ip): bool
     {
         if (filter_var($ip, FILTER_VALIDATE_IP) == false) {
             return false;
@@ -226,9 +228,9 @@ class Session
     }
 
     /**
-     * isValid vérifie si cette session est valide: que cancelled n'est pas activé, et que la date d'éxpiration est dans le futur
+     * isValid vérifie si cette session est valide: que canceled n'est pas activé, et que la date d'éxpiration est dans le futur
      */
     public function isValid(): bool {
-        return $this->getCancelled() && (time() < strtotime($this->getExpiry()));
+        return $this->getCanceled() && (time() < strtotime($this->getExpiry()));
     }
 }
