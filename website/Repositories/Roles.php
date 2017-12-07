@@ -46,7 +46,7 @@ class Roles extends Repository
     /**
      * Push an existing role to the database
      *
-     * @param Entities\Role $r the user_id to push
+     * @param Entities\Role $r the role to push
      *
      * @throws Exception if the subsequent pull fails
      */
@@ -149,14 +149,14 @@ class Roles extends Repository
         // Call Pull on it
         self::pull($r);
 
-        // Return the user_id
+        // Return the entity
         return $r;
     }
 
     /**
-     * Find all roles for this user_id
+     * Find all roles for this user
      *
-     * @param int $uid user_id id
+     * @param int $uid the id of the user
      * @return int[] array of role ids
      */
     public static function findAllByUserID(int $uid): array {

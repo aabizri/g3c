@@ -8,9 +8,9 @@ use PDO;
 class Users extends Repository
 {
     /**
-     * Insert inserts a new user_id to the database
+     * Insert inserts a new user to the database
      *
-     * @param Entities\User $u the user_id to be inserted
+     * @param Entities\User $u the user to be inserted
      *
      * @throws \Exception if the subsequent pull fails
      */
@@ -49,7 +49,7 @@ class Users extends Repository
     /**
      * Push an existing Model\User to the database
      *
-     * @param Entities\User $u the user_id to push
+     * @param Entities\User $u the user to push
      *
      * @throws \Exception if the subsequent pull fails
      */
@@ -83,7 +83,7 @@ class Users extends Repository
     /**
      * Pull an existing Model\User from the database
      *
-     * @param Entities\User $u the user_id to pull
+     * @param Entities\User $u the user to pull
      *
      * @throws \Exception if no such Model\User is found
      */
@@ -122,7 +122,7 @@ class Users extends Repository
     }
 
     /**
-     * Syncs a user_id with the database, executing a Pull or a Push on a last_updated timestamp basis
+     * Syncs a user with the database, executing a Pull or a Push on a last_updated timestamp basis
      *
      * @param Entities\User $u to be synced
      *
@@ -165,7 +165,7 @@ class Users extends Repository
     }
 
     /**
-     * Récupérer l'id d'un user_id
+     * Récupérer l'id d'un user
      * @param int $id
      * @return Entities\User ou null si rien n'est trouvé
      * @throws \Exception
@@ -209,9 +209,9 @@ class Users extends Repository
      *
      * @param string $email the email with which to find the given Entity\User ID
      *
-     * @return int the ID of the user_id in question, or null if none are found
+     * @return int the ID of the user in question, or null if none are found
      *
-     * @throws \Exception if there is more than one user_id found with this email
+     * @throws \Exception if there is more than one user found with this email
      */
     public static function findByEmail(string $email): int
     {
@@ -259,9 +259,9 @@ class Users extends Repository
      *
      * @param string $nick the nick with which to find the given Entity\User ID
      *
-     * @return int the ID of the user_id in question, or null if none are found
+     * @return int the ID of the user in question, or null if none are found
      *
-     * @throws \Exception if there is more than one user_id found with this nickname
+     * @throws \Exception if there is more than one user found with this nickname
      */
     public static function findByNick(string $nick): int
     {
