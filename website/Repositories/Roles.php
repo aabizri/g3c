@@ -26,8 +26,8 @@ class Roles extends Repository
 
         // Prepare data to be inserted
         $data = [
-            ":user_id" => $p->getUserId(),
-            ":property_id" => $p->getPropertyId(),
+            ":user_id" => $p->getUserID(),
+            ":property_id" => $p->getPropertyID(),
         ];
 
         // Execute request
@@ -46,7 +46,7 @@ class Roles extends Repository
     /**
      * Push an existing role to the database
      *
-     * @param Entities\Role $r the user to push
+     * @param Entities\Role $r the user_id to push
      *
      * @throws Exception if the subsequent pull fails
      */
@@ -61,8 +61,8 @@ class Roles extends Repository
 
         // Prepare data to be updated
         $data = array(
-            ':uid' => $r->getUserId(),
-            ':pid' => $r->getPropertyId(),
+            ':uid' => $r->getUserID(),
+            ':pid' => $r->getPropertyID(),
         );
 
         // Execute query
@@ -92,7 +92,7 @@ class Roles extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':id' => $r->getId()));
+        $sth->execute(array(':id' => $r->getID()));
 
         // Retrieve
         $data = $sth->fetch(PDO::FETCH_ASSOC);
@@ -149,14 +149,14 @@ class Roles extends Repository
         // Call Pull on it
         self::pull($r);
 
-        // Return the user
+        // Return the user_id
         return $r;
     }
 
     /**
-     * Find all roles for this user
+     * Find all roles for this user_id
      *
-     * @param int $uid user id
+     * @param int $uid user_id id
      * @return int[] array of role ids
      */
     public static function findAllByUserID(int $uid): array {
@@ -229,9 +229,9 @@ class Roles extends Repository
     }
 
     /**
-     * Find the role matching a property and a user
+     * Find the role matching a property and a user_id
      *
-     * @param int $uid user id
+     * @param int $uid user_id id
      * @param int $pid property id
      * @return int role id
      * @throws Exception

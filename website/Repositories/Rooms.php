@@ -198,7 +198,7 @@ class Rooms extends Repository
         // Call Pull on it
         self::pull($r);
 
-        // Return the user
+        // Return the user_id
         return $r;
     }
 

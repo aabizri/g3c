@@ -4,7 +4,7 @@ namespace Entities;
 
 class Role
 {
-    /* ROLES */
+    /* PROPERTIES */
 
     private $id;
     private $user_id;
@@ -17,7 +17,7 @@ class Role
     /**
      * @return int
      */
-    public function getId(): int
+    public function getID(): int
     {
         return $this->id;
     }
@@ -35,7 +35,7 @@ class Role
     /**
      * @return int
      */
-    public function getUserId(): int
+    public function getUserID(): int
     {
         return $this->user_id;
     }
@@ -44,7 +44,7 @@ class Role
      * @param int
      * @return bool
      */
-    public function setUserId(int $user_id): bool
+    public function setUserID(int $user_id): bool
     {
         $this->user_id = $user_id;
         return true;
@@ -53,7 +53,7 @@ class Role
     /**
      * @return int
      */
-    public function getPropertyId(): int
+    public function getPropertyID(): int
     {
         return $this->property_id;
     }
@@ -62,7 +62,7 @@ class Role
      * @param int
      * @return bool
      */
-    public function setPropertyId(int $property_id): bool
+    public function setPropertyID(int $property_id): bool
     {
         $this->property_id = $property_id;
         return true;
@@ -110,6 +110,6 @@ class Role
      * @return int[] the permissions (id) given to the role
      */
     public function retrievePermissions(): array {
-        return \Repositories\Permissions::findAllByRole($this->getId());
+        return \Repositories\Permissions::findAllByRole($this->getID());
     }
 }

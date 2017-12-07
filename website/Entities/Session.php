@@ -11,8 +11,10 @@ namespace Entities;
 
 class Session
 {
+    /* PROPERTIES */
+
     private $id;
-    private $user;
+    private $user_id;
     private $value = "";
     private $started = "";
     private $expiry = "";
@@ -45,18 +47,18 @@ class Session
     /**
      * @return int
      */
-    public function getUser(): ?int
+    public function getUserID(): ?int
     {
-        return $this->user;
+        return $this->user_id;
     }
 
     /**
-     * @param int $user
+     * @param int $user_id
      * @return bool
      */
-    public function setUser(?int $user): bool
+    public function setUserID(?int $user_id): bool
     {
-        $this->user = $user;
+        $this->user_id = $user_id;
         return true;
     }
 

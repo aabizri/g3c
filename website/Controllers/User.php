@@ -12,7 +12,7 @@ use Entities;
 class User
 {
     /**
-     * join subscribes a user
+     * join subscribes a user_id
      * @throws \Exception
      */
     public function join(array $get, array $post): void
@@ -39,7 +39,7 @@ class User
          */
         $nickDuplicate = Repositories\Users::findByNick($nick) != null;
         if ($nickDuplicate) {
-            echo "A user with this nick already exists";
+            echo "A user_id with this nick already exists";
             return;
         }
 
@@ -49,7 +49,7 @@ class User
          */
         $emailDuplicate = Repositories\Users::findByEmail($email) != null;
         if ($emailDuplicate) {
-            echo "A user with this email already exists";
+            echo "A user_id with this email already exists";
             return;
         }
 
@@ -65,7 +65,7 @@ class User
         try {
             Repositories\Users::insert($u);
         } catch (\Exception $e) {
-            echo "Error inserting user" . $e;
+            echo "Error inserting user_id" . $e;
         }
     }
 

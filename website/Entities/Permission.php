@@ -12,16 +12,18 @@ namespace Entities;
 class Permission
 {
     /* PROPERTIES */
+
     private $id;
     private $name;
     private $description;
 
     /* GETTERS AND SETTERS */
-    public function getId(): int {
+
+    public function getID(): int {
         return $this->id;
     }
 
-    public function setId(int $id): bool {
+    public function setID(int $id): bool {
         $this->id = $id;
         return true;
     }

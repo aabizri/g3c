@@ -37,7 +37,7 @@ class Permissions extends Repository
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        if ($p->setId($id) == false) {
+        if ($p->setID($id) == false) {
             throw new \Exception("error setting id");
         }
 
@@ -48,7 +48,7 @@ class Permissions extends Repository
     /**
      * Push an existing permission to the database
      *
-     * @param \Entities\Permission $p the user to push
+     * @param \Entities\Permission $p the user_id to push
      *
      * @throws \Exception
      */
@@ -94,7 +94,7 @@ class Permissions extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':id' => $p->getId()));
+        $sth->execute(array(':id' => $p->getID()));
 
         // Retrieve
         $data = $sth->fetch(\PDO::FETCH_ASSOC);
@@ -144,12 +144,12 @@ class Permissions extends Repository
         $r = new \Entities\Permission();
 
         // Set the ID
-        $r->setId($id);
+        $r->setID($id);
 
         // Call Pull on it
         self::pull($r);
 
-        // Return the user
+        // Return the user_id
         return $r;
     }
 

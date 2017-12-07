@@ -31,8 +31,8 @@ class Peripherals extends Repository
             ':build_date' => $p->getBuildDate(),
             ':add_date' => $p->getAddDate(),
             ':public_key' => $p->getPublicKey(),
-            ':property_id' => $p->getPropertyId(),
-            ':room_id' => $p->getRoomId(),
+            ':property_id' => $p->getPropertyID(),
+            ':room_id' => $p->getRoomID(),
         ];
 
         // Execute query
@@ -292,7 +292,7 @@ class Peripherals extends Repository
         }
 
         // Set the ID and date
-        $p->setRoomId($roomID);
+        $p->setRoomID($roomID);
     }
 
     /**
@@ -320,7 +320,7 @@ class Peripherals extends Repository
         $sth->execute(array(':property_id' => $propertyID, ':add_date' => $now, ':uuid' => $p->getUUID()));
 
         // Set the ID and date
-        $p->setPropertyId($propertyID);
+        $p->setPropertyID($propertyID);
         $p->setAddDate($now);
     }
 }

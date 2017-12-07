@@ -22,7 +22,7 @@ class Property
     /**
      * @return int
      */
-    public function getId(): int
+    public function getID(): int
     {
         return $this->id;
     }
@@ -31,7 +31,7 @@ class Property
      * @param int $id
      * @return bool
      */
-    public function setId(int $id): bool
+    public function setID(int $id): bool
     {
         $this->id = $id;
         return true;

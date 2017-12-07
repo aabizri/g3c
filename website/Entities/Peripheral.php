@@ -146,7 +146,7 @@ class Peripheral
     /**
      * @return int|null
      */
-    public function getPropertyId(): ?int
+    public function getPropertyID(): ?int
     {
         return $this->property_id;
     }
@@ -155,7 +155,7 @@ class Peripheral
      * @param int|null $property_id
      * @return bool
      */
-    public function setPropertyId(?int $property_id): bool
+    public function setPropertyID(?int $property_id): bool
     {
         $this->property_id = $property_id;
         return true;
@@ -164,7 +164,7 @@ class Peripheral
     /**
      * @return int|null
      */
-    public function getRoomId(): ?int
+    public function getRoomID(): ?int
     {
         return $this->room_id;
     }
@@ -173,7 +173,7 @@ class Peripheral
      * @param int|null $room_id
      * @return bool
      */
-    public function setRoomId(?int $room_id): bool
+    public function setRoomID(?int $room_id): bool
     {
         $this->room_id = $room_id;
         return true;
@@ -245,8 +245,8 @@ class Peripheral
             $this->getBuildDate(),
             $this->getAddDate(),
             $this->getPublicKey(),
-            $this->getPropertyId(),
-            $this->getRoomId(),
+            $this->getPropertyID(),
+            $this->getRoomID(),
             $this->getLastUpdated());
     }
 }

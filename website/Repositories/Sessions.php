@@ -26,8 +26,8 @@ class Sessions extends Repository
     public static function insert(\Entities\Session $s): void
     {
         //On écrit une reqûete SQL
-        $sql = "INSERT INTO sessions (id, user, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, value)
-        VALUES (:id, :user, :started, :expiry, :canceled, :ip, :user_agent_txt, :user_agent_hash, :value);";
+        $sql = "INSERT INTO sessions (id, user_id, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, value)
+        VALUES (:id, :user_id, :started, :expiry, :canceled, :ip, :user_agent_txt, :user_agent_hash, :value);";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
@@ -35,7 +35,7 @@ class Sessions extends Repository
         // On prépare les données qui vont être insérées
         $data = [
             'id' => $s->getID(),
-            'user' => $s->getUser(),
+            'user_id' => $s->getUserID(),
             'started' => $s->getStarted(),
             'expiry' => $s->getExpiry(),
             'canceled' => $s->getCanceled(),
@@ -62,7 +62,7 @@ class Sessions extends Repository
     {
         // SQL
         $sql = "UPDATE sessions
-        SET user = :user, started = :started, expiry = :expiry, canceled = :canceled, ip = :ip, user_agent_txt = :user_agent_txt, user_agent_hash = :user_agent_hash, value = :value
+        SET user_id = :user_id, started = :started, expiry = :expiry, canceled = :canceled, ip = :ip, user_agent_txt = :user_agent_txt, user_agent_hash = :user_agent_hash, value = :value
         WHERE id = :id;";
 
         // Prepare statement
@@ -71,7 +71,7 @@ class Sessions extends Repository
         // Data for the request
         $data = [
             "id" => $s->getID(),
-            'user' => $s->getUser(),
+            'user_id' => $s->getUserID(),
             'started' => $s->getStarted(),
             'expiry' => $s->getExpiry(),
             'canceled' => $s->getCanceled(),
@@ -97,7 +97,7 @@ class Sessions extends Repository
     public static function pull(Entities\Session $s): void
     {
         // SQL
-        $sql = "SELECT user, value, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, last_updated
+        $sql = "SELECT user_id, value, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, last_updated
         FROM sessions
         WHERE id = :id;";
 
@@ -117,7 +117,7 @@ class Sessions extends Repository
 
         // Store
         $arr = array(
-            "setUser" => $data["user"],
+            "setUserId" => $data["user_id"],
             "setValue" => $data["value"],
             "setStarted" => $data["started"],
             "setExpiry" => $data["expiry"],
@@ -215,7 +215,7 @@ class Sessions extends Repository
     }
 
     /**
-     * Retrieves all IDs for session belonging to that user
+     * Retrieves all IDs for session belonging to that user_id
      *
      * @param int $user_id
      * @return string[] array of session ids
@@ -225,7 +225,7 @@ class Sessions extends Repository
         // SQL
         $sql = "SELECT id
             FROM sessions
-            WHERE user = :user_id;";
+            WHERE user_id = :user_id;";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
