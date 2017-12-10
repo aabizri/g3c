@@ -13,10 +13,10 @@ class DisplayManager
 {
     private const views_directory = "/../Views/";
 
-    public static $views = [
-        "dashboard" => "dashboard.php",
-        "header" => "header.php",
-        "footer" => "footer.php",
+    public static $views_categories = [
+        "dashboard" => "Dashboard",
+        "header" => "Layout",
+        "footer" => "Layout",
     ];
 
     /**
@@ -25,12 +25,12 @@ class DisplayManager
      * @throws \Exception
      */
     private static function resolve(string $page_name): string {
-        $path = self::$views["$page_name"];
-        if (empty($path)) {
+        $category = self::$views_categories["$page_name"];
+        if (empty($category)) {
             throw new \Exception("Page not listed in internal repository : ".$page_name);
         }
 
-        $path = __DIR__.self::views_directory.$path;
+        $path = __DIR__.self::views_directory.$category."/".$page_name."/".$page_name.".php";
         if (!file_exists($path)) {
             throw new \Exception("Page listed in internal repository but not found on disk : ".$path);
         }
