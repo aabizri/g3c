@@ -2,6 +2,7 @@
 
 namespace Controllers;
 
+use Helpers\DisplayManager;
 use Repositories;
 use Entities;
 
@@ -67,6 +68,12 @@ class User
         } catch (\Exception $e) {
             echo "Error inserting user" . $e;
         }
+
+        // Include la page de confirmation
+        $data = [
+            "user" => $u,
+        ];
+        DisplayManager::display("dashboard",$data);
     }
 
     /**
@@ -112,8 +119,14 @@ class User
             return;
         }
 
-        // Créer une session
+        // Ajouter à la session
+        $_SESSION["user_id"] = $u->getId();
 
+        // Include la page de confirmation
+        $data = [
+            "user" => $u,
+        ];
+        DisplayManager::display("dashboard",$data);
     }
 
 }

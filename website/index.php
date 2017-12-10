@@ -12,6 +12,7 @@ ob_start();
 require_once(__DIR__."/Helpers/autoloader.php");
 
 /* Configuration des sessions */
+/*
 // Set session handler
 session_set_save_handler(new \Helpers\SessionSaveHandler);
 // Start a session
@@ -20,7 +21,7 @@ $sess_opt = [
     //"cookie_secure" => true, // TANT QU'ON NE SERA PAS EN HTTPS NE PAS ACTIVER
     "cookie_lifetime" => \Helpers\SessionSaveHandler::lifetime * 60 * 60 * 24,
 ];
-session_start($sess_opt);
+session_start($sess_opt);*/
 
 /* Routage */
 // Récupération de la (c)atégorie et de l'(a)ction
