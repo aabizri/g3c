@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <header>
-    This is the header
+    <div id="Logo"> <a href="paged'accueil.html"><img src=logopetit.png alt="logopetit.png"> </a></div>
+    <p id="Nom">LiveWell</p>
+    <p id="Phrasedaccroche"><i>Votre sécurité est notre priorité.</i></p>
+    <p id="Nomdelapage">Mes pièces</p>
 </header>
