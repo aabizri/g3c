@@ -11,7 +11,7 @@
               <p id="Nom">LiveWell</p>
               <p id="Phrasedaccroche"><i>Votre sécurité est notre priorité.</i></p>
               <p id="Nomdelapage">Mon compte</p>
-            </header>
+    </header>
     <body>
           <!--Faire un lien entre le logo et la page d'accueil-->
 
