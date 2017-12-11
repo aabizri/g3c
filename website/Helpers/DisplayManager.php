@@ -8,54 +8,131 @@
 
 namespace Helpers;
 
-
+/**
+ * Class DisplayManager
+ * @package Helpers
+ */
 class DisplayManager
 {
-    private const views_directory = "/../Views/";
+    private const views_directory = "Views/";
 
     public static $views_categories = [
         "dashboard" => "Dashboard",
         "header" => "Layout",
         "footer" => "Layout",
+        "head" => "Layout",
+        "connexion" => "Users",
+        "inscription" => "Users",
     ];
 
     /**
+     * @return string
+     */
+    public static function websiteRootFS(): string{
+        return $_SERVER["DOCUMENT_ROOT"]."/g3c/";
+    }
+
+    /**
+     * @return string
+     */
+    public static function websiteRootURL(): string{
+        return "http://localhost/g3c/";
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    public static function absolutifyFS(string $path): string{
+        return self::websiteRootFS().$path;
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    public static function absolutifyURL(string $path): string{
+        return self::websiteRootURL().$path;
+    }
+
+    /**
      * @param string $page_name the name of the page to be included
-     * @return string the absolute path to that page
+     * @return string[] the absolute paths to that page in "php" and "css"
      * @throws \Exception
      */
-    private static function resolve(string $page_name): string {
-        $category = self::$views_categories["$page_name"];
-        if (empty($category)) {
+    private static function resolveSingleComponent(string $page_name): array {
+        // Category
+        if (!array_key_exists($page_name,self::$views_categories)) {
             throw new \Exception("Page not listed in internal repository : ".$page_name);
         }
+        $category = self::$views_categories[$page_name];
 
-        $path = __DIR__.self::views_directory.$category."/".$page_name."/".$page_name.".php";
-        if (!file_exists($path)) {
-            throw new \Exception("Page listed in internal repository but not found on disk : ".$path);
+        // Build the path
+        $base_path = self::views_directory.$category."/".$page_name."/".$page_name;
+        $res["php"] = $base_path.".php";
+        if (!file_exists(self::absolutifyFS($res["php"]))) {
+            throw new \Exception("Page listed in internal repository but not found on disk : ".$_SERVER["DOCUMENT_ROOT"].$res["php"]);
+        }
+        if (file_exists(self::absolutifyFS($base_path.".css"))) {
+            $res["css"] = $base_path.".css";
         }
 
-        return $path;
+        return $res;
     }
 
-    private static function resolveAndInclude(string $page_name): void {
-        try {
-            $path = self::resolve($page_name);
-            include($path);
-        } catch (\Exception $e) {
-            echo $e;
+    /**
+     * @param array $page_names
+     * @return array
+     * @throws \Exception
+     */
+    public static function resolveMultipleComponents(array $page_names): array {
+        $out = array();
+        foreach ($page_names as $name) {
+            $out[] = self::resolveSingleComponent($name);
         }
+        return $out;
     }
 
-    public static function display(string $name,array $data): void {
+    /**
+     * @param string $name
+     * @param array $data
+     * @throws \Exception
+     */
+    public static function display(string $name, array $data): void {
+        // Resolve components
+        $components = self::resolveMultipleComponents(["head","header",$name,"footer"]);
+        
+        // For each, extract the css & php
+        $php = array();
+        $css = array();
+        foreach ($components as $comp) {
+            $php[] = $comp["php"];
+            if (!empty($comp["css"])) {
+                $css[] = self::absolutifyURL($comp["css"]);
+            }
+        }
 
-       // Include the header
-       self::resolveAndInclude("header");
+        // Meta tags
+        $meta = [
+            "page_title" => $name,
+            "base" => self::websiteRootURL(),
+        ];
 
-       // Include the $name
-       self::resolveAndInclude($name);
+        // Header tags
+        $header = [
+            "website_name" => "LiveWell",
+            "page_name" => $name,
+            "tagline" => "Votre sécurité est notre priorité",
+        ];
 
-       // Include the footer
-       self::resolveAndInclude("footer");
+        // Foooter tag
+        $footer = [
+            "rights" => "2017 LiveWell, all rights reserved",
+        ];
+
+        // Include the php files
+        foreach ($php as $toinc) {
+            include($toinc);
+        }
     }
 }
