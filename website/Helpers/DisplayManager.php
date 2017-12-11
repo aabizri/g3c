@@ -25,11 +25,13 @@ class DisplayManager
      * @throws \Exception
      */
     private static function resolve(string $page_name): string {
+        // Category
         $category = self::$views_categories["$page_name"];
         if (empty($category)) {
             throw new \Exception("Page not listed in internal repository : ".$page_name);
         }
 
+        // Build the path
         $path = __DIR__.self::views_directory.$category."/".$page_name."/".$page_name.".php";
         if (!file_exists($path)) {
             throw new \Exception("Page listed in internal repository but not found on disk : ".$path);
