@@ -24,10 +24,28 @@
             </ul>
 
             <h2 id="titreperipherique">Liste des peripériques connectés</h2>
-            <input type="button" value="Ajouter un périphérique" id="ajouterperipherique"/>
             <p id="nombrepc">Vous avez actuellement n périphériques connectés.</p>
-          <p id="peripheriques"><strong>Périphériques</strong></p>
-            
+            <p id="peripheriques"><strong>Périphériques</strong></p>
+
+          <div id="ajouterperipherique">
+              <h3>Ajouter d'un périphérique</h3>
+              <div id="champsajouterperipherique">
+                  <form name="Ajouter un peripherique" action="php ajouter pièce">
+                      <label>Nom du périphérique : </label><input type="text" /><br><br>
+                      <label>Type de capteur : </label><br><br>
+                      <input type="checkbox" value="capteurtempérature"> Température
+                      <input type="checkbox" value="capteurpresence" > Présence
+                      <input type="checkbox" value="capteurpression"> Pression
+                      <input type="checkbox" value="capteurluminosite"> Luminosité
+                      <input type="checkbox" value="capteurqualiteair"> Qualité de l'air
+                      <input type="checkbox" value="capteurhumidite"> Humidité
+                      <br>
+                      <br>
+                      <input type="submit" value="Ajouter un périphérique" id="ajouterperipheriquebouton" >
+                  </form>
+              </div>
+          </div>
+
     </body>
             <footer> 
               <p id="SAV">Contacter le service client <a href="SAV">ici</a><br><a href="FAQ">FAQ</a><br><a href="Mentions légales">Mentions légales</a></p>

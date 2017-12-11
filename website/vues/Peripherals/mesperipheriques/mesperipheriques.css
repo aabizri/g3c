@@ -1,6 +1,6 @@
 body {
 	position : relative;
-	height: 1060px;
+	height: 900px;
 	background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
 	background-size: cover;
 	background-position: center;
@@ -97,15 +97,15 @@ header {
 #titreperipherique
 {
 	position: relative;
-	left: 200px;
+	left: 170px;
 	top: 70px;
 }
 
-#ajouterperipherique
+#ajouterperipheriquebouton
 {
 	position: relative;
-	left: 65%;
-	top: 27px;
+	left: 38%;
+	top: 10px;
 }
 
 #peripheriques
@@ -114,7 +114,7 @@ header {
 	background-color: #d9c4b19b ;
 	border: 1px solid #955252 ;
 	padding-top: 5px;
-	padding-bottom: 680px;
+	padding-bottom: 300px;
 	padding-left: 475px;
 	width: 595px;
 	left:15.5%;
@@ -204,11 +204,11 @@ header {
 	padding-bottom: 90px;
 }
 
-#ajouterpieces
+#ajouterperipherique
 {
 	position: relative;
 	left: 250px;
-	top: 430px;
+	top: 150px;
 	border: 1px solid #955252;
 	border-radius: 5px;
 	width: 850px;
@@ -216,7 +216,7 @@ header {
 	text-align: center;
 }
 
-#champsajouterpiece
+#champsajouterperipherique
 {
 	text-align: left;
 	position: relative;
@@ -224,7 +224,7 @@ header {
 	padding-bottom: 20px;
 }
 
-#validerajoutpiece
+#validerajoutperipherique
 {
 	padding: 20px 40px;
 }
