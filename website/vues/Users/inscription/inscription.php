@@ -6,14 +6,6 @@
         <title>Page d'inscription</title>
     </head>
 
-    <header>
-              <div id="logo"> <a href="D:\Bryan\ISEP\APP G3C\Info\Site\Premierepage\Premierepage.html"><img src=logopetit.png alt="logopetit.png"> </a></div>
-              <p id="livewell">LiveWell</p>
-              <p id="catchphrase"><i>Votre sécurité est notre priorité.</i></p>
-              <p id="namepage">Inscription</p>
-    </header>
-
-    <body>
             <p>
                 <div id="infos">
                 <h3>INFORMATIONS GENERALES :</h3>
@@ -74,12 +66,3 @@
             </form>
             
     </body>
-
-    <footer> 
-              <p id="SAV">Contacter le service client <a href="SAV">ici</a><br><a href="FAQ">FAQ</a><br><a href="Mentions légales">Mentions légales</a></p>
-              <p class="Renseignements" id="social">Réseaux sociaux</p>
-              <a href="https://www.facebook.com/"><img id="Fb" src="Fb.png"></a>
-              <a href="https://www.twitter.com/"><img id="Twitter" src="Twitter.png"></a>
-              <p id="rights">2017 Livewell&copy all rights reserved</p>
-    </footer>
-</html>
