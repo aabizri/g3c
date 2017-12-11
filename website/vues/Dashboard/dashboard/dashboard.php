@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8"/>
-        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="../style.css" />
         <title>Accueil</title>
     </head>
 
@@ -20,7 +20,7 @@
                     <li id="Moncompte"><a href="Moncompte.html"><input type="button" value="Mon compte" /></a></li>
                     <li id="Mespieces"><a href="Mespieces.html"><input type="button" value="Mes pièces" /></a></li>
                     <li id="Mesperipheriques"> <a href="Mesperipheriques.html"><input type="button" value="Mes périphériques" /></a></li>
-                    <li id="Mesfiltres"><a href="Mesfiltres.html"><input type="button" value="Mes filtres" /></a></li>
+                    <li id="Mesfiltres"><a href="../../Filtres/mesfiltres/Mesfiltres.html"><input type="button" value="Mes filtres" /></a></li>
                     <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
                 </ul>
             </div>
