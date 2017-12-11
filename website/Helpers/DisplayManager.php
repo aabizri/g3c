@@ -54,15 +54,6 @@ class DisplayManager
         return $res;
     }
 
-    private static function resolveAndInclude(string $page_name): void {
-        try {
-            $path = self::resolve($page_name);
-            include($path);
-        } catch (\Exception $e) {
-            echo $e;
-        }
-    }
-
     /**
      * @param string $name
      * @param array $data
