@@ -11,13 +11,14 @@ header {
 }
 
 
-#Logo {
+#logo {
+    display: block;
     position: relative;
     top: 5px;
     left: 20px;
 }
 
-#Nom {
+#nom {
     color: white;
     font-family: American Typewriter, serif;
     font-style: oblique;
@@ -27,7 +28,7 @@ header {
     left: 70px;
 }
 
-#Phrasedaccroche {
+#accroche {
     font-family: Verdana, sans-serif;
     color: white;
     position: relative;
@@ -36,8 +37,7 @@ header {
 
 }
 
-
-#Nomdelapage {
+#nomdelapage {
     font-family: Verdana, sans-serif;
     color: white;
     position: relative;

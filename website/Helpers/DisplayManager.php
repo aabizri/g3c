@@ -28,31 +28,31 @@ class DisplayManager
     /**
      * @return string
      */
-    public static function websiteRootFS(): string{
-        return $_SERVER["DOCUMENT_ROOT"]."/g3c/";
+    public static function websiteRootFS(string $dir = ""): string{
+        return $_SERVER["DOCUMENT_ROOT"]."/g3c/".$dir;
     }
 
     /**
      * @return string
      */
-    public static function websiteRootURL(): string{
-        return "http://localhost/g3c/";
-    }
-
-    /**
-     * @param string $path
-     * @return string
-     */
-    public static function absolutifyFS(string $path): string{
-        return self::websiteRootFS().$path;
+    public static function websiteRootURL(string $dir = ""): string{
+        return "http://localhost/g3c/".$dir;
     }
 
     /**
      * @param string $path
      * @return string
      */
-    public static function absolutifyURL(string $path): string{
-        return self::websiteRootURL().$path;
+    public static function absolutifyFS(string $path, string $origin = ""): string{
+        return self::websiteRootFS($origin).$path;
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     */
+    public static function absolutifyURL(string $path, string $origin = ""): string{
+        return self::websiteRootURL($origin).$path;
     }
 
     /**

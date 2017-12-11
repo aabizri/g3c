@@ -2,8 +2,8 @@ footer {
     background-color: #d9c4b19b;
     font-family: Verdana, sans-serif;
     color: #955252;
-    position :absolute;
-    width: 1272px;
+    position: absolute;
+    width: 100%;
     bottom: -10px;
     height: 80px;
     left: -9px;
@@ -17,6 +17,7 @@ footer {
     margin: 1px;
     font-size: 90%;
 }
+
 #Reseauxsociaux {
     position : absolute;
     bottom : 35px;
@@ -38,8 +39,6 @@ footer {
 }
 
 #rights{
-    position: absolute;
-    left: 550px;
-    bottom: 0px;
+    text-align: center;
     font-size: 60%;
 }
