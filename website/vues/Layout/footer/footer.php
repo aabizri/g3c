@@ -1,10 +1,3 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8"/>
-        <link rel="stylesheet" href="footer.css" />
-    </head>
-
     <footer>
         <p id="SAV">Contacter le service client <a href="SAV">ici</a><br><a href="FAQ">FAQ</a><br><a href="Mentions légales">Mentions légales</a></p>
         <p class="Renseignements" id="Reseauxsociaux">Réseaux sociaux</p>
@@ -12,5 +5,5 @@
         <a href="https://www.twitter.com/"><img id="Twitter" src="Twitter.png"></a>
         <p id="rights">2017 Livewell&copy all rights reserved</p>
     </footer>
-
+    </body>
 </html>
