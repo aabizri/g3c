@@ -19,9 +19,6 @@ class Session
     private $started = "";
     private $expiry = "";
     private $canceled = false;
-    private $ip = "";
-    private $user_agent_txt = "";
-    private $user_agent_hash = "";
     private $last_updated;
 
     /* GETTERS AND SETTERS */
@@ -119,62 +116,6 @@ class Session
     /**
      * @return string
      */
-    public function getIP(): string
-    {
-        return $this->ip;
-    }
-
-    /**
-     * @param string $ip
-     * @return bool
-     */
-    public function setIP(string $ip): bool
-    {
-        if (filter_var($ip, FILTER_VALIDATE_IP) == false) {
-            return false;
-        }
-        $this->ip = $ip;
-        return true;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserAgentTxt(): string
-    {
-        return $this->user_agent_txt;
-    }
-
-    /**
-     * @param mixed $user_agent_txt
-     */
-    public function setUserAgentTxt(string $user_agent_txt): bool
-    {
-        $this->user_agent_txt = $user_agent_txt;
-        return true;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserAgentHash(): string
-    {
-        return $this->user_agent_hash;
-    }
-
-    /**
-     * @param string $user_agent_hash
-     * @return bool
-     */
-    public function setUserAgentHash(string $user_agent_hash): bool
-    {
-        $this->user_agent_hash = $user_agent_hash;
-        return true;
-    }
-
-    /**
-     * @return string
-     */
     public function getValue(): string
     {
         return $this->value;
@@ -209,25 +150,6 @@ class Session
     }
 
     /* BUSINESS LOGIC */
-
-    /**
-     * setUserAgent permet d'enregistrer les informations du navigateur
-     * @param string $ua
-     * @return bool
-     */
-    public function setUserAgent(string $ua): bool
-    {
-        if ($this->setUserAgentTxt($ua) == false) {
-            return false;
-        }
-
-        $hash = hash('sha256', $ua);
-        if ($this->setUserAgentHash($hash) == false) {
-            return false;
-        }
-
-        return true;
-    }
 
     /**
      * isValid vérifie si cette session est valide: que canceled n'est pas activé, et que la date d'éxpiration est dans le futur

@@ -121,12 +121,6 @@ class SessionSaveHandler implements \SessionHandlerInterface
             $expiry = (new \DateTime())->add($interval);
             $sess->setExpiry($expiry->format(\DateTime::ATOM));
 
-            // User Agent
-            $sess->setUserAgent($_SERVER["HTTP_USER_AGENT"]);
-
-            // IP
-            $sess->setIP($_SERVER["REMOTE_ADDR"]);
-
             // Insert in DB
             try {
                 \Repositories\Sessions::insert($sess);

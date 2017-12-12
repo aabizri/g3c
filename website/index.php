@@ -9,7 +9,15 @@ header('Content-type: text/html; charset=utf-8');
 ob_start();
 
 /* Chargement de l'autoloader */
-require_once(__DIR__."/Helpers/autoloader.php");
+require_once(__DIR__ . "/Helpers/autoloader.php");
+
+/* Tracking des requêtes */
+$request_tracker = new \Helpers\RequestTracker(true);
+// Enregistrer les infos sur la remote
+$ok = $request_tracker->setInfo();
+if (!$ok) {
+    echo "request tracker error: error setting server info";
+}
 
 /* Configuration des sessions */
 // Set session handler
@@ -21,9 +29,12 @@ $sess_opt = [
     "cookie_lifetime" => \Helpers\SessionSaveHandler::lifetime * 60 * 60 * 24,
 ];
 session_start($sess_opt);
+// Register it on the tracker
+$request_tracker->setSession(session_id());
 
 /* Routage */
 // Récupération de la (c)atégorie et de l'(a)ction
+// Catégorie
 http_response_code(400);
 if (empty($_GET["c"])) {
     echo "400 error: no category given";
@@ -31,11 +42,18 @@ if (empty($_GET["c"])) {
 }
 $category = $_GET["c"];
 
+// Action
 if (empty($_GET["a"])) {
     echo "400 error: no action given";
     die;
 }
 $action = $_GET["a"];
+
+// Enregistrement dans le tracker
+$ok = $request_tracker->setControllerAndAction($category, $action);
+if (!$ok) {
+    echo "request tracker error: error setting controller and/or action";
+}
 
 // Récupération des paramètres GET
 $get = $_GET;
@@ -46,7 +64,7 @@ $post = $_POST;
 
 // Route
 http_response_code(200);
-$exists = \Helpers\Router::route($category,$action,$get,$post);
+$exists = \Helpers\Router::route($category, $action, $get, $post);
 
 // If it doesn't exist, return a 404
 if (!$exists) {
