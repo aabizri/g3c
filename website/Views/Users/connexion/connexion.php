@@ -20,8 +20,8 @@
 
 <div id="login">
 <form action="index.php?c=User&a=postConnection" method="post">
-    <label>Pseudo ou courriel</label><input type="text" name="login"/>
-    <label>Mot de passe</label><input type="password" name="password"/>
+    <label>Pseudo ou courriel : </label><input type="text" name="login"/>
+    <label>Mot de passe : </label><input type="password" name="password"/>
     <input type="submit" value="Connexion"/>
 </form>
 <p id="inscription">Vous n'êtes pas inscrit? Cliquez <a href="index.php?c=User&a=getSubscriptionPage">ici</a></p>

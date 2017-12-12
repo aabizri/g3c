@@ -1,0 +1,90 @@
+body {
+	position : relative;
+	height: 1000px;
+	background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
+	background-size: cover;
+	background-position: center;
+	font-family: Verdana;
+	overflow-x: hidden;
+}
+
+#Menu  {
+	position: fixed;
+	list-style: none;
+	left:-49px;
+	top: 20px;
+}
+
+#Menu input
+{
+	background-color: #d9c4b19b;
+	font-family: Verdana, sans-serif;
+	color: #955252;
+	width: 160px;
+	height: 95px;
+	font-size:14px;
+	margin: -25px 0px;
+	cursor: pointer;
+}
+
+#textemenu
+{
+	position: relative;
+	margin: 10px;
+}
+
+#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres, #Mesparametres, #Boutique
+{
+	position: relative;
+	margin: 50px 10px;
+}
+
+#nombrepc
+{
+	position: relative;
+	left: 20%;
+	top: 60px;
+}
+
+#titreperipherique
+{
+	position: relative;
+	left: 20%;
+	top: 80px;
+}
+
+#ajouterperipherique
+{
+	position: relative;
+	left: 60%;
+	top: 35px;
+    border-radius: 1px;
+}
+
+#listeperipheriques
+{
+    position: relative;
+    text-align: center ;
+    width: 65%;
+    left:25%;
+    top: 90px;
+    border: 1px solid #955252;
+    border-radius: 5px;
+    background-color:#d9c4b19b ;
+}
+
+#tableperipheriques
+{
+    margin-bottom: 20px;
+}
+
+#tableperipheriques td, #tableperipheriques th
+{
+    border: 1px solid black;
+    padding: 10px 15px;
+}
+
+table
+{
+    border-collapse: collapse;
+}
