@@ -37,9 +37,6 @@ class Peripherals extends Repository
 
         // Execute query
         $sth->execute($data);
-
-        // Pull
-        self::pull($p);
     }
 
     /**
@@ -52,7 +49,7 @@ class Peripherals extends Repository
     {
         // SQL
         $sql = "UPDATE peripherals
-        SET display_name = :display_name, build_date = :build_date, add_date = :add_date, property_id = :property_id, room_id = :room_id
+        SET display_name = :display_name, build_date = :build_date, add_date = :add_date, public_key = :public_key
         WHERE uuid = :uuid;";
 
         // Prepare statement
@@ -61,19 +58,14 @@ class Peripherals extends Repository
         // Prepare data to be updated
         $data = [
             ':uuid' => $p->getUUID(),
+            ':display_name' => $p->getDisplayName(),
             ':build_date' => $p->getBuildDate(),
             ':add_date' => $p->getAddDate(),
             ':public_key' => $p->getPublicKey(),
-            ':property_id' => $p->getPropertyId(),
-            ':room_id' => $p->getRoomId(),
-        ];
-
+        ]; // We don't have the ID in the Push, as they are only updated by the attachToXXX methods
 
         // Execute query
         $sth->execute($data);
-
-        // Pull
-        self::pull($p);
     }
 
     /**
@@ -102,7 +94,7 @@ class Peripherals extends Repository
         $data = $sth->fetch(PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
-        if ($data == null) {
+        if ($data === false || $data === null) {
             throw new Exception("No such Model\Peripheral found");
         }
 
@@ -145,12 +137,12 @@ class Peripherals extends Repository
         $db_last_updated = $sth->fetchColumn(0);
 
         // If nil, we throw an exception
-        if ($db_last_updated == null) {
+        if ($db_last_updated === null) {
             throw new Exception("No such Peripheral found");
         }
 
         // If empty, that's an Exception
-        if ($db_last_updated == "") {
+        if ($db_last_updated === "") {
             throw new Exception("Empty last_updated");
         }
 
@@ -299,8 +291,8 @@ class Peripherals extends Repository
                 break;
         }
 
-        // Pull
-        self::pull($p);
+        // Set the ID and date
+        $p->setRoomId($roomID);
     }
 
     /**
@@ -317,14 +309,18 @@ class Peripherals extends Repository
     {
         // SQL
         $sql = "UPDATE peripherals
-        SET property_id = :property_id
+        SET property_id = :property_id, add_date = :add_date
         WHERE uuid = :uuid;";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
-        $sth->execute(array(':property_id' => $propertyID, ':uuid' => $p->getUUID()));
+        $now = (new \Datetime)->format(\DateTime::ATOM);
 
-        // Pull
-        self::pull($p);
+        // Execute
+        $sth->execute(array(':property_id' => $propertyID, ':add_date' => $now, ':uuid' => $p->getUUID()));
+
+        // Set the ID and date
+        $p->setPropertyId($propertyID);
+        $p->setAddDate($now);
     }
 }

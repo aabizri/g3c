@@ -251,7 +251,7 @@ function testPeripheralModel()
     // Create a new entity
     echo "<b>Création d'un nouveau Entities\Peripheral...</b>";
     $p1 = new Peripheral();
-    echo "<b>Succès:</b>"."<br/>";
+    echo "<b>Succès !</b>"."<br/>";
     echo $p1;
     echo "<br/>";
 
@@ -261,14 +261,33 @@ function testPeripheralModel()
     echo "<b>Succès !</b>"."<br/>";
     echo $p1;
 
-    // Attach
+    // Change data
+    $p1->setDisplayName("Périphérique de Test");
+    $p1->setBuildDate("1997-04-09");
+
+    // Push
+    echo "<b>Push des dernières modifications...</b>";
+    Repositories\Peripherals::push($p1);
+    echo "<b>Succès !</b>"."<br/>";
+
+    // Pull
+    echo "<b>Pull post-push...</b>";
+    Repositories\Peripherals::pull($p1);
+    echo "<b>Succès !</b>"."<br/>";
+
+    // Attach to property
     echo "<b>Attachement à la propriété...</b>";
     $p1->attachToProperty(1);
     echo "<b>Succès !</b>"."<br/>";
+    echo $p1;
+    echo "<br/>";
 
-    echo "<b>Attachement à la pièce...";
+    // Attach to room
+    echo "<b>Attachement à la pièce...</b>";
     $p1->attachToRoom(1);
     echo "<b>Succès !</b>"."<br/>";
+    echo $p1;
+    echo "<br/>";
 }
 
 testPeripheralModel();
