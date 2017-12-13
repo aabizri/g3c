@@ -2,12 +2,11 @@ footer {
     background-color: #d9c4b19b;
     font-family: Verdana, sans-serif;
     color: #955252;
-    position :absolute;
-    width: 1272px;
-    bottom: -10px;
+    position :relative;
+    bottom:-45%;
     height: 80px;
-    left: -9px;
-    overflow-x: hidden;
+    width: 101.5%;
+    left: -7px;
 }
 
 #SAV {
@@ -39,7 +38,7 @@ footer {
 
 #rights{
     position: absolute;
-    left: 550px;
+    left:45%;
     bottom: 0px;
     font-size: 60%;
 }

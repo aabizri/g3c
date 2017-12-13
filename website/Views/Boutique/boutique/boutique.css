@@ -46,18 +46,18 @@ header {
 
 body {
 	position : relative;
-	height: 1190px;
+	height: 1250px;
 	background-image: url(fondsite.jpg);
 	background-position: center;
 	background-size: cover;
 }
 
 #navigation{
-	position: absolute;
-	display: flex;
+	position: relative;
+	display: inline;
 	list-style: none;
-	top: 25px;
-	left: -15px;
+	top: 35px;
+
 }
 
 #accessoire:hover {
@@ -74,10 +74,9 @@ body {
 
 button {
 	padding: 20px 140px;
-	margin: -1px;
+	margin: 0px;
 	background: #d9c4b19b;
 	position: relative;
-	left: 20%;
 	font-size: large;
 	float: left;
 	cursor:pointer;
@@ -87,12 +86,12 @@ button {
 	left: 30px;
 	border: 1px solid #955252 ;
 	background-color: #d9c4b19b ;
-	padding-bottom: 250px;
+	padding-bottom: 20px;
 	padding-top: 10px;
 	border-radius: 20px;
-	text-align: center;
 	font-size: 20px;
 	width:95%;
+	text-align: center;
 }
 
 #cemac{

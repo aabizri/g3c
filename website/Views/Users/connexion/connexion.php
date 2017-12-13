@@ -1,3 +1,4 @@
+<main>
 <div id="explications">
     <div>
         <h3>CONFORT</h3>
@@ -19,11 +20,11 @@
 
 <div id="login">
 <form action="index.php?c=User&a=postConnection" method="post">
-    <label>Pseudo ou courriel</label><input type="text" name="login"/>
-    <label>Mot de passe</label><input type="password" name="password"/>
+    <label>Pseudo ou courriel : </label><input type="text" name="login"/>
+    <label>Mot de passe : </label><input type="password" name="password"/>
     <input type="submit" value="Connexion"/>
 </form>
-<p id="inscription">Vous n'êtes pas inscrit? Cliquez <a href="D:\Bryan\ISEP\APP G3C\Info\Site\Page d'inscription\Inscription.html">ici</a></p>
+<p id="inscription">Vous n'êtes pas inscrit? Cliquez <a href="index.php?c=User&a=getSubscriptionPage">ici</a></p>
 </div>
 <div id="domisep">
     <i><h2>Par DOMISEP</h2>
@@ -31,3 +32,4 @@
         un réel confort en toute sécurité.<br>La technologie du futur dans votre habitat d’aujourd’hui.
         <br>Tout cela est possible grâce à <b>Livewell</b>.</p></i>
 </div>
+</main>

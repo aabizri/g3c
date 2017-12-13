@@ -1,0 +1,255 @@
+body {
+	position : relative;
+	height: 800px;
+	background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
+	background-size: cover;
+	background-position: center;
+	width: auto;
+	font-family: Verdana;
+    overflow-x: hidden;
+}
+
+header {
+	color: white;
+	font-family: Verdana, sans-serif;
+	background-color: #955252;
+	position : fixed;
+	top: 0px;
+	right: 0px;
+	left: 0px;
+	height: 60px;
+	z-index: 1000;
+}
+
+
+#logo {
+	position: relative;
+	top: 5px;
+	left: 20px;
+}
+
+#Nom {
+	color: white;
+	font-family: American Typewriter, serif;
+	font-style: oblique;
+	font-size: 30px;
+	position: absolute;
+	top: -11px;
+	left: 70px;
+}
+
+#accroche {
+	font-family: Verdana, sans-serif;
+	color: white;
+	position: relative;
+	left: 42%;
+    top: -20%;
+}
+
+
+#Nomdelapage {
+	font-family: Verdana, sans-serif;
+	color: white;
+	position: relative;
+	left: 90%;
+	top: -50px;
+}
+
+#Menu  {
+	position: fixed;
+	list-style: none;
+	left:-49px;
+	top: 20px;
+}
+
+#Menu input
+{
+	background-color: #d9c4b19b;
+	font-family: Verdana, sans-serif;
+	color: #955252;
+	width: 100%;
+	height: 95px;
+	font-size:14px;
+	margin: -25px 0px;
+	cursor: pointer;
+}
+
+#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres, #Mesparametres
+{
+	position: relative;
+	margin: 50px 10px;
+    width: 100%;
+}
+
+/*Mes pièces*/
+
+#nompagepieces
+{
+	position: relative;
+	top: 80px;
+	left:20%;
+}
+
+#informationspiece
+{
+	display: flex;
+    position: relative;
+    justify-content: center;
+}
+
+#temperature, #luminosite, #humidite, #qualiteair, #presence
+{
+    width: 15%;
+    padding-bottom: 20px;
+	margin: 10px;
+	border: 1px solid #955252 ;
+	background-color: #d9c4b19b ;
+	border-radius: 5px;;
+}
+
+
+#vueinformation
+{
+	position: relative;
+	left:23%;
+	top: 160px;
+	border: 1px solid #955252;
+	border-radius: 5px;
+	width:70%;
+	background-color:#d9c4b19b;
+	text-align: center;
+}
+
+#choixsalle
+{
+	position: relative;
+	top: 80px;
+	left:20%;
+}
+
+#choixsalle input,#choixsalle select
+{
+    border-radius:1px;
+    font-size: medium;
+}
+
+#action
+{
+	position: relative;
+	left: 23%;
+	top: 200px;
+	border: 1px solid #955252;
+	border-radius: 5px;
+	width: 70%;
+	background-color: #d0c4b19b ;
+	text-align: center;
+}
+
+#actionspieces
+{
+	display: flex;
+    justify-content: center;
+	padding: 10px 40px;
+}
+
+#actionspieces p
+{
+    width: 25%;
+    padding-top: 10px;
+    padding-bottom: 50px;
+    margin: 10px;
+    border: 1px solid #955252 ;
+    background-color: #d9c4b19b ;
+    border-radius: 5px;
+}
+
+#actionspieces input
+{
+    margin-bottom: 5px;
+}
+
+.action{
+    height: 50%;
+    width: 40%;
+    font-size: large;
+    text-align: center;
+    border-radius:5px;
+}
+
+#valider
+{
+    height: 20px;
+    border-radius: 3px;
+}
+
+#ajouterpieces
+{
+	position: relative;
+	left: 23%;
+	top: 250px;
+	border: 1px solid #955252;
+	border-radius: 5px;
+	width: 70%;
+	background-color: #d0c4b19b ;
+	text-align: center;
+}
+
+#champsajouterpiece
+{
+	text-align: left;
+	position: relative;
+	left: 20px;
+	padding-bottom: 20px;
+}
+
+#validerajoutpiece
+{
+	padding: 20px 40px;
+}
+
+/*Footer*/
+
+footer {
+	background-color: #d9c4b19b;
+	font-family: Verdana, sans-serif;
+	color: #955252;
+	position :relative;
+	bottom:-45%;
+	height: 80px;
+    width: 101.5%;
+    left: -7px;
+}
+
+#SAV {
+	position : relative;
+	bottom : -14px;
+	left : 20px;
+	margin: 1px;
+	font-size: 90%;
+}
+#Reseauxsociaux {
+	position : absolute;
+	bottom : 35px;
+	right : 25px;
+}
+
+#Fb
+{
+	position: absolute;
+	right: 30px;
+	bottom: 0px;
+}
+
+#Twitter
+{
+	position: absolute;
+	right: 90px;
+	bottom: 0px;
+}
+
+#rights{
+	position: absolute;
+	left: 45%;
+	bottom: 0px;
+	font-size: 60%;
+}

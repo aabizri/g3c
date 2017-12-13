@@ -1,4 +1,4 @@
-body {
+main {
 	position : relative;
 	height: 580px;
 	font-family: Verdana, sans-serif;
@@ -29,8 +29,9 @@ body {
 {
 	display: block;
 	position: relative;
-	top: 20%;
 	text-align: center;
+	top: -100px;
+	left:32%;
 }
 
 #domisep
