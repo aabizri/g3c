@@ -324,11 +324,4 @@ class Peripherals extends Repository
         $p->setAddDate($now);
     }
 
-    public static function getRoomID(Entities\Peripheral $p , int $room_id)
-    {
-        // SQL
-        $sql = "SELECT room_id FROM peripherals WHERE display_name = :display_name;";
-
-        //
-    }
 }

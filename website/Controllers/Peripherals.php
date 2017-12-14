@@ -53,7 +53,28 @@ class Peripherals
 
     public function afficherPeripheriques ( array $get, array $post):void
     {
-        //Récupérer les noms des périphériques
-        $p = \Repositories\Peripherals::get
+        //Récupérer les infos
+        $r=$_SESSION["user_id"];
+
+        //Récupérer le property_ID
+        $property_id = \Entities\Peripheral::getPropertyId($r);
+
+        /*Récupère les id des capteurs sous forme de array*/
+        $peripheriques_id_list = \Repositories\Peripherals::findAllByPropertyID($property_id);
+        if ($peripheriques_id_list == null) {
+            echo "Il n'y a pas de périphériques.";
+            return;
+        }
+
+        //Récupérer les noms des périphériques pour chaque capteur
+        $peripherals_list = [];
+        foreach ($peripheriques_id_list as $peripherals_ID) {
+            $peripherals = \Repositories\Peripherals::retrieve($peripherals_ID);
+            $peripherals_list[] = $peripherals;
+        }
+
+        foreach ($peripherals_list as $display_name){
+            
+        }
     }
 }
