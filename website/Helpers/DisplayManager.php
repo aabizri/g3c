@@ -28,11 +28,23 @@ class DisplayManager
         "inscription" => "Users",
     ];
 
+    private static function subroot(): string {
+        $path = __DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."config.ini";
+        $conf_file = parse_ini_file($path);
+        if ($conf_file == null) {
+            throw new \Exception("NO CONFIG FILE FFS");
+        }
+        if (!array_key_exists("subroot", $conf_file)) {
+            throw new \Exception("NO ARRAY MEMBER FFS");
+        }
+        return $conf_file["subroot"];
+    }
+
     /**
      * @return string
      */
     public static function websiteRootFS(string $dir = ""): string{
-        return str_replace("/", DIRECTORY_SEPARATOR,$_SERVER["DOCUMENT_ROOT"].DIRECTORY_SEPARATOR."g3c".DIRECTORY_SEPARATOR.$dir);
+        return str_replace("/", DIRECTORY_SEPARATOR,$_SERVER["DOCUMENT_ROOT"].DIRECTORY_SEPARATOR.self::subroot().DIRECTORY_SEPARATOR.$dir);
     }
 
     /**
