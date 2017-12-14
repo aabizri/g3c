@@ -21,8 +21,8 @@ class User
         // Check if the data exists
         $required = ["nick", "email", "password", "name", "surname", "phone"];
         foreach ($required as $key) {
-            if (empty($post[$key])){
-                echo "Missing key: ".$key;
+            if (empty($post[$key])) {
+                echo "Missing key: " . $key;
                 return;
             }
         }
@@ -66,7 +66,7 @@ class User
         try {
             Repositories\Users::insert($u);
         } catch (\Exception $e) {
-            echo "Error inserting user" . $e;
+            echo "Error inserting user: " . $e;
         }
 
         // Include la page de confirmation
@@ -84,8 +84,8 @@ class User
         // Check if the data exists
         $required = ["login", "password"];
         foreach ($required as $key) {
-            if (empty($post[$key])){
-                echo "Missing key: ".$key;
+            if (empty($post[$key])) {
+                echo "Missing key: " . $key;
                 return;
             }
         }

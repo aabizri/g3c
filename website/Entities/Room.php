@@ -10,16 +10,20 @@ namespace Entities;
 
 class Room
 {
+    /* PROPERTIES */
+
     private $id;
     private $property_id;
     private $name;
     private $creation_date;
     private $last_updated;
 
+    /* GETTERS AND SETTERS */
+
     /**
      * @return int
      */
-    public function getId(): int
+    public function getID(): int
     {
         return $this->id;
     }
@@ -28,7 +32,7 @@ class Room
      * @param int $id
      * @return bool
      */
-    public function setId(int $id): bool
+    public function setID(int $id): bool
     {
         $this->id = $id;
         return true;
@@ -37,7 +41,7 @@ class Room
     /**
      * @return int
      */
-    public function getPropertyId(): int
+    public function getPropertyID(): int
     {
         return $this->property_id;
     }
@@ -46,7 +50,7 @@ class Room
      * @param int $property_id
      * @return bool
      */
-    public function setPropertyId(int $property_id): bool
+    public function setPropertyID(int $property_id): bool
     {
         $this->property_id = $property_id;
         return true;

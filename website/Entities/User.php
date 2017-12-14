@@ -10,6 +10,7 @@ namespace Entities;
  */
 class User
 {
+    /* PROPERTIES */
 
     private $id;
     private $display;
@@ -17,18 +18,16 @@ class User
     private $birth_date;
     private $creation_date;
     private $email;
-    /**
-     * Password hashed & salted with BCrypt
-     * @var string
-     */
-    private $password_hashed;
+    private $password_hashed; // Password hashed & salted with BCrypt
     private $phone;
     private $last_updated;
+
+    /* GETTERS AND SETTERS */
 
     /**
      * @return int
      */
-    public function getId(): int
+    public function getID(): int
     {
         return $this->id;
     }
@@ -37,7 +36,7 @@ class User
      * @param string $id
      * @return bool
      */
-    public function setId(string $id): bool
+    public function setID(string $id): bool
     {
         $this->id = $id;
         return true;
@@ -159,19 +158,6 @@ class User
     }
 
     /**
-     * Set the password, hashing & salting it via BCRYPT
-     *
-     * @param string $clear is the password
-     *
-     * @return bool false if invalid
-     */
-    public function setPassword(string $clear): bool
-    {
-        // Calculer le hash associé au mot de passe via BCRYPT, le salt étant généré automatiquement
-        return $this->setPasswordHashed(password_hash($clear, PASSWORD_BCRYPT));
-    }
-
-    /**
      * @return string
      */
     public function getPasswordHashed(): string
@@ -226,6 +212,21 @@ class User
         return true;
     }
 
+    /* BUSINESS LOGIC */
+
+    /**
+     * Set the password, hashing & salting it via BCRYPT
+     *
+     * @param string $clear is the password
+     *
+     * @return bool false if invalid
+     */
+    public function setPassword(string $clear): bool
+    {
+        // Calculer le hash associé au mot de passe via BCRYPT, le salt étant généré automatiquement
+        return $this->setPasswordHashed(password_hash($clear, PASSWORD_BCRYPT));
+    }
+
     /**
      * Validate the password
      *
@@ -238,34 +239,5 @@ class User
         // Validate the password
         $ok = password_verify($clear, $this->password_hashed);
         return $ok;
-    }
-
-    /* BUSINESS LOGIC */
-
-    /**
-     * Validate that this is correct
-     *
-     * @return bool true if correct, false if incorrect
-     */
-    public function validate(): bool
-    {
-        // Verifier que $birth_date est inférieur à la date actuelle
-        if (strtotime($this->birth_date) > time()) {
-            return false; // Birth Date invalid
-        }
-
-        // Verifier que le courriel est correct
-        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
-            return false; // Email invalid
-        }
-
-        return is_int($this->id) &&
-            is_string($this->display) &&
-            is_string($this->nick) &&
-            is_string($this->birth_date) &&
-            is_string($this->creation_date) &&
-            is_string($this->email) &&
-            is_string($this->phone) &&
-            is_string($this->last_updated);
     }
 }
