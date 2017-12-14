@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le :  mar. 05 déc. 2017 à 18:56
+-- Généré le :  jeu. 07 déc. 2017 à 23:52
 -- Version du serveur :  10.1.28-MariaDB
 -- Version de PHP :  7.1.11
 
@@ -364,6 +364,24 @@ INSERT INTO `properties` (`id`, `name`, `address`, `creation_date`, `last_update
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `requests`
+--
+
+CREATE TABLE `requests` (
+  `id` int(11) NOT NULL,
+  `ip` varchar(39) COLLATE utf8_unicode_ci NOT NULL COMMENT 'IPv6 or IPv4',
+  `user_agent_txt` text COLLATE utf8_unicode_ci NOT NULL,
+  `user_agent_hash` binary(32) NOT NULL COMMENT 'Hashed with SHA-256',
+  `session_id` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `controller` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `action` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `started_processing` timestamp(3) NOT NULL DEFAULT '0000-00-00 00:00:00.000',
+  `finished_processing` timestamp(3) NOT NULL DEFAULT '0000-00-00 00:00:00.000'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `roles`
 --
 
@@ -431,14 +449,11 @@ CREATE TABLE `sensors` (
 
 CREATE TABLE `sessions` (
   `id` varchar(128) COLLATE utf8_unicode_ci NOT NULL COMMENT 'PHP Session ID',
-  `user` int(11) DEFAULT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `value` text COLLATE utf8_unicode_ci NOT NULL,
   `started` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `expiry` datetime NOT NULL,
   `canceled` tinyint(1) NOT NULL DEFAULT '0',
-  `ip` varchar(39) COLLATE utf8_unicode_ci NOT NULL,
-  `user_agent_txt` text COLLATE utf8_unicode_ci NOT NULL,
-  `user_agent_hash` binary(32) NOT NULL COMMENT 'Hashed with SHA-256',
   `last_updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -446,33 +461,36 @@ CREATE TABLE `sessions` (
 -- Déchargement des données de la table `sessions`
 --
 
-INSERT INTO `sessions` (`id`, `user`, `value`, `started`, `expiry`, `canceled`, `ip`, `user_agent_txt`, `user_agent_hash`, `last_updated`) VALUES
-('0f73532b8d5ea23c9173e2c7a63c7fae', NULL, '', '2017-12-05 11:54:34', '2017-12-12 11:54:34', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 11:54:34'),
-('1114c940d95fdb72cad47a7c8befc6ad', NULL, 'user|s:4:\"none\";', '2017-12-05 12:36:42', '2017-12-12 12:36:42', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 12:36:42'),
-('14668a9bbc2da15675004992b715ddab', NULL, '', '2017-12-05 11:54:09', '2017-12-12 11:54:09', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 11:54:09'),
-('1bed6d317c6604c56119327457d2b445', NULL, '', '2017-12-05 13:29:15', '2017-12-12 13:29:15', 0, '::1', 'curl/7.55.1', 0x3535373033613130353166636666313130326437343964633631386534666437, '2017-12-05 13:29:15'),
-('2955f858a5635b2fe8dd3216532276cc', NULL, 'user|s:4:\"none\";', '2017-12-05 12:31:40', '2017-12-12 12:31:40', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 12:31:40'),
-('2fd6e9e10f40528888136a122f37fc71', NULL, '', '2017-12-05 11:53:45', '2017-12-12 11:53:45', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 11:53:45'),
-('3d5c2421f43da665f27552ca28639ad5', NULL, '', '2017-12-05 13:29:14', '2017-12-12 13:29:14', 0, '::1', 'curl/7.55.1', 0x3535373033613130353166636666313130326437343964633631386534666437, '2017-12-05 13:29:14'),
-('418709ff18a000f6c1e46d732f6ee58e', NULL, 'user|s:4:\"none\";', '2017-12-05 11:58:34', '2017-12-12 11:58:34', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 11:58:34'),
-('42d2c5bc414116c8b41b25d9eb468f97', NULL, 'user|s:4:\"none\";', '2017-12-05 11:57:53', '2017-12-12 11:57:53', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 11:57:53'),
-('4b6cc59325a80b3db1be9e0a67056c94', NULL, '', '2017-12-05 12:44:31', '2017-12-12 12:44:31', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 12:44:31'),
-('503fe45703415539f3d93cb4ab96e5c9', NULL, 'user|s:4:\"none\";', '2017-12-05 12:31:53', '2017-12-12 12:31:53', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 12:31:53'),
-('5702a2debf95e8542111e2f04fa5dc7c', NULL, 'user|s:4:\"none\";', '2017-12-05 12:42:08', '2017-12-12 12:42:08', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 12:42:08'),
-('81e2e70f5e69c497fba2769ac0077d39', NULL, '', '2017-12-05 12:44:10', '2017-12-12 12:44:10', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 12:44:10'),
-('842278c34fc413995f517377afb751fa', NULL, '', '2017-12-05 13:29:44', '2017-12-12 13:29:44', 0, '::1', 'curl/7.55.1', 0x3535373033613130353166636666313130326437343964633631386534666437, '2017-12-05 13:29:44'),
-('8e2fa188d9f7877d3c94cff5884aa578', NULL, 'user|s:4:\"none\";', '2017-12-05 12:37:08', '2017-12-12 12:37:08', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 12:37:08'),
-('8e3e11b8374fd84009c77203d39727dd', NULL, 'user|s:4:\"none\";', '2017-12-05 12:21:26', '2017-12-12 12:21:26', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 12:21:26'),
-('92e91aafae18812e2f729b8a974aa0ec', NULL, '', '2017-12-05 13:37:22', '2017-12-12 13:37:22', 0, '::1', 'curl/7.55.1', 0x3535373033613130353166636666313130326437343964633631386534666437, '2017-12-05 13:37:22'),
-('a1dd457e924b76fb0aeca012319849bb', NULL, 'user|s:4:\"none\";', '2017-12-05 11:57:39', '2017-12-12 11:57:39', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 11:57:39'),
-('a2ef347a3b56198029b8d8251218d89e', NULL, '', '2017-12-05 12:42:48', '2017-12-12 12:42:48', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 12:42:48'),
-('ac287a58325ad0143d70b3e7a775f993', NULL, 'user|s:4:\"none\";', '2017-12-05 12:19:32', '2017-12-12 12:19:32', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 12:19:32'),
-('b6e014921d2227e8336b8ae855482235', NULL, '', '2017-12-05 13:37:19', '2017-12-12 13:37:19', 0, '::1', 'curl/7.55.1', 0x3535373033613130353166636666313130326437343964633631386534666437, '2017-12-05 13:37:19'),
-('c8b618435a5295e9283a72a2589ee0d7', NULL, 'user|s:4:\"none\";', '2017-12-05 12:31:29', '2017-12-12 12:31:29', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 12:31:29'),
-('d209cacf6ed7fb6befb812d63449355d', NULL, '', '2017-12-05 13:37:29', '2017-12-12 13:37:29', 0, '::1', 'curl/7.55.1', 0x3535373033613130353166636666313130326437343964633631386534666437, '2017-12-05 13:37:29'),
-('e0df2793de94a9623e77ffda0bce4806', NULL, 'user|s:4:\"none\";', '2017-12-05 12:32:12', '2017-12-12 12:32:12', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 12:32:12'),
-('e8b3ad26976327aa5a656490e1cb8e18', NULL, '', '2017-12-05 12:44:02', '2017-12-12 12:44:02', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 12:44:02'),
-('f8b89601292215836328d9ae1d5dba84', NULL, 'user|s:4:\"none\";', '2017-12-05 12:21:12', '2017-12-12 12:21:12', 0, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2017-12-05 12:21:12');
+INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled`, `last_updated`) VALUES
+('0f73532b8d5ea23c9173e2c7a63c7fae', NULL, '', '2017-12-05 11:54:34', '2017-12-12 11:54:34', 0, '2017-12-05 11:54:34'),
+('1114c940d95fdb72cad47a7c8befc6ad', NULL, 'user|s:4:\"none\";', '2017-12-05 12:36:42', '2017-12-12 12:36:42', 0, '2017-12-05 12:36:42'),
+('14668a9bbc2da15675004992b715ddab', NULL, '', '2017-12-05 11:54:09', '2017-12-12 11:54:09', 0, '2017-12-05 11:54:09'),
+('1bed6d317c6604c56119327457d2b445', NULL, '', '2017-12-05 13:29:15', '2017-12-12 13:29:15', 0, '2017-12-05 13:29:15'),
+('2955f858a5635b2fe8dd3216532276cc', NULL, 'user|s:4:\"none\";', '2017-12-05 12:31:40', '2017-12-12 12:31:40', 0, '2017-12-05 12:31:40'),
+('2fd6e9e10f40528888136a122f37fc71', NULL, '', '2017-12-05 11:53:45', '2017-12-12 11:53:45', 0, '2017-12-05 11:53:45'),
+('3d5c2421f43da665f27552ca28639ad5', NULL, '', '2017-12-05 13:29:14', '2017-12-12 13:29:14', 0, '2017-12-05 13:29:14'),
+('418709ff18a000f6c1e46d732f6ee58e', NULL, 'user|s:4:\"none\";', '2017-12-05 11:58:34', '2017-12-12 11:58:34', 0, '2017-12-05 11:58:34'),
+('42d2c5bc414116c8b41b25d9eb468f97', NULL, 'user|s:4:\"none\";', '2017-12-05 11:57:53', '2017-12-12 11:57:53', 0, '2017-12-05 11:57:53'),
+('46defb11733028a6cab0a0c0c71c2ad7', NULL, '', '2017-12-07 10:47:13', '2017-12-14 10:47:13', 0, '2017-12-07 10:47:13'),
+('4b6cc59325a80b3db1be9e0a67056c94', NULL, '', '2017-12-05 12:44:31', '2017-12-12 12:44:31', 0, '2017-12-05 12:44:31'),
+('503fe45703415539f3d93cb4ab96e5c9', NULL, 'user|s:4:\"none\";', '2017-12-05 12:31:53', '2017-12-12 12:31:53', 0, '2017-12-05 12:31:53'),
+('56a283343d15a80545f3deaa6fb64fb1', NULL, '', '2017-12-07 23:03:33', '2017-12-14 23:03:33', 0, '2017-12-07 23:03:33'),
+('5702a2debf95e8542111e2f04fa5dc7c', NULL, 'user|s:4:\"none\";', '2017-12-05 12:42:08', '2017-12-12 12:42:08', 0, '2017-12-05 12:42:08'),
+('81e2e70f5e69c497fba2769ac0077d39', NULL, '', '2017-12-05 12:44:10', '2017-12-12 12:44:10', 0, '2017-12-05 12:44:10'),
+('842278c34fc413995f517377afb751fa', NULL, '', '2017-12-05 13:29:44', '2017-12-12 13:29:44', 0, '2017-12-05 13:29:44'),
+('8e2fa188d9f7877d3c94cff5884aa578', NULL, 'user|s:4:\"none\";', '2017-12-05 12:37:08', '2017-12-12 12:37:08', 0, '2017-12-05 12:37:08'),
+('8e3e11b8374fd84009c77203d39727dd', NULL, 'user|s:4:\"none\";', '2017-12-05 12:21:26', '2017-12-12 12:21:26', 0, '2017-12-05 12:21:26'),
+('92e91aafae18812e2f729b8a974aa0ec', NULL, '', '2017-12-05 13:37:22', '2017-12-12 13:37:22', 0, '2017-12-05 13:37:22'),
+('a1dd457e924b76fb0aeca012319849bb', NULL, 'user|s:4:\"none\";', '2017-12-05 11:57:39', '2017-12-12 11:57:39', 0, '2017-12-05 11:57:39'),
+('a2bf6ea6fb1256d4df5b44b503f1f08d', NULL, '', '2017-12-07 23:03:41', '2017-12-14 23:03:41', 0, '2017-12-07 23:03:41'),
+('a2ef347a3b56198029b8d8251218d89e', NULL, '', '2017-12-05 12:42:48', '2017-12-12 12:42:48', 0, '2017-12-05 12:42:48'),
+('ac287a58325ad0143d70b3e7a775f993', NULL, 'user|s:4:\"none\";', '2017-12-05 12:19:32', '2017-12-12 12:19:32', 0, '2017-12-05 12:19:32'),
+('b6e014921d2227e8336b8ae855482235', NULL, '', '2017-12-05 13:37:19', '2017-12-12 13:37:19', 0, '2017-12-05 13:37:19'),
+('c8b618435a5295e9283a72a2589ee0d7', NULL, 'user|s:4:\"none\";', '2017-12-05 12:31:29', '2017-12-12 12:31:29', 0, '2017-12-05 12:31:29'),
+('d209cacf6ed7fb6befb812d63449355d', NULL, '', '2017-12-05 13:37:29', '2017-12-12 13:37:29', 0, '2017-12-05 13:37:29'),
+('e0df2793de94a9623e77ffda0bce4806', NULL, 'user|s:4:\"none\";', '2017-12-05 12:32:12', '2017-12-12 12:32:12', 0, '2017-12-05 12:32:12'),
+('e8b3ad26976327aa5a656490e1cb8e18', NULL, '', '2017-12-05 12:44:02', '2017-12-12 12:44:02', 0, '2017-12-05 12:44:02'),
+('f8b89601292215836328d9ae1d5dba84', NULL, 'user|s:4:\"none\";', '2017-12-05 12:21:12', '2017-12-12 12:21:12', 0, '2017-12-05 12:21:12');
 
 -- --------------------------------------------------------
 
@@ -576,6 +594,13 @@ ALTER TABLE `properties`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `requests`
+--
+ALTER TABLE `requests`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `session_id` (`session_id`);
+
+--
 -- Index pour la table `roles`
 --
 ALTER TABLE `roles`
@@ -611,7 +636,7 @@ ALTER TABLE `sensors`
 --
 ALTER TABLE `sessions`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user` (`user`);
+  ADD KEY `user_id` (`user_id`) USING BTREE;
 
 --
 -- Index pour la table `subscriptions`
@@ -671,6 +696,12 @@ ALTER TABLE `permissions`
 --
 ALTER TABLE `properties`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `requests`
+--
+ALTER TABLE `requests`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT pour la table `roles`
@@ -750,6 +781,12 @@ ALTER TABLE `peripherals`
   ADD CONSTRAINT `peripherals_ibfk_2` FOREIGN KEY (`room_id`) REFERENCES `rooms` (`id`);
 
 --
+-- Contraintes pour la table `requests`
+--
+ALTER TABLE `requests`
+  ADD CONSTRAINT `requests_ibfk_1` FOREIGN KEY (`session_id`) REFERENCES `sessions` (`id`);
+
+--
 -- Contraintes pour la table `roles`
 --
 ALTER TABLE `roles`
@@ -773,7 +810,7 @@ ALTER TABLE `sensors`
 -- Contraintes pour la table `sessions`
 --
 ALTER TABLE `sessions`
-  ADD CONSTRAINT `sessions_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`);
+  ADD CONSTRAINT `sessions_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Contraintes pour la table `subscriptions`
