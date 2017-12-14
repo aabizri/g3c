@@ -30,7 +30,7 @@ class Peripherals
         $type = $post["type"];
         $room_id = $post["room_id"];
 
-        /*Vérifier qu'il n'existe pas d'entité avec un capteur qui a le meme nom dans la salle*/
+        /*Vérifier qu'il n'existe pas d'entité avec un même capteur avec le meme nom dans la même salle*/
         $nameDuplicate = Repositories\Peripherals::findAllByDisplayName($displayname) != null;
         if ($nameDuplicate) {
             echo "Un capteur a le même nom";
