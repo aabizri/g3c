@@ -29,7 +29,7 @@ class DisplayManager
      * @return string
      */
     public static function websiteRootFS(string $dir = ""): string{
-        return str_replace("/", DIRECTORY_SEPARATOR,$_SERVER["DOCUMENT_ROOT"]."/g3c/".$dir);
+        return str_replace("/", DIRECTORY_SEPARATOR,$_SERVER["DOCUMENT_ROOT"].DIRECTORY_SEPARATOR."g3c".DIRECTORY_SEPARATOR.$dir);
     }
 
     /**
