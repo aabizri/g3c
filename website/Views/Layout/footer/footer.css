@@ -1,9 +1,9 @@
 footer {
-    background-color: #d9c4b19b;
+    background-color: rgb(217,196,177);
     font-family: Verdana, sans-serif;
     color: #955252;
     position :relative;
-    bottom:-350px;
+    bottom:-180px;
     height: 80px;
     width: 101.5%;
     left: -7px;
