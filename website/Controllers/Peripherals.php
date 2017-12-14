@@ -13,11 +13,10 @@ use Entities;
 class Peripherals
 {
     /*Ajouter un peripherique*/
-    public function nouveaucapteur(array $get, array $post): void
+    public function postAddPeripheral(array $get, array $post): void
     {
-
         /*Vérifier que les données existent*/
-        $required = ["displayname", "type", "room_id"];
+        $required = ["uuid","displayname", "room_id"];
         foreach ($required as $key) {
             if (empty($post($key))) {
                 echo "Il manque : ".$key;
@@ -26,35 +25,27 @@ class Peripherals
         }
 
         /*Assigne les valeurs*/
+        $uuid = $post["uuid"];
         $displayname = $post["displayname"];
-        $type = $post["type"];
         $room_id = $post["room_id"];
 
-        /*Vérifier qu'il n'existe pas d'entité avec un même capteur avec le meme nom dans la même salle*/
-        $nameDuplicate = Repositories\Peripherals::findAllByDisplayName($displayname) != null;
-        if ($nameDuplicate) {
-            echo "Un capteur a le même nom";
+
+        /*Récupére l'entité périphérique ayant cet uuid*/
+        $p = Repositories\Peripherals::retrieve($uuid);
+        if ($p == null){
             return;
         }
 
-        /*Vérifier qu'il n'existe pas d'entité avec un capteur du meme type dans la salle*/
-        $sens_typeDuplicate = Repositories\Peripherals::findAllByType($type) != null;
-        if ($sens_typeDuplicate) {
-            echo "Un capteur identique est déja présent dans la salle";
-            return;
-        }
+        // Assigne les donéees à l'entité
+        $p->setDisplayName($displayname);
+        $p->setRoomId($room_id);
+        //$p->setPropertyId($property_id);
 
-        /*Créer l'entité*/
-        $u = new Entities\Peripheral();
-        $u->setName($displayname);
-        $u->setSenseType($type);
-        $u->setRoomAssigned($room_id);
-
-        /*Insérer l'entité dans la bdd*/
+        /*Assigner la valeur room_id*/
         try {
-            Repositories\Peripherals::insert($u);
-        } catch (\Exception $e) {
-            echo "Erreur" . $e;
+            $p = Repositories\Peripherals::push($p);
+        } catch (\Throwable $t) {
+            return;
         }
     }
 }
