@@ -49,19 +49,19 @@ class Sensor
     }
 
     /**
-     * @param string $sense_type
+     * @param int $sense_type
      * @return bool
      */
-    public function setSenseType(string $sense_type):bool
+    public function setSenseType(int $sense_type):bool
     {
         $this->sense_type = $sense_type;
         return true;
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getLastMeasure():string
+    public function getLastMeasure():int
     {
         return $this->last_measure;
     }

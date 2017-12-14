@@ -9,6 +9,8 @@
 namespace Repositories;
 
 
+use PDO;
+
 class Sensors extends Repository
 {
     /**
@@ -53,7 +55,7 @@ class Sensors extends Repository
     {
         // SQL
         $sql = "UPDATE sensors
-        SET sensor_type = :sensor_type,
+        SET sense_type = :sense_type
         WHERE id = :id";
 
         // Prepare statement
@@ -91,14 +93,14 @@ class Sensors extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':id' => $p->getID()));
+        $sth->execute(array(':id' => $s->getID()));
 
         // Retrieve
         $data = $sth->fetch(PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
         if ($data == null) {
-            throw new \Exception("No such Model\Sensor found");
+            throw new \Exception("No such Model\ Sensor found");
         }
 
         // Store
