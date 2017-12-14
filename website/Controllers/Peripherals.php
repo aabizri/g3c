@@ -76,5 +76,13 @@ class Peripherals
         foreach ($peripherals_list as $display_name){
             
         }
+
+        foreach ($peripherals_list as $room_id){
+
+        }
+
+        foreach ($peripherals_list as $last_updated){
+
+        }
     }
 }
