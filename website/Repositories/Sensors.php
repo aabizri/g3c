@@ -67,7 +67,6 @@ class Sensors extends Repository
             ':sense_type' => $s->getSenseType(),
         ];
 
-        // We don't have the ID in the Push, as they are only updated by the attachToXXX methods
 
         // Execute query
         $sth->execute($data);
@@ -111,6 +110,109 @@ class Sensors extends Repository
         );
 
         parent::executeSetterArray($s, $arr);
+    }
+
+    /**
+     * Syncs a sensor with the database, executing a Pull or a Push on a last_updated timestamp basis
+     * @param \Entities\Sensor $s to be synced
+     * @return void
+     * @throws \Exception if not found
+     */
+
+    public static function sync(\Entities\Sensor $s): void
+    {
+        // SQL to get last_updated on given peripheral
+        $sql = "SELECT last_updated
+          FROM sensors
+          WHERE id = :id;";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute
+        $sth->execute(array(':id' => $s->getId()));
+
+        // Retrieve
+        $db_last_updated = $sth->fetchColumn(0);
+
+        // If nil, we throw an exception
+        if ($db_last_updated == null) {
+            throw new \Exception("No such Sensor found");
+        }
+
+        // If empty, that's an Exception
+        if ($db_last_updated == "") {
+            throw new \Exception("Empty last_updated");
+        }
+
+        // If the DB was updated BEFORE the last update to the peripheral, push
+        if (strtotime($db_last_updated) < strtotime($s->getLastUpdated())) {
+            self::push($s);
+        } else {
+            self::pull($s);
+        }
+    }
+
+    /**
+     * Retrieve a sensor from the database given its id
+     * @param int $id of the sensor to retrieve
+     * @return \Entities\Sensor the sensor if found, null if not
+     * @throws \Exception
+     */
+    public static function retrieve(int $id): \Entities\Room
+    {
+        // SQL for counting
+        $sql = "SELECT count(*)
+            FROM sensors
+            WHERE id = :id";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute query
+        $sth->execute(array(':id' => $id));
+
+        // Fetch
+        $count = $sth->fetchColumn(0);
+
+        // If count is zero, then we return null
+        if ($count == 0) {
+            return null;
+        }
+
+        // Create a Sensor entity
+        $s = new \Entities\Sensor();
+
+        // Set the ID
+        $s->setId($id);
+
+        // Call Pull on it
+        self::pull($s);
+
+        // Return the user
+        return $s;
+    }
+
+
+    public static function FindAllByRoomID(int $room_id): array
+    {
+        // SQL
+        $sql = "SELECT id
+            FROM sensors WHERE peripheral_uuid
+            IN (SELECT peripheral_uuid FROM peripherals WHERE room_id=:room_id);";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute statement
+        $sth->execute([":room_id" => $room_id]);
+
+        // Fetch all results
+        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+        // Return the set
+        return $set;
+
     }
 
 }

@@ -49,10 +49,10 @@ class Sensor
     }
 
     /**
-     * @param int $sense_type
+     * @param string $sense_type
      * @return bool
      */
-    public function setSenseType(int $sense_type):bool
+    public function setSenseType(string $sense_type):bool
     {
         $this->sense_type = $sense_type;
         return true;
@@ -67,10 +67,10 @@ class Sensor
     }
 
     /**
-     * @param string $last_measure
+     * @param int $last_measure
      * @return bool
      */
-    public function setLastMeasure(string $last_measure):bool
+    public function setLastMeasure(int $last_measure):bool
     {
         $this->last_measure = $last_measure;
         return true;
