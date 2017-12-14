@@ -19,7 +19,7 @@ class Peripherals
         $required = ["uuid","displayname", "room_id"];
         foreach ($required as $key) {
             if (empty($post($key))) {
-                echo "Il manque : ".$key;
+                echo "Il manque : le ".$key;
                 return;
             }
         }
@@ -36,7 +36,7 @@ class Peripherals
             return;
         }
 
-        // Assigne les donéees à l'entité
+        // Assigne les données à l'entité
         $p->setDisplayName($displayname);
         $p->setRoomId($room_id);
         //$p->setPropertyId($property_id);
@@ -47,5 +47,13 @@ class Peripherals
         } catch (\Throwable $t) {
             return;
         }
+    }
+
+    //Afficher les périphériques
+
+    public function afficherPeripheriques ( array $get, array $post):void
+    {
+        //Récupérer les noms des périphériques
+        $p = \Repositories\Peripherals::get
     }
 }
