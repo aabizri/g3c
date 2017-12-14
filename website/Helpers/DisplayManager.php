@@ -29,7 +29,7 @@ class DisplayManager
      * @return string
      */
     public static function websiteRootFS(string $dir = ""): string{
-        return $_SERVER["DOCUMENT_ROOT"]."/g3c/".$dir;
+        return str_replace("/", DIRECTORY_SEPARATOR,$_SERVER["DOCUMENT_ROOT"]."/g3c/".$dir);
     }
 
     /**
@@ -68,10 +68,10 @@ class DisplayManager
         $category = self::$views_categories[$page_name];
 
         // Build the path
-        $base_path = self::views_directory.$category."/".$page_name."/".$page_name;
+        $base_path = self::views_directory.$category.DIRECTORY_SEPARATOR.$page_name.DIRECTORY_SEPARATOR.$page_name;
         $res["php"] = $base_path.".php";
         if (!file_exists(self::absolutifyFS($res["php"]))) {
-            throw new \Exception("Page listed in internal repository but not found on disk : ".$_SERVER["DOCUMENT_ROOT"].$res["php"]);
+            throw new \Exception("Page listed in internal repository but not found on disk : ".self::absolutifyFS($res["php"]));
         }
         if (file_exists(self::absolutifyFS($base_path.".css"))) {
             $res["css"] = $base_path.".css";
