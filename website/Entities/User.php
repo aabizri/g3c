@@ -2,10 +2,6 @@
 
 namespace Entities;
 
-// ONLY FOR DEBUG
-require_once("../index.php");
-
-
 /**
  * User est la classe entité pour les utilisateurs
  *
@@ -86,7 +82,7 @@ class User
     /**
      * @return string
      */
-    public function getBirthDate(): string
+    public function getBirthDate(): ?string
     {
         return $this->birth_date;
     }
@@ -96,8 +92,13 @@ class User
      *
      * @return bool false if invalid
      */
-    public function setBirthDate(string $birth_date): bool
+    public function setBirthDate(?string $birth_date): bool
     {
+        // Si null, alors unset la valeur
+        if (empty($birth_date)) {
+            unset($this->birth_date);
+        }
+
         // Verifier que $birth_date est inférieur à la date actuelle
         if (strtotime($birth_date) > time()) {
             return false;
@@ -148,7 +149,8 @@ class User
         }
 
         // Verifier que le courriel est correct
-        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+        if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+            echo "invalid email";
             return false; // Email invalid
         }
 
