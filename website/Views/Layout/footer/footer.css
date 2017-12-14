@@ -4,21 +4,21 @@ footer {
     color: #955252;
     position :relative;
     bottom:-180px;
-    height: 80px;
+    height: 65px;
     width: 101.5%;
     left: -7px;
 }
 
 #SAV {
     position : relative;
-    bottom : -14px;
+    bottom : -9px;
     left : 20px;
     margin: 1px;
     font-size: 90%;
 }
 #Reseauxsociaux {
     position : absolute;
-    bottom : 35px;
+    bottom : 25px;
     right : 25px;
 }
 

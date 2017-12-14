@@ -34,12 +34,17 @@ body {
 	left:20%;
 }
 
+#login input{
+    border-radius: 1px;
+}
+
 #domisep
 {
 	position: relative;
 	width: 50%;
 	font-family: didot, serif ;
 	font-size: x-large;
-	top:70px;
+	top:90px;
 	text-align: center;
+	left: 5%;
 }

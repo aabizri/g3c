@@ -32,15 +32,14 @@ header {
     font-family: Verdana, sans-serif;
     color: white;
     position: relative;
-    left: 500px;
+    left: 40%;
     top: -45px;
-
 }
 
 #nomdelapage {
     font-family: Verdana, sans-serif;
     color: white;
     position: relative;
-    left: 1050px;
+    left: 90%;
     top: -80px;
 }

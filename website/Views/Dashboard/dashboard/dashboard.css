@@ -8,44 +8,6 @@ body {
 	overflow-x: hidden;
 }
 
-header {
-	color: white;
-	font-family: Verdana, sans-serif;
-	background-color: #955252;
-	position : fixed;
-	top: 0px;
-	right: 0px;
-	left: 0px;
-	height: 60px;
-	z-index: 1000;
-}
-
-
-#logo {
-	position: relative;
-	top: 5px;
-	left: 20px;
-}
-
-#Nom {
-	color: white;
-	font-family: American Typewriter, serif;
-	font-style: oblique;
-	font-size: 30px;
-	position: absolute;
-	top: -11px;
-	left: 70px;
-}
-
-#accroche {
-	font-family: Verdana, sans-serif;
-	color: white;
-	position: relative;
-	left: 42%;
-	top: -20%;
-}
-
-
 #Nomdelapage {
 	font-family: Verdana, sans-serif;
 	color: white;
@@ -63,7 +25,7 @@ header {
 
 #Menu input
 {
-	background-color: #d9c4b19b;
+    background-color: rgb(217,196,177);
 	font-family: Verdana, sans-serif;
 	color: #955252;
 	width: 100%;
@@ -85,7 +47,7 @@ header {
 #Tableaudebord
 {
 	position: relative;
-	top: 80px;
+	top: 60px;
 	left:20%;
 }
 
@@ -103,7 +65,6 @@ header {
 	padding-bottom: 20px;
 	margin: 10px;
 	border: 1px solid #955252 ;
-	background-color: #d9c4b19b ;
 	border-radius: 5px;;
 }
 
@@ -112,11 +73,11 @@ header {
 {
 	position: relative;
 	left:23%;
-	top: 160px;
+	top: 100px;
 	border: 1px solid #955252;
 	border-radius: 5px;
 	width:70%;
-	background-color:#d9c4b19b;
+    background-color: rgb(217,196,177);
 	text-align: center;
 }
 
@@ -127,7 +88,7 @@ header {
 	left:20%;
 }
 
-#choixsalle input,#choixsalle select
+#choixsalle select
 {
 	border-radius:1px;
 	font-size: medium;
@@ -137,11 +98,11 @@ header {
 {
 	position: relative;
 	left: 23%;
-	top: 200px;
+	top: 150px;
 	border: 1px solid #955252;
 	border-radius: 5px;
 	width: 70%;
-	background-color: #d0c4b19b ;
+    background-color: rgb(217,196,177);
 	text-align: center;
 }
 
@@ -159,7 +120,7 @@ header {
 	padding-bottom: 50px;
 	margin: 10px;
 	border: 1px solid #955252 ;
-	background-color: #d9c4b19b ;
+    background-color: #d9c4b19b;
 	border-radius: 5px;
 }
 
@@ -182,74 +143,3 @@ header {
 	border-radius: 3px;
 }
 
-#ajouterpieces
-{
-	position: relative;
-	left: 23%;
-	top: 250px;
-	border: 1px solid #955252;
-	border-radius: 5px;
-	width: 70%;
-	background-color: #d0c4b19b ;
-	text-align: center;
-}
-
-#champsajouterpiece
-{
-	text-align: left;
-	position: relative;
-	left: 20px;
-	padding-bottom: 20px;
-}
-
-#validerajoutpiece
-{
-	padding: 20px 40px;
-}
-
-/*Footer*/
-
-footer {
-	background-color: #d9c4b19b;
-	font-family: Verdana, sans-serif;
-	color: #955252;
-	position :relative;
-	bottom: -350px;
-	height: 80px;
-	width: 101.5%;
-	left: -7px;
-}
-
-#SAV {
-	position : relative;
-	bottom : -14px;
-	left : 20px;
-	margin: 1px;
-	font-size: 90%;
-}
-#Reseauxsociaux {
-	position : absolute;
-	bottom : 35px;
-	right : 25px;
-}
-
-#Fb
-{
-	position: absolute;
-	right: 30px;
-	bottom: 0px;
-}
-
-#Twitter
-{
-	position: absolute;
-	right: 90px;
-	bottom: 0px;
-}
-
-#rights{
-	position: absolute;
-	left: 45%;
-	bottom: 0px;
-	font-size: 60%;
-}

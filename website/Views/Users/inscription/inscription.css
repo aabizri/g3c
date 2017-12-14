@@ -19,11 +19,11 @@ body {
 }
 
 #infos {
-	background-color: #d9c4b19b;
+	background-color: rgb(217,196,177);
 	position: relative;
 	border: 1px solid #955252;
 	top: 60px;
-	left: 35%;
+	left: 37%;
 	text-align: center; 
 	width: 360px;
 	padding: 5px 20px;
