@@ -1,10 +1,9 @@
 body {
 	position : relative;
-	height: 1060px;
 	background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
 	background-size: cover;
 	background-position: center;
-	width: 1030px;
+	width: auto;
 	font-family: Verdana;
 	overflow-x: hidden;
 }
@@ -28,7 +27,7 @@ header {
 	left: 20px;
 }
 
-#nom {
+#Nom {
 	color: white;
 	font-family: American Typewriter, serif;
 	font-style: oblique;
@@ -42,18 +41,17 @@ header {
 	font-family: Verdana, sans-serif;
 	color: white;
 	position: relative;
-	left: 500px;
-	top: -45px;
-
+	left: 42%;
+	top: -20%;
 }
 
 
-#nomdelapage {
+#Nomdelapage {
 	font-family: Verdana, sans-serif;
 	color: white;
 	position: relative;
-	left: 1050px;
-	top: -80px;
+	left: 90%;
+	top: -50px;
 }
 
 #Menu  {
@@ -68,102 +66,56 @@ header {
 	background-color: #d9c4b19b;
 	font-family: Verdana, sans-serif;
 	color: #955252;
-	width: 160px;
+	width: 100%;
 	height: 95px;
 	font-size:14px;
 	margin: -25px 0px;
 	cursor: pointer;
 }
 
-#textemenu
-{
-	position: relative;
-	margin: 10px;
-}
-
-#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres, #Mesparametres, #Boutique
+#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres, #Mesparametres
 {
 	position: relative;
 	margin: 50px 10px;
+	width: 100%;
 }
 
-#nombrepc
-{
-	position: relative;
-	left: 200px;
-	top: 50px;
-}
+/*Mes pièces*/
 
-#titreperipherique
-{
-	position: relative;
-	left: 200px;
-	top: 70px;
-}
-
-#ajouterperipherique
-{
-	position: relative;
-	left: 65%;
-	top: 27px;
-}
-
-#peripheriques
-{
-	position: relative;
-	background-color: #d9c4b19b ;
-	border: 1px solid #955252 ;
-	padding-top: 5px;
-	padding-bottom: 680px;
-	padding-left: 475px;
-	width: 595px;
-	left:15.5%;
-	top: 70px;
-	border-radius: 5px;
-	font-size: x-large;
-
-}
-
-#nompagepieces
+#Tableaudebord
 {
 	position: relative;
 	top: 80px;
-	left: 200px;
-}
-
-#titreinformationspiece
-{
-	position: relative;
-	top: 5px;
-	left: 34%;
+	left:20%;
 }
 
 #informationspiece
 {
-	top: -80px;
 	display: flex;
-	padding: 20px 40px;
+	position: relative;
+	justify-content: center;
+	font-size: 15px;
 }
 
-#temperature, #luminosite, #humidite, #qualiteair
+#temperature, #luminosite, #humidite, #qualiteair, #presence
 {
-	padding: 20px 40px;
-	padding-bottom: 90px;
+	width: 15%;
+	padding-bottom: 20px;
 	margin: 10px;
 	border: 1px solid #955252 ;
 	background-color: #d9c4b19b ;
-	border-radius: 5px;
+	border-radius: 5px;;
 }
 
 
 #vueinformation
 {
-	position: absolute;
-	left:250px;
-	top: 150px;
+	position: relative;
+	left:23%;
+	top: 160px;
 	border: 1px solid #955252;
 	border-radius: 5px;
-	width:850px;
+	width:70%;
 	background-color:#d9c4b19b;
 	text-align: center;
 }
@@ -171,18 +123,24 @@ header {
 #choixsalle
 {
 	position: relative;
-	top: 37px;
-	left: 520px;
+	top: 80px;
+	left:20%;
+}
+
+#choixsalle input,#choixsalle select
+{
+	border-radius:1px;
+	font-size: medium;
 }
 
 #action
 {
 	position: relative;
-	left: 250px;
-	top: 400px;
+	left: 23%;
+	top: 200px;
 	border: 1px solid #955252;
 	border-radius: 5px;
-	width: 850px;
+	width: 70%;
 	background-color: #d0c4b19b ;
 	text-align: center;
 }
@@ -190,28 +148,48 @@ header {
 #actionspieces
 {
 	display: flex;
-	text-align: center;
-	border-radius: 5px;
-	padding: 20px 40px;
+	justify-content: center;
+	padding: 10px 40px;
 }
 
 #actionspieces p
 {
-	padding: 20px 40px;
-	margin: 0px 20px;
-	border:1px solid #955252;
+	width: 25%;
+	padding-top: 10px;
+	padding-bottom: 50px;
+	margin: 10px;
+	border: 1px solid #955252 ;
+	background-color: #d9c4b19b ;
 	border-radius: 5px;
-	padding-bottom: 90px;
+}
+
+#actionspieces input
+{
+	margin-bottom: 5px;
+}
+
+.action{
+	height: 50%;
+	width: 40%;
+	font-size: large;
+	text-align: center;
+	border-radius:5px;
+}
+
+#valider
+{
+	height: 20px;
+	border-radius: 3px;
 }
 
 #ajouterpieces
 {
 	position: relative;
-	left: 250px;
-	top: 430px;
+	left: 23%;
+	top: 250px;
 	border: 1px solid #955252;
 	border-radius: 5px;
-	width: 850px;
+	width: 70%;
 	background-color: #d0c4b19b ;
 	text-align: center;
 }
@@ -229,158 +207,17 @@ header {
 	padding: 20px 40px;
 }
 
-/*Mon compte*/
-
-#titremoncompte
-{
-	position: relative;
-	top: 8%;
-	left:25%;
-}
-
-#identificationutilisateur
-{
-	position: relative;
-	top: -26.5%;
-	left:25%;
-}
-
-#infosmoncompte
-{
-	display: flex;
-	position: relative;
-	top:15%;
-	left:18%;
-}
-
-#mesinformations
-{
-	position: relative;
-	border: 1px solid #955252;
-	background-color: #d0c4b19b;
-	padding:5px 10px;
-	margin-right: -70px;
-	text-align: left;
-	height: 280px;
-	width: 41%;
-	border-radius: 20px;
-	left:2%;
-}
-
-#titremesinfos
-{
-	position: relative;
-	left:32%;
-}
-
-#modifiermesinformations
-{
-	position: relative;
-	left: 14%;
-	width: 43%;
-	border: 1px solid #955252;
-	text-align: left;
-	padding: 0px 30px;
-	background-color: #d0c4b19b;
-	border-radius: 20px;
-}
-
-#titremodifierinfos
-{
-	position: relative;
-	left: 25%;
-}
-
-#formdroit
-{
-	position: absolute;
-	right: 20px;
-	width: 200px;
-	border-radius: 5px;
-}
-
-#validermodifinfos
-{
-	position: relative;
-	left:44%;
-	border-radius:1%;
-}
-
-#creervoirutilisateur
-{
-	display: flex;
-	position: relative;
-	left: 20%;
-	top:7%;
-}
-
-#creerutilisateur
-{
-	position: relative;
-	left: 5%;
-	top: 60px;
-	width: 47%;
-	border:1px solid #955252;
-	border-radius: 20px;
-	padding: 10px;
-	background-color: #d0c4b19b;
-	height: 210px;
-}
-
-#titrecreerutilisateur
-{
-	position: relative;
-	left:32%;
-}
-
-#validercreationutilisateur
-{
-	position: relative;
-	left:43%;
-	border-radius: 1px ;
-}
-
-#voirutilisateurs
-{
-	border:1px solid #955252;
-	background-color: #d0c4b19b;
-	width: 41%;
-	border-radius: 20px;
-	padding: 0px 10px;
-}
-
-#titrelisteutilisateurs
-{
-	position: relative;
-	left: 27%;
-}
-
-#nomsutilisateurs
-{
-	position: relative;
-	left:70px;
-}
-
-#boutonssupprimer
-{
-	position: relative;
-	display: block;
-	right:-200px;
-	top: -17px;
-	border-radius: 1px;
-}
-
 /*Footer*/
 
 footer {
 	background-color: #d9c4b19b;
 	font-family: Verdana, sans-serif;
 	color: #955252;
-	position :absolute;
-	width: 1280px;
-	bottom: -10px;
+	position :relative;
+	bottom: -350px;
 	height: 80px;
-	left: -9px;
+	width: 101.5%;
+	left: -7px;
 }
 
 #SAV {
@@ -412,7 +249,7 @@ footer {
 
 #rights{
 	position: absolute;
-	left: 550px;
+	left: 45%;
 	bottom: 0px;
 	font-size: 60%;
 }
