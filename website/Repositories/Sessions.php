@@ -38,7 +38,7 @@ class Sessions extends Repository
             'user_id' => $s->getUserID(),
             'started' => $s->getStarted(),
             'expiry' => $s->getExpiry(),
-            'canceled' => $s->getCancelled(),
+            'canceled' => $s->getCanceled(),
             'value' => $s->getValue(),
         ];
 
@@ -67,11 +67,11 @@ class Sessions extends Repository
 
         // Data for the request
         $data = [
-            "id" => $s->getId(),
+            "id" => $s->getID(),
             'user_id' => $s->getUserID(),
             'started' => $s->getStarted(),
             'expiry' => $s->getExpiry(),
-            'canceled' => $s->getCancelled(),
+            'canceled' => $s->getCanceled(),
             'value' => $s->getValue(),
         ];
 
@@ -99,7 +99,7 @@ class Sessions extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':id' => $s->getId()));
+        $sth->execute(array(':id' => $s->getID()));
 
         // Retrieve
         $data = $sth->fetch(PDO::FETCH_ASSOC);
@@ -111,10 +111,11 @@ class Sessions extends Repository
 
         // Store
         $arr = array(
+            "setUserID" => $data["user_id"],
             "setValue" => $data["value"],
             "setStarted" => $data["started"],
             "setExpiry" => $data["expiry"],
-            "setCancelled" => $data["canceled"],
+            "setCanceled" => $data["canceled"],
             "setLastUpdated" => $data["last_updated"],
         );
         parent::executeSetterArray($s, $arr);
@@ -140,7 +141,7 @@ class Sessions extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(array(':id' => $s->getId()));
+        $sth->execute(array(':id' => $s->getID()));
 
         // Retrieve
         $db_last_updated = $sth->fetchColumn(0);
@@ -195,7 +196,7 @@ class Sessions extends Repository
         $s = new Entities\Session;
 
         // Set the ID
-        $s->setId($id);
+        $s->setID($id);
 
         // Call Pull on it
         self::pull($s);
@@ -205,7 +206,7 @@ class Sessions extends Repository
     }
 
     /**
-     * Retrieves all IDs for session belonging to that user
+     * Retrieves all IDs for session belonging to that user_id
      *
      * @param int $user_id
      * @return string[] array of session ids

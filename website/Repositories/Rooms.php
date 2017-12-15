@@ -31,7 +31,7 @@ class Rooms extends Repository
 
         // Prepare data to be inserted
         $data = [
-            "property_id" => $r->getPropertyId(),
+            "property_id" => $r->getPropertyID(),
             "name" => $r->getName(),
         ];
 
@@ -40,7 +40,7 @@ class Rooms extends Repository
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        if ($r->setId($id) == false) {
+        if ($r->setID($id) == false) {
             throw new \Exception("error setting id");
         }
 
@@ -66,8 +66,8 @@ class Rooms extends Repository
 
         // Data for the request
         $data = [
-            "id" => $r->getId(),
-            "property_id" => $r->getPropertyId(),
+            "id" => $r->getID(),
+            "property_id" => $r->getPropertyID(),
             "name" => $r->getName(),
         ];
 
@@ -138,7 +138,7 @@ class Rooms extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(array(':id' => $r->getId()));
+        $sth->execute(array(':id' => $r->getID()));
 
         // Retrieve
         $db_last_updated = $sth->fetchColumn(0);
@@ -193,12 +193,12 @@ class Rooms extends Repository
         $r = new Entities\Room();
 
         // Set the ID
-        $r->setId($id);
+        $r->setID($id);
 
         // Call Pull on it
         self::pull($r);
 
-        // Return the user
+        // Return the user_id
         return $r;
     }
 
