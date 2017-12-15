@@ -139,4 +139,9 @@ class User
         DisplayManager::display("inscription", array());
     }
 
+    public static function getAccountPage (array $get, array $post):void
+    {
+        DisplayManager::display("moncompte", array());
+    }
+
 }

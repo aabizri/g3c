@@ -26,6 +26,7 @@ class DisplayManager
         "head" => "Layout",
         "connexion" => "Users",
         "inscription" => "Users",
+        "moncompte" => "Users",
     ];
 
     private static function subroot(): string {

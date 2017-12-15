@@ -11,6 +11,32 @@ body {
     font-size: medium;
 }
 
+#Menu  {
+	position: fixed;
+	list-style: none;
+	left:-49px;
+	top: 20px;
+}
+
+#Menu input
+{
+	background-color: rgb(217,196,177);
+	font-family: Verdana, sans-serif;
+	color: #955252;
+	width: 100%;
+	height: 95px;
+	font-size:14px;
+	margin: -25px 0px;
+	cursor: pointer;
+}
+
+#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres, #Mesparametres
+{
+	position: relative;
+	margin: 50px 10px;
+	width: 100%;
+}
+
 /*Mon compte*/
 
 #titremoncompte
