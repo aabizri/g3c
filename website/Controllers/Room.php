@@ -10,7 +10,7 @@ use Entities;
  * @package Controllers
  */
 
-class Rooms
+class Room
 {
     /*Ajouter une pièce*/
     public function postNouvellepiece(array $get, array $post): void
