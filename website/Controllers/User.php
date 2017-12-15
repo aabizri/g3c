@@ -109,7 +109,7 @@ class User
         if ($id == -1) {
             $id = Repositories\Users::findByEmail($login);
         }
-        if ($id == -1) {
+        if ($id == 0) {
             echo "Ce login n'existe pas";
             return;
         }
