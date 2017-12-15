@@ -13,7 +13,7 @@ use Entities;
 class Room
 {
     /*Ajouter une pièce*/
-    public function postNouvellepiece(array $get, array $post): void
+    public function postNewRoom(array $get, array $post): void
     {
         /*Vérifier que les données existent*/
         $required = ["name"];
@@ -25,11 +25,9 @@ class Room
         /*Assigne les valeurs*/
         $name = $post["name"];
 
-
         /*Créer l'entité*/
         $r = new Entities\Room();
         $r->setName($name);
-
 
         /*Insérer l'entité dans la bdd*/
         try {
@@ -37,5 +35,9 @@ class Room
         } catch (\Exception $e) {
             echo "Erreur" . $e;
         }
+
+        \Helpers\DisplayManager::display("dashboard",array());
     }
 }
+
+?>
