@@ -251,12 +251,12 @@ class Peripherals extends Repository
     }
 
     /**
-     * Attach the Peripheral to a Room
+     * Attach the Peripheral to a Room.php
      *
-     * It checks if the Room is linked to the same Property as the Peripheral, returns an Exception if it fails.
+     * It checks if the Room.php is linked to the same Property as the Peripheral, returns an Exception if it fails.
      *
      * @param Entities\Peripheral $p is the peripheral to link
-     * @param int $roomID is the ID of the Room this Peripheral should be attached to
+     * @param int $roomID is the ID of the Room.php this Peripheral should be attached to
      *
      * @return void
      *

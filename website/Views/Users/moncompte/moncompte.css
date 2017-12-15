@@ -66,7 +66,7 @@ body {
 {
 	position: relative;
 	border: 1px solid #955252;
-	background-color: #d0c4b19b;
+	background-color: rgb(217,196,177);
 	padding:5px 10px;
 	text-align: left;
 	height: 280px;
@@ -88,7 +88,7 @@ body {
 	border: 1px solid #955252;
 	text-align: left;
 	padding: 0px 30px;
-	background-color: #d0c4b19b;
+	background-color: rgb(217,196,177);
 	border-radius: 20px;
 }
 
@@ -129,8 +129,8 @@ body {
 	border:1px solid #955252;
 	border-radius: 20px;
 	padding: 10px;
-	background-color: #d0c4b19b;
-	height: 210px;
+	background-color: rgb(217,196,177);
+	height: 150px;
 }
 
 #titrecreerutilisateur
@@ -149,7 +149,7 @@ body {
 #voirutilisateurs
 {
 	border:1px solid #955252;
-	background-color: #d0c4b19b;
+	background-color: rgb(217,196,177);
 	width: 30%;
 	border-radius: 20px;
 	padding: 0px 10px;

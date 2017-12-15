@@ -1,7 +1,7 @@
 <ul id="Menu">
-    <li id="Moncompte"><a href="Moncompte.html"><input type="button" value="Mon compte" /></a></li>
-    <li id="Mespieces"><a href="Mespieces.html"><input type="button" value="Mes pièces" /></a></li>
-    <li id="Mesperipheriques"> <a href="Mesperipheriques.html"><input type="button" value="Mes périphériques" /></a></li>
+    <li id="Moncompte"><a href="index.php?c=User&a=getAccountPage"><input type="button" value="Mon compte" /></a></li>
+    <li id="Mespieces"><a href="index.php?c=Room&a=getRoomsPage"><input type="button" value="Mes pièces" /></a></li>
+    <li id="Mesperipheriques"> <a href="index.php?c=Peripheral&a=getPeripheralsPage"><input type="button" value="Mes périphériques" /></a></li>
     <li id="Mesfiltres"><a href="Mesfiltres.html"><input type="button" value="Mes filtres" /></a></li>
     <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
 </ul>
@@ -33,7 +33,7 @@
 
 </div>
 
-<h4 id="identificationutilisateur">Vous êtes l'utilisateur $_SESSION['']</h4>
+<h4 id="identificationutilisateur">Vous êtes l'utilisateur ...... </h4>
 
 <div id="creervoirutilisateur">
 
@@ -58,9 +58,7 @@
     <div id="creerutilisateur">
         <h4 id="titrecreerutilisateur">Ajouter un utilisateur à la propriété</h4>
         <form action="pagephp">
-            <p><label>Login</label>: <input id="formdroit" type="text" name="login"/></p>
-            <p><label>Mot de passe : </label><input id="formdroit" type="password" name="password"/></p>
-            <p><label>Confirmer mot de passe: </label><input id="formdroit" type="password" name="password"/></p>
+            <p><label>Login</label>: <input id="formdroit" type="text" name="login"/></p><br>
             <input id="validercreationutilisateur" type="submit" value="Valider"
                    title="Vous créez un nouvel utilisateur"/>
         </form>
