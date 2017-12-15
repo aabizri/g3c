@@ -73,7 +73,7 @@ class User
         $data = [
             "user" => $u,
         ];
-        DisplayManager::display("dashboard",$data);
+        DisplayManager::display("connexion",$data);
     }
 
     /**
