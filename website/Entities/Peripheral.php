@@ -200,11 +200,11 @@ class Peripheral
     /* BUSINESS LOGIC */
 
     /**
-     * Attach the Peripheral to a Room
+     * Attach the Peripheral to a Room.php
      *
-     * It checks if the Room is linked to the same Property as the Peripheral, returns an Exception if it fails.
+     * It checks if the Room.php is linked to the same Property as the Peripheral, returns an Exception if it fails.
      *
-     * @param int $roomID is the ID of the Room this Peripheral should be attached to
+     * @param int $roomID is the ID of the Room.php this Peripheral should be attached to
      *
      * @return void
      *
@@ -238,7 +238,7 @@ class Peripheral
             Add Date:\t\t%s<br/>
             Public Key:\t\t%s<br/>
             Property ID: \t\t%s<br/>
-            Room ID:\t\t%s<br/>
+            Room.php ID:\t\t%s<br/>
             Last Updated:\t\t%s<br/>",
             $this->getDisplayName(),
             $this->getUUID(),
