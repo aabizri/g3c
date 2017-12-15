@@ -213,7 +213,7 @@ class Users extends Repository
      *
      * @throws \Exception if there is more than one user found with this email
      */
-    public static function findByEmail(string $email): int
+    public static function findByEmail(string $email): ?int
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -263,7 +263,7 @@ class Users extends Repository
      *
      * @throws \Exception if there is more than one user found with this nickname
      */
-    public static function findByNick(string $nick): int
+    public static function findByNick(string $nick): ?int
     {
         // SQL for counting
         $sql = "SELECT count(*)
