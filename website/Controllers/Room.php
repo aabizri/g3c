@@ -21,7 +21,7 @@ class Room
             echo "Il manque : "."name";
             return;
             }
-        
+
         /*Assigne les valeurs*/
         $name = $post["name"];
 
@@ -38,6 +38,9 @@ class Room
 
         \Helpers\DisplayManager::display("dashboard",array());
     }
-}
 
-?>
+    public static function getRoomsPage (array $get, array $post):void
+    {
+        \Helpers\DisplayManager::display("mespieces", array());
+    }
+}

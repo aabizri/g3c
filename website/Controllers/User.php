@@ -19,7 +19,7 @@ class User
     public static function postJoin(array $get, array $post): void
     {
         // Check if the data exists
-        $required = ["nick", "email", "password", "name", "surname", "phone"];
+        $required = ["nick", "email", "email_conf", "password", "password_conf", "name", "surname", "phone"];
         foreach ($required as $key) {
             if (empty($post[$key])) {
                 echo "Missing key: " . $key;
@@ -30,9 +30,16 @@ class User
         // Assign values
         $nick = $post["nick"];
         $email = $post["email"];
+        $email_conf = $post["email_conf"];
         $password_clear = $post["password"];
+        $password_clear_conf = $post["password_conf"];
         $display = $post["name"] . " " . $_POST["surname"];
         $phone = $post["phone"];
+
+        if (($email_conf != $email) || ($password_clear != $password_clear_conf)){
+            echo "La confirmation n'est pas valide !";
+            return;
+        }
 
         /**
          * Check if an entity with the same nick exists
@@ -73,7 +80,7 @@ class User
         $data = [
             "user" => $u,
         ];
-        DisplayManager::display("dashboard",$data);
+        DisplayManager::display("connexion",$data);
     }
 
     /**
@@ -102,7 +109,7 @@ class User
         if ($id == -1) {
             $id = Repositories\Users::findByEmail($login);
         }
-        if ($id == -1) {
+        if ($id == 0) {
             echo "Ce login n'existe pas";
             return;
         }
@@ -137,6 +144,11 @@ class User
     public static function getSubscriptionPage(array $get, array $post): void
     {
         DisplayManager::display("inscription", array());
+    }
+
+    public static function getAccountPage (array $get, array $post):void
+    {
+        DisplayManager::display("moncompte", array());
     }
 
 }

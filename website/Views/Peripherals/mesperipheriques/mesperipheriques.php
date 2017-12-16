@@ -1,14 +1,7 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8"/>
-        <link rel="stylesheet" href="mesperipheriques.css" />
-        <title>Mes périphériques</title>
-    </head>
             <ul id="Menu">
-              <li id="Moncompte"><a href="Moncompte.html"><input type="button" value="Mon compte" /></a></li>
-              <li id="Mespieces"><a href="Mespieces.html"><input type="button" value="Mes pièces" /></a></li>
-              <li id="Mesperipheriques"> <a href="Mesperipheriques.html"><input type="button" value="Mes périphériques" /></a></li>
+              <li id="Moncompte"><a href="index.php?c=User&a=getAccountPage"><input type="button" value="Mon compte" /></a></li>
+              <li id="Mespieces"><a href="index.php?c=Room&a=getRoomsPage"><input type="button" value="Mes pièces" /></a></li>
+              <li id="Mesperipheriques"> <a href="index.php?c=Peripheral&a=getPeripheralsPage"><input type="button" value="Mes périphériques" /></a></li>
               <li id="Mesfiltres"><a href="Mesfiltres.html"><input type="button" value="Mes filtres" /></a></li>
               <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
             </ul>
@@ -38,6 +31,7 @@
                 <h3>Ajouter un périphérique</h3>
                 <div id="champsajouterperipherique">
                     <form name="Ajouter un peripherique" action="php ajouter pièce">
+                        <label>UUID : </label><input type="text" /><br><br>
                         <label>Nom du périphérique : </label><input type="text" />
                         <form method="post" action="php pour ajouter à la salle" id="choixsalle">
                             <p> Dans quelle salle ?
@@ -63,5 +57,3 @@
                     </form>
                 </div>
             </div>
-
-</html>
