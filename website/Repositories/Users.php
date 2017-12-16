@@ -38,7 +38,7 @@ class Users extends Repository
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        if ($u->setId($id) == false) {
+        if ($u->setID($id) == false) {
             throw new \Exception("error setting id");
         }
 
@@ -64,7 +64,7 @@ class Users extends Repository
 
         // Prepare data to be updated
         $data = array(
-            ':id' => $u->getId(),
+            ':id' => $u->getID(),
             ':display' => $u->getDisplay(),
             ':nick' => $u->getNick(),
             ':birth_date' => $u->getBirthDate(),
@@ -98,7 +98,7 @@ class Users extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':id' => $u->getId()));
+        $sth->execute(array(':id' => $u->getID()));
 
         // Fetch
         $data = $sth->fetch(PDO::FETCH_ASSOC);
@@ -141,7 +141,7 @@ class Users extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(array(':id' => $u->getId()));
+        $sth->execute(array(':id' => $u->getID()));
 
         // Retrieve
         $db_last_updated = $sth->fetchColumn(0);
@@ -198,12 +198,12 @@ class Users extends Repository
         $u = new Entities\User();
 
         // Set the ID
-        $u->setId($id);
+        $u->setID($id);
 
         // Call Pull on it
         self::pull($u);
 
-        // Return the user
+        // Return the user_id
         return $u;
     }
 
@@ -216,7 +216,7 @@ class Users extends Repository
      *
      * @throws \Exception if there is more than one user found with this email
      */
-    public static function findByEmail(string $email): int
+    public static function findByEmail(string $email): ?int
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -266,7 +266,7 @@ class Users extends Repository
      *
      * @throws \Exception if there is more than one user found with this nickname
      */
-    public static function findByNick(string $nick): int
+    public static function findByNick(string $nick): ?int
     {
         // SQL for counting
         $sql = "SELECT count(*)

@@ -1,0 +1,45 @@
+body {
+	position : relative;
+	font-family: Verdana, sans-serif;
+	background: url("http://domologis.com/wp-content/uploads/2013/12/462459949_b.jpg") no-repeat center;
+	background-size: cover;
+	overflow-x: hidden;
+	top: 30px;
+}
+
+#explications
+{
+	position: relative;
+	display: flex;
+	text-align: center;
+	top: 110px;
+}
+
+#explications > div
+{
+	border: 1px solid #955252;
+	width: 24%;
+	margin: 10px;
+	background-color: antiquewhite;
+	font-family:didot, serif;
+	border-radius: 10px;
+}
+
+#login
+{
+	display: block;
+	position: relative;
+	text-align: center;
+	top: -120px;
+	left:20%;
+}
+
+#domisep
+{
+	position: relative;
+	width: 50%;
+	font-family: didot, serif ;
+	font-size: x-large;
+	top:120px;
+	text-align: center;
+}
