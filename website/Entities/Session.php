@@ -56,27 +56,27 @@ class Session
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getStarted(): string
+    public function getStarted(): float
     {
         return $this->started;
     }
 
     /**
-     * @param string $started
+     * @param float $started
      * @return bool
      */
-    public function setStarted(string $started): bool
+    public function setStarted(float $started): bool
     {
         $this->started = $started;
         return true;
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getExpiry(): string
+    public function getExpiry(): float
     {
         return $this->expiry;
     }
@@ -85,7 +85,7 @@ class Session
      * @param string $expiry
      * @return bool
      */
-    public function setExpiry(string $expiry): bool
+    public function setExpiry(float $expiry): bool
     {
         $this->expiry = $expiry;
         return true;
@@ -130,7 +130,7 @@ class Session
     /**
      * @return string
      */
-    public function getLastUpdated(): string
+    public function getLastUpdated(): float
     {
         return $this->last_updated;
     }
@@ -139,7 +139,7 @@ class Session
      * @param string $last_updated
      * @return bool
      */
-    public function setLastUpdated(string $last_updated): bool
+    public function setLastUpdated(float $last_updated): bool
     {
         $this->last_updated = $last_updated;
         return true;

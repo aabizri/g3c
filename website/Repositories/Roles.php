@@ -84,7 +84,7 @@ class Roles extends Repository
     public static function pull(Entities\Role $r)
     {
         // SQL
-        $sql = "SELECT user_id, property_id, creation_date, last_updated
+        $sql = "SELECT user_id, property_id, UNIX_TIMESTAMP(creation_date) as creation_date, UNIX_TIMESTAMP(last_updated) as last_updated
         FROM roles
         WHERE id = :id;";
 
@@ -106,8 +106,8 @@ class Roles extends Repository
         $arr = array(
             "setUserId" => $data["user_id"],
             "setPropertyId" => $data["property_id"],
-            "setCreationDate" => $data["creation_date"],
-            "setLastUpdated" => $data["last_updated"],
+            "setCreationDate" => (float) $data["creation_date"],
+            "setLastUpdated" => (float) $data["last_updated"],
         );
         parent::executeSetterArray($r, $arr);
     }

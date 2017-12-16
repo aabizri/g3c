@@ -2,9 +2,6 @@
 
 namespace Entities;
 
-// ONLY FOR DEBUG
-require_once("../index.php");
-
 
 /**
  * User est la classe entité pour les utilisateurs
@@ -86,7 +83,7 @@ class User
     /**
      * @return string
      */
-    public function getBirthDate(): string
+    public function getBirthDate(): ?string
     {
         return $this->birth_date;
     }
@@ -96,7 +93,7 @@ class User
      *
      * @return bool false if invalid
      */
-    public function setBirthDate(string $birth_date): bool
+    public function setBirthDate(?string $birth_date): bool
     {
         // Verifier que $birth_date est inférieur à la date actuelle
         if (strtotime($birth_date) > time()) {
@@ -104,25 +101,6 @@ class User
         }
 
         $this->birth_date = $birth_date;
-        return true;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCreationDate(): string
-    {
-        return $this->creation_date;
-    }
-
-    /**
-     * @param string $creation_date
-     *
-     * @return bool false if invalid
-     */
-    public function setCreationDate(string $creation_date): bool
-    {
-        $this->creation_date = $creation_date;
         return true;
     }
 
@@ -148,7 +126,7 @@ class User
         }
 
         // Verifier que le courriel est correct
-        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return false; // Email invalid
         }
 
@@ -207,18 +185,37 @@ class User
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getLastUpdated(): string
+    public function getCreationDate(): float
+    {
+        return $this->creation_date;
+    }
+
+    /**
+     * @param float $creation_date
+     *
+     * @return bool false if invalid
+     */
+    public function setCreationDate(float $creation_date): bool
+    {
+        $this->creation_date = $creation_date;
+        return true;
+    }
+
+    /**
+     * @return float
+     */
+    public function getLastUpdated(): float
     {
         return $this->last_updated;
     }
 
     /**
-     * @param string $last_updated
+     * @param float $last_updated
      * @return bool
      */
-    public function setLastUpdated(string $last_updated): bool
+    public function setLastUpdated(float $last_updated): bool
     {
         $this->last_updated = $last_updated;
         return true;
