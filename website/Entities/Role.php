@@ -10,7 +10,7 @@ class Role
     private $user_id;
     private $property_id;
     private $creation_date;
-    private $last_update;
+    private $last_updated;
 
     /* SETTERS AND GETTERS */
 
@@ -69,18 +69,18 @@ class Role
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getCreationDate(): string
+    public function getCreationDate(): float
     {
         return $this->creation_date;
     }
 
     /**
-     * @param string
+     * @param float
      * @return bool
      */
-    public function setCreationDate(string $creation_date): bool
+    public function setCreationDate(float $creation_date): bool
     {
         $this->creation_date = $creation_date;
         return true;
@@ -89,18 +89,18 @@ class Role
     /**
      * @return string
      */
-    public function getLastUpdate(): string
+    public function getLastUpdated(): float
     {
-        return $this->last_update;
+        return $this->last_updated;
     }
 
     /**
      * @param string
      * @return bool
      */
-    public function setLastUpdate(string $last_update): bool
+    public function setLastUpdated(float $last_update): bool
     {
-        $this->last_update = $last_update;
+        $this->last_updated = $last_update;
         return true;
     }
 
