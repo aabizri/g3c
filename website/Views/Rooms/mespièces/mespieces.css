@@ -1,6 +1,5 @@
 body {
 	position : relative;
-	height: 800px;
 	background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
 	background-size: cover;
 	background-position: center;
@@ -95,6 +94,7 @@ header {
 	display: flex;
     position: relative;
     justify-content: center;
+	font-size: 15px;
 }
 
 #temperature, #luminosite, #humidite, #qualiteair, #presence
@@ -214,7 +214,7 @@ footer {
 	font-family: Verdana, sans-serif;
 	color: #955252;
 	position :relative;
-	bottom:-45%;
+	bottom: -350px;
 	height: 80px;
     width: 101.5%;
     left: -7px;

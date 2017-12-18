@@ -1,9 +1,10 @@
-main {
+body {
 	position : relative;
-	height: 580px;
 	font-family: Verdana, sans-serif;
 	background: url("http://domologis.com/wp-content/uploads/2013/12/462459949_b.jpg") no-repeat center;
-	background-size:cover;
+	background-size: cover;
+	overflow-x: hidden;
+	top: 30px;
 }
 
 #explications
@@ -11,8 +12,7 @@ main {
 	position: relative;
 	display: flex;
 	text-align: center;
-	top: 13%;
-	left:0;
+	top: 110px;
 }
 
 #explications > div
@@ -30,8 +30,12 @@ main {
 	display: block;
 	position: relative;
 	text-align: center;
-	top: -100px;
-	left:32%;
+	top: -120px;
+	left:20%;
+}
+
+#login input{
+    border-radius: 1px;
 }
 
 #domisep
@@ -40,6 +44,7 @@ main {
 	width: 50%;
 	font-family: didot, serif ;
 	font-size: x-large;
-	top:33%;
+	top:90px;
 	text-align: center;
+	left: 5%;
 }

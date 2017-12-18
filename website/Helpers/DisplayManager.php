@@ -8,13 +8,16 @@
 
 namespace Helpers;
 
+
+$sql = "SELECT id FROM sensors WHERE peripheral_uuid IN (SELECT uuid FROM peripherals WHERE room_id = :room_id)";
+
 /**
  * Class DisplayManager
  * @package Helpers
  */
 class DisplayManager
 {
-    private const views_directory = "Views/";
+    private const views_directory = "Views";
 
     public static $views_categories = [
         "dashboard" => "Dashboard",
@@ -25,18 +28,30 @@ class DisplayManager
         "inscription" => "Users",
     ];
 
+    private static function subroot(): string {
+        $path = __DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."config.ini";
+        $conf_file = parse_ini_file($path);
+        if ($conf_file == null) {
+            throw new \Exception("NO CONFIG FILE FFS");
+        }
+        if (!array_key_exists("subroot", $conf_file)) {
+            throw new \Exception("NO ARRAY MEMBER FFS");
+        }
+        return $conf_file["subroot"];
+    }
+
     /**
      * @return string
      */
     public static function websiteRootFS(string $dir = ""): string{
-        return $_SERVER["DOCUMENT_ROOT"]."/g3c/".$dir;
+        return str_replace("/", DIRECTORY_SEPARATOR,$_SERVER["DOCUMENT_ROOT"].DIRECTORY_SEPARATOR.self::subroot().DIRECTORY_SEPARATOR.$dir);
     }
 
     /**
      * @return string
      */
     public static function websiteRootURL(string $dir = ""): string{
-        return "http://localhost/g3c/".$dir;
+        return "http://localhost/".str_replace("\\","/", self::subroot())."/".$dir;
     }
 
     /**
@@ -68,10 +83,10 @@ class DisplayManager
         $category = self::$views_categories[$page_name];
 
         // Build the path
-        $base_path = self::views_directory.$category."/".$page_name."/".$page_name;
-        $res["php"] = $base_path.".php";
+        $base_path = self::views_directory."/".$category."/".$page_name."/".$page_name;
+        $res["php"] = str_replace("/",DIRECTORY_SEPARATOR,$base_path.".php");
         if (!file_exists(self::absolutifyFS($res["php"]))) {
-            throw new \Exception("Page listed in internal repository but not found on disk : ".$_SERVER["DOCUMENT_ROOT"].$res["php"]);
+            throw new \Exception("Page listed in internal repository but not found on disk : ".self::absolutifyFS($res["php"]));
         }
         if (file_exists(self::absolutifyFS($base_path.".css"))) {
             $res["css"] = $base_path.".css";
