@@ -48,6 +48,18 @@ class Rooms extends Repository
         self::pull($r);
     }
 
+    public static function delete(int $id): void
+    {
+        // SQL
+        $sql = "DELETE FROM rooms 
+        WHERE id = :id;";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute query
+        $sth->execute(["id" => $id]);
+    }
     /**
      * Push an existing room to the database
      *
