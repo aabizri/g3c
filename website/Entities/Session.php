@@ -11,18 +11,22 @@ namespace Entities;
 
 class Session
 {
+    /* PROPERTIES */
+
     private $id;
-    private $user;
+    private $user_id;
     private $value = "";
     private $started = "";
     private $expiry = "";
-    private $cancelled = false;
+    private $canceled = false;
     private $last_updated;
+
+    /* GETTERS AND SETTERS */
 
     /**
      * @return string
      */
-    public function getId(): string
+    public function getID(): string
     {
         return $this->id;
     }
@@ -31,7 +35,7 @@ class Session
      * @param string $id
      * @return bool
      */
-    public function setId(string $id): bool
+    public function setID(string $id): bool
     {
         $this->id = $id;
         return true;
@@ -42,41 +46,41 @@ class Session
      */
     public function getUserID(): ?int
     {
-        return $this->user;
+        return $this->user_id;
     }
 
     /**
-     * @param int $user
+     * @param int $user_id
      * @return bool
      */
-    public function setUserID(?int $user): bool
+    public function setUserID(?int $user_id): bool
     {
-        $this->user = $user;
+        $this->user_id = $user_id;
         return true;
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getStarted(): string
+    public function getStarted(): float
     {
         return $this->started;
     }
 
     /**
-     * @param string $started
+     * @param float $started
      * @return bool
      */
-    public function setStarted(string $started): bool
+    public function setStarted(float $started): bool
     {
         $this->started = $started;
         return true;
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getExpiry(): string
+    public function getExpiry(): float
     {
         return $this->expiry;
     }
@@ -85,7 +89,7 @@ class Session
      * @param string $expiry
      * @return bool
      */
-    public function setExpiry(string $expiry): bool
+    public function setExpiry(float $expiry): bool
     {
         $this->expiry = $expiry;
         return true;
@@ -94,18 +98,18 @@ class Session
     /**
      * @return bool
      */
-    public function getCancelled(): bool
+    public function getCanceled(): bool
     {
-        return $this->cancelled;
+        return $this->canceled;
     }
 
     /**
-     * @param bool $cancelled
+     * @param bool $canceled
      * @return bool
      */
-    public function setCancelled(bool $cancelled): bool
+    public function setCanceled(bool $canceled): bool
     {
-        $this->cancelled = $cancelled;
+        $this->canceled = $canceled;
         return true;
     }
 
@@ -130,7 +134,7 @@ class Session
     /**
      * @return string
      */
-    public function getLastUpdated(): string
+    public function getLastUpdated(): float
     {
         return $this->last_updated;
     }
@@ -139,7 +143,7 @@ class Session
      * @param string $last_updated
      * @return bool
      */
-    public function setLastUpdated(string $last_updated): bool
+    public function setLastUpdated(float $last_updated): bool
     {
         $this->last_updated = $last_updated;
         return true;
@@ -148,10 +152,10 @@ class Session
     /* BUSINESS LOGIC */
 
     /**
-     * isValid vérifie si cette session est valide: que cancelled n'est pas activé, et que la date d'éxpiration est dans le futur
+     * isValid vérifie si cette session est valide: que canceled n'est pas activé, et que la date d'éxpiration est dans le futur
      */
     public function isValid(): bool
     {
-        return $this->getCancelled() && (time() < strtotime($this->getExpiry()));
+        return $this->getCanceled() && (time() < strtotime($this->getExpiry()));
     }
 }
