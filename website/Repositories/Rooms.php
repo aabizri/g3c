@@ -110,8 +110,8 @@ class Rooms extends Repository
 
         // Store
         $arr = array(
-            "setId" => $data["id"],
-            "setPropertyId" => $data["property_id"],
+            "setID" => $data["id"],
+            "setPropertyID" => $data["property_id"],
             "setCreationDate" => $data["creation_date"],
             "setLastUpdated" => $data["last_updated"],
         );
