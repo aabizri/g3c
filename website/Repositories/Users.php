@@ -38,7 +38,7 @@ class Users extends Repository
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        if ($u->setId($id) == false) {
+        if ($u->setID($id) == false) {
             throw new \Exception("error setting id");
         }
 
@@ -64,7 +64,7 @@ class Users extends Repository
 
         // Prepare data to be updated
         $data = array(
-            ':id' => $u->getId(),
+            ':id' => $u->getID(),
             ':display' => $u->getDisplay(),
             ':nick' => $u->getNick(),
             ':birth_date' => $u->getBirthDate(),
@@ -90,7 +90,7 @@ class Users extends Repository
     public static function pull(Entities\User $u): void
     {
         // SQL
-        $sql = "SELECT display, nick, birth_date, email, password, phone, last_updated
+        $sql = "SELECT display, nick, birth_date, email, password, phone, UNIX_TIMESTAMP(last_updated) as last_updated
         FROM users
         WHERE id = :id";
 
@@ -98,7 +98,7 @@ class Users extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':id' => $u->getId()));
+        $sth->execute(array(':id' => $u->getID()));
 
         // Fetch
         $data = $sth->fetch(PDO::FETCH_ASSOC);
@@ -116,7 +116,7 @@ class Users extends Repository
             "setEmail" => $data["email"],
             "setPhone" => $data["phone"],
             "setPasswordHashed" => $data["password"],
-            "setLastUpdated" => $data["last_updated"],
+            "setLastUpdated" => (float) $data["last_updated"],
         );
         parent::executeSetterArray($u, $arr);
     }
@@ -133,7 +133,7 @@ class Users extends Repository
     public static function sync(Entities\User $u): void
     {
         // SQL to get last_updated on given peripheral
-        $sql = "SELECT last_updated
+        $sql = "SELECT UNIX_TIMESTAMP(last_updated) as last_updated
           FROM users
           WHERE id = :id;";
 
@@ -141,7 +141,7 @@ class Users extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(array(':id' => $u->getId()));
+        $sth->execute(array(':id' => $u->getID()));
 
         // Retrieve
         $db_last_updated = $sth->fetchColumn(0);
@@ -156,8 +156,11 @@ class Users extends Repository
             throw new \Exception("Empty last_updated");
         }
 
+        // Cast it
+        $db_last_updated = (float) $db_last_updated;
+
         // If the DB was updated BEFORE the last update to the peripheral, push
-        if (strtotime($db_last_updated) < strtotime($u->getLastUpdated())) {
+        if ($db_last_updated < $u->getLastUpdated()) {
             self::push($u);
         } else {
             self::pull($u);
@@ -195,12 +198,12 @@ class Users extends Repository
         $u = new Entities\User();
 
         // Set the ID
-        $u->setId($id);
+        $u->setID($id);
 
         // Call Pull on it
         self::pull($u);
 
-        // Return the user
+        // Return the user_id
         return $u;
     }
 
@@ -213,7 +216,7 @@ class Users extends Repository
      *
      * @throws \Exception if there is more than one user found with this email
      */
-    public static function findByEmail(string $email): int
+    public static function findByEmail(string $email): ?int
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -263,7 +266,7 @@ class Users extends Repository
      *
      * @throws \Exception if there is more than one user found with this nickname
      */
-    public static function findByNick(string $nick): int
+    public static function findByNick(string $nick): ?int
     {
         // SQL for counting
         $sql = "SELECT count(*)

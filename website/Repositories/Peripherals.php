@@ -31,8 +31,8 @@ class Peripherals extends Repository
             ':build_date' => $p->getBuildDate(),
             ':add_date' => $p->getAddDate(),
             ':public_key' => $p->getPublicKey(),
-            ':property_id' => $p->getPropertyId(),
-            ':room_id' => $p->getRoomId(),
+            ':property_id' => $p->getPropertyID(),
+            ':room_id' => $p->getRoomID(),
         ];
 
         // Execute query
@@ -80,7 +80,7 @@ class Peripherals extends Repository
     public static function pull(Entities\Peripheral $p)
     {
         // SQL
-        $sql = "SELECT display_name, build_date, add_date, public_key, property_id, room_id, last_updated
+        $sql = "SELECT display_name, build_date, add_date, public_key, property_id, room_id, UNIX_TIMESTAMP(last_updated) as last_updated
         FROM peripherals
         WHERE uuid = :uuid;";
 
@@ -106,7 +106,7 @@ class Peripherals extends Repository
             "setPublicKey" => $data["public_key"],
             "setPropertyId" => $data["property_id"],
             "setRoomId" => $data["room_id"],
-            "setLastUpdated" => $data["last_updated"],
+            "setLastUpdated" => (float) $data["last_updated"],
         );
         parent::executeSetterArray($p, $arr);
     }
@@ -123,7 +123,7 @@ class Peripherals extends Repository
     public static function sync(Entities\Peripheral $p)
     {
         // SQL to get last_updated on given peripheral
-        $sql = "SELECT last_updated
+        $sql = "SELECT UNIX_TIMESTAMP(last_updated) as last_updated
           FROM peripherals
           WHERE uuid = :uuid;";
 
@@ -146,8 +146,11 @@ class Peripherals extends Repository
             throw new Exception("Empty last_updated");
         }
 
+        // Cast it
+        $db_last_updated = (float) $db_last_updated;
+
         // If the DB was updated BEFORE the last update to the peripheral, push
-        if (strtotime($db_last_updated) < strtotime($p->getLastUpdated())) {
+        if ($db_last_updated < $p->getLastUpdated()) {
             self::push($p);
         } else {
             self::pull($p);
@@ -251,12 +254,12 @@ class Peripherals extends Repository
     }
 
     /**
-     * Attach the Peripheral to a Room
+     * Attach the Peripheral to a Room.php
      *
-     * It checks if the Room is linked to the same Property as the Peripheral, returns an Exception if it fails.
+     * It checks if the Room.php is linked to the same Property as the Peripheral, returns an Exception if it fails.
      *
      * @param Entities\Peripheral $p is the peripheral to link
-     * @param int $roomID is the ID of the Room this Peripheral should be attached to
+     * @param int $roomID is the ID of the Room.php this Peripheral should be attached to
      *
      * @return void
      *
@@ -292,7 +295,7 @@ class Peripherals extends Repository
         }
 
         // Set the ID and date
-        $p->setRoomId($roomID);
+        $p->setRoomID($roomID);
     }
 
     /**
@@ -320,7 +323,7 @@ class Peripherals extends Repository
         $sth->execute(array(':property_id' => $propertyID, ':add_date' => $now, ':uuid' => $p->getUUID()));
 
         // Set the ID and date
-        $p->setPropertyId($propertyID);
+        $p->setPropertyID($propertyID);
         $p->setAddDate($now);
     }
 

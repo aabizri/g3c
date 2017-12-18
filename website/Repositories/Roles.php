@@ -26,8 +26,8 @@ class Roles extends Repository
 
         // Prepare data to be inserted
         $data = [
-            ":user_id" => $p->getUserId(),
-            ":property_id" => $p->getPropertyId(),
+            ":user_id" => $p->getUserID(),
+            ":property_id" => $p->getPropertyID(),
         ];
 
         // Execute request
@@ -46,7 +46,7 @@ class Roles extends Repository
     /**
      * Push an existing role to the database
      *
-     * @param Entities\Role $r the user to push
+     * @param Entities\Role $r the role to push
      *
      * @throws Exception if the subsequent pull fails
      */
@@ -61,8 +61,8 @@ class Roles extends Repository
 
         // Prepare data to be updated
         $data = array(
-            ':uid' => $r->getUserId(),
-            ':pid' => $r->getPropertyId(),
+            ':uid' => $r->getUserID(),
+            ':pid' => $r->getPropertyID(),
         );
 
         // Execute query
@@ -84,7 +84,7 @@ class Roles extends Repository
     public static function pull(Entities\Role $r)
     {
         // SQL
-        $sql = "SELECT user_id, property_id, creation_date, last_updated
+        $sql = "SELECT user_id, property_id, UNIX_TIMESTAMP(creation_date) as creation_date, UNIX_TIMESTAMP(last_updated) as last_updated
         FROM roles
         WHERE id = :id;";
 
@@ -92,7 +92,7 @@ class Roles extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':id' => $r->getId()));
+        $sth->execute(array(':id' => $r->getID()));
 
         // Retrieve
         $data = $sth->fetch(PDO::FETCH_ASSOC);
@@ -106,8 +106,8 @@ class Roles extends Repository
         $arr = array(
             "setUserId" => $data["user_id"],
             "setPropertyId" => $data["property_id"],
-            "setCreationDate" => $data["creation_date"],
-            "setLastUpdated" => $data["last_updated"],
+            "setCreationDate" => (float) $data["creation_date"],
+            "setLastUpdated" => (float) $data["last_updated"],
         );
         parent::executeSetterArray($r, $arr);
     }
@@ -149,17 +149,18 @@ class Roles extends Repository
         // Call Pull on it
         self::pull($r);
 
-        // Return the user
+        // Return the entity
         return $r;
     }
 
     /**
      * Find all roles for this user
      *
-     * @param int $uid user id
+     * @param int $uid the id of the user
      * @return int[] array of role ids
      */
-    public static function findAllByUserID(int $uid): array {
+    public static function findAllByUserID(int $uid): array
+    {
         // SQL
         $sql = "SELECT id
             FROM roles
@@ -184,7 +185,8 @@ class Roles extends Repository
      * @param int $pid property id
      * @return int[] array of role ids
      */
-    public static function findAllByPropertyID(int $pid): array {
+    public static function findAllByPropertyID(int $pid): array
+    {
         // SQL
         $sql = "SELECT id
             FROM roles
@@ -209,7 +211,8 @@ class Roles extends Repository
      * @param int $permission_id permission ID
      * @return int[] array of role ids
      */
-    public static function findAllByPermissionID(int $permission_id): array {
+    public static function findAllByPermissionID(int $permission_id): array
+    {
         // SQL
         $sql = "SELECT role_id
             FROM roles_permissions
@@ -229,14 +232,15 @@ class Roles extends Repository
     }
 
     /**
-     * Find the role matching a property and a user
+     * Find the role matching a property and a user_id
      *
-     * @param int $uid user id
+     * @param int $uid user_id id
      * @param int $pid property id
      * @return int role id
      * @throws Exception
      */
-    public static function findByUserAndProperty(int $uid, int $pid): int {
+    public static function findByUserAndProperty(int $uid, int $pid): int
+    {
         // SQL for counting
         $sql = "SELECT count(*)
             FROM roles

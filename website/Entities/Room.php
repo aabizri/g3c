@@ -10,16 +10,20 @@ namespace Entities;
 
 class Room
 {
+    /* PROPERTIES */
+
     private $id;
     private $property_id;
     private $name;
     private $creation_date;
     private $last_updated;
 
+    /* GETTERS AND SETTERS */
+
     /**
      * @return int
      */
-    public function getId(): int
+    public function getID(): int
     {
         return $this->id;
     }
@@ -28,7 +32,7 @@ class Room
      * @param int $id
      * @return bool
      */
-    public function setId(int $id): bool
+    public function setID(int $id): bool
     {
         $this->id = $id;
         return true;
@@ -37,7 +41,7 @@ class Room
     /**
      * @return int
      */
-    public function getPropertyId(): int
+    public function getPropertyID(): int
     {
         return $this->property_id;
     }
@@ -46,7 +50,7 @@ class Room
      * @param int $property_id
      * @return bool
      */
-    public function setPropertyId(int $property_id): bool
+    public function setPropertyID(int $property_id): bool
     {
         $this->property_id = $property_id;
         return true;
@@ -71,21 +75,21 @@ class Room
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getCreationDate(): string
+    public function getCreationDate(): float
     {
         return $this->creation_date;
     }
 
     /**
-     * @param string $creation_date
+     * @param float $creation_date
      * @return bool
      */
-    public function setCreationDate(string $creation_date): bool
+    public function setCreationDate(float $creation_date): bool
     {
         // Verifier que $creation_date est inférieure à la date actuelle
-        if (strtotime($creation_date) > time()) {
+        if ($creation_date > microtime(true)) {
             return false;
         }
 
@@ -94,18 +98,18 @@ class Room
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getLastUpdated(): string
+    public function getLastUpdated(): float
     {
         return $this->last_updated;
     }
 
     /**
-     * @param string $last_updated
+     * @param float $last_updated
      * @return bool
      */
-    public function setLastUpdated(string $last_updated): bool
+    public function setLastUpdated(float $last_updated): bool
     {
         $this->last_updated = $last_updated;
         return true;
