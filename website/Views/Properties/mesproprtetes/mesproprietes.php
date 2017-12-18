@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+
+<header>
+    <div id="Logo"> <a href="paged'accueil.html"><img src=logopetit.png alt="logopetit.png"> </a></div>
+    <p id="Nom">LiveWell</p>
+    <p id="accroche"><i>Votre sécurité est notre priorité.</i></p>
+    <p id="Nomdelapage">Mes pièces</p>
+</header>
+
+<head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="mesproprietes.css" />
+    <title>Mes périphériques</title>
+</head>
+
+<body>
+    <ul>
+    <?php
+    //foreach ($data["properties"] as $property) {
+        //echo "<li>".$property."</li>";
+        ?>
+        <li ><button type="button" id="ajout"><img
+                        src="plus.png"
+                        alt="Ajouter une proptiété"
+                        height="100px"
+                        width="100px"
+                /></button><br>"Ajouter une propriété"</li>
+    </ul>
+
+</body>
+
+</html>
+
