@@ -27,3 +27,9 @@ class Property
     $u->setAddress($address);
     $u->setCreationDate($creation_date);
     $u->setLastUpdated($last_updated);
+
+    $addressDuplicate = Repositories\Property::findByAddress($nick) != null;
+    if ($addressDuplicate) {
+        echo "A property with this address already exists";
+        return;
+    }
