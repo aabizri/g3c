@@ -44,4 +44,41 @@ class Properties extends Repository
         // We should now pull to populate ID & Times
         self::pull($p);
     }
+
+    public static function findbyAddress(string $address){
+
+        // SQL
+        $sql="SELECT count(*) FROM properties WHERE address=:address";
+
+        //Prepare
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        $sth->execute(array(':address' => $address));
+
+        $count = $sth->fetchColumn(0);
+
+        // If count is zero, then we return null
+        if ($count == 0) {
+            return null;
+        } else if ($count > 1) {
+            throw new \Exception("More than one row shares this address !");
+        }
+
+        // SQL for selecting
+        $sql = "SELECT id
+            FROM properties
+            WHERE address = :address";
+
+        // Prepare statement
+        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute query
+        $sth->execute(array(':address' => $address));
+
+        // Fetch
+        $id = $sth->fetchColumn(0);
+
+        // Return this ID
+        return $id;
+    }
 }
