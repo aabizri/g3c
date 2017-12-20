@@ -30,7 +30,7 @@ abstract class Entity
 
             // Check if it exists
             if (!method_exists($child_class_name, $getter_name)) {
-                throw new \Exception("Unknown getter :" . $getter_name);
+                throw new \Exception("Unknown getter : " . $getter_name);
             }
 
             // Apply it
