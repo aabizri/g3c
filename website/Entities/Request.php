@@ -9,7 +9,7 @@
 namespace Entities;
 
 
-class Request
+class Request extends Entity
 {
     /* PROPERTIES */
 

@@ -9,7 +9,7 @@
 namespace Entities;
 
 
-class Session
+class Session extends Entity
 {
     /* PROPERTIES */
 

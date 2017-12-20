@@ -2,7 +2,7 @@
 
 namespace Entities;
 
-class Role
+class Role extends Entity
 {
     /* PROPERTIES */
 
