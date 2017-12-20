@@ -80,7 +80,7 @@ class Peripherals extends Repository
     public static function pull(Entities\Peripheral $p)
     {
         // SQL
-        $sql = "SELECT display_name, build_date, add_date, public_key, property_id, room_id, last_updated
+        $sql = "SELECT display_name, build_date, add_date, public_key, property_id, room_id, UNIX_TIMESTAMP(last_updated) as last_updated
         FROM peripherals
         WHERE uuid = :uuid;";
 
@@ -106,7 +106,7 @@ class Peripherals extends Repository
             "setPublicKey" => $data["public_key"],
             "setPropertyId" => $data["property_id"],
             "setRoomId" => $data["room_id"],
-            "setLastUpdated" => $data["last_updated"],
+            "setLastUpdated" => (float) $data["last_updated"],
         );
         parent::executeSetterArray($p, $arr);
     }
@@ -123,7 +123,7 @@ class Peripherals extends Repository
     public static function sync(Entities\Peripheral $p)
     {
         // SQL to get last_updated on given peripheral
-        $sql = "SELECT last_updated
+        $sql = "SELECT UNIX_TIMESTAMP(last_updated) as last_updated
           FROM peripherals
           WHERE uuid = :uuid;";
 
@@ -146,8 +146,11 @@ class Peripherals extends Repository
             throw new Exception("Empty last_updated");
         }
 
+        // Cast it
+        $db_last_updated = (float) $db_last_updated;
+
         // If the DB was updated BEFORE the last update to the peripheral, push
-        if (strtotime($db_last_updated) < strtotime($p->getLastUpdated())) {
+        if ($db_last_updated < $p->getLastUpdated()) {
             self::push($p);
         } else {
             self::pull($p);

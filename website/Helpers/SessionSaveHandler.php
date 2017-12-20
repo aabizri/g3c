@@ -10,7 +10,7 @@ namespace Helpers;
 
 class SessionSaveHandler implements \SessionHandlerInterface
 {
-    public const lifetime = 7;
+    public const lifetime = 7; // DAys
     private const lifetime_intervalspec = "P" . self::lifetime . "D";
 
     public function close(): bool
@@ -113,13 +113,12 @@ class SessionSaveHandler implements \SessionHandlerInterface
             $sess->setValue($session_data);
 
             // Started
-            $now = new \DateTime();
-            $sess->setStarted($now->format(\DateTime::ATOM));
+            $now = microtime(true);
+            $sess->setStarted($now);
 
             // Expiry
-            $interval = new \DateInterval(self::lifetime_intervalspec);
-            $expiry = (new \DateTime())->add($interval);
-            $sess->setExpiry($expiry->format(\DateTime::ATOM));
+            $expiry = $now + self::lifetime * 24 * 60 * 60;
+            $sess->setExpiry($expiry);
 
             // Insert in DB
             try {

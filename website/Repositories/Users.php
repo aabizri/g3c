@@ -90,7 +90,7 @@ class Users extends Repository
     public static function pull(Entities\User $u): void
     {
         // SQL
-        $sql = "SELECT display, nick, birth_date, email, password, phone, last_updated
+        $sql = "SELECT display, nick, birth_date, email, password, phone, UNIX_TIMESTAMP(last_updated) as last_updated
         FROM users
         WHERE id = :id";
 
@@ -116,7 +116,7 @@ class Users extends Repository
             "setEmail" => $data["email"],
             "setPhone" => $data["phone"],
             "setPasswordHashed" => $data["password"],
-            "setLastUpdated" => $data["last_updated"],
+            "setLastUpdated" => (float) $data["last_updated"],
         );
         parent::executeSetterArray($u, $arr);
     }
@@ -133,7 +133,7 @@ class Users extends Repository
     public static function sync(Entities\User $u): void
     {
         // SQL to get last_updated on given peripheral
-        $sql = "SELECT last_updated
+        $sql = "SELECT UNIX_TIMESTAMP(last_updated) as last_updated
           FROM users
           WHERE id = :id;";
 
@@ -156,8 +156,11 @@ class Users extends Repository
             throw new \Exception("Empty last_updated");
         }
 
+        // Cast it
+        $db_last_updated = (float) $db_last_updated;
+
         // If the DB was updated BEFORE the last update to the peripheral, push
-        if (strtotime($db_last_updated) < strtotime($u->getLastUpdated())) {
+        if ($db_last_updated < $u->getLastUpdated()) {
             self::push($u);
         } else {
             self::pull($u);

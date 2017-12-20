@@ -11,7 +11,7 @@
 
 <div id="leftline">
 
-<form method="post" action="http://localhost/g3c/website/index.php?c=User&a=postJoin" id="surname">
+<form method="post" action="index.php?c=User&a=postJoin" id="surname">
     <p>
          <label>Nom</label>: <input id="line" type="text" name="surname"  />
     </p>

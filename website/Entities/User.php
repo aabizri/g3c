@@ -110,25 +110,6 @@ class User extends Entity
     /**
      * @return string
      */
-    public function getCreationDate(): string
-    {
-        return $this->creation_date;
-    }
-
-    /**
-     * @param string $creation_date
-     *
-     * @return bool false if invalid
-     */
-    public function setCreationDate(string $creation_date): bool
-    {
-        $this->creation_date = $creation_date;
-        return true;
-    }
-
-    /**
-     * @return string
-     */
     public function getEmail(): string
     {
         return $this->email;
@@ -149,7 +130,6 @@ class User extends Entity
 
         // Verifier que le courriel est correct
         if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-            echo "invalid email";
             return false; // Email invalid
         }
 
@@ -195,18 +175,37 @@ class User extends Entity
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getLastUpdated(): string
+    public function getCreationDate(): float
+    {
+        return $this->creation_date;
+    }
+
+    /**
+     * @param float $creation_date
+     *
+     * @return bool false if invalid
+     */
+    public function setCreationDate(float $creation_date): bool
+    {
+        $this->creation_date = $creation_date;
+        return true;
+    }
+
+    /**
+     * @return float
+     */
+    public function getLastUpdated(): float
     {
         return $this->last_updated;
     }
 
     /**
-     * @param string $last_updated
+     * @param float $last_updated
      * @return bool
      */
-    public function setLastUpdated(string $last_updated): bool
+    public function setLastUpdated(float $last_updated): bool
     {
         $this->last_updated = $last_updated;
         return true;

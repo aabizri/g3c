@@ -27,7 +27,7 @@ class Sessions extends Repository
     {
         //On écrit une reqûete SQL
         $sql = "INSERT INTO sessions (id, user_id, started, expiry, canceled, value)
-        VALUES (:id, :user_id, :started, :expiry, :canceled, :value);";
+        VALUES (:id, :user_id, FROM_UNIXTIME(:started), FROM_UNIXTIME(:expiry), :canceled, :value);";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
@@ -59,7 +59,7 @@ class Sessions extends Repository
     {
         // SQL
         $sql = "UPDATE sessions
-        SET user_id = :user_id, started = :started, expiry = :expiry, canceled = :canceled, value = :value
+        SET user_id = :user_id, started = FROM_UNIXTIME(:started), expiry = FROM_UNIXTIME(:expiry), canceled = :canceled, value = :value
         WHERE id = :id;";
 
         // Prepare statement
@@ -91,7 +91,7 @@ class Sessions extends Repository
     public static function pull(Entities\Session $s): void
     {
         // SQL
-        $sql = "SELECT user_id, value, started, expiry, canceled, last_updated
+        $sql = "SELECT user_id, value, UNIX_TIMESTAMP(started) as started, UNIX_TIMESTAMP(expiry) as expiry, canceled, UNIX_TIMESTAMP(last_updated) as last_updated
         FROM sessions
         WHERE id = :id;";
 
@@ -113,10 +113,10 @@ class Sessions extends Repository
         $arr = array(
             "setUserID" => $data["user_id"],
             "setValue" => $data["value"],
-            "setStarted" => $data["started"],
-            "setExpiry" => $data["expiry"],
+            "setStarted" => (float) $data["started"],
+            "setExpiry" => (float) $data["expiry"],
             "setCanceled" => $data["canceled"],
-            "setLastUpdated" => $data["last_updated"],
+            "setLastUpdated" => (float) $data["last_updated"],
         );
         parent::executeSetterArray($s, $arr);
     }
@@ -133,7 +133,7 @@ class Sessions extends Repository
     public static function sync(Entities\Session $s): void
     {
         // SQL to get last_updated on given peripheral
-        $sql = "SELECT last_updated
+        $sql = "SELECT UNIX_TIMESTAMP(last_updated) as last_updated
           FROM sessions
           WHERE id = :id;";
 
@@ -156,8 +156,11 @@ class Sessions extends Repository
             throw new \Exception("Empty last_updated");
         }
 
+        // Cast it to float
+        $db_last_updated = (float) $db_last_updated;
+
         // If the DB was updated BEFORE the last update to the peripheral, push
-        if (strtotime($db_last_updated) < strtotime($s->getLastUpdated())) {
+        if ($db_last_updated < $s->getLastUpdated()) {
             self::push($s);
         } else {
             self::pull($s);
