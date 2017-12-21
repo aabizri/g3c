@@ -194,7 +194,12 @@ class Sensors extends Repository
     }
 
 
-    public static function FindAllByRoomID(int $room_id): array
+    /*  Return all the sensor_id associated to a room
+        @param int $room_id
+        @return
+    */
+
+    public static function findAllByRoomID(int $room_id): array
     {
         // SQL
         $sql = "SELECT id

@@ -46,7 +46,7 @@ class Sensor{
         }
 
         /*Récupère les id des capteurs sous forme de array*/
-        $sensor_id_list = \Repositories\Sensors::FindAllByRoomID($room_id);
+        $sensor_id_list = \Repositories\Sensors::findAllByRoomID($room_id);
         if ($sensor_id_list == null) {
             echo "Il n'y a pas de capteur dans cette pièce.";
             return;
@@ -59,8 +59,18 @@ class Sensor{
             $sensor_list[] = $sensor;
         }
 
-        foreach($sensor_list as $value){
+        foreach($sensor_list as $s)
+        {
+            $last_measure = $s-> getLastMeasure();
 
         }
+
+
+        foreach ($s as $i)
+        {
+            echo ''.$sensor_list[$i].'->'.$s[$i].'';
+        }
     }
+
+
 }
