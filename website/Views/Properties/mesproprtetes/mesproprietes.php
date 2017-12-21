@@ -18,17 +18,24 @@
     <ul>
     <?php
     //foreach ($data["properties"] as $property) {
-        //echo "<li>".$property."</li>";
+        //echo "<li><button type="button" id=$property><img scr="" height="100px" width="100px" ".$property."/></button></li>";
         ?>
-        <li ><button type="button" id="ajout"><img
+
+        <li id="ajouter"><button type="button" id="ajout" onclick="<?=\Helpers\DisplayManager::absolutifyURL("index.php?c=Properties&a=");?>"><img
                         src="plus.png"
                         alt="Ajouter une proptiété"
                         height="100px"
                         width="100px"
-                /></button><br>"Ajouter une propriété"</li>
+                /></button><br>Ajouter une propriété</li>
     </ul>
 
+
 </body>
+
+
+
+</body>
+
 
 </html>
 
