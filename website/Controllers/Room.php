@@ -63,5 +63,29 @@ class Room
 
         \Helpers\DisplayManager::display("dashboard", array());
     }
+
+
+    public function getRooms(array $get, array $post): void
+    {
+        /*Verifier que la propriété existe */
+        if(empty($property_id))
+        {
+            return;
+        }
+
+        //Récupérer liste des pièces
+
+        $rooms = [];
+        $room_ids= \Repositories\Rooms::findAllByPropertyID($property_id);
+        foreach ($room_ids as $r)
+        {
+            $room = \Repositories\Rooms::retrieve($r);
+            $rooms[] = $room;
+        }
+
+        \Helpers\DisplayManager::display("mespieces",[$rooms]);
+
+    }
+
 }
 ?>
