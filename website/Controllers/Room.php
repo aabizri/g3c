@@ -67,24 +67,23 @@ class Room
 
     public function getRooms(array $get, array $post): void
     {
+
         /*Verifier que la propriété existe */
-        if(empty($property_id))
+        if(empty($_GET['pid']))
         {
             return;
         }
 
         //Récupérer liste des pièces
-
         $rooms = [];
-        $room_ids= \Repositories\Rooms::findAllByPropertyID($property_id);
-        foreach ($room_ids as $r)
+        $room_ids= \Repositories\Rooms::findAllByPropertyID($_GET['pid']);
+        foreach ($room_ids as $rid)
         {
-            $room = \Repositories\Rooms::retrieve($r);
+            $room = \Repositories\Rooms::retrieve($rid);
             $rooms[] = $room;
         }
 
         \Helpers\DisplayManager::display("mespieces",[$rooms]);
-
     }
 
 }
