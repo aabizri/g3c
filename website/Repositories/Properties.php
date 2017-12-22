@@ -37,7 +37,7 @@ class Properties extends Repository
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        if ($p->setId($id) == false) {
+        if ($p->setID($id) == false) {
             throw new \Exception("error setting id");
         }
 

@@ -4,20 +4,20 @@ namespace Entities;
 
 class Role
 {
-    /* ROLES */
+    /* PROPERTIES */
 
     private $id;
     private $user_id;
     private $property_id;
     private $creation_date;
-    private $last_update;
+    private $last_updated;
 
     /* SETTERS AND GETTERS */
 
     /**
      * @return int
      */
-    public function getId(): int
+    public function getID(): int
     {
         return $this->id;
     }
@@ -35,7 +35,7 @@ class Role
     /**
      * @return int
      */
-    public function getUserId(): int
+    public function getUserID(): int
     {
         return $this->user_id;
     }
@@ -44,7 +44,7 @@ class Role
      * @param int
      * @return bool
      */
-    public function setUserId(int $user_id): bool
+    public function setUserID(int $user_id): bool
     {
         $this->user_id = $user_id;
         return true;
@@ -53,7 +53,7 @@ class Role
     /**
      * @return int
      */
-    public function getPropertyId(): int
+    public function getPropertyID(): int
     {
         return $this->property_id;
     }
@@ -62,25 +62,25 @@ class Role
      * @param int
      * @return bool
      */
-    public function setPropertyId(int $property_id): bool
+    public function setPropertyID(int $property_id): bool
     {
         $this->property_id = $property_id;
         return true;
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getCreationDate(): string
+    public function getCreationDate(): float
     {
         return $this->creation_date;
     }
 
     /**
-     * @param string
+     * @param float
      * @return bool
      */
-    public function setCreationDate(string $creation_date): bool
+    public function setCreationDate(float $creation_date): bool
     {
         $this->creation_date = $creation_date;
         return true;
@@ -89,18 +89,18 @@ class Role
     /**
      * @return string
      */
-    public function getLastUpdate(): string
+    public function getLastUpdated(): float
     {
-        return $this->last_update;
+        return $this->last_updated;
     }
 
     /**
      * @param string
      * @return bool
      */
-    public function setLastUpdate(string $last_update): bool
+    public function setLastUpdated(float $last_update): bool
     {
-        $this->last_update = $last_update;
+        $this->last_updated = $last_update;
         return true;
     }
 
@@ -109,7 +109,8 @@ class Role
     /**
      * @return int[] the permissions (id) given to the role
      */
-    public function retrievePermissions(): array {
-        return \Repositories\Permissions::findAllByRole($this->getId());
+    public function retrievePermissions(): array
+    {
+        return \Repositories\Permissions::findAllByRole($this->getID());
     }
 }

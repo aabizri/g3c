@@ -1,22 +1,20 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="utf-8"/>
-    <link rel="stylesheet" href="moncompte.css" />
-    <title>Mes pièces</title>
-</head>
-<body>
-
+<ul id="Menu">
+    <li id="Moncompte"><a href="index.php?c=User&a=getAccountPage"><input type="button" value="Mon compte" /></a></li>
+    <li id="Mespieces"><a href="index.php?c=Room&a=getRoomsPage"><input type="button" value="Mes pièces" /></a></li>
+    <li id="Mesperipheriques"> <a href="index.php?c=Peripheral&a=getPeripheralsPage"><input type="button" value="Mes périphériques" /></a></li>
+    <li id="Mesfiltres"><a href="Mesfiltres.html"><input type="button" value="Mes filtres" /></a></li>
+    <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
+</ul>
 
 <div id="infosmoncompte">
     <div id="mesinformations">
         <h4 id="titremesinfos">Mes informations</h4>
-        <p>Nom : $_POST['']</p>
-        <p>Prénom : $_POST['']</p>
-        <p>Email : $_POST['']</p>
-        <p>Addresse : $_POST['']</p>
-        <p>Téléphone : $_POST['']</p>
-        <p>Login : $_POST['']</p>
+        <p>Nom :</p>
+        <p>Prénom :</p>
+        <p>Email :</p>
+        <p>Addresse :</p>
+        <p>Téléphone :</p>
+        <p>Login :</p>
     </div>
 
     <div id="modifiermesinformations">
@@ -35,39 +33,34 @@
 
 </div>
 
-<h4 id="identificationutilisateur">Vous êtes l'utilisateur $_SESSION['']</h4>
+<h4 id="identificationutilisateur">Vous êtes l'utilisateur ...... </h4>
 
 <div id="creervoirutilisateur">
 
     <div id="voirutilisateurs">
         <h4 id="titrelisteutilisateurs">Liste des utilisateurs</h4>
-        <p id="nomsutilisateurs">$_POST['Eytan'] <input id="boutonssupprimer" type="button" value="Supprimer"
+        <p id="nomsutilisateurs">Eytan <input id="boutonssupprimer" type="button" value="Supprimer"
                                                         title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">$_POST['Bryan'] <input id="boutonssupprimer" type="button" value="Supprimer"
+        <p id="nomsutilisateurs">Bryan <input id="boutonssupprimer" type="button" value="Supprimer"
                                                         title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">$_POST['Jérémy'] <input id="boutonssupprimer" type="button" value="Supprimer"
+        <p id="nomsutilisateurs">Jérémy <input id="boutonssupprimer" type="button" value="Supprimer"
                                                          title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">$_POST['Dinesh'] <input id="boutonssupprimer" type="button" value="Supprimer"
+        <p id="nomsutilisateurs">Dinesh <input id="boutonssupprimer" type="button" value="Supprimer"
                                                          title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">$_POST['Alexandre'] <input id="boutonssupprimer" type="button" value="Supprimer"
+        <p id="nomsutilisateurs">Alexandre <input id="boutonssupprimer" type="button" value="Supprimer"
                                                             title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">$_POST['Randy'] <input id="boutonssupprimer" type="button" value="Supprimer"
+        <p id="nomsutilisateurs">Randy <input id="boutonssupprimer" type="button" value="Supprimer"
                                                         title="Vous allez supprimer cet utilisateur"/></p>
 
     </div>
 
 
     <div id="creerutilisateur">
-        <h4 id="titrecreerutilisateur">Créer un utilisateur</h4>
+        <h4 id="titrecreerutilisateur">Ajouter un utilisateur à la propriété</h4>
         <form action="pagephp">
-            <p><label>Login</label>: <input id="formdroit" type="text" name="login"/></p>
-            <p><label>Mot de passe : </label><input id="formdroit" type="password" name="password"/></p>
-            <p><label>Confirmer mot de passe: </label><input id="formdroit" type="password" name="password"/></p>
+            <p><label>Login</label>: <input id="formdroit" type="text" name="login"/></p><br>
             <input id="validercreationutilisateur" type="submit" value="Valider"
                    title="Vous créez un nouvel utilisateur"/>
         </form>
     </div>
 </div>
-
-</body>
-</html>

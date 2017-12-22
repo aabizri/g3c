@@ -31,16 +31,16 @@ header {
 #accroche {
     font-family: Verdana, sans-serif;
     color: white;
-    position: relative;
     left: 500px;
+    position: relative;
+    left: 40%;
     top: -45px;
-
 }
 
 #nomdelapage {
     font-family: Verdana, sans-serif;
     color: white;
     position: relative;
-    left: 1050px;
+    left: 85%;
     top: -80px;
 }

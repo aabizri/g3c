@@ -79,7 +79,7 @@ class RequestTracker
         }
 
         // Set request time
-        $time = (float)@$info["REQUEST_TIME_FLOAT"];
+        $time = (float) $info["REQUEST_TIME_FLOAT"];
         $ok = $this->req->setStarted($time);
         if (!$ok) {
             return false;
