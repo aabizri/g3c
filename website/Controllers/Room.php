@@ -16,8 +16,8 @@ class Room
     public function postNewRoom(array $get, array $post): void
     {
         /*Vérifier que les données existent*/
-        if (empty($post("name"))) {
-            echo "Il manque : " . "name";
+        if (empty($post["name"])) {
+            echo "Il manque : "."name";
             return;
         }
 
@@ -40,12 +40,13 @@ class Room
 
 
     public function postDeleteRoom(array $get, array $post): void
-    {
+        {
         /*Vérifier que les données existent*/
-        if (empty($post("name"))) {
-            echo "Il manque : " . "name";
+        if (empty($post["name"])) {
+            echo "Il manque : "."name";
             return;
         }
+
 
         /*Assigne les valeurs*/
         $name = $post["name"];
@@ -67,7 +68,6 @@ class Room
 
     public function getRooms(array $get, array $post): void
     {
-
         /*Verifier que la propriété existe */
         if(empty($_GET['pid']))
         {
