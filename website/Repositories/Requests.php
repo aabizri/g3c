@@ -11,6 +11,10 @@ namespace Repositories;
 
 class Requests extends Repository
 {
+    /**
+     * @param \Entities\Request $r
+     * @throws \Exception
+     */
     public static function insert(\Entities\Request $r): void
     {
         // SQL
