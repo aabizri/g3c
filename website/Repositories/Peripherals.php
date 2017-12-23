@@ -89,7 +89,7 @@ class Peripherals extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':uuid' => $p->getUUID()));
+        $sth->execute([':uuid' => $p->getUUID()]);
 
         // Retrieve
         $data = $sth->fetch(PDO::FETCH_ASSOC);
@@ -131,7 +131,7 @@ class Peripherals extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(array(':uuid' => $p->getUUID()));
+        $sth->execute([':uuid' => $p->getUUID()]);
 
         // Retrieve
         $db_last_updated = $sth->fetchColumn(0);
@@ -175,7 +175,7 @@ class Peripherals extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':uuid' => $uuid));
+        $sth->execute([':uuid' => $uuid]);
 
         // Fetch
         $count = $sth->fetchColumn(0);
@@ -279,7 +279,10 @@ class Peripherals extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array('room_id' => $roomID, ':uuid' => $p->getUUID()));
+        $sth->execute([
+            'room_id' => $roomID,
+            ':uuid' => $p->getUUID()
+            ]);
 
         // Check for sane row count of affected rows
         $rc = $sth->rowCount();
@@ -320,7 +323,11 @@ class Peripherals extends Repository
         $now = (new \Datetime)->format(\DateTime::ATOM);
 
         // Execute
-        $sth->execute(array(':property_id' => $propertyID, ':add_date' => $now, ':uuid' => $p->getUUID()));
+        $sth->execute([
+            ':property_id' => $propertyID,
+            ':add_date' => $now,
+            ':uuid' => $p->getUUID()
+        ]);
 
         // Set the ID and date
         $p->setPropertyID($propertyID);

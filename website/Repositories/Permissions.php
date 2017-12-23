@@ -94,7 +94,7 @@ class Permissions extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':id' => $p->getID()));
+        $sth->execute([':id' => $p->getID()]);
 
         // Retrieve
         $data = $sth->fetch(\PDO::FETCH_ASSOC);
@@ -130,7 +130,7 @@ class Permissions extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':id' => $id));
+        $sth->execute([':id' => $id]);
 
         // Fetch
         $count = $sth->fetchColumn(0);

@@ -98,7 +98,7 @@ class Rooms extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':id' => $r->getID()));
+        $sth->execute([':id' => $r->getID()]);
 
         // Retrieve
         $data = $sth->fetch(\PDO::FETCH_ASSOC);
@@ -140,7 +140,7 @@ class Rooms extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(array(':id' => $r->getID()));
+        $sth->execute([':id' => $r->getID()]);
 
         // Retrieve
         $db_last_updated = $sth->fetchColumn(0);
@@ -184,7 +184,7 @@ class Rooms extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':id' => $id));
+        $sth->execute([':id' => $id]);
 
         // Fetch
         $count = $sth->fetchColumn(0);

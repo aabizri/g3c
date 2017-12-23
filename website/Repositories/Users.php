@@ -97,7 +97,7 @@ class Users extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':id' => $u->getID()));
+        $sth->execute([':id' => $u->getID()]);
 
         // Fetch
         $data = $sth->fetch(PDO::FETCH_ASSOC);
@@ -142,7 +142,7 @@ class Users extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(array(':id' => $u->getID()));
+        $sth->execute([':id' => $u->getID()]);
 
         // Retrieve
         $db_last_updated = $sth->fetchColumn(0);
@@ -185,7 +185,7 @@ class Users extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':id' => $id));
+        $sth->execute([':id' => $id]);
 
         // Fetch
         $count = $sth->fetchColumn(0);
@@ -227,8 +227,11 @@ class Users extends Repository
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
+        // Params
+        $params = [':email' => $email];
+
         // Execute query
-        $sth->execute(array(':email' => $email));
+        $sth->execute($params);
 
         // Fetch
         $count = $sth->fetchColumn(0);
@@ -249,7 +252,7 @@ class Users extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':email' => $email));
+        $sth->execute($params);
 
         // Fetch
         $id = $sth->fetchColumn(0);
@@ -277,8 +280,11 @@ class Users extends Repository
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
+        // Parameters
+        $params = [':nick' => $nick];
+
         // Execute query
-        $sth->execute(array(':nick' => $nick));
+        $sth->execute($params);
 
         // Fetch
         $count = $sth->fetchColumn(0);
@@ -299,7 +305,7 @@ class Users extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':nick' => $nick));
+        $sth->execute($params);
 
         // Fetch
         $id = $sth->fetchColumn(0);
