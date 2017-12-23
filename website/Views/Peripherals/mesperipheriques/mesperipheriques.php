@@ -7,23 +7,46 @@
             </ul>
 
             <h2 id="titreperipherique">Liste des peripériques connectés</h2>
-            <p id="nombrepc">Vous avez actuellement n périphériques connectés.</p>
+            <p id="nombrepc">Vous avez actuellement <?php echo count($data["peripherals_list"])?> périphériques connectés.</p>
 
             <div id="listeperipheriques">
                 <h3 id="peripheriques"><strong>Périphériques</strong><br></h3>
                 <div id="tableperipheriques">
                     <table align="center">
-                        <thead><tr>
-                            <th>Type périphérique</th>
-                            <th>Localisation</th>
-                            <th>Etat</th>
-                        </tr></thead>
-                        <tbody><tr>
-                            <td>Thermomètre</td>
-                            <td>Chambre 1</td>
-                            <td>En marche</td>
-                        </tr></tbody>
+
+                        <?php
+                        //Créer un tableau qui s'indente en fonction du nombre de périphériques
+                        $Nbrdonnees = count($data["peripherals_list"]);
+                        if ($Nbrdonnees != 0){
+                            //Ici nous faisons le tableau avec ses titres
+                            echo '<thead><tr>
+                                    <th>Nom du périphérique</th>
+                                    <th>Localisation</th>
+                                    <th>Dernière mise à jour</th>
+                                    <th>UUID</th>
+                                    <th>Gestion</th>
+                                    </tr></thead>';
+
+                            //Ici nous ajoutons une ligne avec les infos
+                            foreach ($data["peripherals_list"] as $p){
+
+                                $date = date( "d/m/Y", $p->getLastUpdated()) . ' à ' . date( "H:i",$p->getLastUpdated() );
+
+                                echo '<tr><form action="index.php?c=Peripherals&a=postDissociatePeripheralFromProperty" method="post" >
+                                        <td>'. $p->getDisplayName() .'</td>
+                                        <td>'. $p->getRoomId() .'</td>
+                                        <td>'. $date .'</td>
+                                        <td><input type="hidden" name="peripheral_id" value="'. $p->getUUID() .'"/>'. $p->getUUID() .'</td>
+                                        <td><form action="index.php?c=Peripherals&a=postDissociatePeripheralFromProperty" method="post" ><input type="submit" value="Supprimer"/></form></td>
+                                      </tr>';}
+
+                            }
                         
+                        else {
+                            echo 'Pas de périphériques dans la propriété';
+                        }
+
+                        ?>
                     </table>
                 </div>
             </div>
@@ -34,10 +57,10 @@
                     <form name="Ajouter un peripherique" method="post" action="index.php?c=Peripherals&a=postAddPeripheral">
                         <label>UUID : </label><input type="text" name="uuid" /><br><br>
                         <label>Nom du périphérique : </label><input type="text" name="display_name" />
-                            <p> Dans quelle salle ?
-                                <input type="checkbox" value="1" name="room_id"/><label>Chambre</label>
+                            <p> Dans quelle salle ? <!-- Faire un lien avec la branche dev-room. Utiliser une liste
+                             déroulante et récupérer les id qui correspondent ici à la value-->
+                                <input type="checkbox" value="1" <!--value = 1 pour tester--> name="room_id"/><label>Chambre</label>
                             </p>
-                        <br>
                         <br>
                         <input type="submit" value="Ajouter un périphérique" id="ajouterperipheriquebouton" >
                     </form>

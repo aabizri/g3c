@@ -43,6 +43,7 @@ class Peripherals
 
         // Assigne les données à l'entité si le périphérique n'a pas encore de propriété.
         if(!empty($p->getPropertyID())) {
+            echo "UUID déja lié à une propriété";
             return;
         }
 
@@ -61,6 +62,9 @@ class Peripherals
     //Afficher les périphériques
     public function getPeripheralsPage( array $get, array $post):void
     {
+        // TEMP DEBUG
+        $get["property_id"] = 1;
+
         // Propriété transmise dans le GET -- Bizri
         $property_id = $get["property_id"];
 
@@ -71,7 +75,7 @@ class Peripherals
             return;
         }
 
-        //Récupérer les noms des périphériques pour chaque capteur
+        //Récupérer les données des périphériques pour chaque périphérique
         $peripherals_list = [];
         foreach ($peripheriques_id_list as $peripherals_ID) {
             $peripherals = \Repositories\Peripherals::retrieve($peripherals_ID);
@@ -82,20 +86,24 @@ class Peripherals
         $data["peripherals_list"] = $peripherals_list;
 
         //Afficher
-        \Helpers\DisplayManager::display("mesperipheriques");
+        \Helpers\DisplayManager::display("mesperipheriques",$data);
     }
 
     //Supprimer un périphérique
     public function postDissociatePeripheralFromProperty(array $get, array $post): void
     {
+        //POUR TESTER
+        $get["property_id"] = 1;
+
+
         // Propriété transmise dans le GET -- Bizri
         $property_id = $get["property_id"];
 
         // Périphérique à supprimer
-        $peripheral_id = $post["peripheral_id"];
+        $uuid = $post["peripheral_id"];
 
         // Récupérer le périphérique
-        $p = \Repositories\Peripherals::retrieve($peripheral_id);
+        $p = \Repositories\Peripherals::retrieve($uuid);
 
         // Vérifier que le périphérique est associé à la propriété
         if ($p->getPropertyID() !== $property_id) {
@@ -106,7 +114,7 @@ class Peripherals
         // Supprimer le périphérique
         $p->setDisplayName(null);
         $p->setAddDate(null);
-        $p->setAddDate(null);
+        //$p->setLastUpdated(null);
         $p->setPropertyID(null);
         $p->setRoomID(null);
 
