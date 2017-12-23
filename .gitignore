@@ -4,3 +4,5 @@
 .buildpath
 .metadata
 website/config.ini
+website/Controllers/Room.php
+*.php
