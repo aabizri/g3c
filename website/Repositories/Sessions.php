@@ -91,7 +91,7 @@ class Sessions extends Repository
     public static function pull(Entities\Session $s): void
     {
         // SQL
-        $sql = "SELECT user_id, value, UNIX_TIMESTAMP(started) as started, UNIX_TIMESTAMP(expiry) as expiry, canceled, UNIX_TIMESTAMP(last_updated) as last_updated
+        $sql = "SELECT user_id, value, UNIX_TIMESTAMP(started) AS started, UNIX_TIMESTAMP(expiry) AS expiry, canceled, UNIX_TIMESTAMP(last_updated) AS last_updated
         FROM sessions
         WHERE id = :id;";
 
@@ -113,10 +113,10 @@ class Sessions extends Repository
         $ok = $s->setMultiple([
             "user_id" => $data["user_id"],
             "value" => $data["value"],
-            "started" => (float) $data["started"],
-            "expiry" => (float) $data["expiry"],
+            "started" => (float)$data["started"],
+            "expiry" => (float)$data["expiry"],
             "canceled" => $data["canceled"],
-            "last_updated" => (float) $data["last_updated"],
+            "last_updated" => (float)$data["last_updated"],
         ]);
         if ($ok === false) {
             throw new \Exception("Error setting");
@@ -135,7 +135,7 @@ class Sessions extends Repository
     public static function sync(Entities\Session $s): void
     {
         // SQL to get last_updated on given peripheral
-        $sql = "SELECT UNIX_TIMESTAMP(last_updated) as last_updated
+        $sql = "SELECT UNIX_TIMESTAMP(last_updated) AS last_updated
           FROM sessions
           WHERE id = :id;";
 
@@ -159,7 +159,7 @@ class Sessions extends Repository
         }
 
         // Cast it to float
-        $db_last_updated = (float) $db_last_updated;
+        $db_last_updated = (float)$db_last_updated;
 
         // If the DB was updated BEFORE the last update to the peripheral, push
         if ($db_last_updated < $s->getLastUpdated()) {

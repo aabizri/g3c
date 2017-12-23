@@ -89,7 +89,7 @@ class Users extends Repository
     public static function pull(Entities\User $u): void
     {
         // SQL
-        $sql = "SELECT display, nick, birth_date, email, password, phone, UNIX_TIMESTAMP(last_updated) as last_updated
+        $sql = "SELECT display, nick, birth_date, email, password, phone, UNIX_TIMESTAMP(last_updated) AS last_updated
         FROM users
         WHERE id = :id";
 
@@ -115,7 +115,7 @@ class Users extends Repository
             "email" => $data["email"],
             "phone" => $data["phone"],
             "password_hashed" => $data["password"],
-            "last_updated" => (float) $data["last_updated"],
+            "last_updated" => (float)$data["last_updated"],
         ]);
         if ($ok === false) {
             throw new \Exception("Failure while setting");
@@ -134,7 +134,7 @@ class Users extends Repository
     public static function sync(Entities\User $u): void
     {
         // SQL to get last_updated on given peripheral
-        $sql = "SELECT UNIX_TIMESTAMP(last_updated) as last_updated
+        $sql = "SELECT UNIX_TIMESTAMP(last_updated) AS last_updated
           FROM users
           WHERE id = :id;";
 
@@ -158,7 +158,7 @@ class Users extends Repository
         }
 
         // Cast it
-        $db_last_updated = (float) $db_last_updated;
+        $db_last_updated = (float)$db_last_updated;
 
         // If the DB was updated BEFORE the last update to the peripheral, push
         if ($db_last_updated < $u->getLastUpdated()) {

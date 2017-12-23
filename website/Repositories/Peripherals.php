@@ -81,7 +81,7 @@ class Peripherals extends Repository
     public static function pull(Entities\Peripheral $p)
     {
         // SQL
-        $sql = "SELECT display_name, build_date, add_date, public_key, property_id, room_id, UNIX_TIMESTAMP(last_updated) as last_updated
+        $sql = "SELECT display_name, build_date, add_date, public_key, property_id, room_id, UNIX_TIMESTAMP(last_updated) AS last_updated
         FROM peripherals
         WHERE uuid = :uuid;";
 
@@ -107,7 +107,7 @@ class Peripherals extends Repository
             "public_key" => $data["public_key"],
             "property_id" => $data["property_id"],
             "room_id" => $data["room_id"],
-            "last_updated" => (float) $data["last_updated"],
+            "last_updated" => (float)$data["last_updated"],
         ]);
     }
 
@@ -123,7 +123,7 @@ class Peripherals extends Repository
     public static function sync(Entities\Peripheral $p)
     {
         // SQL to get last_updated on given peripheral
-        $sql = "SELECT UNIX_TIMESTAMP(last_updated) as last_updated
+        $sql = "SELECT UNIX_TIMESTAMP(last_updated) AS last_updated
           FROM peripherals
           WHERE uuid = :uuid;";
 
@@ -147,7 +147,7 @@ class Peripherals extends Repository
         }
 
         // Cast it
-        $db_last_updated = (float) $db_last_updated;
+        $db_last_updated = (float)$db_last_updated;
 
         // If the DB was updated BEFORE the last update to the peripheral, push
         if ($db_last_updated < $p->getLastUpdated()) {
@@ -282,7 +282,7 @@ class Peripherals extends Repository
         $sth->execute([
             'room_id' => $roomID,
             ':uuid' => $p->getUUID()
-            ]);
+        ]);
 
         // Check for sane row count of affected rows
         $rc = $sth->rowCount();

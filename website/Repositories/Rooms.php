@@ -90,7 +90,7 @@ class Rooms extends Repository
     public static function pull(Entities\Room $r): void
     {
         // SQL
-        $sql = "SELECT property_id, name, creation_date, UNIX_TIMESTAMP(last_updated) as last_updated
+        $sql = "SELECT property_id, name, creation_date, UNIX_TIMESTAMP(last_updated) AS last_updated
         FROM rooms
         WHERE id = :id;";
 
@@ -113,7 +113,7 @@ class Rooms extends Repository
             "id" => $data["id"],
             "property_id" => $data["property_id"],
             "creation_date" => $data["creation_date"],
-            "last_updated" => (float) $data["last_updated"],
+            "last_updated" => (float)$data["last_updated"],
         ]);
         if ($ok === false) {
             throw new \Exception("Error setting data");
@@ -132,7 +132,7 @@ class Rooms extends Repository
     public static function sync(Entities\Room $r): void
     {
         // SQL to get last_updated on given peripheral
-        $sql = "SELECT UNIX_TIMESTAMP(last_updated) as last_updated
+        $sql = "SELECT UNIX_TIMESTAMP(last_updated) AS last_updated
           FROM rooms
           WHERE id = :id;";
 
@@ -156,7 +156,7 @@ class Rooms extends Repository
         }
 
         // Cast it
-        $db_last_updated = (float) $db_last_updated;
+        $db_last_updated = (float)$db_last_updated;
 
         // If the DB was updated BEFORE the last update to the peripheral, push
         if ($db_last_updated < $r->getLastUpdated()) {
