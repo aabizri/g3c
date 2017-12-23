@@ -12,10 +12,10 @@ class Roles extends Repository
     /**
      * insert adds an entity to the database
      *
-     * @param \Entities\Role $p
+     * @param \Entities\Role $r
      * @throws \Exception
      */
-    public static function insert(\Entities\Role $p): void
+    public static function insert(\Entities\Role $r): void
     {
         // SQL
         $sql = "INSERT INTO roles (user_id, property_id)
@@ -25,7 +25,7 @@ class Roles extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
-        $data = $p->getMultiple([
+        $data = $r->getMultiple([
             "user_id",
             "property_id",
         ]);
@@ -35,12 +35,12 @@ class Roles extends Repository
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        if ($p->setId($id) == false) {
+        if ($r->setId($id) == false) {
             throw new \Exception("error setting id");
         }
 
         // We should now pull to populate times
-        self::pull($p);
+        self::pull($r);
     }
 
     /**
