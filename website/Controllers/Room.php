@@ -85,6 +85,10 @@ class Room
 
         \Helpers\DisplayManager::display("mespieces",[$rooms]);
     }
-
+    public static function getRoomsPage (array $get, array $post):void
+    {
+        \Helpers\DisplayManager::display("mespieces", array());
+    }
+}
 }
 ?>
