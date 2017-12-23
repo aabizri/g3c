@@ -19,6 +19,8 @@ class Peripherals extends Repository
     public static function insert(Entities\Peripheral $p)
     {
         // SQL
+        $sql = "INSERT INTO peripherals (uuid, display_name, build_date, add_date, public_key, property_id, room_id)
+        VALUES (:uuid, :display_name, :build_date, :add_date, :public_key, :property_id, :room_id);";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
@@ -26,6 +28,7 @@ class Peripherals extends Repository
         // Prepare data to be inserted
         $data = $p->getMultiple([
             'uuid',
+            'display_name',
             'build_date',
             'add_date',
             'public_key',
