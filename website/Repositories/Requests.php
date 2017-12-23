@@ -21,16 +21,16 @@ class Requests extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // On prépare les données qui vont être insérées
-        $data = [
-            'ip' => $r->getIp(),
-            'user_agent_txt' => $r->getUserAgentText(),
-            'user_agent_hash' => $r->getUserAgentHash(),
-            'session_id' => $r->getSessionID(),
-            'controller' => $r->getController(),
-            'action' => $r->getAction(),
-            'started' => $r->getStarted(),
-            'finished' => $r->getFinished(),
-        ];
+        $data = $r->getMultiple([
+            'ip',
+            'user_agent_txt',
+            'user_agent_hash',
+            'session_id',
+            'controller',
+            'action',
+            'started',
+            'finished',
+        ]);
 
         // Execute query
         $sth->execute($data);

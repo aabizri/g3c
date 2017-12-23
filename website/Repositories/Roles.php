@@ -25,10 +25,10 @@ class Roles extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
-        $data = [
-            ":user_id" => $p->getUserID(),
-            ":property_id" => $p->getPropertyID(),
-        ];
+        $data = $p->getMultiple([
+            "user_id",
+            "property_id",
+        ]);
 
         // Execute request
         $sth->execute($data);
@@ -54,16 +54,16 @@ class Roles extends Repository
     {
         // SQL
         $sql = "UPDATE roles
-        SET user_id = :uid, property_id = :pid";
+        SET user_id = :user_id, property_id = :property_id";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
-        $data = array(
-            ':uid' => $r->getUserID(),
-            ':pid' => $r->getPropertyID(),
-        );
+        $data = $r->getMultiple([
+            'user_id',
+            'property_id'
+        ]);
 
         // Execute query
         $sth->execute($data);
@@ -103,13 +103,12 @@ class Roles extends Repository
         }
 
         // Store
-        $arr = array(
-            "setUserId" => $data["user_id"],
-            "setPropertyId" => $data["property_id"],
-            "setCreationDate" => (float) $data["creation_date"],
-            "setLastUpdated" => (float) $data["last_updated"],
-        );
-        parent::executeSetterArray($r, $arr);
+        $ok = $r->setMultiple([
+            "user_id" => $data["user_id"],
+            "property_id" => $data["property_id"],
+            "creation_date" => (float) $data["creation_date"],
+            "last_updated" => (float) $data["last_updated"],
+        ]);
     }
 
     /**

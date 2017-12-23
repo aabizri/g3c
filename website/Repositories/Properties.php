@@ -27,10 +27,10 @@ class Properties extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
-        $data = [
-            ":name" => $p->getName(),
-            ":address" => $p->getAddress(),
-        ];
+        $data = $p->getMultiple([
+            "name",
+            "address",
+        ]);
 
         // Execute request
         $sth->execute($data);

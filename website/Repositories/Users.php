@@ -18,20 +18,20 @@ class Users extends Repository
     {
         // SQL
         $sql = "INSERT INTO users (display, nick, birth_date, email, password, phone)
-        VALUES (:display, :nick, :birth_date, :email, :password, :phone)";
+        VALUES (:display, :nick, :birth_date, :email, :password_hashed, :phone)";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
-        $data = [
-            ':display' => $u->getDisplay(),
-            ':nick' => $u->getNick(),
-            ':birth_date' => $u->getBirthDate(),
-            ':email' => $u->getEmail(),
-            ':password' => $u->getPasswordHashed(),
-            ':phone' => $u->getPhone(),
-        ];
+        $data = $u->getMultiple([
+            'display',
+            'nick',
+            'birth_date',
+            'email',
+            'password_hashed',
+            'phone',
+        ]);
 
         // Execute creation query
         $sth->execute($data);
@@ -57,21 +57,20 @@ class Users extends Repository
     {
         // SQL
         $sql = "UPDATE users
-        SET display = :display, nick = :nick, birth_date = :birth_date, email = :email, password = :password, phone = :phone";
+        SET display = :display, nick = :nick, birth_date = :birth_date, email = :email, password = :password_hashed, phone = :phone";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
-        $data = array(
-            ':id' => $u->getID(),
-            ':display' => $u->getDisplay(),
-            ':nick' => $u->getNick(),
-            ':birth_date' => $u->getBirthDate(),
-            ':email' => $u->getEmail(),
-            ':password' => $u->getPasswordHashed(),
-            ':phone' => $u->getPhone(),
-        );
+        $data = $u->getMultiple([
+            'display',
+            'nick',
+            'birth_date',
+            'email',
+            'password_hashed',
+            'phone',
+        ]);
 
         // Execute query
         $sth->execute($data);
@@ -109,16 +108,18 @@ class Users extends Repository
         }
 
         // Store
-        $arr = array(
-            "setDisplay" => $data["display"],
-            "setNick" => $data["nick"],
-            "setBirthDate" => $data["birth_date"],
-            "setEmail" => $data["email"],
-            "setPhone" => $data["phone"],
-            "setPasswordHashed" => $data["password"],
-            "setLastUpdated" => (float) $data["last_updated"],
-        );
-        parent::executeSetterArray($u, $arr);
+        $ok = $u->setMultiple([
+            "display" => $data["display"],
+            "nick" => $data["nick"],
+            "birth_date" => $data["birth_date"],
+            "email" => $data["email"],
+            "phone" => $data["phone"],
+            "password_hashed" => $data["password"],
+            "last_updated" => (float) $data["last_updated"],
+        ]);
+        if ($ok === false) {
+            throw new \Exception("Failure while setting");
+        }
     }
 
     /**

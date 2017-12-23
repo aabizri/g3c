@@ -30,10 +30,10 @@ class Rooms extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
-        $data = [
-            "property_id" => $r->getPropertyID(),
-            "name" => $r->getName(),
-        ];
+        $data = $r->getMultiple([
+            "property_id",
+            "name",
+        ]);
 
         // Execute query
         $sth->execute($data);
@@ -65,11 +65,11 @@ class Rooms extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Data for the request
-        $data = [
-            "id" => $r->getID(),
-            "property_id" => $r->getPropertyID(),
-            "name" => $r->getName(),
-        ];
+        $data = $r->getMultiple([
+            "id",
+            "property_id",
+            "name",
+        ]);
 
         // Execute query
         $sth->execute($data);
@@ -109,13 +109,15 @@ class Rooms extends Repository
         }
 
         // Store
-        $arr = array(
-            "setId" => $data["id"],
-            "setPropertyId" => $data["property_id"],
-            "setCreationDate" => $data["creation_date"],
-            "setLastUpdated" => (float) $data["last_updated"],
-        );
-        parent::executeSetterArray($r, $arr);
+        $ok = $r->setMultiple([
+            "id" => $data["id"],
+            "property_id" => $data["property_id"],
+            "creation_date" => $data["creation_date"],
+            "last_updated" => (float) $data["last_updated"],
+        ]);
+        if ($ok === false) {
+            throw new \Exception("Error setting data");
+        }
     }
 
     /**

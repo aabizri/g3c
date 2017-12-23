@@ -19,21 +19,19 @@ class Peripherals extends Repository
     public static function insert(Entities\Peripheral $p)
     {
         // SQL
-        $sql = "INSERT INTO peripherals (uuid, build_date, add_date, public_key, property_id, room_id)
-        VALUES (:uuid, :build_date, :add_date, :public_key, :property_id, :room_id);";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
-        $data = [
-            ':uuid' => $p->getUUID(),
-            ':build_date' => $p->getBuildDate(),
-            ':add_date' => $p->getAddDate(),
-            ':public_key' => $p->getPublicKey(),
-            ':property_id' => $p->getPropertyID(),
-            ':room_id' => $p->getRoomID(),
-        ];
+        $data = $p->getMultiple([
+            'uuid',
+            'build_date',
+            'add_date',
+            'public_key',
+            'property_id',
+            'room_id',
+        ]);
 
         // Execute query
         $sth->execute($data);
@@ -56,13 +54,13 @@ class Peripherals extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
-        $data = [
-            ':uuid' => $p->getUUID(),
-            ':display_name' => $p->getDisplayName(),
-            ':build_date' => $p->getBuildDate(),
-            ':add_date' => $p->getAddDate(),
-            ':public_key' => $p->getPublicKey(),
-        ]; // We don't have the ID in the Push, as they are only updated by the attachToXXX methods
+        $data = $p->getMultiple([
+            'uuid',
+            'display_name',
+            'build_date',
+            'add_date',
+            'public_key',
+        ]); // We don't have the ID in the Push, as they are only updated by the attachToXXX methods
 
         // Execute query
         $sth->execute($data);
@@ -99,16 +97,15 @@ class Peripherals extends Repository
         }
 
         // Store
-        $arr = array(
-            "setDisplayName" => $data["display_name"],
-            "setBuildDate" => $data["build_date"],
-            "setAddDate" => $data["add_date"],
-            "setPublicKey" => $data["public_key"],
-            "setPropertyId" => $data["property_id"],
-            "setRoomId" => $data["room_id"],
-            "setLastUpdated" => (float) $data["last_updated"],
-        );
-        parent::executeSetterArray($p, $arr);
+        $ok = $p->setMultiple([
+            "display_name" => $data["display_name"],
+            "build_date" => $data["build_date"],
+            "add_date" => $data["add_date"],
+            "public_key" => $data["public_key"],
+            "property_id" => $data["property_id"],
+            "room_id" => $data["room_id"],
+            "last_updated" => (float) $data["last_updated"],
+        ]);
     }
 
     /**

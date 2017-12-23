@@ -27,10 +27,10 @@ class Permissions extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
-        $data = [
-            ":name" => $p->getName(),
-            ":description" => $p->getDescription(),
-        ];
+        $data = $p->getMultiple([
+            "name",
+            "description",
+        ]);
 
         // Execute request
         $sth->execute($data);
@@ -62,10 +62,10 @@ class Permissions extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
-        $data = array(
-            ':name' => $p->getName(),
-            ':description' => $p->getDescription(),
-        );
+        $data = $p->getMultiple([
+            'name',
+            'description',
+        ]);
 
         // Execute query
         $sth->execute($data);
@@ -105,10 +105,10 @@ class Permissions extends Repository
         }
 
         // Store
-        $arr = array(
-            "setName" => $data["name"],
-            "setDescription" => $data["setDescription"],
-        );
+        $arr = $p->setMultiple([
+            "name" => $data["name"],
+            "description" => $data["setDescription"],
+        ]);
         parent::executeSetterArray($p, $arr);
     }
 

@@ -33,14 +33,14 @@ class Sessions extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // On prépare les données qui vont être insérées
-        $data = [
-            'id' => $s->getID(),
-            'user_id' => $s->getUserID(),
-            'started' => $s->getStarted(),
-            'expiry' => $s->getExpiry(),
-            'canceled' => $s->getCanceled(),
-            'value' => $s->getValue(),
-        ];
+        $data = $s->getMultiple([
+            'id',
+            'user_id',
+            'started',
+            'expiry',
+            'canceled',
+            'value',
+        ]);
 
         // Execute query
         $sth->execute($data);
@@ -65,15 +65,15 @@ class Sessions extends Repository
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
-        // Data for the request
-        $data = [
-            "id" => $s->getID(),
-            'user_id' => $s->getUserID(),
-            'started' => $s->getStarted(),
-            'expiry' => $s->getExpiry(),
-            'canceled' => $s->getCanceled(),
-            'value' => $s->getValue(),
-        ];
+        // On prépare les données qui vont être poussées
+        $data = $s->getMultiple([
+            'id',
+            'user_id',
+            'started',
+            'expiry',
+            'canceled',
+            'value',
+        ]);
 
         // Execute query
         $sth->execute($data);
@@ -110,15 +110,17 @@ class Sessions extends Repository
         }
 
         // Store
-        $arr = array(
-            "setUserID" => $data["user_id"],
-            "setValue" => $data["value"],
-            "setStarted" => (float) $data["started"],
-            "setExpiry" => (float) $data["expiry"],
-            "setCanceled" => $data["canceled"],
-            "setLastUpdated" => (float) $data["last_updated"],
-        );
-        parent::executeSetterArray($s, $arr);
+        $ok = $s->setMultiple([
+            "user_id" => $data["user_id"],
+            "value" => $data["value"],
+            "started" => (float) $data["started"],
+            "expiry" => (float) $data["expiry"],
+            "canceled" => $data["canceled"],
+            "last_updated" => (float) $data["last_updated"],
+        ]);
+        if ($ok === false) {
+            throw new \Exception("Error setting");
+        }
     }
 
     /**
