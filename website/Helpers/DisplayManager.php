@@ -8,9 +8,6 @@
 
 namespace Helpers;
 
-
-$sql = "SELECT id FROM sensors WHERE peripheral_uuid IN (SELECT uuid FROM peripherals WHERE room_id = :room_id)";
-
 /**
  * Class DisplayManager
  * @package Helpers
