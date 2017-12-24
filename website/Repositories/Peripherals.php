@@ -26,7 +26,7 @@ class Peripherals extends Repository
         VALUES (:uuid, :display_name, :build_date, :add_date, :public_key, :property_id, :room_id);";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
         $data = $p->getMultiple([
@@ -40,7 +40,7 @@ class Peripherals extends Repository
         ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
     }
 
     /**
@@ -57,7 +57,7 @@ class Peripherals extends Repository
         WHERE uuid = :uuid;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
         $data = $p->getMultiple([
@@ -69,7 +69,7 @@ class Peripherals extends Repository
         ]); // We don't have the ID in the Push, as they are only updated by the attachToXXX methods
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
     }
 
     /**
@@ -89,13 +89,13 @@ class Peripherals extends Repository
         WHERE uuid = :uuid;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(['uuid' => $p->getUUID()]);
+        $stmt->execute(['uuid' => $p->getUUID()]);
 
         // Retrieve
-        $data = $sth->fetch(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
         if ($data === false || $data === null) {
@@ -134,13 +134,13 @@ class Peripherals extends Repository
           WHERE uuid = :uuid;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(['uuid' => $p->getUUID()]);
+        $stmt->execute(['uuid' => $p->getUUID()]);
 
         // Retrieve
-        $db_last_updated = $sth->fetchColumn(0);
+        $db_last_updated = $stmt->fetchColumn(0);
 
         // If nil, we throw an exception
         if ($db_last_updated === null) {
@@ -178,13 +178,13 @@ class Peripherals extends Repository
             WHERE uuid = :uuid";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(['uuid' => $uuid]);
+        $stmt->execute(['uuid' => $uuid]);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
 
         // If count is zero, then we return null
         if ($count == 0) {
@@ -221,13 +221,13 @@ class Peripherals extends Repository
             WHERE property_id = :property_id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(["property_id" => $property_id]);
+        $stmt->execute(["property_id" => $property_id]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;
@@ -247,13 +247,13 @@ class Peripherals extends Repository
             WHERE room_id = :room_id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(["room_id" => $room_id]);
+        $stmt->execute(["room_id" => $room_id]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;
@@ -282,7 +282,7 @@ class Peripherals extends Repository
                 WHERE id = :room_id);";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // SEt parameters
         $params = $p->getMultiple([
@@ -291,10 +291,10 @@ class Peripherals extends Repository
         ]);
 
         // Execute query
-        $sth->execute($params);
+        $stmt->execute($params);
 
         // Check for sane row count of affected rows
-        $rc = $sth->rowCount();
+        $rc = $stmt->rowCount();
         switch ($rc) {
             case 0:
                 throw new Exception("Conditions not set, are the peripheral & room attached to the right property ?");
@@ -331,11 +331,11 @@ class Peripherals extends Repository
         WHERE uuid = :uuid;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
         $now = (new \Datetime)->format(\DateTime::ATOM);
 
         // Execute
-        $sth->execute([
+        $stmt->execute([
             ':property_id' => $propertyID,
             ':add_date' => $now,
             ':uuid' => $p->getUUID()

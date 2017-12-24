@@ -24,7 +24,7 @@ class Users extends Repository
         VALUES (:display, :nick, :birth_date, :email, :password_hashed, :phone)";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
         $data = $u->getMultiple([
@@ -37,7 +37,7 @@ class Users extends Repository
         ]);
 
         // Execute creation query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
@@ -64,7 +64,7 @@ class Users extends Repository
         SET display = :display, nick = :nick, birth_date = :birth_date, email = :email, password = :password_hashed, phone = :phone";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
         $data = $u->getMultiple([
@@ -77,7 +77,7 @@ class Users extends Repository
         ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Now pull
         self::pull($u);
@@ -98,13 +98,13 @@ class Users extends Repository
         WHERE id = :id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(['id' => $u->getID()]);
+        $stmt->execute(['id' => $u->getID()]);
 
         // Fetch
-        $data = $sth->fetch(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
         if (empty($data)) {
@@ -143,13 +143,13 @@ class Users extends Repository
           WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(['id' => $u->getID()]);
+        $stmt->execute(['id' => $u->getID()]);
 
         // Retrieve
-        $db_last_updated = $sth->fetchColumn(0);
+        $db_last_updated = $stmt->fetchColumn(0);
 
         // If nil, we throw an exception
         if ($db_last_updated == null) {
@@ -186,13 +186,13 @@ class Users extends Repository
             WHERE id = :id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(['id' => $id]);
+        $stmt->execute(['id' => $id]);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
 
         // If count is zero, then we return null
         if ($count == 0) {
@@ -232,16 +232,16 @@ class Users extends Repository
             WHERE email = :email";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Params
         $params = ['email' => $email];
 
         // Execute query
-        $sth->execute($params);
+        $stmt->execute($params);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
 
         // If count is zero, then we return null
         if ($count == 0) {
@@ -256,13 +256,13 @@ class Users extends Repository
             WHERE email = :email";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute($params);
+        $stmt->execute($params);
 
         // Fetch
-        $id = $sth->fetchColumn(0);
+        $id = $stmt->fetchColumn(0);
 
         // Return this ID
         return $id;
@@ -285,16 +285,16 @@ class Users extends Repository
             WHERE nick = :nick";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Parameters
         $params = ['nick' => $nick];
 
         // Execute query
-        $sth->execute($params);
+        $stmt->execute($params);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
 
         // If count is zero, then we return null
         if ($count == 0) {
@@ -309,13 +309,13 @@ class Users extends Repository
             WHERE nick = :nick";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute($params);
+        $stmt->execute($params);
 
         // Fetch
-        $id = $sth->fetchColumn(0);
+        $id = $stmt->fetchColumn(0);
 
         // Return this ID
         return $id;

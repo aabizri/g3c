@@ -33,7 +33,7 @@ class Sessions extends Repository
         VALUES (:id, :user_id, FROM_UNIXTIME(:started), FROM_UNIXTIME(:expiry), :canceled, :value);";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // On prépare les données qui vont être insérées
         $data = $s->getMultiple([
@@ -46,7 +46,7 @@ class Sessions extends Repository
         ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Pull
         self::pull($s);
@@ -66,7 +66,7 @@ class Sessions extends Repository
         WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // On prépare les données qui vont être poussées
         $data = $s->getMultiple([
@@ -79,7 +79,7 @@ class Sessions extends Repository
         ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Pull
         self::pull($s);
@@ -99,13 +99,13 @@ class Sessions extends Repository
         WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(['id' => $s->getID()]);
+        $stmt->execute(['id' => $s->getID()]);
 
         // Retrieve
-        $data = $sth->fetch(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
         if ($data == null) {
@@ -143,13 +143,13 @@ class Sessions extends Repository
           WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(['id' => $s->getID()]);
+        $stmt->execute(['id' => $s->getID()]);
 
         // Retrieve
-        $db_last_updated = $sth->fetchColumn(0);
+        $db_last_updated = $stmt->fetchColumn(0);
 
         // If nil, we throw an exception
         if ($db_last_updated == null) {
@@ -187,13 +187,13 @@ class Sessions extends Repository
             WHERE id = :id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(['id' => $id]);
+        $stmt->execute(['id' => $id]);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
 
         // If count is zero, then we return null
         if ($count == 0) {
@@ -230,13 +230,13 @@ class Sessions extends Repository
             WHERE user_id = :user_id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(["user_id" => $user_id]);
+        $stmt->execute(["user_id" => $user_id]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;

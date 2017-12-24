@@ -24,7 +24,7 @@ class Requests extends Repository
         VALUES (:ip, :user_agent_txt, UNHEX(:user_agent_hash), :session_id, :controller, :action, FROM_UNIXTIME(:started), FROM_UNIXTIME(:finished));";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // On prépare les données qui vont être insérées
         $data = $r->getMultiple([
@@ -39,7 +39,7 @@ class Requests extends Repository
         ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
@@ -83,13 +83,13 @@ class Requests extends Repository
             WHERE ip = :ip;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(["ip" => $ip]);
+        $stmt->execute(["ip" => $ip]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;

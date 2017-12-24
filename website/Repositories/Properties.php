@@ -26,7 +26,7 @@ class Properties extends Repository
           VALUES (:name, :address);";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
         $data = $p->getMultiple([
@@ -35,7 +35,7 @@ class Properties extends Repository
         ]);
 
         // Execute request
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();

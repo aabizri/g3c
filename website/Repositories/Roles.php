@@ -25,7 +25,7 @@ class Roles extends Repository
           VALUES (:user_id, :property_id);";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
         $data = $r->getMultiple([
@@ -34,7 +34,7 @@ class Roles extends Repository
         ]);
 
         // Execute request
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
@@ -61,7 +61,7 @@ class Roles extends Repository
         SET user_id = :user_id, property_id = :property_id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
         $data = $r->getMultiple([
@@ -70,7 +70,7 @@ class Roles extends Repository
         ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Now pull
         self::pull($r);
@@ -93,13 +93,13 @@ class Roles extends Repository
         WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(['id' => $r->getID()]);
+        $stmt->execute(['id' => $r->getID()]);
 
         // Retrieve
-        $data = $sth->fetch(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
         if ($data === false || $data === null) {
@@ -133,13 +133,13 @@ class Roles extends Repository
             WHERE id = :id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(['id' => $id]);
+        $stmt->execute(['id' => $id]);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
 
         // If count is zero, then we return null
         if ($count == 0) {
@@ -176,13 +176,13 @@ class Roles extends Repository
             WHERE user_id = :uid";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(["uid" => $uid]);
+        $stmt->execute(["uid" => $uid]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;
@@ -202,13 +202,13 @@ class Roles extends Repository
             WHERE property_id = :pid";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(["pid" => $pid]);
+        $stmt->execute(["pid" => $pid]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;
@@ -228,13 +228,13 @@ class Roles extends Repository
             WHERE permission_id = :permission_id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(["pid" => $permission_id]);
+        $stmt->execute(["pid" => $permission_id]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;
@@ -256,16 +256,16 @@ class Roles extends Repository
             WHERE user_id = :uid AND property_id = :pid";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare parameters
         $params = [':uid' => $uid, ":pid" => $pid];
 
         // Execute query
-        $sth->execute($params);
+        $stmt->execute($params);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
 
         // If count is zero, then we return null
         if ($count == 0) {
@@ -280,13 +280,13 @@ class Roles extends Repository
             WHERE user_id = :uid AND property_id = :pid";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute($params);
+        $stmt->execute($params);
 
         // Fetch
-        $id = $sth->fetchColumn(0);
+        $id = $stmt->fetchColumn(0);
 
         // Return this ID
         return $id;

@@ -28,7 +28,7 @@ class Permissions extends Repository
           VALUES (:name, :description);";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
         $data = $p->getMultiple([
@@ -37,7 +37,7 @@ class Permissions extends Repository
         ]);
 
         // Execute request
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
@@ -64,7 +64,7 @@ class Permissions extends Repository
         SET name = :name, description = :description";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
         $data = $p->getMultiple([
@@ -73,7 +73,7 @@ class Permissions extends Repository
         ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Now pull
         self::pull($p);
@@ -96,13 +96,13 @@ class Permissions extends Repository
         WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(['id' => $p->getID()]);
+        $stmt->execute(['id' => $p->getID()]);
 
         // Retrieve
-        $data = $sth->fetch(\PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
         if ($data === false || $data === null) {
@@ -131,13 +131,13 @@ class Permissions extends Repository
             WHERE id = :id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(['id' => $id]);
+        $stmt->execute(['id' => $id]);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
 
         // If count is zero, then we return null
         if ($count == 0) {
@@ -174,13 +174,13 @@ class Permissions extends Repository
             WHERE role_id = :role_id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":role_id" => $role_id]);
+        $stmt->execute([":role_id" => $role_id]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;

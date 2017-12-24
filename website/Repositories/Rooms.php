@@ -30,7 +30,7 @@ class Rooms extends Repository
         VALUES (:property_id, :name)";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
         $data = $r->getMultiple([
@@ -39,7 +39,7 @@ class Rooms extends Repository
         ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
@@ -66,7 +66,7 @@ class Rooms extends Repository
         WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Data for the request
         $data = $r->getMultiple([
@@ -76,7 +76,7 @@ class Rooms extends Repository
         ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Pull
         self::pull($r);
@@ -99,13 +99,13 @@ class Rooms extends Repository
         WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(['id' => $r->getID()]);
+        $stmt->execute(['id' => $r->getID()]);
 
         // Retrieve
-        $data = $sth->fetch(\PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
         if ($data == null) {
@@ -141,13 +141,13 @@ class Rooms extends Repository
           WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(['id' => $r->getID()]);
+        $stmt->execute(['id' => $r->getID()]);
 
         // Retrieve
-        $db_last_updated = $sth->fetchColumn(0);
+        $db_last_updated = $stmt->fetchColumn(0);
 
         // If nil, we throw an exception
         if ($db_last_updated == null) {
@@ -185,13 +185,13 @@ class Rooms extends Repository
             WHERE id = :id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(['id' => $id]);
+        $stmt->execute(['id' => $id]);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
 
         // If count is zero, then we return null
         if ($count == 0) {
@@ -228,13 +228,13 @@ class Rooms extends Repository
             WHERE property_id = :property_id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(["property_id" => $property_id]);
+        $stmt->execute(["property_id" => $property_id]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;
