@@ -11,7 +11,7 @@
 
 <div id="leftline">
 
-<form method="post" action="index.php?c=User&a=postJoin" id="surname">
+<form method="post" action="index.php?c=User&a=Join" id="surname">
     <p>
          <label>Nom</label>: <input id="line" type="text" name="surname"  />
     </p>

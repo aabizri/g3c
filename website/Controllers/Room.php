@@ -13,8 +13,11 @@ use Entities;
 class Room
 {
     /*Ajouter une pièce*/
-    public function postNewRoom(array $get, array $post): void
+    public function postNewRoom(\Entities\Request $req): void
     {
+        // Récupérer le post
+        $post = $req->getPOST();
+
         /*Vérifier que les données existent*/
         $required = ["name"];
         if (empty($post("name"))) {
@@ -39,7 +42,7 @@ class Room
         \Helpers\DisplayManager::display("dashboard",array());
     }
 
-    public static function getRoomsPage (array $get, array $post):void
+    public static function getRoomsPage (\Entities\Request $req):void
     {
         \Helpers\DisplayManager::display("mespieces", array());
     }
