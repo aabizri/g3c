@@ -69,7 +69,7 @@ class Request extends Entity
     /**
      * @return string
      */
-    public function getUserAgentText(): string
+    public function getUserAgentTxt(): string
     {
         return $this->user_agent_txt;
     }
@@ -77,7 +77,7 @@ class Request extends Entity
     /**
      * @param mixed $user_agent_txt
      */
-    public function setUserAgentText(string $user_agent_txt): bool
+    public function setUserAgentTxt(string $user_agent_txt): bool
     {
         $this->user_agent_txt = $user_agent_txt;
         return true;
@@ -178,7 +178,7 @@ class Request extends Entity
      */
     public function setUserAgent(string $ua): bool
     {
-        if ($this->setUserAgentText($ua) == false) {
+        if ($this->setUserAgentTxt($ua) == false) {
             return false;
         }
 
