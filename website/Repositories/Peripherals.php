@@ -218,7 +218,7 @@ class Peripherals extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":property_id" => $property_id]);
+        $sth->execute(["property_id" => $property_id]);
 
         // Fetch all results
         $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
@@ -244,7 +244,7 @@ class Peripherals extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":room_id" => $room_id]);
+        $sth->execute(["room_id" => $room_id]);
 
         // Fetch all results
         $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);

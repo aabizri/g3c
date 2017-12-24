@@ -83,7 +83,7 @@ class Requests extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":ip" => $ip]);
+        $sth->execute(["ip" => $ip]);
 
         // Fetch all results
         $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);

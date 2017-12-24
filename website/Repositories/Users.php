@@ -228,7 +228,7 @@ class Users extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Params
-        $params = [':email' => $email];
+        $params = ['email' => $email];
 
         // Execute query
         $sth->execute($params);
@@ -281,7 +281,7 @@ class Users extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Parameters
-        $params = [':nick' => $nick];
+        $params = ['nick' => $nick];
 
         // Execute query
         $sth->execute($params);

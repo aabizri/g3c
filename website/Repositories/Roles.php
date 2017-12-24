@@ -129,7 +129,7 @@ class Roles extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute([':id' => $id]);
+        $sth->execute(['id' => $id]);
 
         // Fetch
         $count = $sth->fetchColumn(0);
@@ -169,7 +169,7 @@ class Roles extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":uid" => $uid]);
+        $sth->execute(["uid" => $uid]);
 
         // Fetch all results
         $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
@@ -195,7 +195,7 @@ class Roles extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":pid" => $pid]);
+        $sth->execute(["pid" => $pid]);
 
         // Fetch all results
         $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
@@ -221,7 +221,7 @@ class Roles extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":pid" => $permission_id]);
+        $sth->execute(["pid" => $permission_id]);
 
         // Fetch all results
         $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);

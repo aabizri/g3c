@@ -184,7 +184,7 @@ class Rooms extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute([':id' => $id]);
+        $sth->execute(['id' => $id]);
 
         // Fetch
         $count = $sth->fetchColumn(0);
@@ -224,7 +224,7 @@ class Rooms extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":property_id" => $property_id]);
+        $sth->execute(["property_id" => $property_id]);
 
         // Fetch all results
         $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
