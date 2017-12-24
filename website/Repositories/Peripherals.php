@@ -89,7 +89,7 @@ class Peripherals extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([':uuid' => $p->getUUID()]);
+        $sth->execute(['uuid' => $p->getUUID()]);
 
         // Retrieve
         $data = $sth->fetch(PDO::FETCH_ASSOC);
@@ -131,7 +131,7 @@ class Peripherals extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute([':uuid' => $p->getUUID()]);
+        $sth->execute(['uuid' => $p->getUUID()]);
 
         // Retrieve
         $db_last_updated = $sth->fetchColumn(0);
@@ -175,7 +175,7 @@ class Peripherals extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute([':uuid' => $uuid]);
+        $sth->execute(['uuid' => $uuid]);
 
         // Fetch
         $count = $sth->fetchColumn(0);

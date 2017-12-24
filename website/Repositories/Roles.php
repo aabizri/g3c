@@ -92,7 +92,7 @@ class Roles extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([':id' => $r->getID()]);
+        $sth->execute(['id' => $r->getID()]);
 
         // Retrieve
         $data = $sth->fetch(PDO::FETCH_ASSOC);

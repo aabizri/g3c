@@ -97,7 +97,7 @@ class Users extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute([':id' => $u->getID()]);
+        $sth->execute(['id' => $u->getID()]);
 
         // Fetch
         $data = $sth->fetch(PDO::FETCH_ASSOC);
@@ -142,7 +142,7 @@ class Users extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute([':id' => $u->getID()]);
+        $sth->execute(['id' => $u->getID()]);
 
         // Retrieve
         $db_last_updated = $sth->fetchColumn(0);
@@ -185,7 +185,7 @@ class Users extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute([':id' => $id]);
+        $sth->execute(['id' => $id]);
 
         // Fetch
         $count = $sth->fetchColumn(0);
