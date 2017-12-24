@@ -278,11 +278,14 @@ class Peripherals extends Repository
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
-        // Execute query
-        $sth->execute([
-            'room_id' => $roomID,
-            ':uuid' => $p->getUUID()
+        // SEt parameters
+        $params = $p->getMultiple([
+            'room_id',
+            'uuid',
         ]);
+
+        // Execute query
+        $sth->execute($params);
 
         // Check for sane row count of affected rows
         $rc = $sth->rowCount();
