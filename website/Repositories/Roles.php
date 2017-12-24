@@ -35,8 +35,7 @@ class Roles extends Repository
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        if ($r->setId($id) == false) {
-            throw new \Exception("error setting id");
+        $ok = $r->setID($id);
         }
 
         // We should now pull to populate times
@@ -143,7 +142,7 @@ class Roles extends Repository
         $r = new Entities\Role();
 
         // Set the ID
-        $r->setId($id);
+        $ok = $r->setID($id);
 
         // Call Pull on it
         self::pull($r);

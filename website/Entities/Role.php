@@ -26,7 +26,7 @@ class Role extends Entity
      * @param int $id
      * @return bool
      */
-    public function setId(int $id): bool
+    public function setID(int $id): bool
     {
         $this->id = $id;
         return true;
