@@ -9,6 +9,10 @@
 namespace Repositories;
 
 
+use Repositories\Exceptions\RowNotFoundException;
+use Repositories\Exceptions\MultiSetFailedException;
+use Repositories\Exceptions\SetFailedException;
+
 class Permissions extends Repository
 {
     /**
@@ -37,8 +41,9 @@ class Permissions extends Repository
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        if ($p->setID($id) == false) {
-            throw new \Exception("error setting id");
+        $ok = $p->setID($id);
+        if (!$ok) {
+            throw new SetFailedException("Permission","setID",$id);
         }
 
         // We should now pull to populate times
@@ -101,15 +106,14 @@ class Permissions extends Repository
 
         // If nil, we throw an error
         if ($data === false || $data === null) {
-            throw new \Exception("no data returned");
+            throw new RowNotFoundException("Permission", "permissions");
         }
 
         // Store
-        $arr = $p->setMultiple([
-            "name" => $data["name"],
-            "description" => $data["setDescription"],
-        ]);
-        parent::executeSetterArray($p, $arr);
+        $ok = $p->setMultiple($data);
+        if (!$ok) {
+            throw new MultiSetFailedException("Permission",$data);
+        }
     }
 
     /**
@@ -144,7 +148,10 @@ class Permissions extends Repository
         $r = new \Entities\Permission();
 
         // Set the ID
-        $r->setID($id);
+        $ok = $r->setID($id);
+        if (!$ok) {
+            throw new SetFailedException("Permission","setID",$id);
+        }
 
         // Call Pull on it
         self::pull($r);

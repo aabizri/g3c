@@ -4,6 +4,9 @@ namespace Repositories;
 
 use Entities;
 use PDO;
+use Repositories\Exceptions\MultiSetFailedException;
+use Repositories\Exceptions\RowNotFoundException;
+use Repositories\Exceptions\SetFailedException;
 
 class Users extends Repository
 {
@@ -38,8 +41,9 @@ class Users extends Repository
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        if ($u->setID($id) == false) {
-            throw new \Exception("error setting id");
+        $ok = $u->setID($id);
+        if (!$ok) {
+            throw new SetFailedException("User","setID",$id);
         }
 
         // We should now pull to populate ID & Times
@@ -103,8 +107,8 @@ class Users extends Repository
         $data = $sth->fetch(PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
-        if ($data == null) {
-            throw new \Exception("No such Model\User found");
+        if (empty($data)) {
+            throw new RowNotFoundException("User","users");
         }
 
         // Store
@@ -118,7 +122,7 @@ class Users extends Repository
             "last_updated" => (float)$data["last_updated"],
         ]);
         if ($ok === false) {
-            throw new \Exception("Failure while setting");
+            throw new MultiSetFailedException("User",$data);
         }
     }
 
@@ -199,7 +203,10 @@ class Users extends Repository
         $u = new Entities\User();
 
         // Set the ID
-        $u->setID($id);
+        $ok = $u->setID($id);
+        if (!$ok) {
+            throw new SetFailedException("User","setID",$id);
+        }
 
         // Call Pull on it
         self::pull($u);

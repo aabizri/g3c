@@ -8,8 +8,21 @@
 
 namespace Repositories\Exceptions;
 
-
-class RowNotFoundException
+class RowNotFoundException extends \Exception
 {
+    public $entity;
+    public $table;
 
+    public function __construct(string $entity, string $table)
+    {
+        // Set message
+        $msg = sprintf("Search for entity %s in table %s failed", $entity, $table);
+
+        // Construct parent
+        parent::__construct($msg);
+
+        // Set data
+        $this->entity = $entity;
+        $this->table = $table;
+    }
 }

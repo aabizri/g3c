@@ -9,7 +9,23 @@
 namespace Repositories\Exceptions;
 
 
-class SetFailedException
+class SetFailedException extends \Exception
 {
+    public $entity;
+    public $setter;
+    public $datum;
 
+    public function __construct(string $entity, string $setter, $datum)
+    {
+        // Message
+        $msg = sprintf("Setting on entity \"%s\" with setter \"%s\" with the following datum \"%s\" failed", $entity, $setter, $datum);
+
+        // Construct parent
+        parent::__construct($msg);
+
+        // Set data
+        $this->entity = $entity;
+        $this->setter = $setter;
+        $this->datum = $datum;
+    }
 }

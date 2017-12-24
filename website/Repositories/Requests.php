@@ -9,6 +9,8 @@
 namespace Repositories;
 
 
+use Repositories\Exceptions\SetFailedException;
+
 class Requests extends Repository
 {
     /**
@@ -41,8 +43,9 @@ class Requests extends Repository
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        if ($r->setId($id) == false) {
-            throw new \Exception("error setting id");
+        $ok = $r->setID($id);
+        if (!$ok) {
+            throw new SetFailedException("Request","setID",$id);
         }
     }
 

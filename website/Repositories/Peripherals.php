@@ -5,6 +5,9 @@ namespace Repositories;
 use Entities;
 use Exception;
 use PDO;
+use Repositories\Exceptions\MultiSetFailedException;
+use Repositories\Exceptions\RowNotFoundException;
+use Repositories\Exceptions\SetFailedException;
 
 class Peripherals extends Repository
 {
@@ -96,7 +99,7 @@ class Peripherals extends Repository
 
         // If nil, we throw an error
         if ($data === false || $data === null) {
-            throw new Exception("No such Model\Peripheral found");
+            throw new RowNotFoundException("Peripheral", "peripherals");
         }
 
         // Store
@@ -109,6 +112,9 @@ class Peripherals extends Repository
             "room_id" => $data["room_id"],
             "last_updated" => (float)$data["last_updated"],
         ]);
+        if (!$ok) {
+            throw new MultiSetFailedException("Peripherals",$data);
+        }
     }
 
     /**
@@ -138,7 +144,7 @@ class Peripherals extends Repository
 
         // If nil, we throw an exception
         if ($db_last_updated === null) {
-            throw new Exception("No such Peripheral found");
+            throw new RowNotFoundException("Peripheral", "peripherals");
         }
 
         // If empty, that's an Exception
@@ -190,8 +196,8 @@ class Peripherals extends Repository
 
         // Set the UUID
         $ok = $p->setUUID($uuid);
-        if ($ok == false) {
-            throw new Exception("Error setting UUID in Peripheral");
+        if (!$ok) {
+            throw new SetFailedException("Peripheral","setUUID", $uuid);
         }
 
         // Call Pull on it
@@ -301,7 +307,10 @@ class Peripherals extends Repository
         }
 
         // Set the ID and date
-        $p->setRoomID($roomID);
+        $ok = $p->setRoomID($roomID);
+        if (!$ok) {
+            throw new SetFailedException("Peripheral","setRoomID",$roomID);
+        }
     }
 
     /**
@@ -333,7 +342,13 @@ class Peripherals extends Repository
         ]);
 
         // Set the ID and date
-        $p->setPropertyID($propertyID);
-        $p->setAddDate($now);
+        $data = [
+            "property_id" => $propertyID,
+            "add_date" => $now,
+        ];
+        $ok = $p->setMultiple($data);
+        if (!$ok) {
+            throw new MultiSetFailedException("Peripherals",$data);
+        }
     }
 }

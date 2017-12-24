@@ -9,7 +9,7 @@
 namespace Repositories\Exceptions;
 
 
-class SetFailedException extends \Exception
+class MultiSetFailedException extends \Exception
 {
     public $entity;
     public $data;
