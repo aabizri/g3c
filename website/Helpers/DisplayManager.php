@@ -8,9 +8,6 @@
 
 namespace Helpers;
 
-
-$sql = "SELECT id FROM sensors WHERE peripheral_uuid IN (SELECT uuid FROM peripherals WHERE room_id = :room_id)";
-
 /**
  * Class DisplayManager
  * @package Helpers
@@ -54,7 +51,7 @@ class DisplayManager
      * @return string
      */
     public static function websiteRootURL(string $dir = ""): string{
-        return "http://localhost/".str_replace("\\","/", self::subroot())."/".$dir;
+        return "/".str_replace("\\","/", self::subroot())."/".$dir;
     }
 
     /**
