@@ -32,7 +32,7 @@ class Handler
         $action = $req->getAction();
 
         if (empty($category) || empty($action)) {
-            http_response_code(400);
+            \Controllers\Error::getInternalError500($req,new \Exception("Erreur: Ni la catégorie ni l'action est indiquée"));
             return;
         }
 
@@ -44,16 +44,16 @@ class Handler
 
         // Si ça n'existe pas, appelle le controlleur 404
         if (empty($call)) {
-            // CALL TO "NO SUCH CONTROLLER FOUND"
-            http_response_code(404);
+            \Controllers\Error::getControllerNotFound404($req);
             return;
         }
 
         // Si ça existe, on appelle la fonction
-        $call($req);
-
-        // On finit par flusher la sortie
-        ob_end_flush();
+        try {
+            $call($req);
+        } catch (\Throwable $t) {
+            \Controllers\Error::getInternalError500($req,$t);
+        }
     }
 
     /**

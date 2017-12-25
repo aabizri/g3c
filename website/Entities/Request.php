@@ -28,6 +28,7 @@ class Request
     private $method;
     private $get;
     private $post;
+    private $in_debug;
 
     /* CONSTRUCTOR */
     public function __construct(bool $autosave = false)
@@ -219,6 +220,15 @@ class Request
         return true;
     }
 
+    public function getInDebug(): bool {
+        return $this->in_debug;
+    }
+
+    public function setInDebug(bool $is): bool {
+        $this->in_debug = $is;
+        return true;
+    }
+
     /* BUSINESS LOGIC */
 
     /**
@@ -327,6 +337,13 @@ class Request
         }
         $this->setAction($action);
         unset($this->get["a"]);
+
+        $in_debug = false;
+        if (!empty($this->get["debug"])) {
+            $in_debug = true;
+        }
+        $this->setInDebug($in_debug);
+        unset($this->get["in_debug"]);
     }
 
 
