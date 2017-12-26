@@ -27,6 +27,23 @@ class User
             }
         }
 
+        // Validation du recaptcha, seulement en cas de connection https
+        if (isset($_SERVER["HTTPS"])) {
+            if ($_SERVER["HTTPS"] == "on") {
+                if (empty($post["g-recaptcha-response"])) {
+                    echo "ERROR: Empty recaptcha";
+                    return;
+                }
+                $response = $post["g-recaptcha-response"];
+                $captcha = new \Helpers\ReCAPTCHA("", "6Le5Pz4UAAAAAK3tAgJ2sCG3SF8qz0zVeILYJiuo");
+                $ok = $captcha->verify($response);
+                if (!$ok) {
+                    echo "Invalid captcha";
+                    return;
+                }
+            }
+        }
+
         // Assign values
         $nick = $post["nick"];
         $email = $post["email"];
