@@ -10,15 +10,14 @@
     <div id="mesinformations">
         <h4 id="titremesinfos">Mes informations</h4>
         <?php
-        var_dump($data["user"]);
         $u = $data["user"];
                 echo
                 "
-                <p>Nom/Prénom :".$u -> getDisplay()."</p>
-                <p>Email :".$u -> getEmail()."</p>
-                <p>Addresse :</p>
-                <p>Téléphone :".$u -> getPhone()."</p>
-                <p>Login :".$u -> getNick()."</p>
+                <p>Prénom/Nom : ".$u -> getDisplay()."</p>
+                <p>Email : ".$u -> getEmail()."</p>
+                <p>Addresse : </p>
+                <p>Téléphone : ".$u -> getPhone()."</p>
+                <p>Login : ".$u -> getNick()."</p>
                  ";
         ?>
 
@@ -27,7 +26,7 @@
     <div id="modifiermesinformations">
         <h4 id="titremodifierinfos">Modifier mes informations</h4>
         <form id="formulairemodif" action="pagephp">
-            <p><label>Nouvel email : </label><input type="text" id="formdroit" name=""/><br></p>
+            <p><label>Nouvel email :</label><input type="text" id="formdroit" name="nouvelemail"/><br></p>
             <p><label>Confirmer nouvel email : </label><input type="text" id="formdroit" name=""/><br></p>
             <p><label>Nouvelle addresse : </label><input type="text" id="formdroit" name=""/><br></p>
             <p><label>Nouveau téléphone : </label><input type="text" id="formdroit" name=""/><br></p>
@@ -46,19 +45,6 @@
 
     <div id="voirutilisateurs">
         <h4 id="titrelisteutilisateurs">Liste des utilisateurs</h4>
-        <p id="nomsutilisateurs">Eytan <input id="boutonssupprimer" type="button" value="Supprimer"
-                                                        title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">Bryan <input id="boutonssupprimer" type="button" value="Supprimer"
-                                                        title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">Jérémy <input id="boutonssupprimer" type="button" value="Supprimer"
-                                                         title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">Dinesh <input id="boutonssupprimer" type="button" value="Supprimer"
-                                                         title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">Alexandre <input id="boutonssupprimer" type="button" value="Supprimer"
-                                                            title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">Randy <input id="boutonssupprimer" type="button" value="Supprimer"
-                                                        title="Vous allez supprimer cet utilisateur"/></p>
-
     </div>
 
 
