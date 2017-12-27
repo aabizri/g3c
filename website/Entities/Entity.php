@@ -8,6 +8,10 @@
 
 namespace Entities;
 
+use Entities\Exceptions\UnknownGetterException;
+use Entities\Exceptions\UnknownSetterException;
+use Repositories\Exceptions\SetFailedException;
+
 abstract class Entity
 {
     /**
@@ -17,9 +21,6 @@ abstract class Entity
      * @throws \Exception if invalid property name given
      */
     public function getMultiple(array $order): array {
-        // see https://secure.php.net/manual/en/function.get-called-class.php
-        $child_class_name = get_called_class();
-
         // Results associative array
         $results = [];
 
@@ -29,8 +30,8 @@ abstract class Entity
             $getter_name = propertyNameToMethodName($property_name, "get");
 
             // Check if it exists
-            if (!method_exists($child_class_name, $getter_name)) {
-                throw new \Exception("Unknown getter : " . $getter_name);
+            if (!method_exists($this, $getter_name)) {
+                throw new UnknownGetterException($this,$getter_name);
             }
 
             // Apply it
@@ -43,27 +44,28 @@ abstract class Entity
 
     /**
      * @param array $order property_name => data
+     * @param bool $must_set if set to true, will throw an exception instead of returning "false"
      *
      * @return bool
      * @throws \Exception
      */
-    public function setMultiple(array $order): bool {
-        // see https://secure.php.net/manual/en/function.get-called-class.php
-        $child_class_name = get_called_class();
-
+    public function setMultiple(array $order, bool $must_set = false): bool {
         // Loop over properties to get the mapping
         foreach ($order as $property_name => $data) {
             // Get the setter name
             $setter_name = propertyNameToMethodName($property_name, "set");
 
             // Check if it exists
-            if (!method_exists($child_class_name, $setter_name)) {
-                throw new \Exception("Unknown setter :" . $setter_name);
+            if (!method_exists($this, $setter_name)) {
+                throw new UnknownSetterException($this,$setter_name);
             }
 
             // Apply it
             $success = $this->$setter_name($data);
             if ($success === false) {
+                if ($must_set) {
+                    throw new SetFailedException($this,$setter_name,$data);
+                }
                 return false;
             }
         }
