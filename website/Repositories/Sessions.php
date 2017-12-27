@@ -11,9 +11,9 @@ namespace Repositories;
 use Entities;
 use Exception;
 use PDO;
-use Repositories\Exceptions\MultiSetFailedException;
-use Repositories\Exceptions\RowNotFoundException;
-use Repositories\Exceptions\SetFailedException;
+use Exceptions\MultiSetFailedException;
+use Exceptions\RowNotFoundException;
+use Exceptions\SetFailedException;
 
 
 class Sessions extends Repository
@@ -109,7 +109,7 @@ class Sessions extends Repository
 
         // If nil, we throw an error
         if ($data == null) {
-            throw new RowNotFoundException("Session","sessions");
+            throw new RowNotFoundException($s,"sessions");
         }
 
         // Store
@@ -122,7 +122,7 @@ class Sessions extends Repository
             "last_updated" => (float)$data["last_updated"],
         ]);
         if ($ok === false) {
-            throw new MultiSetFailedException("Session",$data);
+            throw new MultiSetFailedException($s,$data);
         }
     }
 
@@ -206,7 +206,7 @@ class Sessions extends Repository
         // Set the ID
         $ok = $s->setID($id);
         if (!$ok) {
-            throw new SetFailedException("Session","setID",$id);
+            throw new SetFailedException($s,"setID",$id);
         }
 
         // Call Pull on it

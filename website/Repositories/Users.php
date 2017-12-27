@@ -4,9 +4,9 @@ namespace Repositories;
 
 use Entities;
 use PDO;
-use Repositories\Exceptions\MultiSetFailedException;
-use Repositories\Exceptions\RowNotFoundException;
-use Repositories\Exceptions\SetFailedException;
+use Exceptions\MultiSetFailedException;
+use Exceptions\RowNotFoundException;
+use Exceptions\SetFailedException;
 
 class Users extends Repository
 {
@@ -43,7 +43,7 @@ class Users extends Repository
         $id = parent::db()->lastInsertId();
         $ok = $u->setID($id);
         if (!$ok) {
-            throw new SetFailedException("User","setID",$id);
+            throw new SetFailedException($u,"setID",$id);
         }
 
         // We should now pull to populate ID & Times
@@ -108,7 +108,7 @@ class Users extends Repository
 
         // If nil, we throw an error
         if (empty($data)) {
-            throw new RowNotFoundException("User","users");
+            throw new RowNotFoundException($u,"users");
         }
 
         // Store
@@ -122,7 +122,7 @@ class Users extends Repository
             "last_updated" => (float)$data["last_updated"],
         ]);
         if ($ok === false) {
-            throw new MultiSetFailedException("User",$data);
+            throw new MultiSetFailedException($u,$data);
         }
     }
 
@@ -205,7 +205,7 @@ class Users extends Repository
         // Set the ID
         $ok = $u->setID($id);
         if (!$ok) {
-            throw new SetFailedException("User","setID",$id);
+            throw new SetFailedException($u,"setID",$id);
         }
 
         // Call Pull on it

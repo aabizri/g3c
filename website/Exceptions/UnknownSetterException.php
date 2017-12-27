@@ -6,7 +6,7 @@
  * Time: 7:17 PM
  */
 
-namespace Entities\Exceptions;
+namespace Exceptions;
 
 
 class UnknownSetterException extends UnknownMethodException

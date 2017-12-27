@@ -8,9 +8,9 @@
 
 namespace Entities;
 
-use Entities\Exceptions\UnknownGetterException;
-use Entities\Exceptions\UnknownSetterException;
-use Repositories\Exceptions\SetFailedException;
+use \Exceptions\UnknownGetterException;
+use \Exceptions\UnknownSetterException;
+use \Exceptions\SetFailedException;
 
 abstract class Entity
 {

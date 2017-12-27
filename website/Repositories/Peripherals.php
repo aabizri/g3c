@@ -5,9 +5,9 @@ namespace Repositories;
 use Entities;
 use Exception;
 use PDO;
-use Repositories\Exceptions\MultiSetFailedException;
-use Repositories\Exceptions\RowNotFoundException;
-use Repositories\Exceptions\SetFailedException;
+use Exceptions\MultiSetFailedException;
+use Exceptions\RowNotFoundException;
+use Exceptions\SetFailedException;
 
 class Peripherals extends Repository
 {
@@ -99,7 +99,7 @@ class Peripherals extends Repository
 
         // If nil, we throw an error
         if ($data === false || $data === null) {
-            throw new RowNotFoundException("Peripheral", "peripherals");
+            throw new RowNotFoundException($p, "peripherals");
         }
 
         // Store
@@ -113,7 +113,7 @@ class Peripherals extends Repository
             "last_updated" => (float)$data["last_updated"],
         ]);
         if (!$ok) {
-            throw new MultiSetFailedException("Peripherals",$data);
+            throw new MultiSetFailedException($p,$data);
         }
     }
 
@@ -144,7 +144,7 @@ class Peripherals extends Repository
 
         // If nil, we throw an exception
         if ($db_last_updated === null) {
-            throw new RowNotFoundException("Peripheral", "peripherals");
+            throw new RowNotFoundException($p, "peripherals");
         }
 
         // If empty, that's an Exception
@@ -197,7 +197,7 @@ class Peripherals extends Repository
         // Set the UUID
         $ok = $p->setUUID($uuid);
         if (!$ok) {
-            throw new SetFailedException("Peripheral","setUUID", $uuid);
+            throw new SetFailedException($p,"setUUID", $uuid);
         }
 
         // Call Pull on it
@@ -309,7 +309,7 @@ class Peripherals extends Repository
         // Set the ID and date
         $ok = $p->setRoomID($roomID);
         if (!$ok) {
-            throw new SetFailedException("Peripheral","setRoomID",$roomID);
+            throw new SetFailedException($p,"setRoomID",$roomID);
         }
     }
 
@@ -348,7 +348,7 @@ class Peripherals extends Repository
         ];
         $ok = $p->setMultiple($data);
         if (!$ok) {
-            throw new MultiSetFailedException("Peripherals",$data);
+            throw new MultiSetFailedException($p,$data);
         }
     }
 }

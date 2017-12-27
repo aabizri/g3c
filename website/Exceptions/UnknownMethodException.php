@@ -6,7 +6,7 @@
  * Time: 7:19 PM
  */
 
-namespace Entities\Exceptions;
+namespace Exceptions;
 
 
 class UnknownMethodException extends \Exception
