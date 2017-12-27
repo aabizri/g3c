@@ -9,6 +9,9 @@
 namespace Repositories;
 
 use Entities;
+use Repositories\Exceptions\MultiSetFailedException;
+use Repositories\Exceptions\RowNotFoundException;
+use Repositories\Exceptions\SetFailedException;
 
 class Rooms extends Repository
 {
@@ -27,21 +30,22 @@ class Rooms extends Repository
         VALUES (:property_id, :name)";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
-        $data = [
-            "property_id" => $r->getPropertyID(),
-            "name" => $r->getName(),
-        ];
+        $data = $r->getMultiple([
+            "property_id",
+            "name",
+        ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        if ($r->setID($id) == false) {
-            throw new \Exception("error setting id");
+        $ok = $r->setID($id);
+        if (!$ok) {
+            throw new SetFailedException("Room","setID",$id);
         }
 
         // Pull
@@ -62,17 +66,17 @@ class Rooms extends Repository
         WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Data for the request
-        $data = [
-            "id" => $r->getID(),
-            "property_id" => $r->getPropertyID(),
-            "name" => $r->getName(),
-        ];
+        $data = $r->getMultiple([
+            "id",
+            "property_id",
+            "name",
+        ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Pull
         self::pull($r);
@@ -90,18 +94,18 @@ class Rooms extends Repository
     public static function pull(Entities\Room $r): void
     {
         // SQL
-        $sql = "SELECT property_id, name, creation_date, UNIX_TIMESTAMP(last_updated) as last_updated
+        $sql = "SELECT property_id, name, creation_date, UNIX_TIMESTAMP(last_updated) AS last_updated
         FROM rooms
         WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':id' => $r->getID()));
+        $stmt->execute(['id' => $r->getID()]);
 
         // Retrieve
-        $data = $sth->fetch(\PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
         if ($data == null) {
@@ -109,13 +113,15 @@ class Rooms extends Repository
         }
 
         // Store
-        $arr = array(
-            "setID" => $data["id"],
-            "setPropertyID" => $data["property_id"],
-            "setCreationDate" => $data["creation_date"],
-            "setLastUpdated" => (float) $data["last_updated"],
-        );
-        parent::executeSetterArray($r, $arr);
+        $ok = $r->setMultiple([
+            "id" => $data["id"],
+            "property_id" => $data["property_id"],
+            "creation_date" => $data["creation_date"],
+            "last_updated" => (float)$data["last_updated"],
+        ]);
+        if ($ok === false) {
+            throw new MultiSetFailedException("Room", $data);
+        }
     }
 
     /**
@@ -130,22 +136,22 @@ class Rooms extends Repository
     public static function sync(Entities\Room $r): void
     {
         // SQL to get last_updated on given peripheral
-        $sql = "SELECT UNIX_TIMESTAMP(last_updated) as last_updated
+        $sql = "SELECT UNIX_TIMESTAMP(last_updated) AS last_updated
           FROM rooms
           WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(array(':id' => $r->getID()));
+        $stmt->execute(['id' => $r->getID()]);
 
         // Retrieve
-        $db_last_updated = $sth->fetchColumn(0);
+        $db_last_updated = $stmt->fetchColumn(0);
 
         // If nil, we throw an exception
         if ($db_last_updated == null) {
-            throw new \Exception("No such Room found");
+            throw new RowNotFoundException("Room","rooms");
         }
 
         // If empty, that's an Exception
@@ -154,7 +160,7 @@ class Rooms extends Repository
         }
 
         // Cast it
-        $db_last_updated = (float) $db_last_updated;
+        $db_last_updated = (float)$db_last_updated;
 
         // If the DB was updated BEFORE the last update to the peripheral, push
         if ($db_last_updated < $r->getLastUpdated()) {
@@ -179,13 +185,13 @@ class Rooms extends Repository
             WHERE id = :id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':id' => $id));
+        $stmt->execute(['id' => $id]);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
 
         // If count is zero, then we return null
         if ($count == 0) {
@@ -196,7 +202,10 @@ class Rooms extends Repository
         $r = new Entities\Room();
 
         // Set the ID
-        $r->setID($id);
+        $ok = $r->setID($id);
+        if (!$ok) {
+            throw new SetFailedException("Room","setID",$id);
+        }
 
         // Call Pull on it
         self::pull($r);
@@ -219,13 +228,13 @@ class Rooms extends Repository
             WHERE property_id = :property_id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":property_id" => $property_id]);
+        $stmt->execute(["property_id" => $property_id]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;

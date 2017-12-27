@@ -8,7 +8,7 @@
 
 namespace Entities;
 
-class Room
+class Room extends Entity
 {
     /* PROPERTIES */
 

@@ -11,6 +11,9 @@ namespace Repositories;
 use Entities;
 use Exception;
 use PDO;
+use Repositories\Exceptions\MultiSetFailedException;
+use Repositories\Exceptions\RowNotFoundException;
+use Repositories\Exceptions\SetFailedException;
 
 
 class Sessions extends Repository
@@ -30,20 +33,20 @@ class Sessions extends Repository
         VALUES (:id, :user_id, FROM_UNIXTIME(:started), FROM_UNIXTIME(:expiry), :canceled, :value);";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // On prépare les données qui vont être insérées
-        $data = [
-            'id' => $s->getID(),
-            'user_id' => $s->getUserID(),
-            'started' => $s->getStarted(),
-            'expiry' => $s->getExpiry(),
-            'canceled' => $s->getCanceled(),
-            'value' => $s->getValue(),
-        ];
+        $data = $s->getMultiple([
+            'id',
+            'user_id',
+            'started',
+            'expiry',
+            'canceled',
+            'value',
+        ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Pull
         self::pull($s);
@@ -63,20 +66,20 @@ class Sessions extends Repository
         WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
-        // Data for the request
-        $data = [
-            "id" => $s->getID(),
-            'user_id' => $s->getUserID(),
-            'started' => $s->getStarted(),
-            'expiry' => $s->getExpiry(),
-            'canceled' => $s->getCanceled(),
-            'value' => $s->getValue(),
-        ];
+        // On prépare les données qui vont être poussées
+        $data = $s->getMultiple([
+            'id',
+            'user_id',
+            'started',
+            'expiry',
+            'canceled',
+            'value',
+        ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Pull
         self::pull($s);
@@ -91,34 +94,36 @@ class Sessions extends Repository
     public static function pull(Entities\Session $s): void
     {
         // SQL
-        $sql = "SELECT user_id, value, UNIX_TIMESTAMP(started) as started, UNIX_TIMESTAMP(expiry) as expiry, canceled, UNIX_TIMESTAMP(last_updated) as last_updated
+        $sql = "SELECT user_id, value, UNIX_TIMESTAMP(started) AS started, UNIX_TIMESTAMP(expiry) AS expiry, canceled, UNIX_TIMESTAMP(last_updated) AS last_updated
         FROM sessions
         WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':id' => $s->getID()));
+        $stmt->execute(['id' => $s->getID()]);
 
         // Retrieve
-        $data = $sth->fetch(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
         if ($data == null) {
-            throw new Exception("Nous n'avons pas trouvé de session correspondante");
+            throw new RowNotFoundException("Session","sessions");
         }
 
         // Store
-        $arr = array(
-            "setUserID" => $data["user_id"],
-            "setValue" => $data["value"],
-            "setStarted" => (float) $data["started"],
-            "setExpiry" => (float) $data["expiry"],
-            "setCanceled" => $data["canceled"],
-            "setLastUpdated" => (float) $data["last_updated"],
-        );
-        parent::executeSetterArray($s, $arr);
+        $ok = $s->setMultiple([
+            "user_id" => $data["user_id"],
+            "value" => $data["value"],
+            "started" => (float)$data["started"],
+            "expiry" => (float)$data["expiry"],
+            "canceled" => $data["canceled"],
+            "last_updated" => (float)$data["last_updated"],
+        ]);
+        if ($ok === false) {
+            throw new MultiSetFailedException("Session",$data);
+        }
     }
 
     /**
@@ -133,18 +138,18 @@ class Sessions extends Repository
     public static function sync(Entities\Session $s): void
     {
         // SQL to get last_updated on given peripheral
-        $sql = "SELECT UNIX_TIMESTAMP(last_updated) as last_updated
+        $sql = "SELECT UNIX_TIMESTAMP(last_updated) AS last_updated
           FROM sessions
           WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(array(':id' => $s->getID()));
+        $stmt->execute(['id' => $s->getID()]);
 
         // Retrieve
-        $db_last_updated = $sth->fetchColumn(0);
+        $db_last_updated = $stmt->fetchColumn(0);
 
         // If nil, we throw an exception
         if ($db_last_updated == null) {
@@ -157,7 +162,7 @@ class Sessions extends Repository
         }
 
         // Cast it to float
-        $db_last_updated = (float) $db_last_updated;
+        $db_last_updated = (float)$db_last_updated;
 
         // If the DB was updated BEFORE the last update to the peripheral, push
         if ($db_last_updated < $s->getLastUpdated()) {
@@ -182,13 +187,13 @@ class Sessions extends Repository
             WHERE id = :id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':id' => $id));
+        $stmt->execute(['id' => $id]);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
 
         // If count is zero, then we return null
         if ($count == 0) {
@@ -199,7 +204,10 @@ class Sessions extends Repository
         $s = new Entities\Session;
 
         // Set the ID
-        $s->setID($id);
+        $ok = $s->setID($id);
+        if (!$ok) {
+            throw new SetFailedException("Session","setID",$id);
+        }
 
         // Call Pull on it
         self::pull($s);
@@ -222,13 +230,13 @@ class Sessions extends Repository
             WHERE user_id = :user_id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":user_id" => $user_id]);
+        $stmt->execute(["user_id" => $user_id]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;

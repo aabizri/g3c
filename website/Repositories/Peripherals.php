@@ -5,6 +5,9 @@ namespace Repositories;
 use Entities;
 use Exception;
 use PDO;
+use Repositories\Exceptions\MultiSetFailedException;
+use Repositories\Exceptions\RowNotFoundException;
+use Repositories\Exceptions\SetFailedException;
 
 class Peripherals extends Repository
 {
@@ -19,24 +22,25 @@ class Peripherals extends Repository
     public static function insert(Entities\Peripheral $p)
     {
         // SQL
-        $sql = "INSERT INTO peripherals (uuid, build_date, add_date, public_key, property_id, room_id)
-        VALUES (:uuid, :build_date, :add_date, :public_key, :property_id, :room_id);";
+        $sql = "INSERT INTO peripherals (uuid, display_name, build_date, add_date, public_key, property_id, room_id)
+        VALUES (:uuid, :display_name, :build_date, :add_date, :public_key, :property_id, :room_id);";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
-        $data = [
-            ':uuid' => $p->getUUID(),
-            ':build_date' => $p->getBuildDate(),
-            ':add_date' => $p->getAddDate(),
-            ':public_key' => $p->getPublicKey(),
-            ':property_id' => $p->getPropertyID(),
-            ':room_id' => $p->getRoomID(),
-        ];
+        $data = $p->getMultiple([
+            'uuid',
+            'display_name',
+            'build_date',
+            'add_date',
+            'public_key',
+            'property_id',
+            'room_id',
+        ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
     }
 
     /**
@@ -53,19 +57,19 @@ class Peripherals extends Repository
         WHERE uuid = :uuid;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
-        $data = [
-            ':uuid' => $p->getUUID(),
-            ':display_name' => $p->getDisplayName(),
-            ':build_date' => $p->getBuildDate(),
-            ':add_date' => $p->getAddDate(),
-            ':public_key' => $p->getPublicKey(),
-        ]; // We don't have the ID in the Push, as they are only updated by the attachToXXX methods
+        $data = $p->getMultiple([
+            'uuid',
+            'display_name',
+            'build_date',
+            'add_date',
+            'public_key',
+        ]); // We don't have the ID in the Push, as they are only updated by the attachToXXX methods
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
     }
 
     /**
@@ -80,35 +84,37 @@ class Peripherals extends Repository
     public static function pull(Entities\Peripheral $p)
     {
         // SQL
-        $sql = "SELECT display_name, build_date, add_date, public_key, property_id, room_id, UNIX_TIMESTAMP(last_updated) as last_updated
+        $sql = "SELECT display_name, build_date, add_date, public_key, property_id, room_id, UNIX_TIMESTAMP(last_updated) AS last_updated
         FROM peripherals
         WHERE uuid = :uuid;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':uuid' => $p->getUUID()));
+        $stmt->execute(['uuid' => $p->getUUID()]);
 
         // Retrieve
-        $data = $sth->fetch(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
         if ($data === false || $data === null) {
-            throw new Exception("No such Model\Peripheral found");
+            throw new RowNotFoundException("Peripheral", "peripherals");
         }
 
         // Store
-        $arr = array(
-            "setDisplayName" => $data["display_name"],
-            "setBuildDate" => $data["build_date"],
-            "setAddDate" => $data["add_date"],
-            "setPublicKey" => $data["public_key"],
-            "setPropertyId" => $data["property_id"],
-            "setRoomId" => $data["room_id"],
-            "setLastUpdated" => (float) $data["last_updated"],
-        );
-        parent::executeSetterArray($p, $arr);
+        $ok = $p->setMultiple([
+            "display_name" => $data["display_name"],
+            "build_date" => $data["build_date"],
+            "add_date" => $data["add_date"],
+            "public_key" => $data["public_key"],
+            "property_id" => $data["property_id"],
+            "room_id" => $data["room_id"],
+            "last_updated" => (float)$data["last_updated"],
+        ]);
+        if (!$ok) {
+            throw new MultiSetFailedException("Peripherals",$data);
+        }
     }
 
     /**
@@ -123,22 +129,22 @@ class Peripherals extends Repository
     public static function sync(Entities\Peripheral $p)
     {
         // SQL to get last_updated on given peripheral
-        $sql = "SELECT UNIX_TIMESTAMP(last_updated) as last_updated
+        $sql = "SELECT UNIX_TIMESTAMP(last_updated) AS last_updated
           FROM peripherals
           WHERE uuid = :uuid;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(array(':uuid' => $p->getUUID()));
+        $stmt->execute(['uuid' => $p->getUUID()]);
 
         // Retrieve
-        $db_last_updated = $sth->fetchColumn(0);
+        $db_last_updated = $stmt->fetchColumn(0);
 
         // If nil, we throw an exception
         if ($db_last_updated === null) {
-            throw new Exception("No such Peripheral found");
+            throw new RowNotFoundException("Peripheral", "peripherals");
         }
 
         // If empty, that's an Exception
@@ -147,7 +153,7 @@ class Peripherals extends Repository
         }
 
         // Cast it
-        $db_last_updated = (float) $db_last_updated;
+        $db_last_updated = (float)$db_last_updated;
 
         // If the DB was updated BEFORE the last update to the peripheral, push
         if ($db_last_updated < $p->getLastUpdated()) {
@@ -172,13 +178,13 @@ class Peripherals extends Repository
             WHERE uuid = :uuid";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':uuid' => $uuid));
+        $stmt->execute(['uuid' => $uuid]);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
 
         // If count is zero, then we return null
         if ($count == 0) {
@@ -190,8 +196,8 @@ class Peripherals extends Repository
 
         // Set the UUID
         $ok = $p->setUUID($uuid);
-        if ($ok == false) {
-            throw new Exception("Error setting UUID in Peripheral");
+        if (!$ok) {
+            throw new SetFailedException("Peripheral","setUUID", $uuid);
         }
 
         // Call Pull on it
@@ -215,13 +221,13 @@ class Peripherals extends Repository
             WHERE property_id = :property_id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":property_id" => $property_id]);
+        $stmt->execute(["property_id" => $property_id]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;
@@ -241,13 +247,13 @@ class Peripherals extends Repository
             WHERE room_id = :room_id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":room_id" => $room_id]);
+        $stmt->execute(["room_id" => $room_id]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;
@@ -276,13 +282,19 @@ class Peripherals extends Repository
                 WHERE id = :room_id);";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // SEt parameters
+        $params = $p->getMultiple([
+            'room_id',
+            'uuid',
+        ]);
 
         // Execute query
-        $sth->execute(array('room_id' => $roomID, ':uuid' => $p->getUUID()));
+        $stmt->execute($params);
 
         // Check for sane row count of affected rows
-        $rc = $sth->rowCount();
+        $rc = $stmt->rowCount();
         switch ($rc) {
             case 0:
                 throw new Exception("Conditions not set, are the peripheral & room attached to the right property ?");
@@ -295,7 +307,10 @@ class Peripherals extends Repository
         }
 
         // Set the ID and date
-        $p->setRoomID($roomID);
+        $ok = $p->setRoomID($roomID);
+        if (!$ok) {
+            throw new SetFailedException("Peripheral","setRoomID",$roomID);
+        }
     }
 
     /**
@@ -316,14 +331,24 @@ class Peripherals extends Repository
         WHERE uuid = :uuid;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
         $now = (new \Datetime)->format(\DateTime::ATOM);
 
         // Execute
-        $sth->execute(array(':property_id' => $propertyID, ':add_date' => $now, ':uuid' => $p->getUUID()));
+        $stmt->execute([
+            ':property_id' => $propertyID,
+            ':add_date' => $now,
+            ':uuid' => $p->getUUID()
+        ]);
 
         // Set the ID and date
-        $p->setPropertyID($propertyID);
-        $p->setAddDate($now);
+        $data = [
+            "property_id" => $propertyID,
+            "add_date" => $now,
+        ];
+        $ok = $p->setMultiple($data);
+        if (!$ok) {
+            throw new MultiSetFailedException("Peripherals",$data);
+        }
     }
 }

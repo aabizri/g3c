@@ -11,7 +11,7 @@ use Repositories;
  * @package livewell
  * @author Alexandre A. Bizri <alexandre@bizri.fr>
  */
-class Peripheral
+class Peripheral extends Entity
 {
     /* PROPERTIES */
 

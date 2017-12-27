@@ -9,6 +9,10 @@
 namespace Repositories;
 
 
+use Repositories\Exceptions\RowNotFoundException;
+use Repositories\Exceptions\MultiSetFailedException;
+use Repositories\Exceptions\SetFailedException;
+
 class Permissions extends Repository
 {
     /**
@@ -24,21 +28,22 @@ class Permissions extends Repository
           VALUES (:name, :description);";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
-        $data = [
-            ":name" => $p->getName(),
-            ":description" => $p->getDescription(),
-        ];
+        $data = $p->getMultiple([
+            "name",
+            "description",
+        ]);
 
         // Execute request
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        if ($p->setID($id) == false) {
-            throw new \Exception("error setting id");
+        $ok = $p->setID($id);
+        if (!$ok) {
+            throw new SetFailedException("Permission","setID",$id);
         }
 
         // We should now pull to populate times
@@ -59,16 +64,16 @@ class Permissions extends Repository
         SET name = :name, description = :description";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
-        $data = array(
-            ':name' => $p->getName(),
-            ':description' => $p->getDescription(),
-        );
+        $data = $p->getMultiple([
+            'name',
+            'description',
+        ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Now pull
         self::pull($p);
@@ -91,25 +96,24 @@ class Permissions extends Repository
         WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':id' => $p->getID()));
+        $stmt->execute(['id' => $p->getID()]);
 
         // Retrieve
-        $data = $sth->fetch(\PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
         if ($data === false || $data === null) {
-            throw new \Exception("no data returned");
+            throw new RowNotFoundException("Permission", "permissions");
         }
 
         // Store
-        $arr = array(
-            "setName" => $data["name"],
-            "setDescription" => $data["setDescription"],
-        );
-        parent::executeSetterArray($p, $arr);
+        $ok = $p->setMultiple($data);
+        if (!$ok) {
+            throw new MultiSetFailedException("Permission",$data);
+        }
     }
 
     /**
@@ -127,13 +131,13 @@ class Permissions extends Repository
             WHERE id = :id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':id' => $id));
+        $stmt->execute(['id' => $id]);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
 
         // If count is zero, then we return null
         if ($count == 0) {
@@ -144,7 +148,10 @@ class Permissions extends Repository
         $r = new \Entities\Permission();
 
         // Set the ID
-        $r->setID($id);
+        $ok = $r->setID($id);
+        if (!$ok) {
+            throw new SetFailedException("Permission","setID",$id);
+        }
 
         // Call Pull on it
         self::pull($r);
@@ -167,13 +174,13 @@ class Permissions extends Repository
             WHERE role_id = :role_id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":role_id" => $role_id]);
+        $stmt->execute([":role_id" => $role_id]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;
