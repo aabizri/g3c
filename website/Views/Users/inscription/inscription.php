@@ -1,7 +1,7 @@
 <main>
     <div id="join-block">
         <h3>Formulaire d'inscription</h3>
-        <form id="join-form" method="post" action="index.php?c=User&a=postJoin">
+        <form id="join-form" method="post" action="index.php?c=User&a=Join">
             <div id="join-inputs">
                 <fieldset id="civil-fieldset">
                     <legend>état civil</legend>
