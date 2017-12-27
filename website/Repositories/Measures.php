@@ -108,7 +108,7 @@ class Measures extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute();
+        $sth->execute(["peripheral_uuid" => $peripheral_uuid]);
 
         // Fetch all results
         $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
