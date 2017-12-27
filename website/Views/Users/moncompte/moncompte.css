@@ -29,10 +29,10 @@ body {
 	cursor: pointer;
 }
 
-#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres, #Mesparametres
+#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres,#Mapropriete, #Mesparametres
 {
 	position: relative;
-	margin: 50px 10px;
+	margin: 80px 10px;
 	width: 100%;
 }
 
