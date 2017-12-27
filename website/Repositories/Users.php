@@ -57,7 +57,8 @@ class Users extends Repository
     {
         // SQL
         $sql = "UPDATE users
-        SET display = :display, nick = :nick, birth_date = :birth_date, email = :email, password = :password, phone = :phone";
+        SET display = :display, nick = :nick, birth_date = :birth_date, email = :email, password = :password, phone = :phone
+        WHERE id = :id";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
