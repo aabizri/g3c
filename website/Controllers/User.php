@@ -136,6 +136,29 @@ class User
         DisplayManager::display("dashboard",$data);
     }
 
+    //Afficher les infos du compte
+
+    public static function getInformations (array $get, array $post): void
+    {
+        //POUR TESTER
+        $get["nick"] = "bryanau" ;
+
+        //On récupère le nick en GET depuis la page de connexion
+        $property_nick = $get["nick"];
+
+        //On récupère l'id de ce nick
+        $nick_id = \Repositories\Users::findByNick($property_nick);
+
+        //On recupère les données grace à cet id
+        $user = \Repositories\Peripherals::retrieve($nick_id);
+
+        //On envoie vers la vue
+        $data["user"] = $user;
+
+        //Afficher
+        \Helpers\DisplayManager::display("moncompte", $data);
+    }
+
     public static function getConnectionPage(array $get, array $post): void
     {
         DisplayManager::display("connexion",array());

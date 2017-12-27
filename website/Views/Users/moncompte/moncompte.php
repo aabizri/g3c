@@ -9,12 +9,19 @@
 <div id="infosmoncompte">
     <div id="mesinformations">
         <h4 id="titremesinfos">Mes informations</h4>
-        <p>Nom :</p>
-        <p>Prénom :</p>
-        <p>Email :</p>
-        <p>Addresse :</p>
-        <p>Téléphone :</p>
-        <p>Login :</p>
+        <?php
+        var_dump($data["user"]);
+        $u = $data["user"];
+                echo
+                "
+                <p>Nom/Prénom :".$u -> getDisplay()."</p>
+                <p>Email :".$u -> getEmail()."</p>
+                <p>Addresse :</p>
+                <p>Téléphone :".$u -> getPhone()."</p>
+                <p>Login :".$u -> getNick()."</p>
+                 ";
+        ?>
+
     </div>
 
     <div id="modifiermesinformations">
