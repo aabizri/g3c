@@ -66,6 +66,11 @@ class Handler
         // Get the fully qualified name of the class
         $classname = "\\Controllers\\" . $category;
 
+        // Check that the class file exists
+        if (!classFileExists($classname)) {
+            return null;
+        }
+
         // Check that the class exists
         // doc: https://secure.php.net/manual/fr/function.class-exists.php
         if (!class_exists($classname)) {
