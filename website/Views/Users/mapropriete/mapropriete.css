@@ -1,0 +1,102 @@
+/*Body*/
+
+body {
+    position : relative;
+    background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
+    background-size: cover;
+    background-position: center;
+    font-family: Verdana;
+    overflow-x: hidden;
+    font-size: medium;
+}
+
+#Menu  {
+    position: fixed;
+    list-style: none;
+    left:-49px;
+    top: 20px;
+}
+
+#Menu input
+{
+    background-color: rgb(217,196,177);
+    font-family: Verdana, sans-serif;
+    color: #955252;
+    width: 100%;
+    height: 95px;
+    font-size:14px;
+    margin: -25px 0px;
+    cursor: pointer;
+}
+
+#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres, #Mesparametres, #Mapropriete
+{
+    position: relative;
+    margin: 50px 10px;
+    width: 100%;
+}
+
+#creervoirutilisateur
+{
+    display: flex;
+    position: relative;
+    left: 16%;
+    top:7%;
+}
+
+#creerutilisateur
+{
+    position: relative;
+    left: 9%;
+    top: 200px;
+    width: 36.5%;
+    border:1px solid #955252;
+    border-radius: 20px;
+    padding: 10px;
+    background-color: rgb(217,196,177);
+    height: 150px;
+}
+
+#titrecreerutilisateur
+{
+    position: relative;
+    text-align: center
+}
+
+#validercreationutilisateur
+{
+    position: relative;
+    left:43%;
+    border-radius: 1px ;
+}
+
+#voirutilisateurs
+{
+    position: relative;
+    border:1px solid #955252;
+    background-color: rgb(217,196,177);
+    width: 30%;
+    border-radius: 20px;
+    padding: 0px 10px;
+    top: 100px;
+}
+
+#titrelisteutilisateurs
+{
+    position: relative;
+    text-align: center
+}
+
+#nomsutilisateurs
+{
+    position: relative;
+    left:70px;
+}
+
+#boutonssupprimer {
+    position: relative;
+    display: block;
+    right: -200px;
+    top: -17px;
+    border-radius: 1px;
+}
