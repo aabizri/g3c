@@ -119,13 +119,12 @@ class Roles extends Repository
     }
 
     /**
-     * Retrieve a role from the database given its id
+     * Checks if the given role exists in the database
      *
-     * @param int $id of the room to retrieve
-     * @return Entities\Role the room if found, null if not
-     * @throws Exception
+     * @param int $id
+     * @return bool
      */
-    public static function retrieve(int $id): Entities\Role
+    public static function exists(int $id): bool
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -140,9 +139,20 @@ class Roles extends Repository
 
         // Fetch
         $count = $stmt->fetchColumn(0);
+        return $count != 0;
+    }
 
-        // If count is zero, then we return null
-        if ($count == 0) {
+    /**
+     * Retrieve a role from the database given its id
+     *
+     * @param int $id of the room to retrieve
+     * @return Entities\Role|null the room if found, null if not
+     * @throws Exception
+     */
+    public static function retrieve(int $id): ?Entities\Role
+    {
+        // If it doesn't exists, we return null
+        if (!self::exists($id)) {
             return null;
         }
 

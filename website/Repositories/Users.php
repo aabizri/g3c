@@ -173,12 +173,12 @@ class Users extends Repository
     }
 
     /**
-     * Récupérer l'id d'un user
+     * Checks if the given user exists in the database
+     *
      * @param int $id
-     * @return Entities\User ou null si rien n'est trouvé
-     * @throws \Exception
+     * @return bool
      */
-    public static function retrieve(int $id): Entities\User
+    public static function exists(int $id): bool
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -193,9 +193,19 @@ class Users extends Repository
 
         // Fetch
         $count = $stmt->fetchColumn(0);
+        return $count != 0;
+    }
 
-        // If count is zero, then we return null
-        if ($count == 0) {
+    /**
+     * Récupérer l'id d'un user
+     * @param int $id
+     * @return Entities\User|null , null si rien n'est trouvé
+     * @throws \Exception
+     */
+    public static function retrieve(int $id): ?Entities\User
+    {
+        // If it doesn't exist, then we return null
+        if (!self::exists($id)) {
             return null;
         }
 

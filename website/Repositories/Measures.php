@@ -75,8 +75,37 @@ class Measures extends Repository
         parent::executeSetterArray($m, $set_order);
     }
 
+    /**
+     * Checks if the given measure exists in the database
+     *
+     * @param int $id
+     * @return bool
+     */
+    public static function exists(int $id): bool
+    {
+        // SQL for counting
+        $sql = "SELECT count(*)
+            FROM measures
+            WHERE id = :id";
+
+        // Prepare statement
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute query
+        $stmt->execute(['id' => $id]);
+
+        // Fetch
+        $count = $stmt->fetchColumn(0);
+        return $count != 0;
+    }
+
     public static function retrieve(int $id): \Entities\Measure
     {
+        // If it doesn't exist, we return null
+        if (!self::exists($id)) {
+            return null;
+        }
+
         // Create entity
         $m = new \Entities\Measure();
 

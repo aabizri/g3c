@@ -173,13 +173,12 @@ class Sessions extends Repository
     }
 
     /**
-     * Retrieve a session from the database given its id
+     * Checks if the given session exists in the database
      *
-     * @param string $id of the session to retrieve
-     * @return Entities\Session the it is found, null if not
-     * @throws \Exception
+     * @param string $id
+     * @return bool
      */
-    public static function retrieve(string $id): ?Entities\Session
+    public static function exists(string $id): bool
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -194,9 +193,20 @@ class Sessions extends Repository
 
         // Fetch
         $count = $stmt->fetchColumn(0);
+        return $count != 0;
+    }
 
-        // If count is zero, then we return null
-        if ($count == 0) {
+    /**
+     * Retrieve a session from the database given its id
+     *
+     * @param string $id of the session to retrieve
+     * @return Entities\Session|null , null if it is not found
+     * @throws \Exception
+     */
+    public static function retrieve(string $id): ?Entities\Session
+    {
+        // If it doesn't exist, we return null
+        if (!self::exists($id)) {
             return null;
         }
 
