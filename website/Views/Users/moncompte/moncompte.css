@@ -2,7 +2,6 @@
 
 body {
 	position : relative;
-	height: 1060px;
 	background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
 	background-size: cover;
 	background-position: center;
@@ -110,68 +109,4 @@ body {
 	position: relative;
 	left:44%;
 	border-radius:1%;
-}
-
-#creervoirutilisateur
-{
-	display: flex;
-	position: relative;
-	left: 16%;
-	top:7%;
-}
-
-#creerutilisateur
-{
-	position: relative;
-	left: 9%;
-	top: 60px;
-	width: 36.5%;
-	border:1px solid #955252;
-	border-radius: 20px;
-	padding: 10px;
-	background-color: rgb(217,196,177);
-	height: 150px;
-}
-
-#titrecreerutilisateur
-{
-	position: relative;
-    text-align: center
-}
-
-#validercreationutilisateur
-{
-	position: relative;
-	left:43%;
-	border-radius: 1px ;
-}
-
-#voirutilisateurs
-{
-	border:1px solid #955252;
-	background-color: rgb(217,196,177);
-	width: 30%;
-	border-radius: 20px;
-	padding: 0px 10px;
-}
-
-#titrelisteutilisateurs
-{
-	position: relative;
-    text-align: center
-}
-
-#nomsutilisateurs
-{
-	position: relative;
-	left:70px;
-}
-
-#boutonssupprimer
-{
-	position: relative;
-	display: block;
-	right:-200px;
-	top: -17px;
-	border-radius: 1px;
 }

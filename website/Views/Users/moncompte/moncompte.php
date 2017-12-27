@@ -34,33 +34,3 @@
 </div>
 
 <h4 id="identificationutilisateur">Vous êtes l'utilisateur ...... </h4>
-
-<div id="creervoirutilisateur">
-
-    <div id="voirutilisateurs">
-        <h4 id="titrelisteutilisateurs">Liste des utilisateurs</h4>
-        <p id="nomsutilisateurs">Eytan <input id="boutonssupprimer" type="button" value="Supprimer"
-                                                        title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">Bryan <input id="boutonssupprimer" type="button" value="Supprimer"
-                                                        title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">Jérémy <input id="boutonssupprimer" type="button" value="Supprimer"
-                                                         title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">Dinesh <input id="boutonssupprimer" type="button" value="Supprimer"
-                                                         title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">Alexandre <input id="boutonssupprimer" type="button" value="Supprimer"
-                                                            title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">Randy <input id="boutonssupprimer" type="button" value="Supprimer"
-                                                        title="Vous allez supprimer cet utilisateur"/></p>
-
-    </div>
-
-
-    <div id="creerutilisateur">
-        <h4 id="titrecreerutilisateur">Ajouter un utilisateur à la propriété</h4>
-        <form action="pagephp">
-            <p><label>Login</label>: <input id="formdroit" type="text" name="login"/></p><br>
-            <input id="validercreationutilisateur" type="submit" value="Valider"
-                   title="Vous créez un nouvel utilisateur"/>
-        </form>
-    </div>
-</div>
