@@ -125,52 +125,6 @@ class Rooms extends Repository
     }
 
     /**
-     * Syncs a room with the database, executing a Pull or a Push on a last_updated timestamp basis
-     *
-     * @param Entities\Room $r to be synced
-     *
-     * @return void
-     *
-     * @throws \Exception if not found
-     */
-    public static function sync(Entities\Room $r): void
-    {
-        // SQL to get last_updated on given peripheral
-        $sql = "SELECT UNIX_TIMESTAMP(last_updated) AS last_updated
-          FROM rooms
-          WHERE id = :id;";
-
-        // Prepare statement
-        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
-
-        // Execute
-        $stmt->execute(['id' => $r->getID()]);
-
-        // Retrieve
-        $db_last_updated = $stmt->fetchColumn(0);
-
-        // If nil, we throw an exception
-        if ($db_last_updated == null) {
-            throw new RowNotFoundException("Room","rooms");
-        }
-
-        // If empty, that's an Exception
-        if ($db_last_updated == "") {
-            throw new \Exception("Empty last_updated");
-        }
-
-        // Cast it
-        $db_last_updated = (float)$db_last_updated;
-
-        // If the DB was updated BEFORE the last update to the peripheral, push
-        if ($db_last_updated < $r->getLastUpdated()) {
-            self::push($r);
-        } else {
-            self::pull($r);
-        }
-    }
-
-    /**
      * Checks if the given rooms exists in the database
      *
      * @param int $id
