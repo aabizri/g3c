@@ -91,16 +91,12 @@ class Measures extends Repository
     }
 
     /**
+     * Checks if the given measure exists in the database
+     *
      * @param int $id
-     *
-     * @return \Entities\Measure
-     *
-     * @throws MultiSetFailedException
-     * @throws RowNotFoundException
-     * @throws SetFailedException
-     * @throws \Exception
+     * @return bool
      */
-    public static function retrieve(int $id): \Entities\Measure
+    public static function exists(int $id): bool
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -115,9 +111,23 @@ class Measures extends Repository
 
         // Fetch
         $count = $stmt->fetchColumn(0);
+        return $count != 0;
+    }
 
-        // If count is zero, then we return null
-        if ($count == 0) {
+    /**
+     * @param int $id
+     *
+     * @return \Entities\Measure
+     *
+     * @throws MultiSetFailedException
+     * @throws RowNotFoundException
+     * @throws SetFailedException
+     * @throws \Exception
+     */
+    public static function retrieve(int $id): \Entities\Measure
+    {
+        // If it doesn't exist, we return null
+        if (!self::exists($id)) {
             return null;
         }
 

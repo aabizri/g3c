@@ -113,18 +113,17 @@ class Peripherals extends Repository
             "last_updated" => (float)$data["last_updated"],
         ]);
         if (!$ok) {
-            throw new MultiSetFailedException("Peripherals",$data);
+            throw new MultiSetFailedException("Peripherals", $data);
         }
     }
 
     /**
-     * Retrieve a peripheral from the database given its id
+     * Checks if the given peripheral exists in the database
      *
-     * @param string $uuid UUID of the Peripheral to retrieve
-     * @return Entities\Peripheral the peripheral if found, null if not
-     * @throws Exception
+     * @param string $uuid
+     * @return bool
      */
-    public static function retrieve(string $uuid)
+    public static function exists(string $uuid): bool
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -139,9 +138,20 @@ class Peripherals extends Repository
 
         // Fetch
         $count = $stmt->fetchColumn(0);
+        return $count != 0;
+    }
 
-        // If count is zero, then we return null
-        if ($count == 0) {
+    /**
+     * Retrieve a peripheral from the database given its id
+     *
+     * @param string $uuid UUID of the Peripheral to retrieve
+     * @return Entities\Peripheral|null the peripheral if found, null if not
+     * @throws Exception
+     */
+    public static function retrieve(string $uuid): ?\Entities\Peripheral
+    {
+        // If it doesn't exist, we return null
+        if (!self::exists($uuid)) {
             return null;
         }
 
@@ -151,7 +161,7 @@ class Peripherals extends Repository
         // Set the UUID
         $ok = $p->setUUID($uuid);
         if (!$ok) {
-            throw new SetFailedException("Peripheral","setUUID", $uuid);
+            throw new SetFailedException("Peripheral", "setUUID", $uuid);
         }
 
         // Call Pull on it
@@ -263,7 +273,7 @@ class Peripherals extends Repository
         // Set the ID and date
         $ok = $p->setRoomID($roomID);
         if (!$ok) {
-            throw new SetFailedException("Peripheral","setRoomID",$roomID);
+            throw new SetFailedException("Peripheral", "setRoomID", $roomID);
         }
     }
 
@@ -302,7 +312,7 @@ class Peripherals extends Repository
         ];
         $ok = $p->setMultiple($data);
         if (!$ok) {
-            throw new MultiSetFailedException("Peripherals",$data);
+            throw new MultiSetFailedException("Peripherals", $data);
         }
     }
 }
