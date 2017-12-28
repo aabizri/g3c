@@ -117,13 +117,12 @@ class Permissions extends Repository
     }
 
     /**
-     * Retrieve a permission from the database given its id
+     * Checks if the given permission exists in the database
      *
-     * @param int $id of the permission to retrieve
-     * @return \Entities\Permission the room if found, null if not
-     * @throws \Exception
+     * @param int $id
+     * @return bool
      */
-    public static function retrieve(int $id): \Entities\Permission
+    public static function exists(int $id): bool
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -138,9 +137,20 @@ class Permissions extends Repository
 
         // Fetch
         $count = $stmt->fetchColumn(0);
+        return $count != 0;
+    }
 
+    /**
+     * Retrieve a permission from the database given its id
+     *
+     * @param int $id of the permission to retrieve
+     * @return \Entities\Permission|null the room if found, null if not
+     * @throws \Exception
+     */
+    public static function retrieve(int $id): ?\Entities\Permission
+    {
         // If count is zero, then we return null
-        if ($count == 0) {
+        if (!self::exists($id)) {
             return null;
         }
 

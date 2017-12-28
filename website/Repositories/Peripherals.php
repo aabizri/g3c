@@ -113,64 +113,17 @@ class Peripherals extends Repository
             "last_updated" => (float)$data["last_updated"],
         ]);
         if (!$ok) {
-            throw new MultiSetFailedException($p,$data);
+            throw new MultiSetFailedException($p, $data);
         }
     }
 
     /**
-     * Syncs a Model\Peripheral with the database, executing a Pull or a Push on a last_updated timestamp basis
+     * Checks if the given peripheral exists in the database
      *
-     * @param Entities\Peripheral $p to be synced
-     *
-     * @return void
-     *
-     * @throws \Exception if not found
+     * @param string $uuid
+     * @return bool
      */
-    public static function sync(Entities\Peripheral $p)
-    {
-        // SQL to get last_updated on given peripheral
-        $sql = "SELECT UNIX_TIMESTAMP(last_updated) AS last_updated
-          FROM peripherals
-          WHERE uuid = :uuid;";
-
-        // Prepare statement
-        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
-
-        // Execute
-        $stmt->execute(['uuid' => $p->getUUID()]);
-
-        // Retrieve
-        $db_last_updated = $stmt->fetchColumn(0);
-
-        // If nil, we throw an exception
-        if ($db_last_updated === null) {
-            throw new RowNotFoundException($p, "peripherals");
-        }
-
-        // If empty, that's an Exception
-        if ($db_last_updated === "") {
-            throw new Exception("Empty last_updated");
-        }
-
-        // Cast it
-        $db_last_updated = (float)$db_last_updated;
-
-        // If the DB was updated BEFORE the last update to the peripheral, push
-        if ($db_last_updated < $p->getLastUpdated()) {
-            self::push($p);
-        } else {
-            self::pull($p);
-        }
-    }
-
-    /**
-     * Retrieve a peripheral from the database given its id
-     *
-     * @param string $uuid UUID of the Peripheral to retrieve
-     * @return Entities\Peripheral the peripheral if found, null if not
-     * @throws Exception
-     */
-    public static function retrieve(string $uuid)
+    public static function exists(string $uuid): bool
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -185,9 +138,20 @@ class Peripherals extends Repository
 
         // Fetch
         $count = $stmt->fetchColumn(0);
+        return $count != 0;
+    }
 
-        // If count is zero, then we return null
-        if ($count == 0) {
+    /**
+     * Retrieve a peripheral from the database given its id
+     *
+     * @param string $uuid UUID of the Peripheral to retrieve
+     * @return Entities\Peripheral|null the peripheral if found, null if not
+     * @throws Exception
+     */
+    public static function retrieve(string $uuid): ?\Entities\Peripheral
+    {
+        // If it doesn't exist, we return null
+        if (!self::exists($uuid)) {
             return null;
         }
 

@@ -125,59 +125,12 @@ class Rooms extends Repository
     }
 
     /**
-     * Syncs a room with the database, executing a Pull or a Push on a last_updated timestamp basis
+     * Checks if the given rooms exists in the database
      *
-     * @param Entities\Room $r to be synced
-     *
-     * @return void
-     *
-     * @throws \Exception if not found
+     * @param int $id
+     * @return bool
      */
-    public static function sync(Entities\Room $r): void
-    {
-        // SQL to get last_updated on given peripheral
-        $sql = "SELECT UNIX_TIMESTAMP(last_updated) AS last_updated
-          FROM rooms
-          WHERE id = :id;";
-
-        // Prepare statement
-        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
-
-        // Execute
-        $stmt->execute(['id' => $r->getID()]);
-
-        // Retrieve
-        $db_last_updated = $stmt->fetchColumn(0);
-
-        // If nil, we throw an exception
-        if ($db_last_updated == null) {
-            throw new RowNotFoundException($r,"rooms");
-        }
-
-        // If empty, that's an Exception
-        if ($db_last_updated == "") {
-            throw new \Exception("Empty last_updated");
-        }
-
-        // Cast it
-        $db_last_updated = (float)$db_last_updated;
-
-        // If the DB was updated BEFORE the last update to the peripheral, push
-        if ($db_last_updated < $r->getLastUpdated()) {
-            self::push($r);
-        } else {
-            self::pull($r);
-        }
-    }
-
-    /**
-     * Retrieve a room from the database given its id
-     *
-     * @param int $id of the room to retrieve
-     * @return Entities\Room the room if found, null if not
-     * @throws \Exception
-     */
-    public static function retrieve(int $id): Entities\Room
+    public static function exists(int $id): bool
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -192,9 +145,20 @@ class Rooms extends Repository
 
         // Fetch
         $count = $stmt->fetchColumn(0);
+        return $count != 0;
+    }
 
-        // If count is zero, then we return null
-        if ($count == 0) {
+    /**
+     * Retrieve a room from the database given its id
+     *
+     * @param int $id of the room to retrieve
+     * @return Entities\Room|null , null if it not found
+     * @throws \Exception
+     */
+    public static function retrieve(int $id): ?Entities\Room
+    {
+        // If it doesn't exist, we return null
+        if (!self::exists($id)) {
             return null;
         }
 
