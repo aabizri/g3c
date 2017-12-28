@@ -8,42 +8,69 @@
 
 namespace Entities;
 
-
 class Request extends Entity
 {
     /* PROPERTIES */
 
     // DB Stored
     private $id;
-    private $ip;
-    private $user_agent_txt;
-    private $user_agent_hash;
+    private $ip = "";
+    private $user_agent_txt = "";
+    private $user_agent_hash = "";
     private $session_id;
-    private $controller;
-    private $action;
-    private $started;
-    private $finished;
+    private $controller = "";
+    private $action = "";
+    private $started = 0;
+    private $finished = 0;
 
     // Local
-    private $method;
-    private $get;
-    private $post;
-    private $request_length;
-    private $response_length;
+    private $method = "";
+    private $get = [];
+    private $post = [];
 
     /**
-     * Which user is the one of the current session
+     * Request length, only in case of POST
+     *
+     * @var int
+     */
+    private $request_length = -1;
+
+    /**
+     * Response length
+     *
+     * @var int
+     */
+    private $response_length = -1;
+
+    /**
+     * The ID of the user, logged in at any time during the request and its treatment
+     *
      * @var int|null
      */
     private $user_id = null;
 
     /**
-     * Which property is being queried
+     * The user, if any, logged in at any time during the request and its treatment
+     *
+     * @var User|null
+     */
+    private $user = null;
+
+    /**
+     * The property id, if any, used at any time during the request
+     *
      * @var int|null
      */
     private $property_id = null;
 
-    private $in_debug;
+    /**
+     * The property, if any, is used at any time during the request
+     *
+     * @var Property|null
+     */
+    private $property = null;
+
+    private $in_debug = false;
 
     /* CONSTRUCTOR */
     public function __construct(bool $autosave = false)
@@ -244,6 +271,152 @@ class Request extends Entity
         return true;
     }
 
+    /**
+     * @return int
+     */
+    public function getRequestLength(): int
+    {
+        return $this->request_length;
+    }
+
+    /**
+     * @param int $request_length
+     * @return bool
+     */
+    public function setRequestLength(int $request_length): bool
+    {
+        $this->request_length = $request_length;
+        return true;
+    }
+
+    /**
+     * @return int
+     */
+    public function getResponseLength(): int
+    {
+        return $this->response_length;
+    }
+
+    /**
+     * @param int $response_length
+     * @return bool
+     */
+    public function setResponseLength(int $response_length): bool
+    {
+        $this->response_length = $response_length;
+        return true;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUserID(): ?int
+    {
+        return $this->user_id;
+    }
+
+    /**
+     * @param int|null $user_id
+     * @return bool
+     */
+    public function setUserID(?int $user_id): bool
+    {
+        if ($this->user !== null) {
+            if ($user_id !== $this->user->getID()) {
+                $this->user = null;
+            }
+        }
+        $this->user_id = $user_id;
+        return true;
+    }
+
+    /**
+     * @return User|null
+     * @throws \Exception
+     */
+    public function getUser(): ?User
+    {
+        if ($this->user_id === null) {
+            return null;
+        }
+
+        if ($this->user === null) {
+            $this->user = \Repositories\Users::retrieve($this->user_id);
+        }
+
+        return $this->user;
+    }
+
+    /**
+     * @param User|null $u
+     * @return bool
+     */
+    public function setUser(?User $u): bool
+    {
+        $this->user = $u;
+        if ($u === null) {
+            $this->user_id = null;
+        } else {
+            $this->user_id = $u->getID();
+        }
+        return true;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getPropertyID(): ?int
+    {
+        return $this->property_id;
+    }
+
+    /**
+     * @param int|null $property_id
+     * @return bool
+     */
+    public function setPropertyID(?int $property_id): bool
+    {
+        if ($this->property !== null) {
+            if ($property_id !== $this->property->getID()) {
+                $this->property = null;
+            }
+        }
+        $this->property_id = $property_id;
+        return true;
+    }
+
+    /**
+     * @return Property|null
+     * @throws \Exception
+     */
+    public function getProperty(): ?Property
+    {
+        if ($this->property_id === null) {
+            return null;
+        }
+
+        if ($this->property === null) {
+            $this->property = \Repositories\Properties::retrieve($this->property_id);
+        }
+
+        return $this->property;
+    }
+
+    /**
+     * @param Property|null $p
+     * @return bool
+     */
+    public function setProperty(?Property $p): bool
+    {
+        $this->property = $p;
+        if ($p === null) {
+            $this->property_id = null;
+        } else {
+            $this->property_id = $p->getID();
+        }
+        return true;
+    }
+
     /* BUSINESS LOGIC */
 
     /**
@@ -287,7 +460,7 @@ class Request extends Entity
     }
 
     /**
-     * Set server info (Method, IP, User Agent, and Request Time)
+     * Set server info (Method, IP, User Agent, Request Time, and Request Length in case of POST)
      *
      * @param array $info defaults to $_SERVER
      * @return bool
@@ -332,13 +505,23 @@ class Request extends Entity
             return false;
         }
 
+        // Set Request Length if present
+        if (!empty($info["CONTENT_LENGTH"])) {
+            $request_length = (int)$info["CONTENT_LENGTH"];
+            $ok = $this->setRequestLength($request_length);
+            if (!$ok) {
+                return false;
+            }
+        }
+
         return true;
     }
 
     /**
      * Extract the Controller and Action from GET, and trims it from the array
      */
-    public function extractAndTrimControllerAndActionFromGET() {
+    public function extractControllerAndAction()
+    {
         $category = "";
         if (!empty($this->get["c"])) {
             $category = $this->get["c"];
@@ -396,6 +579,6 @@ class Request extends Entity
     public function autoSet() {
         $this->setInfo();
         $this->setParams();
-        $this->extractAndTrimControllerAndActionFromGET();
+        $this->extractControllerAndAction();
     }
 }

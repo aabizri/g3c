@@ -12,7 +12,7 @@ require_once(__DIR__ . "/Helpers/autoloader.php");
 // Création de la requête
 $req = new \Entities\Request(true);
 
-// Population des données
+// Auto-population des données
 $req->autoSet();
 
 /* Traitement de la requête */
