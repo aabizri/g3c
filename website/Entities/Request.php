@@ -28,6 +28,19 @@ class Request extends Entity
     private $method;
     private $get;
     private $post;
+
+    /**
+     * Which user is the one of the current session
+     * @var int|null
+     */
+    private $user_id = null;
+
+    /**
+     * Which property is being queried
+     * @var int|null
+     */
+    private $property_id = null;
+
     private $in_debug;
 
     /* CONSTRUCTOR */
