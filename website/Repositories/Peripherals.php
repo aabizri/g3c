@@ -118,52 +118,6 @@ class Peripherals extends Repository
     }
 
     /**
-     * Syncs a Model\Peripheral with the database, executing a Pull or a Push on a last_updated timestamp basis
-     *
-     * @param Entities\Peripheral $p to be synced
-     *
-     * @return void
-     *
-     * @throws \Exception if not found
-     */
-    public static function sync(Entities\Peripheral $p)
-    {
-        // SQL to get last_updated on given peripheral
-        $sql = "SELECT UNIX_TIMESTAMP(last_updated) AS last_updated
-          FROM peripherals
-          WHERE uuid = :uuid;";
-
-        // Prepare statement
-        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
-
-        // Execute
-        $stmt->execute(['uuid' => $p->getUUID()]);
-
-        // Retrieve
-        $db_last_updated = $stmt->fetchColumn(0);
-
-        // If nil, we throw an exception
-        if ($db_last_updated === null) {
-            throw new RowNotFoundException("Peripheral", "peripherals");
-        }
-
-        // If empty, that's an Exception
-        if ($db_last_updated === "") {
-            throw new Exception("Empty last_updated");
-        }
-
-        // Cast it
-        $db_last_updated = (float)$db_last_updated;
-
-        // If the DB was updated BEFORE the last update to the peripheral, push
-        if ($db_last_updated < $p->getLastUpdated()) {
-            self::push($p);
-        } else {
-            self::pull($p);
-        }
-    }
-
-    /**
      * Retrieve a peripheral from the database given its id
      *
      * @param string $uuid UUID of the Peripheral to retrieve
