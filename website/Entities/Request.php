@@ -28,6 +28,8 @@ class Request extends Entity
     private $method;
     private $get;
     private $post;
+    private $request_length;
+    private $response_length;
 
     /**
      * Which user is the one of the current session

@@ -11,7 +11,7 @@ class Handler
         // UTF8 Header
         header('Content-type: text/html; charset=utf-8');
         // Lancement de la temporisation
-        ob_start();
+        ob_start("ob_gzhandler",0,PHP_OUTPUT_HANDLER_STDFLAGS);
 
         // Installation du handler de session
         session_set_save_handler(new \Helpers\SessionSaveHandler);
