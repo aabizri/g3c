@@ -144,7 +144,7 @@ class User
         $u = Repositories\Users::retrieve($id);
 
         // Validate
-        if ($u->validatePassword($password_clear) == false) {
+        if ($u->verifyPassword($password_clear) == false) {
             echo "Mot de passe incorrect";
             return;
         }

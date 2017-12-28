@@ -9,6 +9,10 @@
 namespace Entities;
 
 
+/**
+ * Class MeasureType
+ * @package Entities
+ */
 class MeasureType extends Entity
 {
     /* PROPERTIES */
