@@ -66,6 +66,19 @@ class Maintenance
 
     }
 
+    public function postSendMail2(array $get, array$post) : void
+    {   $destinataire = 'Eytaaaaaan@gmail.com';
+        // Adresse email du destinataire
+        $sujet = 'Titre du message';
+        // Titre de l'email
+        $message = 'Bonjour. Ceci est un message qui sera envoyé par email. Au revoir.';
+        // Contenu du message de l'email
+        mail($destinataire, $sujet, $message);
+        // Fonction principale qui envoi l'email
+        echo 'Email envoyé!';
+
+    }
+
     public static function getMaintenancePage(array $get, array $post): void
     {
         DisplayManager::display("maintenance",array());
