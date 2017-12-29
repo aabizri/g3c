@@ -518,10 +518,11 @@ class Request extends Entity
     }
 
     /**
-     * Extract the Controller and Action from GET, and trims it from the array
+     * Extract the Controller, Action, Property ID and Debug flag, from GET, and trims them from the array
      */
-    public function extractControllerAndAction()
+    public function extractRoutingInfo()
     {
+        // Category
         $category = "";
         if (!empty($this->get["c"])) {
             $category = $this->get["c"];
@@ -529,6 +530,7 @@ class Request extends Entity
         $this->setController($category);
         unset($this->get["c"]);
 
+        // Action
         $action = "";
         if (!empty($this->get["a"])) {
             $action = $this->get["a"];
@@ -536,6 +538,15 @@ class Request extends Entity
         $this->setAction($action);
         unset($this->get["a"]);
 
+        // Property ID
+        $property_id = null;
+        if (!empty($this->get["pid"])) {
+            $property_id = $this->get["pid"];
+        }
+        $this->setPropertyID($property_id);
+        unset($this->get["pid"]);
+
+        // Debug flag
         $in_debug = false;
         if (!empty($this->get["debug"])) {
             $in_debug = true;
@@ -579,6 +590,6 @@ class Request extends Entity
     public function autoSet() {
         $this->setInfo();
         $this->setParams();
-        $this->extractControllerAndAction();
+        $this->extractRoutingInfo();
     }
 }
