@@ -25,35 +25,55 @@
 
     <div id="modifiermesinformations">
         <h4 id="titremodifierinfos">Modifier mes informations</h4>
-        <form id="formulairemodif" action="pagephp">
-            <p><label>Nouvel email :</label><input type="text" id="formdroit" name="nouvelemail"/><br></p>
-            <p><label>Confirmer nouvel email : </label><input type="text" id="formdroit" name=""/><br></p>
-            <p><label>Nouvelle addresse : </label><input type="text" id="formdroit" name=""/><br></p>
-            <p><label>Nouveau téléphone : </label><input type="text" id="formdroit" name=""/><br></p>
-            <p><label>Ancien mot de passe : </label><input type="text" id="formdroit" name=""/><br></p>
-            <p><label>Nouveau mot de passe : </label><input type="text" id="formdroit" name=""/><br></p>
-            <p><label>Confirmer le mot de passe : </label><input type="text" id="formdroit" name=""/><br></p>
-            <p><input id="validermodifinfos" type="submit" value="Valider" title="Vous modifiez vos informations"/></p>
+        <form method="post" id="formulairemodif" action="http://localhost/g3c/website/index.php?c=User&a=setMAJInformations">
+            <p>
+                <label>Nouvel email :</label><input type="text" id="formdroit" name="email"/><br>
+            </p>
+
+            <p>
+                <label>Confirmer nouvel email : </label><input type="text" id="formdroit" name="cnewemail"/><br>
+            </p>
+
+            <p>
+                <label>Nouvelle addresse : </label><input type="text" id="formdroit" name="nouvelleaddresse"/><br>
+            </p>
+
+            <p>
+                <label>Nouveau téléphone : </label><input type="text" id="formdroit" name="nouveautel"/><br>
+            </p><br>
+
+            <p>
+                <label>Mot de passe pour pouvoir modifier : </label><input type="password" id="formdroit" name="mdp"/><br>
+            </p>
+
+            <p>
+                <input id="validermodifinfos" type="submit" value="Valider" title="Vous modifiez vos informations"/>
+            </p><br>
+
         </form>
     </div>
 
 </div>
 
-<h4 id="identificationutilisateur">Vous êtes l'utilisateur ...... </h4>
+<h4 id="identificationutilisateur">Vous êtes l'utilisateur <?php echo $u->getNick()?> </h4>
 
-<div id="creervoirutilisateur">
+    <div id="modifmdp">
+        <h4 id="titremodifmdp">Modifier mon mot de passe</h4>
+        <form method="post" action="http://localhost/g3c/website/index.php?c=User&a=setMDP">
+        <p>
+            <label>Ancien mot de passe : </label><input type="password" id="droit" name="ancienmdp"/><br>
+        </p>
 
-    <div id="voirutilisateurs">
-        <h4 id="titrelisteutilisateurs">Liste des utilisateurs</h4>
-    </div>
+        <p>
+            <label>Nouveau mot de passe : </label><input type="password" id="droit" name="nouveaumdp"/><br>
+        </p>
 
+        <p>
+            <label>Confirmer le mot de passe : </label><input type="password" id="droit" name="cnouveaumdp"/><br>
+        </p>
 
-    <div id="creerutilisateur">
-        <h4 id="titrecreerutilisateur">Ajouter un utilisateur à la propriété</h4>
-        <form action="pagephp">
-            <p><label>Login</label>: <input id="formdroit" type="text" name="login"/></p><br>
-            <input id="validercreationutilisateur" type="submit" value="Valider"
-                   title="Vous créez un nouvel utilisateur"/>
+        <p>
+            <input id="validermodifmdp" type="submit" value="Valider" title="Vous modifiez votre mot de passe"/>
+        </p>
         </form>
     </div>
-</div>
