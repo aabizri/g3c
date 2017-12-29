@@ -6,41 +6,45 @@ namespace Repositories;
 use Entities;
 use Exception;
 use PDO;
+use Repositories\Exceptions\MultiSetFailedException;
+use Repositories\Exceptions\RowNotFoundException;
+use Repositories\Exceptions\SetFailedException;
 
 class Roles extends Repository
 {
     /**
      * insert adds an entity to the database
      *
-     * @param \Entities\Role $p
+     * @param \Entities\Role $r
      * @throws \Exception
      */
-    public static function insert(\Entities\Role $p): void
+    public static function insert(\Entities\Role $r): void
     {
         // SQL
         $sql = "INSERT INTO roles (user_id, property_id)
           VALUES (:user_id, :property_id);";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
-        $data = [
-            ":user_id" => $p->getUserID(),
-            ":property_id" => $p->getPropertyID(),
-        ];
+        $data = $r->getMultiple([
+            "user_id",
+            "property_id",
+        ]);
 
         // Execute request
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        if ($p->setId($id) == false) {
-            throw new \Exception("error setting id");
+        $ok = $r->setID($id);
+        if ($ok) {
+            throw new SetFailedException("Role","setID",$id);
         }
 
         // We should now pull to populate times
-        self::pull($p);
+        self::pull($r);
     }
 
     /**
@@ -54,19 +58,19 @@ class Roles extends Repository
     {
         // SQL
         $sql = "UPDATE roles
-        SET user_id = :uid, property_id = :pid";
+        SET user_id = :user_id, property_id = :property_id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
-        $data = array(
-            ':uid' => $r->getUserID(),
-            ':pid' => $r->getPropertyID(),
-        );
+        $data = $r->getMultiple([
+            'user_id',
+            'property_id'
+        ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Now pull
         self::pull($r);
@@ -84,42 +88,43 @@ class Roles extends Repository
     public static function pull(Entities\Role $r)
     {
         // SQL
-        $sql = "SELECT user_id, property_id, UNIX_TIMESTAMP(creation_date) as creation_date, UNIX_TIMESTAMP(last_updated) as last_updated
+        $sql = "SELECT user_id, property_id, UNIX_TIMESTAMP(creation_date) AS creation_date, UNIX_TIMESTAMP(last_updated) AS last_updated
         FROM roles
         WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':id' => $r->getID()));
+        $stmt->execute(['id' => $r->getID()]);
 
         // Retrieve
-        $data = $sth->fetch(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
         if ($data === false || $data === null) {
-            throw new Exception("no data returned");
+            new RowNotFoundException("Role","roles");
         }
 
         // Store
-        $arr = array(
-            "setUserId" => $data["user_id"],
-            "setPropertyId" => $data["property_id"],
-            "setCreationDate" => (float) $data["creation_date"],
-            "setLastUpdated" => (float) $data["last_updated"],
-        );
-        parent::executeSetterArray($r, $arr);
+        $ok = $r->setMultiple([
+            "user_id" => $data["user_id"],
+            "property_id" => $data["property_id"],
+            "creation_date" => (float)$data["creation_date"],
+            "last_updated" => (float)$data["last_updated"],
+        ]);
+        if (!$ok) {
+            throw new MultiSetFailedException("Role",$data);
+        }
     }
 
     /**
-     * Retrieve a role from the database given its id
+     * Checks if the given role exists in the database
      *
-     * @param int $id of the room to retrieve
-     * @return Entities\Role the room if found, null if not
-     * @throws Exception
+     * @param int $id
+     * @return bool
      */
-    public static function retrieve(int $id): Entities\Role
+    public static function exists(int $id): bool
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -127,16 +132,27 @@ class Roles extends Repository
             WHERE id = :id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':id' => $id));
+        $stmt->execute(['id' => $id]);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
+        return $count != 0;
+    }
 
-        // If count is zero, then we return null
-        if ($count == 0) {
+    /**
+     * Retrieve a role from the database given its id
+     *
+     * @param int $id of the room to retrieve
+     * @return Entities\Role|null the room if found, null if not
+     * @throws Exception
+     */
+    public static function retrieve(int $id): ?Entities\Role
+    {
+        // If it doesn't exists, we return null
+        if (!self::exists($id)) {
             return null;
         }
 
@@ -144,7 +160,10 @@ class Roles extends Repository
         $r = new Entities\Role();
 
         // Set the ID
-        $r->setId($id);
+        $ok = $r->setID($id);
+        if (!$ok) {
+            throw new SetFailedException("Role","setID",$id);
+        }
 
         // Call Pull on it
         self::pull($r);
@@ -167,13 +186,13 @@ class Roles extends Repository
             WHERE user_id = :uid";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":uid" => $uid]);
+        $stmt->execute(["uid" => $uid]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;
@@ -193,13 +212,13 @@ class Roles extends Repository
             WHERE property_id = :pid";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":pid" => $pid]);
+        $stmt->execute(["pid" => $pid]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;
@@ -219,13 +238,13 @@ class Roles extends Repository
             WHERE permission_id = :permission_id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":pid" => $permission_id]);
+        $stmt->execute(["pid" => $permission_id]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;
@@ -247,16 +266,16 @@ class Roles extends Repository
             WHERE user_id = :uid AND property_id = :pid";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare parameters
         $params = [':uid' => $uid, ":pid" => $pid];
 
         // Execute query
-        $sth->execute($params);
+        $stmt->execute($params);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
 
         // If count is zero, then we return null
         if ($count == 0) {
@@ -271,13 +290,13 @@ class Roles extends Repository
             WHERE user_id = :uid AND property_id = :pid";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute($params);
+        $stmt->execute($params);
 
         // Fetch
-        $id = $sth->fetchColumn(0);
+        $id = $stmt->fetchColumn(0);
 
         // Return this ID
         return $id;

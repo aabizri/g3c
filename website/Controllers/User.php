@@ -16,14 +16,34 @@ class User
      * join subscribes a user
      * @throws \Exception
      */
-    public static function postJoin(array $get, array $post): void
+    public static function postJoin(\Entities\Request $req): void
     {
+        // Récupere le post
+        $post = $req->getPOST();
+
         // Check if the data exists
         $required = ["nick", "email", "email_conf", "password", "password_conf", "name", "surname", "phone"];
         foreach ($required as $key) {
             if (empty($post[$key])) {
                 echo "Missing key: " . $key;
                 return;
+            }
+        }
+
+        // Validation du recaptcha, seulement en cas de connection https
+        if (isset($_SERVER["HTTPS"])) {
+            if ($_SERVER["HTTPS"] == "on") {
+                if (empty($post["g-recaptcha-response"])) {
+                    echo "ERROR: Empty recaptcha";
+                    return;
+                }
+                $response = $post["g-recaptcha-response"];
+                $captcha = new \Helpers\ReCAPTCHA("", "6Le5Pz4UAAAAAK3tAgJ2sCG3SF8qz0zVeILYJiuo");
+                $ok = $captcha->verify($response);
+                if (!$ok) {
+                    echo "Invalid captcha";
+                    return;
+                }
             }
         }
 
@@ -86,8 +106,11 @@ class User
     /**
      * Connexion
      */
-    public static function postConnection(array $get, array $post): void
+    public static function postConnection(\Entities\Request $req): void
     {
+        // Récupère le post
+        $post = $req->getPOST();
+
         // Check if the data exists
         $required = ["login", "password"];
         foreach ($required as $key) {
@@ -136,17 +159,17 @@ class User
         DisplayManager::display("dashboard",$data);
     }
 
-    public static function getConnectionPage(array $get, array $post): void
+    public static function getConnectionPage(\Entities\Request $req): void
     {
         DisplayManager::display("connexion",array());
     }
 
-    public static function getSubscriptionPage(array $get, array $post): void
+    public static function getSubscriptionPage(\Entities\Request $req): void
     {
         DisplayManager::display("inscription", array());
     }
 
-    public static function getAccountPage (array $get, array $post):void
+    public static function getAccountPage(\Entities\Request $req):void
     {
         DisplayManager::display("moncompte", array());
     }

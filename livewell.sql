@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le :  sam. 16 déc. 2017 à 18:54
+-- Généré le :  mer. 27 déc. 2017 à 18:36
 -- Version du serveur :  10.1.28-MariaDB
 -- Version de PHP :  7.1.11
 
@@ -27,14 +27,14 @@ SET time_zone = "+00:00";
 --
 -- Structure de la table `actuators`
 --
--- Création :  mar. 12 déc. 2017 à 13:59
+-- Création :  mer. 27 déc. 2017 à 17:31
 --
 
 CREATE TABLE `actuators` (
   `id` int(11) NOT NULL,
   `action_type` enum('undefined') COLLATE utf8_unicode_ci NOT NULL,
   `last_action_started` timestamp(3) NULL DEFAULT NULL,
-  `current_situation` int(11) DEFAULT NULL,
+  `last_measure_id` int(11) DEFAULT NULL COMMENT 'A measure ID',
   `peripheral_uuid` varchar(33) COLLATE utf8_unicode_ci NOT NULL,
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -43,6 +43,8 @@ CREATE TABLE `actuators` (
 -- RELATIONS POUR LA TABLE `actuators`:
 --   `peripheral_uuid`
 --       `peripherals` -> `uuid`
+--   `last_measure_id`
+--       `measures` -> `id`
 --
 
 -- --------------------------------------------------------
@@ -101,23 +103,56 @@ CREATE TABLE `filters` (
 --
 -- Structure de la table `measures`
 --
--- Création :  mar. 12 déc. 2017 à 13:58
+-- Création :  mer. 27 déc. 2017 à 17:29
 --
 
 CREATE TABLE `measures` (
   `id` int(11) NOT NULL,
-  `type` enum('undefined') COLLATE utf8_unicode_ci NOT NULL,
-  `date_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `value` int(11) NOT NULL,
-  `peripheral_uuid` varchar(33) COLLATE utf8_unicode_ci NOT NULL,
-  `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
+  `type_id` int(11) NOT NULL,
+  `date_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `value` double NOT NULL,
+  `sensor_id` int(11) DEFAULT NULL,
+  `actuator_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- RELATIONS POUR LA TABLE `measures`:
---   `peripheral_uuid`
---       `peripherals` -> `uuid`
+--   `actuator_id`
+--       `actuators` -> `id`
+--   `sensor_id`
+--       `sensors` -> `id`
+--   `type_id`
+--       `measure_types` -> `ID`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `measure_types`
+--
+-- Création :  mer. 27 déc. 2017 à 17:29
+--
+
+CREATE TABLE `measure_types` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Température °C"',
+  `description` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Température en Celsius"',
+  `unit_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Celsius"',
+  `unit_symbol` varchar(6) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "°C"',
+  `min` double DEFAULT NULL COMMENT 'Valeur minimale (opt)',
+  `max` double DEFAULT NULL COMMENT 'Valeur maximale (opt)'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- RELATIONS POUR LA TABLE `measure_types`:
+--
+
+--
+-- Déchargement des données de la table `measure_types`
+--
+
+INSERT INTO `measure_types` (`id`, `name`, `description`, `unit_name`, `unit_symbol`, `min`, `max`) VALUES
+(1, 'Température (*C)', 'Température en degrés Celsius', 'Celsius', '°C', -274, NULL);
 
 -- --------------------------------------------------------
 
@@ -497,7 +532,314 @@ INSERT INTO `requests` (`id`, `ip`, `user_agent_txt`, `user_agent_hash`, `sessio
 (66, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-14 22:05:48.536', '2017-12-14 22:05:48.542'),
 (67, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-15 13:25:30.058', '2017-12-15 13:25:30.067'),
 (68, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-15 13:26:13.792', '2017-12-15 13:26:13.885'),
-(69, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-15 13:26:24.215', '2017-12-15 13:26:24.299');
+(69, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-15 13:26:24.215', '2017-12-15 13:26:24.299'),
+(70, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'connexion', '2017-12-18 09:12:34.860', '2017-12-18 09:12:34.887'),
+(71, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-18 09:12:40.532', '2017-12-18 09:12:40.549'),
+(72, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'connexion', '2017-12-18 12:51:31.388', '2017-12-18 12:51:31.396'),
+(73, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-18 12:51:36.203', '2017-12-18 12:51:36.219'),
+(74, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-18 12:51:46.070', '2017-12-18 12:51:46.077'),
+(75, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-18 12:51:49.963', '2017-12-18 12:51:49.966'),
+(76, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-18 12:51:55.415', '2017-12-18 12:51:55.503'),
+(77, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getAccountPage', '2017-12-18 12:51:57.491', '2017-12-18 12:51:57.500'),
+(78, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'Room', 'getRoomsPage', '2017-12-18 12:51:58.287', '2017-12-18 12:51:58.297'),
+(79, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'Peripheral', 'getPeripheralsPage', '2017-12-18 12:51:59.855', '2017-12-18 12:51:59.865'),
+(80, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'Peripheral', 'getPeripheralsPage', '2017-12-18 12:52:03.091', '2017-12-18 12:52:03.094'),
+(81, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'Peripheral', 'getPeripheralsPage', '2017-12-18 12:52:09.465', '2017-12-18 12:52:09.468'),
+(82, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-18 12:56:34.645', '2017-12-18 12:56:34.649'),
+(83, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-18 12:56:36.839', '2017-12-18 12:56:36.843'),
+(84, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-18 12:56:43.011', '2017-12-18 12:56:43.091'),
+(85, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getAccountPage', '2017-12-18 12:56:51.577', '2017-12-18 12:56:51.580'),
+(86, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-18 14:18:37.342', '2017-12-18 14:18:37.368'),
+(87, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-18 14:19:07.501', '2017-12-18 14:19:07.554'),
+(88, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-18 14:19:12.747', '2017-12-18 14:19:12.879'),
+(89, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'Peripheral', 'getPeripheralsPage', '2017-12-18 14:19:17.852', '2017-12-18 14:19:17.868'),
+(90, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'Room', 'getRoomsPage', '2017-12-18 14:19:19.091', '2017-12-18 14:19:19.099'),
+(91, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getAccountPage', '2017-12-18 14:19:19.989', '2017-12-18 14:19:19.996'),
+(92, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'Room', 'getRoomsPage', '2017-12-18 14:19:20.733', '2017-12-18 14:19:20.736'),
+(93, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'Room', 'getRoomsPage', '2017-12-18 14:19:29.218', '2017-12-18 14:19:29.247'),
+(94, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-20 12:54:14.533', '2017-12-20 12:54:14.842'),
+(95, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 12:55:43.859', '2017-12-20 12:55:44.009'),
+(96, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 12:59:24.374', '2017-12-20 12:59:24.521'),
+(97, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-20 12:59:39.875', '2017-12-20 12:59:40.070'),
+(98, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 12:59:44.314', '2017-12-20 12:59:44.316'),
+(99, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-20 12:59:47.447', '2017-12-20 12:59:47.451'),
+(100, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 12:59:48.179', '2017-12-20 12:59:48.185'),
+(101, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:01:53.281', '2017-12-20 13:01:53.304'),
+(102, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:01:55.999', '2017-12-20 13:01:56.007'),
+(103, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:03:32.953', '2017-12-20 13:03:33.126'),
+(104, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:03:35.156', '2017-12-20 13:03:35.159'),
+(105, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:03:36.556', '2017-12-20 13:03:36.560'),
+(106, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:04:54.987', '2017-12-20 13:04:55.004'),
+(107, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:04:58.845', '2017-12-20 13:04:58.848'),
+(108, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:05:11.224', '2017-12-20 13:05:11.228'),
+(109, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:05:11.959', '2017-12-20 13:05:11.964'),
+(110, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:06:05.759', '2017-12-20 13:06:05.796'),
+(111, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:06:12.868', '2017-12-20 13:06:12.872'),
+(112, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:06:15.449', '2017-12-20 13:06:15.453'),
+(113, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:06:21.608', '2017-12-20 13:06:21.634'),
+(114, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:11:19.480', '2017-12-20 13:11:19.590'),
+(115, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:11:27.877', '2017-12-20 13:11:28.048'),
+(116, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:11:38.124', '2017-12-20 13:11:38.264'),
+(117, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:11:41.410', '2017-12-20 13:11:41.420'),
+(118, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:12:05.985', '2017-12-20 13:12:06.099'),
+(119, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-20 13:12:13.392', '2017-12-20 13:12:13.488'),
+(120, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:13:07.824', '2017-12-20 13:13:07.956'),
+(121, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:13:27.004', '2017-12-20 13:13:27.098'),
+(122, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-20 13:13:47.925', '2017-12-20 13:13:47.928'),
+(123, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:13:59.256', '2017-12-20 13:13:59.372'),
+(124, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:14:32.241', '2017-12-20 13:14:32.322'),
+(125, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:15:27.742', '2017-12-20 13:15:27.855'),
+(126, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:15:35.996', '2017-12-20 13:15:36.087'),
+(127, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:16:05.511', '2017-12-20 13:16:05.622'),
+(128, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:16:11.286', '2017-12-20 13:16:11.370'),
+(129, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:16:37.323', '2017-12-20 13:16:37.327'),
+(130, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:16:40.230', '2017-12-20 13:16:40.233'),
+(131, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:16:43.660', '2017-12-20 13:16:43.757'),
+(132, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-20 13:16:46.361', '2017-12-20 13:16:46.365'),
+(133, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-20 13:16:51.476', '2017-12-20 13:16:51.556'),
+(134, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 18:23:43.907', '2017-12-24 18:23:43.912'),
+(135, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 18:25:06.449', '2017-12-24 18:25:06.454'),
+(136, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postConnection', '2017-12-24 21:32:49.855', '2017-12-24 21:32:50.339'),
+(137, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 21:33:17.448', '2017-12-24 21:33:17.456'),
+(138, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 21:33:58.211', '2017-12-24 21:33:58.215'),
+(139, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postConnection', '2017-12-24 21:34:04.957', '2017-12-24 21:34:05.063'),
+(140, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getAccountPage', '2017-12-24 21:34:07.454', '2017-12-24 21:34:07.459'),
+(141, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'getRoomsPage', '2017-12-24 21:34:11.200', '2017-12-24 21:34:11.204'),
+(142, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', '', '', '2017-12-24 22:54:58.080', '2017-12-24 22:54:58.100'),
+(143, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', '', '', '2017-12-24 22:55:01.794', '2017-12-24 22:55:01.828'),
+(144, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', '', '', '2017-12-24 22:55:03.924', '2017-12-24 22:55:03.927'),
+(145, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', '', '', '2017-12-24 22:55:10.026', '2017-12-24 22:55:10.029'),
+(146, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', '', '', '2017-12-24 22:55:13.625', '2017-12-24 22:55:13.641'),
+(147, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', '', '', '2017-12-24 22:55:25.704', '2017-12-24 22:55:25.720'),
+(148, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', '', '', '2017-12-24 22:55:33.821', '2017-12-24 22:55:33.825'),
+(149, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', '', '', '2017-12-24 22:55:38.099', '2017-12-24 22:55:38.101'),
+(150, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', '', '', '2017-12-24 22:56:02.962', '2017-12-24 22:56:02.971'),
+(151, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', '', '', '2017-12-24 22:58:09.997', '2017-12-24 22:58:10.001'),
+(152, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', '', '', '2017-12-24 22:59:08.056', '2017-12-24 22:59:08.060'),
+(153, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'getRoomsPage', '2017-12-24 23:00:41.693', '2017-12-24 23:00:41.698'),
+(154, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'getRoomsPage', '2017-12-24 23:01:03.184', '2017-12-24 23:01:03.187'),
+(155, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'getRoomsPage', '2017-12-24 23:01:18.220', '2017-12-24 23:01:18.223'),
+(156, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'getRoomsPage', '2017-12-24 23:01:31.754', '2017-12-24 23:01:31.758'),
+(157, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPage', '2017-12-24 23:01:43.975', '2017-12-24 23:01:43.978'),
+(158, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPage', '2017-12-24 23:03:43.163', '2017-12-24 23:03:43.237'),
+(159, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPage', '2017-12-24 23:04:16.352', '2017-12-24 23:04:16.356'),
+(160, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPage', '2017-12-24 23:04:24.859', '2017-12-24 23:04:24.863'),
+(161, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPage', '2017-12-24 23:04:35.877', '2017-12-24 23:04:35.880'),
+(162, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPage', '2017-12-24 23:06:38.522', '2017-12-24 23:06:38.529'),
+(163, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 23:06:42.666', '2017-12-24 23:06:42.671'),
+(164, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPage', '2017-12-24 23:07:14.955', '2017-12-24 23:07:14.958'),
+(165, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 23:07:16.433', '2017-12-24 23:07:16.437'),
+(166, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 23:07:26.249', '2017-12-24 23:07:26.253'),
+(167, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 23:07:27.783', '2017-12-24 23:07:27.786'),
+(168, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 23:07:30.218', '2017-12-24 23:07:30.220'),
+(169, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 23:07:47.726', '2017-12-24 23:07:47.730'),
+(170, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 23:09:06.111', '2017-12-24 23:09:06.115'),
+(171, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 23:09:15.606', '2017-12-24 23:09:15.610'),
+(172, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 23:09:41.283', '2017-12-24 23:09:41.286'),
+(173, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 23:09:53.298', '2017-12-24 23:09:53.303'),
+(174, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 23:10:03.981', '2017-12-24 23:10:03.984'),
+(175, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 23:10:34.980', '2017-12-24 23:10:34.983'),
+(176, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 23:11:24.336', '2017-12-24 23:11:24.339'),
+(177, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 23:11:40.971', '2017-12-24 23:11:40.976'),
+(178, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'ConnectionPage', '2017-12-24 23:11:43.225', '2017-12-24 23:11:43.247'),
+(179, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'ConnectionPage', '2017-12-24 23:12:57.435', '2017-12-24 23:12:57.461'),
+(180, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-24 23:16:24.541', '2017-12-24 23:16:24.550'),
+(181, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'ConnectionPage', '2017-12-24 23:16:26.177', '2017-12-24 23:16:26.181'),
+(182, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'ConnectionPage', '2017-12-24 23:16:26.897', '2017-12-24 23:16:26.900'),
+(183, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'ConnectionPage', '2017-12-24 23:16:28.441', '2017-12-24 23:16:28.444'),
+(184, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'ConnectionPage', '2017-12-24 23:16:29.324', '2017-12-24 23:16:29.327'),
+(185, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'ConnectionPage', '2017-12-24 23:20:40.748', '2017-12-24 23:20:40.752'),
+(186, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'Connection', '2017-12-24 23:20:44.229', '2017-12-24 23:20:44.332'),
+(187, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'AccountPage', '2017-12-24 23:20:46.173', '2017-12-24 23:20:46.177'),
+(188, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Peripheral', 'PeripheralsPage', '2017-12-24 23:20:47.461', '2017-12-24 23:20:47.465'),
+(189, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Peripheral', 'PeripheralsPage', '2017-12-24 23:20:50.034', '2017-12-24 23:20:50.037'),
+(190, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Peripheral', 'PeripheralsPage', '2017-12-24 23:20:52.193', '2017-12-24 23:20:52.196'),
+(191, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPage', '2017-12-24 23:20:53.016', '2017-12-24 23:20:53.019'),
+(192, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'AccountPage', '2017-12-24 23:20:54.280', '2017-12-24 23:20:54.285');
+INSERT INTO `requests` (`id`, `ip`, `user_agent_txt`, `user_agent_hash`, `session_id`, `controller`, `action`, `started_processing`, `finished_processing`) VALUES
+(193, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPage', '2017-12-24 23:20:54.952', '2017-12-24 23:20:54.955'),
+(194, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPage', '2017-12-24 23:49:08.947', '2017-12-24 23:49:09.183'),
+(195, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPaged', '2017-12-24 23:49:15.298', '2017-12-24 23:49:15.305'),
+(196, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPaged', '2017-12-24 23:51:12.316', '2017-12-24 23:51:12.322'),
+(197, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPaged', '2017-12-24 23:51:21.605', '2017-12-24 23:51:21.609'),
+(198, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPaged', '2017-12-24 23:51:26.464', '2017-12-24 23:51:26.466'),
+(199, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPaged', '2017-12-24 23:52:03.528', '2017-12-24 23:52:03.531'),
+(200, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPage', '2017-12-24 23:52:11.728', '2017-12-24 23:52:11.750'),
+(201, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPage', '2017-12-24 23:52:24.657', '2017-12-24 23:52:24.676'),
+(202, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'ConnectionPage', '2017-12-24 23:52:26.357', '2017-12-24 23:52:26.361'),
+(203, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'ConnectionPaged', '2017-12-24 23:52:29.225', '2017-12-24 23:52:29.228'),
+(204, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'ConnectionPaged', '2017-12-24 23:53:04.108', '2017-12-24 23:53:04.112'),
+(205, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'ConnectionPaged', '2017-12-24 23:53:07.253', '2017-12-24 23:53:07.256'),
+(206, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'ConnectionPaged', '2017-12-24 23:53:25.237', '2017-12-24 23:53:25.241'),
+(207, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'ConnectionPaged', '2017-12-24 23:54:59.532', '2017-12-24 23:54:59.535'),
+(208, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'ConnectionPage', '2017-12-24 23:55:01.806', '2017-12-24 23:55:01.810'),
+(209, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'Connection', '2017-12-24 23:55:05.907', '2017-12-24 23:55:06.003'),
+(210, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Room', 'RoomsPage', '2017-12-24 23:55:07.399', '2017-12-24 23:55:07.404'),
+(211, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'AccountPage', '2017-12-24 23:55:08.283', '2017-12-24 23:55:08.287'),
+(212, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'AccountPage', '2017-12-24 23:55:13.876', '2017-12-24 23:55:13.880'),
+(213, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'AccountPage', '2017-12-24 23:56:09.456', '2017-12-24 23:56:09.461'),
+(214, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', '', '', '2017-12-24 23:56:14.424', '2017-12-24 23:56:14.435'),
+(215, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', '', '', '2017-12-24 23:56:19.384', '2017-12-24 23:56:19.427'),
+(216, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', '', '', '2017-12-24 23:58:24.117', '2017-12-24 23:58:24.205'),
+(217, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', '', '', '2017-12-24 23:58:47.793', '2017-12-24 23:58:47.796'),
+(218, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', '', '', '2017-12-24 23:58:55.988', '2017-12-24 23:58:56.004'),
+(219, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'AccountPage', '2017-12-25 00:07:30.237', '2017-12-25 00:07:30.245'),
+(220, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getAccountPage', '2017-12-25 00:07:33.213', '2017-12-25 00:07:34.050'),
+(221, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getAccountPage', '2017-12-25 00:07:36.126', '2017-12-25 00:07:36.141'),
+(222, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-25 00:07:37.993', '2017-12-25 00:07:37.997'),
+(223, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-25 00:07:39.620', '2017-12-25 00:07:39.623'),
+(224, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-25 00:11:08.891', '2017-12-25 00:11:08.900'),
+(225, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-25 00:11:36.234', '2017-12-25 00:11:36.309'),
+(226, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-25 00:11:46.688', '2017-12-25 00:11:46.696'),
+(227, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postJoin', '2017-12-25 11:47:26.956', '2017-12-25 11:47:27.127'),
+(228, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-25 11:47:31.007', '2017-12-25 11:47:31.015'),
+(229, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postJoin', '2017-12-25 11:47:53.397', '2017-12-25 11:47:53.422'),
+(230, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postJoin', '2017-12-25 11:48:03.527', '2017-12-25 11:48:03.546'),
+(231, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postJoin', '2017-12-25 11:48:13.821', '2017-12-25 11:48:13.846'),
+(232, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-25 12:04:59.030', '2017-12-25 12:04:59.154'),
+(233, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-25 12:05:03.843', '2017-12-25 12:05:03.889'),
+(234, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-25 12:05:13.372', '2017-12-25 12:05:13.404'),
+(235, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postJoin', '2017-12-25 12:09:06.280', '2017-12-25 12:09:06.560'),
+(236, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postJoin', '2017-12-25 12:12:12.473', '2017-12-25 12:12:12.559'),
+(237, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postJoin', '2017-12-25 12:12:30.944', '2017-12-25 12:12:30.948'),
+(238, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Maintenance', 'getMaintenancePage', '2017-12-26 17:01:03.842', '2017-12-26 17:01:03.919'),
+(239, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Maintenance', 'postSendMail', '2017-12-26 17:01:10.919', '2017-12-26 17:01:10.936'),
+(240, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Maintenance', 'postSendMail', '2017-12-26 17:01:22.365', '2017-12-26 17:01:22.395'),
+(241, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Maintenance', 'postSendMail', '2017-12-26 17:01:30.479', '2017-12-26 17:01:30.513'),
+(242, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-26 17:57:45.462', '2017-12-26 17:57:45.788'),
+(243, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-26 18:00:23.860', '2017-12-26 18:00:23.890'),
+(244, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:00:30.445', '2017-12-26 18:00:30.459'),
+(245, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:00:36.725', '2017-12-26 18:00:36.743'),
+(246, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:00:55.467', '2017-12-26 18:00:55.500'),
+(247, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postJoin', '2017-12-26 18:01:16.163', '2017-12-26 18:01:16.172'),
+(248, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postJoin', '2017-12-26 18:02:21.107', '2017-12-26 18:02:21.109'),
+(249, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:03:10.850', '2017-12-26 18:03:10.859'),
+(250, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:03:17.108', '2017-12-26 18:03:17.121'),
+(251, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:03:18.530', '2017-12-26 18:03:18.537'),
+(252, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:04:23.731', '2017-12-26 18:04:23.742'),
+(253, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postJoin', '2017-12-26 18:04:40.835', '2017-12-26 18:04:40.842'),
+(254, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:04:54.842', '2017-12-26 18:04:54.887'),
+(255, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:04:56.386', '2017-12-26 18:04:56.449'),
+(256, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:06:27.586', '2017-12-26 18:06:27.619'),
+(257, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:06:43.481', '2017-12-26 18:06:43.501'),
+(258, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:07:15.757', '2017-12-26 18:07:15.766'),
+(259, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:07:32.004', '2017-12-26 18:07:32.008'),
+(260, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:07:44.742', '2017-12-26 18:07:44.754'),
+(261, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postJoin', '2017-12-26 18:08:00.330', '2017-12-26 18:08:00.334'),
+(262, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:08:07.254', '2017-12-26 18:08:07.258'),
+(263, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:08:35.305', '2017-12-26 18:08:35.310'),
+(264, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:09:26.140', '2017-12-26 18:09:26.144'),
+(265, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:09:48.566', '2017-12-26 18:09:48.569'),
+(266, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:11:21.607', '2017-12-26 18:11:21.610'),
+(267, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:12:44.475', '2017-12-26 18:12:44.484'),
+(268, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:15:17.603', '2017-12-26 18:15:17.708'),
+(269, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:15:41.606', '2017-12-26 18:15:41.612'),
+(270, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:15:49.414', '2017-12-26 18:15:49.420'),
+(271, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:16:07.781', '2017-12-26 18:16:07.786'),
+(272, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:16:18.964', '2017-12-26 18:16:18.967'),
+(273, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:16:36.730', '2017-12-26 18:16:36.735'),
+(274, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:16:54.353', '2017-12-26 18:16:54.357'),
+(275, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:17:42.515', '2017-12-26 18:17:42.519'),
+(276, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:17:59.566', '2017-12-26 18:17:59.579'),
+(277, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:18:46.141', '2017-12-26 18:18:46.144'),
+(278, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:19:55.654', '2017-12-26 18:19:55.657'),
+(279, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:20:23.682', '2017-12-26 18:20:23.686'),
+(280, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:20:39.975', '2017-12-26 18:20:39.981'),
+(281, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:20:51.396', '2017-12-26 18:20:51.401'),
+(282, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:21:02.161', '2017-12-26 18:21:02.165'),
+(283, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:21:08.237', '2017-12-26 18:21:08.246'),
+(284, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:21:14.686', '2017-12-26 18:21:14.692'),
+(285, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:21:42.646', '2017-12-26 18:21:42.652'),
+(286, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:25:50.154', '2017-12-26 18:25:50.322'),
+(287, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-26 18:25:56.443', '2017-12-26 18:25:56.472'),
+(288, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:26:11.824', '2017-12-26 18:26:11.863'),
+(289, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:26:16.955', '2017-12-26 18:26:16.960'),
+(290, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:26:26.333', '2017-12-26 18:26:26.357'),
+(291, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:26:52.612', '2017-12-26 18:26:52.653'),
+(292, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:27:00.083', '2017-12-26 18:27:00.093'),
+(293, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:27:11.557', '2017-12-26 18:27:11.561'),
+(294, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:27:21.218', '2017-12-26 18:27:21.223'),
+(295, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:27:27.715', '2017-12-26 18:27:27.750'),
+(296, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:27:38.631', '2017-12-26 18:27:38.644'),
+(297, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:27:45.205', '2017-12-26 18:27:45.211'),
+(298, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:27:52.417', '2017-12-26 18:27:52.420'),
+(299, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:28:10.751', '2017-12-26 18:28:10.757'),
+(300, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:28:22.948', '2017-12-26 18:28:22.951'),
+(301, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:28:36.232', '2017-12-26 18:28:36.235'),
+(302, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:29:10.205', '2017-12-26 18:29:10.306'),
+(303, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:29:27.555', '2017-12-26 18:29:27.559'),
+(304, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:32:35.414', '2017-12-26 18:32:35.542'),
+(305, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:34:07.917', '2017-12-26 18:34:07.921'),
+(306, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:35:08.934', '2017-12-26 18:35:08.968'),
+(307, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:35:32.438', '2017-12-26 18:35:32.452'),
+(308, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:36:35.738', '2017-12-26 18:36:35.741'),
+(309, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:36:48.254', '2017-12-26 18:36:48.259'),
+(310, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:36:54.248', '2017-12-26 18:36:54.252'),
+(311, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:37:09.071', '2017-12-26 18:37:09.075'),
+(312, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:37:21.920', '2017-12-26 18:37:21.925'),
+(313, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:37:25.105', '2017-12-26 18:37:25.108'),
+(314, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:37:30.081', '2017-12-26 18:37:30.086'),
+(315, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:37:35.824', '2017-12-26 18:37:35.828'),
+(316, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:38:13.739', '2017-12-26 18:38:13.753'),
+(317, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:38:52.839', '2017-12-26 18:38:52.848'),
+(318, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:39:02.176', '2017-12-26 18:39:02.193'),
+(319, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:39:24.761', '2017-12-26 18:39:24.769'),
+(320, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:39:30.980', '2017-12-26 18:39:30.984'),
+(321, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:39:35.952', '2017-12-26 18:39:35.957'),
+(322, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:39:42.426', '2017-12-26 18:39:42.431'),
+(323, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:39:47.885', '2017-12-26 18:39:47.889'),
+(324, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:39:57.072', '2017-12-26 18:39:57.076'),
+(325, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:48:06.042', '2017-12-26 18:48:07.873'),
+(326, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:48:49.116', '2017-12-26 18:48:49.134'),
+(327, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:48:59.709', '2017-12-26 18:48:59.712'),
+(328, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:49:15.355', '2017-12-26 18:49:15.359'),
+(329, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:49:28.755', '2017-12-26 18:49:28.758'),
+(330, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:50:32.787', '2017-12-26 18:50:32.791'),
+(331, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:52:41.005', '2017-12-26 18:52:41.009'),
+(332, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postJoin', '2017-12-26 18:53:08.019', '2017-12-26 18:53:08.025'),
+(333, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:53:49.856', '2017-12-26 18:53:49.860'),
+(334, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postJoin', '2017-12-26 18:53:54.266', '2017-12-26 18:53:54.271'),
+(335, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:53:55.937', '2017-12-26 18:53:55.941'),
+(336, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:55:41.480', '2017-12-26 18:55:41.496'),
+(337, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 18:57:37.235', '2017-12-26 18:57:37.239'),
+(338, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 19:00:02.069', '2017-12-26 19:00:02.076'),
+(339, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 19:01:04.652', '2017-12-26 19:01:04.675'),
+(340, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 19:01:33.158', '2017-12-26 19:01:33.185'),
+(341, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 19:05:54.942', '2017-12-26 19:05:54.965'),
+(342, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postJoin', '2017-12-26 19:06:33.988', '2017-12-26 19:06:34.480'),
+(343, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postJoin', '2017-12-26 19:08:20.319', '2017-12-26 19:08:20.347'),
+(344, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 19:08:24.151', '2017-12-26 19:08:24.169'),
+(345, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 19:11:25.384', '2017-12-26 19:11:25.399'),
+(346, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'postJoin', '2017-12-26 19:47:30.517', '2017-12-26 19:47:30.674'),
+(347, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getSubscriptionPage', '2017-12-26 20:52:15.646', '2017-12-26 20:52:15.906'),
+(348, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'SubscriptionPage', '2017-12-26 20:52:26.286', '2017-12-26 20:52:26.297'),
+(349, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'Join', '2017-12-26 20:52:54.808', '2017-12-26 20:52:56.301'),
+(350, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'Maintenance', 'postSendMail', '2017-12-27 00:02:53.636', '2017-12-27 00:02:53.811'),
+(351, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'patate', 'postSendMail', '2017-12-27 00:03:04.569', '2017-12-27 00:03:04.606'),
+(352, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'patate', 'postSendMail', '2017-12-27 00:07:21.013', '2017-12-27 00:07:21.257'),
+(353, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'patate', 'postSendMail', '2017-12-27 00:16:41.690', '2017-12-27 00:16:41.788'),
+(354, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'patate', 'postSendMail', '2017-12-27 00:17:24.910', '2017-12-27 00:17:24.915');
+INSERT INTO `requests` (`id`, `ip`, `user_agent_txt`, `user_agent_hash`, `session_id`, `controller`, `action`, `started_processing`, `finished_processing`) VALUES
+(355, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'patate', 'postSendMail', '2017-12-27 00:17:55.282', '2017-12-27 00:17:55.314'),
+(356, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'getConnectionPage', '2017-12-27 15:07:53.683', '2017-12-27 15:07:53.727'),
+(357, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'SubscriptionPage', '2017-12-27 15:08:04.861', '2017-12-27 15:08:04.891'),
+(358, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'SubscriptionPage', '2017-12-27 15:08:37.467', '2017-12-27 15:08:37.471'),
+(359, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'SubscriptionPage', '2017-12-27 15:09:37.689', '2017-12-27 15:09:37.694'),
+(360, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, 'ebfea88e9e2510746a8a89f7717fccf8', 'User', 'SubscriptionPage', '2017-12-27 15:09:43.432', '2017-12-27 15:09:43.437'),
+(361, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, 'ebfea88e9e2510746a8a89f7717fccf8', 'User', 'SubscriptionPage', '2017-12-27 15:09:56.140', '2017-12-27 15:09:56.145'),
+(362, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, 'ebfea88e9e2510746a8a89f7717fccf8', 'User', 'SubscriptionPage', '2017-12-27 15:09:57.145', '2017-12-27 15:09:57.150'),
+(363, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, 'ebfea88e9e2510746a8a89f7717fccf8', 'User', 'SubscriptionPage', '2017-12-27 15:10:00.699', '2017-12-27 15:10:00.703'),
+(364, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, 'ebfea88e9e2510746a8a89f7717fccf8', 'User', 'SubscriptionPage', '2017-12-27 15:10:18.294', '2017-12-27 15:10:18.297'),
+(365, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, 'ebfea88e9e2510746a8a89f7717fccf8', 'User', 'SubscriptionPage', '2017-12-27 15:10:39.688', '2017-12-27 15:10:39.693'),
+(366, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, 'ebfea88e9e2510746a8a89f7717fccf8', 'User', 'SubscriptionPage', '2017-12-27 15:10:44.137', '2017-12-27 15:10:44.140'),
+(367, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'SubscriptionPage', '2017-12-27 15:10:48.574', '2017-12-27 15:10:48.577'),
+(368, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, 'ebfea88e9e2510746a8a89f7717fccf8', 'User', 'SubscriptionPage', '2017-12-27 15:11:08.000', '2017-12-27 15:11:08.004'),
+(369, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, 'ebfea88e9e2510746a8a89f7717fccf8', 'User', 'SubscriptionPage', '2017-12-27 15:11:09.078', '2017-12-27 15:11:09.082'),
+(370, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'SubscriptionPage', '2017-12-27 15:11:14.042', '2017-12-27 15:11:14.046'),
+(371, '::1', 'Mozilla/5.0 (X11; Linux x86_64; rv:52.0) Gecko/20100101 Firefox/52.0', 0x0345274e6d4821d7b7b729a592f5a2d724b0d38dd09c07f121e92b09a87781b6, '61274d212f1a6d84d9073dbf10d90189', 'User', 'SubscriptionPage', '2017-12-27 15:11:28.901', '2017-12-27 15:11:28.907'),
+(372, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, 'ebfea88e9e2510746a8a89f7717fccf8', 'User', 'SubscriptionPage', '2017-12-27 15:11:45.747', '2017-12-27 15:11:45.752'),
+(373, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, 'ebfea88e9e2510746a8a89f7717fccf8', 'User', 'SubscriptionPage', '2017-12-27 15:14:27.129', '2017-12-27 15:14:27.296'),
+(374, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, 'ecaf919fcbe330a80f400579b25c55f2', 'User', 'SubscriptionPage', '2017-12-27 15:14:38.321', '2017-12-27 15:14:38.325');
 
 -- --------------------------------------------------------
 
@@ -569,20 +911,22 @@ CREATE TABLE `rooms` (
 --
 
 INSERT INTO `rooms` (`id`, `property_id`, `name`, `creation_date`, `last_updated`) VALUES
-(1, 1, 'Salle de Séjour', '2017-11-20 14:20:49.000', '2017-11-20 15:18:45.000');
+(1, 1, 'updated !', '2017-11-20 14:20:49.000', '2017-12-19 23:22:11.422'),
+(4, 1, 'Inserted but not updated', '2017-12-19 23:22:11.416', '2017-12-19 23:22:11.416'),
+(5, 1, 'Inserted but not updated', '2017-12-19 23:22:40.597', '2017-12-19 23:22:40.597');
 
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `sensors`
 --
--- Création :  mar. 12 déc. 2017 à 14:01
+-- Création :  mer. 27 déc. 2017 à 17:30
 --
 
 CREATE TABLE `sensors` (
   `id` int(11) NOT NULL,
-  `sense_type` enum('undefined') COLLATE utf8_unicode_ci NOT NULL,
-  `last_measure` int(11) DEFAULT NULL,
+  `measure_type_id` int(11) NOT NULL,
+  `last_measure_id` int(11) DEFAULT NULL,
   `peripheral_uuid` varchar(33) COLLATE utf8_unicode_ci NOT NULL,
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -591,8 +935,10 @@ CREATE TABLE `sensors` (
 -- RELATIONS POUR LA TABLE `sensors`:
 --   `peripheral_uuid`
 --       `peripherals` -> `uuid`
---   `last_measure`
+--   `last_measure_id`
 --       `measures` -> `id`
+--   `measure_type_id`
+--       `measure_types` -> `ID`
 --
 
 -- --------------------------------------------------------
@@ -624,17 +970,21 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled`, `last_updated`) VALUES
+('09b7f22a4979b345d8a21b9b0ce9bb75', NULL, 'user_id|i:4;', '2017-12-24 18:21:38.683', '2017-12-31 18:21:38.683', 0, '2017-12-24 21:32:50.341'),
 ('0f4b9ede16273eb72362f4339c326bcc', NULL, '', '2017-12-13 22:32:07.602', '2017-12-20 22:32:07.602', 0, '2017-12-13 22:32:07.603'),
 ('21d4d916a51f856e509dc87412aeb008', NULL, '', '2017-12-13 22:31:11.712', '2017-12-20 22:31:11.712', 0, '2017-12-13 22:31:11.712'),
 ('2c1d80ba9f943e425eaa4c2426f43ff3', NULL, '', '2017-12-13 22:30:14.538', '2017-12-20 22:30:14.538', 0, '2017-12-13 22:30:14.538'),
-('439d47c88eba6e7dcd526daa69615a00', NULL, 'user_id|i:7;', '2017-12-14 21:42:20.000', '2017-12-21 21:42:20.000', 0, '2017-12-15 13:26:24.299'),
+('439d47c88eba6e7dcd526daa69615a00', NULL, 'user_id|i:9;', '2017-12-14 21:42:20.000', '2017-12-21 21:42:20.000', 0, '2017-12-20 13:16:51.556'),
 ('46defb11733028a6cab0a0c0c71c2ad7', NULL, '', '2017-12-13 22:03:00.858', '2017-12-20 22:03:00.858', 0, '2017-12-13 22:03:00.858'),
 ('4ac2ae2fa04b6ce3a2116a54efa9aa8d', NULL, '', '2017-12-13 22:00:56.656', '2017-12-20 22:00:56.656', 0, '2017-12-13 22:00:56.656'),
 ('5044a057e54984a00a15c9b64ddfdbd3', NULL, '', '2017-12-13 22:25:27.321', '2017-12-20 22:25:27.321', 0, '2017-12-13 22:25:27.321'),
+('61274d212f1a6d84d9073dbf10d90189', NULL, '', '2017-12-27 15:11:28.907', '2018-01-03 15:11:28.907', 0, '2017-12-27 15:11:28.907'),
 ('8e0371c0e74883c4b688fea93a2d948c', NULL, '', '2017-12-13 22:23:47.450', '2017-12-20 22:23:47.450', 0, '2017-12-13 22:23:47.450'),
 ('a342ca783638b79eb63251bc8d108d96', NULL, '', '2017-12-13 22:26:17.513', '2017-12-20 22:26:17.513', 0, '2017-12-13 22:26:17.513'),
 ('c804bf64b05e0e3d30a04bbf1b89ba94', NULL, '', '2017-12-13 22:32:54.673', '2017-12-20 22:32:54.673', 0, '2017-12-13 22:32:54.673'),
-('db59bec4fff93cbf7d877899d380d1c1', NULL, '', '2017-12-13 22:33:18.889', '2017-12-20 22:33:18.889', 0, '2017-12-13 22:33:18.889');
+('db59bec4fff93cbf7d877899d380d1c1', NULL, '', '2017-12-13 22:33:18.889', '2017-12-20 22:33:18.889', 0, '2017-12-13 22:33:18.889'),
+('ebfea88e9e2510746a8a89f7717fccf8', NULL, '', '2017-12-27 15:09:43.438', '2018-01-03 15:09:43.438', 0, '2017-12-27 15:09:43.438'),
+('ecaf919fcbe330a80f400579b25c55f2', NULL, '', '2017-12-27 15:14:38.325', '2018-01-03 15:14:38.325', 0, '2017-12-27 15:14:38.325');
 
 -- --------------------------------------------------------
 
@@ -691,7 +1041,10 @@ INSERT INTO `users` (`id`, `display`, `nick`, `birth_date`, `creation_date`, `em
 (4, 'Alexandre Bizri', 'aabizri', NULL, '2017-12-10 20:21:48.000', 'alexandre@bizri.fr', '$2y$10$5j4BCcVdU9im1OPoHH5as.B2m9W2TrjvZgRn5KpZ/qnjI2v21cg2q', '0651110253', '2017-12-10 20:21:48.000'),
 (5, 'Dinesh Anth', 'drdidi', NULL, '2017-12-11 10:41:26.000', 'drdidi@didi.fr', '$2y$10$CkT0EGlHDH/rFerKmnvQmuixz0DBxlbYXM5Loh18iduubN/WOVSbq', '145771987', '2017-12-11 10:41:26.000'),
 (6, 'Charles Hubert', 'chubert', NULL, '2017-12-14 22:03:54.008', 'chubert@gmail.com', '$2y$10$hXKZp.A3lO6iU6cmXj6xsOSREmX4wme.pbcTYMa3x1j6iwTzm7YXC', 'Non', '2017-12-14 22:03:54.008'),
-(7, 'Phillipot Floriant', 'fphillipot', NULL, '2017-12-15 13:26:13.872', 'fphillipot@gmail.com', '$2y$10$CfLKF1h3NvNVDEJMyBcK4u5l/TZq5Hf0DhS2rqIXu4eEnsrJdPFcm', '0112234563', '2017-12-15 13:26:13.872');
+(7, 'Phillipot Floriant', 'fphillipot', NULL, '2017-12-15 13:26:13.872', 'fphillipot@gmail.com', '$2y$10$CfLKF1h3NvNVDEJMyBcK4u5l/TZq5Hf0DhS2rqIXu4eEnsrJdPFcm', '0112234563', '2017-12-15 13:26:13.872'),
+(8, 'Jean-Pierre Machin', 'jpmachin', NULL, '2017-12-20 13:12:06.082', 'jpmachin@machin.com', '$2y$10$Nu56S.z5y7nSNi9YFUHeXewv.ekdj22iRtRO4Fbadp7imYvdfgKse', '0984038403', '2017-12-20 13:12:06.082'),
+(9, 'Jean-Pierre Bidule', 'jpbidule', NULL, '2017-12-20 13:16:43.743', 'jpmachin@bidule.com', '$2y$10$1H7eCkWEsh6FnHnYelYEze.NrfiybfF20ZyEh6Ep7QU6vLpWUkWuC', '0984038403', '2017-12-20 13:16:43.743'),
+(10, 'testo sterone', 'testosterone', NULL, '2017-12-26 19:06:34.466', 'testo@testo.com', '$2y$10$D6LYVkQDFUF.GbOnaZpr4uoZb3h0FHlac5b5ek4QpCPlOA1Wp4Rae', '09999999', '2017-12-26 19:06:34.466');
 
 --
 -- Index pour les tables déchargées
@@ -702,7 +1055,8 @@ INSERT INTO `users` (`id`, `display`, `nick`, `birth_date`, `creation_date`, `em
 --
 ALTER TABLE `actuators`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `peripheral_id` (`peripheral_uuid`) USING BTREE;
+  ADD KEY `peripheral_id` (`peripheral_uuid`) USING BTREE,
+  ADD KEY `current_situation` (`last_measure_id`);
 
 --
 -- Index pour la table `events`
@@ -725,7 +1079,15 @@ ALTER TABLE `filters`
 --
 ALTER TABLE `measures`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `peripheral_uuid` (`peripheral_uuid`);
+  ADD KEY `sensor_id` (`sensor_id`),
+  ADD KEY `actuator_id` (`actuator_id`),
+  ADD KEY `type_id` (`type_id`);
+
+--
+-- Index pour la table `measure_types`
+--
+ALTER TABLE `measure_types`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Index pour la table `notifications`
@@ -790,7 +1152,8 @@ ALTER TABLE `rooms`
 ALTER TABLE `sensors`
   ADD PRIMARY KEY (`id`),
   ADD KEY `peripheral_uuid` (`peripheral_uuid`),
-  ADD KEY `last_measure` (`last_measure`);
+  ADD KEY `last_measure` (`last_measure_id`),
+  ADD KEY `measure_type_id` (`measure_type_id`);
 
 --
 -- Index pour la table `sessions`
@@ -841,6 +1204,12 @@ ALTER TABLE `measures`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `measure_types`
+--
+ALTER TABLE `measure_types`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT pour la table `notifications`
 --
 ALTER TABLE `notifications`
@@ -862,7 +1231,7 @@ ALTER TABLE `properties`
 -- AUTO_INCREMENT pour la table `requests`
 --
 ALTER TABLE `requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=375;
 
 --
 -- AUTO_INCREMENT pour la table `roles`
@@ -880,7 +1249,7 @@ ALTER TABLE `roles_permissions`
 -- AUTO_INCREMENT pour la table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `sensors`
@@ -898,7 +1267,7 @@ ALTER TABLE `subscriptions`
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Contraintes pour les tables déchargées
@@ -908,7 +1277,8 @@ ALTER TABLE `users`
 -- Contraintes pour la table `actuators`
 --
 ALTER TABLE `actuators`
-  ADD CONSTRAINT `actuators_ibfk_1` FOREIGN KEY (`peripheral_uuid`) REFERENCES `peripherals` (`uuid`);
+  ADD CONSTRAINT `actuators_ibfk_1` FOREIGN KEY (`peripheral_uuid`) REFERENCES `peripherals` (`uuid`),
+  ADD CONSTRAINT `actuators_ibfk_2` FOREIGN KEY (`last_measure_id`) REFERENCES `measures` (`id`);
 
 --
 -- Contraintes pour la table `events`
@@ -926,7 +1296,9 @@ ALTER TABLE `filters`
 -- Contraintes pour la table `measures`
 --
 ALTER TABLE `measures`
-  ADD CONSTRAINT `measures_ibfk_1` FOREIGN KEY (`peripheral_uuid`) REFERENCES `peripherals` (`uuid`);
+  ADD CONSTRAINT `measures_ibfk_2` FOREIGN KEY (`actuator_id`) REFERENCES `actuators` (`id`),
+  ADD CONSTRAINT `measures_ibfk_3` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`),
+  ADD CONSTRAINT `measures_ibfk_4` FOREIGN KEY (`type_id`) REFERENCES `measure_types` (`ID`);
 
 --
 -- Contraintes pour la table `notifications`
@@ -965,7 +1337,8 @@ ALTER TABLE `rooms`
 --
 ALTER TABLE `sensors`
   ADD CONSTRAINT `sensors_ibfk_1` FOREIGN KEY (`peripheral_uuid`) REFERENCES `peripherals` (`uuid`),
-  ADD CONSTRAINT `sensors_ibfk_2` FOREIGN KEY (`last_measure`) REFERENCES `measures` (`id`);
+  ADD CONSTRAINT `sensors_ibfk_2` FOREIGN KEY (`last_measure_id`) REFERENCES `measures` (`id`),
+  ADD CONSTRAINT `sensors_ibfk_3` FOREIGN KEY (`measure_type_id`) REFERENCES `measure_types` (`ID`);
 
 --
 -- Contraintes pour la table `sessions`
@@ -999,6 +1372,10 @@ USE `phpmyadmin`;
 
 --
 -- Métadonnées pour la table measures
+--
+
+--
+-- Métadonnées pour la table measure_types
 --
 
 --

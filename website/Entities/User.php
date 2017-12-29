@@ -8,7 +8,7 @@ namespace Entities;
  * @package livewell
  * @author Alexandre A. Bizri <alexandre@bizri.fr>
  */
-class User
+class User extends Entity
 {
     /* PROPERTIES */
 

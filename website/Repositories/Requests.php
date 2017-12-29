@@ -9,8 +9,14 @@
 namespace Repositories;
 
 
+use Repositories\Exceptions\SetFailedException;
+
 class Requests extends Repository
 {
+    /**
+     * @param \Entities\Request $r
+     * @throws \Exception
+     */
     public static function insert(\Entities\Request $r): void
     {
         // SQL
@@ -18,27 +24,28 @@ class Requests extends Repository
         VALUES (:ip, :user_agent_txt, UNHEX(:user_agent_hash), :session_id, :controller, :action, FROM_UNIXTIME(:started), FROM_UNIXTIME(:finished));";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // On prépare les données qui vont être insérées
-        $data = [
-            'ip' => $r->getIp(),
-            'user_agent_txt' => $r->getUserAgentText(),
-            'user_agent_hash' => $r->getUserAgentHash(),
-            'session_id' => $r->getSessionID(),
-            'controller' => $r->getController(),
-            'action' => $r->getAction(),
-            'started' => $r->getStarted(),
-            'finished' => $r->getFinished(),
-        ];
+        $data = $r->getMultiple([
+            'ip',
+            'user_agent_txt',
+            'user_agent_hash',
+            'session_id',
+            'controller',
+            'action',
+            'started',
+            'finished',
+        ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        if ($r->setId($id) == false) {
-            throw new \Exception("error setting id");
+        $ok = $r->setID($id);
+        if (!$ok) {
+            throw new SetFailedException("Request","setID",$id);
         }
     }
 
@@ -76,13 +83,13 @@ class Requests extends Repository
             WHERE ip = :ip;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":ip" => $ip]);
+        $stmt->execute(["ip" => $ip]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;
