@@ -4,7 +4,6 @@ namespace Helpers;
 
 class Handler
 {
-
     // Handle the request
     public static function handle(\Entities\Request $req)
     {
@@ -27,12 +26,27 @@ class Handler
         // Store it in the request
         $req->setSession();
 
+        // Si la session contient un user_id, on le met dans la requête
+        if (!empty($_SESSION["user_id"])) {
+            $req->setUserID($_SESSION["user_id"]);
+        }
+
         // Vérification des valeurs catégorie / action
         $category = $req->getController();
         $action = $req->getAction();
 
-        if (empty($category) || empty($action)) {
-            \Controllers\Error::getInternalError500($req,new \Exception("Erreur: Ni la catégorie ni l'action est indiquée"));
+        // Si l'usager va sur la page d'accueil (pas de controlleurs) et n'est pas connecté, il est redirigé vers la page de connection
+        // S'il est connecté, il est redirigé vers la page de selection de propriété
+        if (empty($category) && empty($action)) {
+            if ($req->getUserID() === null) {
+                $category = "User";
+                $action = "ConnectionPage";
+            } else {
+                $category = "Property";
+                $action = "Select";
+            }
+        } else if (empty($category) XOR empty($action)) {
+            \Controllers\Error::getControllerNotFound404($req);
             return;
         }
 
