@@ -59,7 +59,7 @@
                         <label>Nom du périphérique : </label><input type="text" name="display_name" />
                             <p> Dans quelle salle ? <!-- Faire un lien avec la branche dev-room. Utiliser une liste
                              déroulante et récupérer les id qui correspondent ici à la value-->
-                                <input type="checkbox" value="1" <!--value = 1 pour tester--> name="room_id"/><label>Chambre</label>
+                                <input type="checkbox" value="1" name="room_id"/> <!--value = 1 pour tester--><label>Chambre</label>
                             </p>
                         <br>
                         <input type="submit" value="Ajouter un périphérique" id="ajouterperipheriquebouton" >

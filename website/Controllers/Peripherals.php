@@ -63,10 +63,10 @@ class Peripherals
     public function getPeripheralsPage( array $get, array $post):void
     {
         // TEMP DEBUG
-        $get["property_id"] = 1;
+        $session["property_id"] = 1;
 
         // Propriété transmise dans le GET -- Bizri
-        $property_id = $get["property_id"];
+        $property_id = $session["property_id"];
 
         /*Récupère les id des capteurs sous forme de array*/
         $peripheriques_id_list = \Repositories\Peripherals::findAllByPropertyID($property_id);
