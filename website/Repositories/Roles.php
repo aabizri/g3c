@@ -255,10 +255,10 @@ class Roles extends Repository
      *
      * @param int $uid user_id id
      * @param int $pid property id
-     * @return int role id
+     * @return int|null role id or null if not found
      * @throws Exception
      */
-    public static function findByUserAndProperty(int $uid, int $pid): int
+    public static function findByUserAndProperty(int $uid, int $pid): ?int
     {
         // SQL for counting
         $sql = "SELECT count(*)
