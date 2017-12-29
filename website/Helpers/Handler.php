@@ -31,6 +31,13 @@ class Handler
             $req->setUserID($_SESSION["user_id"]);
         }
 
+        // Vérifie que le User a le droit d'accéder à la propriété
+        if ($req->getUserID() !== null && $req->getPropertyID() !== null) {
+            if (\Repositories\Roles::findByUserAndProperty($req->getUserID(), $req->getPropertyID()) === null) {
+                echo "L'utilisateur n'a pas de connexion à cette propriété, interdit !";
+            }
+        }
+
         // Vérification des valeurs catégorie / action
         $category = $req->getController();
         $action = $req->getAction();
