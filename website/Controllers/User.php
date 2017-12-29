@@ -149,8 +149,13 @@ class User
             return;
         }
 
-        // Ajouter à la session
+        // Ajouter à la session et à la requête
         $_SESSION["user_id"] = $u->getId();
+        $ok = $req->setUser($u);
+        if (!$ok) {
+            Error::getInternalError500($req);
+            return;
+        }
 
         // Include la page de confirmation
         $data = [
@@ -171,6 +176,12 @@ class User
 
     public static function getAccountPage(\Entities\Request $req):void
     {
+        $u = $req->getUser();
+        if ($u === null) {
+            echo "Utilisateur non connecté, nous ne pouvons pas accéder à la page moncompte";
+            return;
+        }
+
         DisplayManager::display("moncompte", array());
     }
 
