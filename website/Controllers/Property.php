@@ -15,4 +15,15 @@ class Property
     {
         \Helpers\DisplayManager::display("mapropriete", array());
     }
+
+    //Afficher les utilisateurs d'une propriété
+
+    public static function getPropertyUsers(array $get, array $post){
+
+        $session["property_id"]=1;
+        $property_id = $session["property_id"];
+
+        $property_users = \Entities\Property::retrieve($property_id);
+
+    }
 }
