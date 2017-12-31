@@ -46,7 +46,7 @@ class Room
             echo "Erreur" . $e;
         }
 
-        \Helpers\DisplayManager::display("dashboard");
+        header("Location: " . \Helpers\DisplayManager::absolutifyURL("index.php?c=User&a=RoomsPage"));
     }
 
     public static function getRoomsPage (\Entities\Request $req):void
