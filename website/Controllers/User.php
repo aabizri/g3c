@@ -110,7 +110,7 @@ class User
     {
         // Si l'usager est déjà connecté, le rediriger vers la page d'accueil
         if ($req->getUserID() !== null) {
-            self::getConnectionPage($req);
+            self::getAccountPage($req);
             return;
         }
 
@@ -163,11 +163,7 @@ class User
             return;
         }
 
-        // Include la page de confirmation
-        $data = [
-            "user" => $u,
-        ];
-        DisplayManager::display("dashboard", $data); // TODO: Le rediriger vers la page de sélection de propriété
+        self::getAccountPage($req); // TODO: Le rediriger vers la page de sélection de propriété
     }
 
     public static function getConnectionPage(\Entities\Request $req): void
