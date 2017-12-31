@@ -8,24 +8,77 @@
 
 namespace Entities;
 
+
+/**
+ * Class Request
+ * @package Entities
+ */
 class Request extends Entity
 {
     /* PROPERTIES */
 
     // DB Stored
+
+    /**
+     * @var string
+     */
     private $id;
+
+    /**
+     * @var string
+     */
     private $ip = "";
+
+    /**
+     * @var string
+     */
     private $user_agent_txt = "";
+
+    /**
+     * @var string
+     */
     private $user_agent_hash = "";
+
+    /**
+     * @var string
+     */
     private $session_id;
+
+    /**
+     * @var string
+     */
     private $controller = "";
+
+    /**
+     * @var string
+     */
     private $action = "";
+
+    /**
+     * @var float
+     */
     private $started = 0; // Seconds since epoch
-    private $duration = 0; // In microseconds  (INT)
+
+    /**
+     * @var int
+     */
+    private $duration = 0; // In microseconds
 
     // Local
+
+    /**
+     * @var string
+     */
     private $method = "";
+
+    /**
+     * @var array
+     */
     private $get = [];
+
+    /**
+     * @var array
+     */
     private $post = [];
 
     /**
@@ -70,13 +123,27 @@ class Request extends Entity
      */
     private $property = null;
 
+    /**
+     * @var bool
+     */
     private $in_debug = false;
 
+    /**
+     * @var string
+     */
     private $request_uri = "";
 
+    /**
+     * @var string
+     */
     private $referer = "";
 
     /* CONSTRUCTOR */
+
+    /**
+     * Request constructor.
+     * @param bool $autosave
+     */
     public function __construct(bool $autosave = false)
     {
         $this->saveAtShutdown();
@@ -160,33 +227,54 @@ class Request extends Entity
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function getSessionID(): string
     {
         return $this->session_id;
     }
 
+    /**
+     * @param string $session_id
+     * @return bool
+     */
     public function setSessionID(string $session_id): bool
     {
         $this->session_id = $session_id;
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function getController(): string
     {
         return $this->controller;
     }
 
+    /**
+     * @param string $controller
+     * @return bool
+     */
     public function setController(string $controller): bool
     {
         $this->controller = $controller;
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function getAction(): string
     {
         return $this->action;
     }
 
+    /**
+     * @param string $action
+     * @return bool
+     */
     public function setAction(string $action): bool
     {
         $this->action = $action;
@@ -229,11 +317,18 @@ class Request extends Entity
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function getMethod(): string
     {
         return $this->method;
     }
 
+    /**
+     * @param string $method
+     * @return bool
+     */
     public function setMethod(string $method): bool
     {
         if (!in_array($method, ["GET","POST","HEAD","PUT","PATCH","DELETE","CONNECT","OPTIONS","TRACE","PATCH"])) {
@@ -243,30 +338,51 @@ class Request extends Entity
         return true;
     }
 
+    /**
+     * @return array
+     */
     public function getGET(): array
     {
         return $this->get;
     }
 
+    /**
+     * @param array $get
+     * @return bool
+     */
     public function setGET(array $get): bool {
         $this->get = $get;
         return true;
     }
 
+    /**
+     * @return array
+     */
     public function getPOST(): array
     {
         return $this->post;
     }
 
+    /**
+     * @param array $post
+     * @return bool
+     */
     public function setPOST(array $post): bool {
         $this->post = $post;
         return true;
     }
 
+    /**
+     * @return bool
+     */
     public function getInDebug(): bool {
         return $this->in_debug;
     }
 
+    /**
+     * @param bool $is
+     * @return bool
+     */
     public function setInDebug(bool $is): bool {
         $this->in_debug = $is;
         return true;
@@ -500,6 +616,10 @@ class Request extends Entity
         return true;
     }
 
+    /**
+     * @param null|string $session_id
+     * @return bool
+     */
     public function setSession(?string $session_id = null): bool
     {
         if (empty($session_id)) {
@@ -509,6 +629,11 @@ class Request extends Entity
         return $ok;
     }
 
+    /**
+     * @param array|null $get
+     * @param array|null $post
+     * @return bool
+     */
     public function setParams(array $get = null, array $post = null): bool {
         if ($get === null) {
             $get = $_GET;
@@ -663,6 +788,9 @@ class Request extends Entity
         register_shutdown_function($func, true);
     }
 
+    /**
+     * Autosets the values from the superglobals $_SERVER, $GET, $POST and the controllers from the GET.
+     */
     public function autoSet() {
         $this->setInfo();
         $this->setParams();

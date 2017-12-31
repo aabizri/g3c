@@ -12,6 +12,10 @@ use \Exceptions\UnknownGetterException;
 use \Exceptions\UnknownSetterException;
 use \Exceptions\SetFailedException;
 
+/**
+ * Class Entity
+ * @package Entities
+ */
 abstract class Entity
 {
     /**
@@ -76,10 +80,19 @@ abstract class Entity
 }
 
 
+/**
+ * @param string $snake_case
+ * @return string
+ */
 function snakeCaseToPascalCase(string $snake_case): string {
     return str_replace('_', '', ucwords($snake_case, '_'));
 }
 
+/**
+ * @param string $property_name
+ * @param string $prefix
+ * @return string
+ */
 function propertyNameToMethodName(string $property_name, string $prefix): string {
     // Apply prefix and get the pascal case
     $method_name = $prefix . snakeCaseToPascalCase($property_name);
