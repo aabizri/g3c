@@ -46,7 +46,7 @@ class Room
             echo "Erreur" . $e;
         }
 
-        header("Location: " . \Helpers\DisplayManager::absolutifyURL("index.php?c=User&a=RoomsPage"));
+        \Helpers\DisplayManager::redirectToController("Rooms", "RoomsPage");
     }
 
     public static function getRoomsPage (\Entities\Request $req):void
