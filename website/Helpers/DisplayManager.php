@@ -26,7 +26,7 @@ class DisplayManager
         "moncompte" => "Users",
         "mespieces" => "Rooms",
         "mesperipheriques"=> "Peripherals",
-        "sessions" => "Users",
+        "mysessions" => "Users",
     ];
 
     private static function subroot(): string {

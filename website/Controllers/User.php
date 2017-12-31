@@ -215,7 +215,7 @@ class User
         $data["requests"] = $requests;
 
         // Publish view
-        DisplayManager::display("sessions", $data);
+        DisplayManager::display("mysessions", $data);
     }
 
     public static function postSessionCancel(\Entities\Request $req): void
