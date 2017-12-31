@@ -20,8 +20,8 @@ class Requests extends Repository
     public static function insert(\Entities\Request $r): void
     {
         // SQL
-        $sql = "INSERT INTO requests (ip, user_agent_txt, user_agent_hash, session_id, controller, action, started_processing, finished_processing)
-        VALUES (:ip, :user_agent_txt, UNHEX(:user_agent_hash), :session_id, :controller, :action, FROM_UNIXTIME(:started), FROM_UNIXTIME(:finished));";
+        $sql = "INSERT INTO requests (ip, user_agent_txt, user_agent_hash, session_id, controller, method, action, in_debug, started_processing, duration, referer, request_uri, request_length, response_length)
+        VALUES (:ip, :user_agent_txt, UNHEX(:user_agent_hash), :session_id, :controller, :method, :action, :in_debug, FROM_UNIXTIME(:started), :duration, :referer, :request_uri, :request_length, :response_length);";
 
         // Prepare statement
         $stmt = parent::db()->prepare($sql, parent::$pdo_params);
@@ -33,9 +33,15 @@ class Requests extends Repository
             'user_agent_hash',
             'session_id',
             'controller',
+            'method',
             'action',
+            'in_debug',
             'started',
-            'finished',
+            'duration',
+            'referer',
+            'request_uri',
+            'request_length',
+            'response_length',
         ]);
 
         // Execute query
