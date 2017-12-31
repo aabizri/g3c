@@ -20,8 +20,8 @@ class Request extends Entity
     private $session_id;
     private $controller = "";
     private $action = "";
-    private $started = 0;
-    private $finished = 0;
+    private $started = 0; // Seconds since epoch
+    private $duration = 0; // In microseconds  (INT)
 
     // Local
     private $method = "";
@@ -212,23 +212,20 @@ class Request extends Entity
     }
 
     /**
-     * @return float
+     * @return int
      */
-    public function getFinished(): float
+    public function getDuration(): int
     {
-        return $this->finished;
+        return $this->duration;
     }
 
     /**
-     * @param float $finished, default to now
+     * @param float $duration
      * @return bool
      */
-    public function setFinished(?float $finished = null): bool
+    public function setDuration(float $duration): bool
     {
-        if ($finished === null) {
-            $finished = microtime(true);
-        }
-        $this->finished = $finished;
+        $this->duration = $duration;
         return true;
     }
 
@@ -458,6 +455,31 @@ class Request extends Entity
     }
 
     /* BUSINESS LOGIC */
+
+    /**
+     * @return float
+     */
+    public function getFinished(): float
+    {
+        return $this->started + (((float)$this->getDuration()) / (10 ** 6));
+    }
+
+    /**
+     * @param float $finished , default to now
+     * @return bool
+     */
+    public function setFinished(?float $finished_at = null): bool
+    {
+        if ($this->started === 0) {
+            return false;
+        }
+        if ($finished_at === null) {
+            $finished_at = microtime(true);
+        }
+        $in_seconds = (float)$finished_at - $this->getStarted();
+        $in_microseconds = (int)($in_seconds * (10 ** 6));
+        return $this->setDuration($in_microseconds);
+    }
 
     /**
      * setUserAgent permet d'enregistrer les informations du navigateur
