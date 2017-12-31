@@ -160,12 +160,12 @@ class Request extends Entity
         return true;
     }
 
-    public function getSessionID(): string
+    public function getSessionID(): ?string
     {
         return $this->session_id;
     }
 
-    public function setSessionID(string $session_id): bool
+    public function setSessionID(?string $session_id): bool
     {
         $this->session_id = $session_id;
         return true;
