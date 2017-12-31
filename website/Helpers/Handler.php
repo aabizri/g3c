@@ -9,7 +9,9 @@ class Handler
     {
         // UTF8 Header
         header('Content-type: text/html; charset=utf-8');
-        // Lancement de la temporisation
+        // Lancement de la temporisation (Niveau 0)
+        ob_start(null, 0, PHP_OUTPUT_HANDLER_STDFLAGS);
+        // Lancement de la temporisation (Niveau 1)
         ob_start("ob_gzhandler",0,PHP_OUTPUT_HANDLER_STDFLAGS);
 
         // Installation du handler de session
@@ -75,6 +77,15 @@ class Handler
         } catch (\Throwable $t) {
             \Controllers\Error::getInternalError500($req,$t);
         }
+
+        // Finalisation de la temporisation (Niveau 1)
+        ob_end_flush();
+        // Finalisation de la temporisation (Niveau 0)
+        $response_length = ob_get_length();
+        ob_end_flush();
+
+        // Enregistrement dans la requête
+        $req->setResponseLength($response_length);
     }
 
     /**
