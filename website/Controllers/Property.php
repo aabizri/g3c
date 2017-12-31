@@ -18,12 +18,35 @@ class Property
 
     //Afficher les utilisateurs d'une propriété
 
-    public static function getPropertyUsers(array $get, array $post){
+    public static function getPropertyUsers(\Entities\Request $req): void {
 
-        $session["property_id"]=1;
-        $property_id = $session["property_id"];
+        $_SESSION["property_id"]=2;
+        $property_id = $_SESSION["property_id"];
 
-        $property_users = \Entities\Property::retrieve($property_id);
+        //$property_id = $req->getPropertyID();
+
+        $property_users_list = \Repositories\Roles::findAllByPropertyID($property_id);
+        if ($property_users_list===null){
+            echo "il n'y a pas d'utilisateurs";
+            return;
+        }
+
+        $users_ID_list=[];
+        foreach ($property_users_list as $u){
+            $u->getUserID();
+            $users_ID_list[] = $u;
+        }
+
+        $users_list =[];
+        foreach ($users_ID_list as $uID){
+            $users = \Repositories\Users::retrieve($uID);
+            $users_list[] = $users;
+        }
+
+        $data["users_list"] = $users_list;
+
+        //Afficher
+        \Helpers\DisplayManager::display("mapropriete", $data);
 
     }
 }

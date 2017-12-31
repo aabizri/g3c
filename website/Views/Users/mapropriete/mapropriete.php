@@ -12,19 +12,26 @@
 
     <div id="voirutilisateurs">
         <h4 id="titrelisteutilisateurs">Liste des utilisateurs</h4>
-        <p id="nomsutilisateurs">Eytan <input id="boutonssupprimer" type="button" value="Supprimer"
-                                              title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">Bryan <input id="boutonssupprimer" type="button" value="Supprimer"
-                                              title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">Jérémy <input id="boutonssupprimer" type="button" value="Supprimer"
-                                               title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">Dinesh <input id="boutonssupprimer" type="button" value="Supprimer"
-                                               title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">Alexandre <input id="boutonssupprimer" type="button" value="Supprimer"
-                                                  title="Vous allez supprimer cet utilisateur"/></p>
-        <p id="nomsutilisateurs">Randy <input id="boutonssupprimer" type="button" value="Supprimer"
-                                              title="Vous allez supprimer cet utilisateur"/></p>
+        <?php
+                        //Créer un tableau qui s'indente en fonction du nombre d'utilisateurs
+                        $Nbrdonnees = count($data["users_list"]);
+                        if ($Nbrdonnees != 0){
+                            //Ici nous faisons le tableau avec ses titres
+                            echo '<thead><tr>
+                                    <th>Utilisateur</th>
+                                    <th>Gestion</th>
+                                    </tr></thead>';
 
+                            //Ici nous ajoutons une ligne avec les infos
+                            foreach ($data["users_list"] as $u){
+
+                                echo '<tr><form action="index.php?c=Property&a=getPropertyUsers" method="post" >
+                                        <td>'. $u->getNick() .'</td>
+                                        <td><form action="" method="post" ><input type="submit" value="Supprimer"/></form></td>
+                                      </tr>';}
+                            }
+
+                            ?>
     </div>
 
 
