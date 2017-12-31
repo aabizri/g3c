@@ -27,17 +27,17 @@ class Request extends Entity
     /**
      * @var string
      */
-    private $ip;
+    private $ip = "";
 
     /**
      * @var string
      */
-    private $user_agent_txt;
+    private $user_agent_txt = "";
 
     /**
      * @var string
      */
-    private $user_agent_hash;
+    private $user_agent_hash = "";
 
     /**
      * @var string
@@ -47,44 +47,96 @@ class Request extends Entity
     /**
      * @var string
      */
-    private $controller;
+    private $controller = "";
 
     /**
      * @var string
      */
-    private $action;
+    private $action = "";
 
     /**
      * @var float
      */
-    private $started;
+    private $started = 0; // Seconds since epoch
 
     /**
-     * @var float
+     * @var int
      */
-    private $finished;
+    private $duration = 0; // In microseconds
 
     // Local
 
     /**
      * @var string
      */
-    private $method;
+    private $method = "";
 
     /**
      * @var array
      */
-    private $get;
+    private $get = [];
 
     /**
      * @var array
      */
-    private $post;
+    private $post = [];
+
+    /**
+     * Request length, only in case of POST
+     *
+     * @var int
+     */
+    private $request_length = -1;
+
+    /**
+     * Response length
+     *
+     * @var int
+     */
+    private $response_length = -1;
+
+    /**
+     * The ID of the user, logged in at any time during the request and its treatment
+     *
+     * @var int|null
+     */
+    private $user_id = null;
+
+    /**
+     * The user, if any, logged in at any time during the request and its treatment
+     *
+     * @var User|null
+     */
+    private $user = null;
+
+    /**
+     * The property id, if any, used at any time during the request
+     *
+     * @var int|null
+     */
+    private $property_id = null;
+
+    /**
+     * The property, if any, is used at any time during the request
+     *
+     * @var Property|null
+     */
+    private $property = null;
 
     /**
      * @var bool
      */
-    private $in_debug;
+    private $in_debug = false;
+
+    /**
+     * @var string
+     */
+    private $request_uri = "";
+
+    /**
+     * @var string
+     */
+    private $referer = "";
 
     /* CONSTRUCTOR */
 
@@ -248,23 +300,20 @@ class Request extends Entity
     }
 
     /**
-     * @return float
+     * @return int
      */
-    public function getFinished(): float
+    public function getDuration(): int
     {
-        return $this->finished;
+        return $this->duration;
     }
 
     /**
-     * @param float $finished, default to now
+     * @param float $duration
      * @return bool
      */
-    public function setFinished(?float $finished = null): bool
+    public function setDuration(float $duration): bool
     {
-        if ($finished === null) {
-            $finished = microtime(true);
-        }
-        $this->finished = $finished;
+        $this->duration = $duration;
         return true;
     }
 
@@ -339,7 +388,214 @@ class Request extends Entity
         return true;
     }
 
+    /**
+     * @return int
+     */
+    public function getRequestLength(): int
+    {
+        return $this->request_length;
+    }
+
+    /**
+     * @param int $request_length
+     * @return bool
+     */
+    public function setRequestLength(int $request_length): bool
+    {
+        $this->request_length = $request_length;
+        return true;
+    }
+
+    /**
+     * @return int
+     */
+    public function getResponseLength(): int
+    {
+        return $this->response_length;
+    }
+
+    /**
+     * @param int $response_length
+     * @return bool
+     */
+    public function setResponseLength(int $response_length): bool
+    {
+        $this->response_length = $response_length;
+        return true;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUserID(): ?int
+    {
+        return $this->user_id;
+    }
+
+    /**
+     * @param int|null $user_id
+     * @return bool
+     */
+    public function setUserID(?int $user_id): bool
+    {
+        if ($this->user !== null) {
+            if ($user_id !== $this->user->getID()) {
+                $this->user = null;
+            }
+        }
+        $this->user_id = $user_id;
+        return true;
+    }
+
+    /**
+     * @return User|null
+     * @throws \Exception
+     */
+    public function getUser(): ?User
+    {
+        if ($this->user_id === null) {
+            return null;
+        }
+
+        if ($this->user === null) {
+            $this->user = \Repositories\Users::retrieve($this->user_id);
+        }
+
+        return $this->user;
+    }
+
+    /**
+     * @param User|null $u
+     * @return bool
+     */
+    public function setUser(?User $u): bool
+    {
+        $this->user = $u;
+        if ($u === null) {
+            $this->user_id = null;
+        } else {
+            $this->user_id = $u->getID();
+        }
+        return true;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getPropertyID(): ?int
+    {
+        return $this->property_id;
+    }
+
+    /**
+     * @param int|null $property_id
+     * @return bool
+     */
+    public function setPropertyID(?int $property_id): bool
+    {
+        if ($this->property !== null) {
+            if ($property_id !== $this->property->getID()) {
+                $this->property = null;
+            }
+        }
+        $this->property_id = $property_id;
+        return true;
+    }
+
+    /**
+     * @return Property|null
+     * @throws \Exception
+     */
+    public function getProperty(): ?Property
+    {
+        if ($this->property_id === null) {
+            return null;
+        }
+
+        if ($this->property === null) {
+            $this->property = \Repositories\Properties::retrieve($this->property_id);
+        }
+
+        return $this->property;
+    }
+
+    /**
+     * @param Property|null $p
+     * @return bool
+     */
+    public function setProperty(?Property $p): bool
+    {
+        $this->property = $p;
+        if ($p === null) {
+            $this->property_id = null;
+        } else {
+            $this->property_id = $p->getID();
+        }
+        return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestURI(): string
+    {
+        return $this->request_uri;
+    }
+
+    /**
+     * @param string $request_uri
+     * @return bool
+     */
+    public function setRequestURI(string $request_uri): bool
+    {
+        $this->request_uri = $request_uri;
+        return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReferer(): string
+    {
+        return $this->referer;
+    }
+
+    /**
+     * @param string $referer
+     * @return bool
+     */
+    public function setReferer(string $referer): bool
+    {
+        $this->referer = $referer;
+        return true;
+    }
+
     /* BUSINESS LOGIC */
+
+    /**
+     * @return float
+     */
+    public function getFinished(): float
+    {
+        return $this->started + (((float)$this->getDuration()) / (10 ** 6));
+    }
+
+    /**
+     * @param float $finished , default to now
+     * @return bool
+     */
+    public function setFinished(?float $finished_at = null): bool
+    {
+        if ($this->started === 0) {
+            return false;
+        }
+        if ($finished_at === null) {
+            $finished_at = microtime(true);
+        }
+        $in_seconds = (float)$finished_at - $this->getStarted();
+        $in_microseconds = (int)($in_seconds * (10 ** 6));
+        return $this->setDuration($in_microseconds);
+    }
 
     /**
      * setUserAgent permet d'enregistrer les informations du navigateur
@@ -391,7 +647,7 @@ class Request extends Entity
     }
 
     /**
-     * Set server info (Method, IP, User Agent, and Request Time)
+     * Set server info (Method, IP, User Agent, Request Time, and Request Length in case of POST)
      *
      * @param array $info defaults to $_SERVER
      * @return bool
@@ -404,7 +660,7 @@ class Request extends Entity
         }
 
         // Check for required
-        $required = ["REQUEST_METHOD", "REMOTE_ADDR","HTTP_USER_AGENT", "REQUEST_TIME_FLOAT"];
+        $required = ["REQUEST_METHOD", "REMOTE_ADDR", "HTTP_USER_AGENT", "REQUEST_TIME_FLOAT", "REQUEST_URI"];
         foreach ($required as $key) {
             if (empty($info[$key])) {
                 return false;
@@ -436,13 +692,38 @@ class Request extends Entity
             return false;
         }
 
+        // Set referer
+        if (!empty($info["HTTP_REFERR"])) {
+            $ok = $this->setReferer($info["HTTP_REFERER"]);
+            if (!$ok) {
+                return false;
+            }
+        }
+
+        // Set request URI
+        $ok = $this->setRequestURI($info["REQUEST_URI"]);
+        if (!$ok) {
+            return false;
+        }
+
+        // Set Request Length if present
+        if (!empty($info["CONTENT_LENGTH"])) {
+            $request_length = (int)$info["CONTENT_LENGTH"];
+            $ok = $this->setRequestLength($request_length);
+            if (!$ok) {
+                return false;
+            }
+        }
+
         return true;
     }
 
     /**
-     * Extract the Controller and Action from GET, and trims it from the array
+     * Extract the Controller, Action, Property ID and Debug flag, from GET, and trims them from the array
      */
-    public function extractAndTrimControllerAndActionFromGET() {
+    public function extractRoutingInfo()
+    {
+        // Category
         $category = "";
         if (!empty($this->get["c"])) {
             $category = $this->get["c"];
@@ -450,6 +731,7 @@ class Request extends Entity
         $this->setController($category);
         unset($this->get["c"]);
 
+        // Action
         $action = "";
         if (!empty($this->get["a"])) {
             $action = $this->get["a"];
@@ -457,6 +739,15 @@ class Request extends Entity
         $this->setAction($action);
         unset($this->get["a"]);
 
+        // Property ID
+        $property_id = null;
+        if (!empty($this->get["pid"])) {
+            $property_id = $this->get["pid"];
+        }
+        $this->setPropertyID($property_id);
+        unset($this->get["pid"]);
+
+        // Debug flag
         $in_debug = false;
         if (!empty($this->get["debug"])) {
             $in_debug = true;
@@ -503,6 +794,6 @@ class Request extends Entity
     public function autoSet() {
         $this->setInfo();
         $this->setParams();
-        $this->extractAndTrimControllerAndActionFromGET();
+        $this->extractRoutingInfo();
     }
 }
