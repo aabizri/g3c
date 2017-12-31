@@ -156,6 +156,6 @@ class Session extends Entity
      */
     public function isValid(): bool
     {
-        return $this->getCanceled() && (time() < strtotime($this->getExpiry()));
+        return (!$this->getCanceled()) && (microtime(true) < $this->getExpiry());
     }
 }

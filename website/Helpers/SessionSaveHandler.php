@@ -81,8 +81,8 @@ class SessionSaveHandler implements \SessionHandlerInterface
             return "";
         }
 
-        // If it is valid, return it
-        if ($sess->isValid()) {
+        // If it is invalid, return nothing
+        if (!$sess->isValid()) {
             return "";
         }
         return $sess->getValue();
@@ -110,6 +110,12 @@ class SessionSaveHandler implements \SessionHandlerInterface
             // Create a new entity
             $sess = new \Entities\Session;
             $sess->setID($session_id);
+
+            // Extract the user_id value from ($_SESSION)
+            $user_id = $_SESSION["user_id"] ?? null;
+            $sess->setUserID($user_id);
+
+            // Set the value
             $sess->setValue($session_data);
 
             // Started
@@ -128,6 +134,10 @@ class SessionSaveHandler implements \SessionHandlerInterface
                 return false;
             }
         } else { // If not we modify the existing one
+            // Extract the user_id value from ($_SESSION)
+            $user_id = $_SESSION["user_id"] ?? null;
+            $sess->setUserID($user_id);
+
             // Set the value
             $sess->setValue($session_data);
 
