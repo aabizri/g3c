@@ -6,17 +6,24 @@
  * Time: 2:31 PM
  */
 
-namespace Repositories\Exceptions;
+namespace Exceptions;
 
 class RowNotFoundException extends \Exception
 {
+    /**
+     * @var \Entities\Entity
+     */
     public $entity;
+
+    /**
+     * @var string
+     */
     public $table;
 
-    public function __construct(string $entity, string $table)
+    public function __construct(\Entities\Entity $entity, string $table)
     {
         // Set message
-        $msg = sprintf("Search for entity %s in table %s failed", $entity, $table);
+        $msg = sprintf("Search for entity %s in table %s failed", get_class($entity), $table);
 
         // Construct parent
         parent::__construct($msg);

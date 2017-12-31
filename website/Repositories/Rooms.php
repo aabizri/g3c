@@ -9,9 +9,9 @@
 namespace Repositories;
 
 use Entities;
-use Repositories\Exceptions\MultiSetFailedException;
-use Repositories\Exceptions\RowNotFoundException;
-use Repositories\Exceptions\SetFailedException;
+use Exceptions\MultiSetFailedException;
+use Exceptions\RowNotFoundException;
+use Exceptions\SetFailedException;
 
 class Rooms extends Repository
 {
@@ -45,7 +45,7 @@ class Rooms extends Repository
         $id = parent::db()->lastInsertId();
         $ok = $r->setID($id);
         if (!$ok) {
-            throw new SetFailedException("Room","setID",$id);
+            throw new SetFailedException($r,"setID",$id);
         }
 
         // Pull
@@ -120,7 +120,7 @@ class Rooms extends Repository
             "last_updated" => (float)$data["last_updated"],
         ]);
         if ($ok === false) {
-            throw new MultiSetFailedException("Room", $data);
+            throw new MultiSetFailedException($r, $data);
         }
     }
 
@@ -168,7 +168,7 @@ class Rooms extends Repository
         // Set the ID
         $ok = $r->setID($id);
         if (!$ok) {
-            throw new SetFailedException("Room","setID",$id);
+            throw new SetFailedException($r,"setID",$id);
         }
 
         // Call Pull on it
