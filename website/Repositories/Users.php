@@ -4,6 +4,9 @@ namespace Repositories;
 
 use Entities;
 use PDO;
+use Repositories\Exceptions\MultiSetFailedException;
+use Repositories\Exceptions\RowNotFoundException;
+use Repositories\Exceptions\SetFailedException;
 
 class Users extends Repository
 {
@@ -18,28 +21,29 @@ class Users extends Repository
     {
         // SQL
         $sql = "INSERT INTO users (display, nick, birth_date, email, password, phone)
-        VALUES (:display, :nick, :birth_date, :email, :password, :phone)";
+        VALUES (:display, :nick, :birth_date, :email, :password_hashed, :phone)";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
-        $data = [
-            ':display' => $u->getDisplay(),
-            ':nick' => $u->getNick(),
-            ':birth_date' => $u->getBirthDate(),
-            ':email' => $u->getEmail(),
-            ':password' => $u->getPasswordHashed(),
-            ':phone' => $u->getPhone(),
-        ];
+        $data = $u->getMultiple([
+            'display',
+            'nick',
+            'birth_date',
+            'email',
+            'password_hashed',
+            'phone',
+        ]);
 
         // Execute creation query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        if ($u->setID($id) == false) {
-            throw new \Exception("error setting id");
+        $ok = $u->setID($id);
+        if (!$ok) {
+            throw new SetFailedException("User","setID",$id);
         }
 
         // We should now pull to populate ID & Times
@@ -57,25 +61,24 @@ class Users extends Repository
     {
         // SQL
         $sql = "UPDATE users
-        SET display = :display, nick = :nick, birth_date = :birth_date, email = :email, password = :password, phone = :phone
+        SET display = :display, nick = :nick, birth_date = :birth_date, email = :email, password = :password_hashed, phone = :phone
         WHERE id = :id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
-        $data = array(
-            ':id' => $u->getID(),
-            ':display' => $u->getDisplay(),
-            ':nick' => $u->getNick(),
-            ':birth_date' => $u->getBirthDate(),
-            ':email' => $u->getEmail(),
-            ':password' => $u->getPasswordHashed(),
-            ':phone' => $u->getPhone(),
-        );
+        $data = $u->getMultiple([
+            'display',
+            'nick',
+            'birth_date',
+            'email',
+            'password_hashed',
+            'phone',
+        ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Now pull
         self::pull($u);
@@ -91,90 +94,46 @@ class Users extends Repository
     public static function pull(Entities\User $u): void
     {
         // SQL
-        $sql = "SELECT display, nick, birth_date, email, password, phone, UNIX_TIMESTAMP(last_updated) as last_updated
+        $sql = "SELECT display, nick, birth_date, email, password, phone, UNIX_TIMESTAMP(last_updated) AS last_updated
         FROM users
         WHERE id = :id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':id' => $u->getID()));
+        $stmt->execute(['id' => $u->getID()]);
 
         // Fetch
-        $data = $sth->fetch(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
-        if ($data == null) {
-            throw new \Exception("No such Model\User found");
+        if (empty($data)) {
+            throw new RowNotFoundException("User","users");
         }
 
         // Store
-        $arr = array(
-            "setDisplay" => $data["display"],
-            "setNick" => $data["nick"],
-            "setBirthDate" => $data["birth_date"],
-            "setEmail" => $data["email"],
-            "setPhone" => $data["phone"],
-            "setPasswordHashed" => $data["password"],
-            "setLastUpdated" => (float) $data["last_updated"],
-        );
-        parent::executeSetterArray($u, $arr);
-    }
-
-    /**
-     * Syncs a user with the database, executing a Pull or a Push on a last_updated timestamp basis
-     *
-     * @param Entities\User $u to be synced
-     *
-     * @return void
-     *
-     * @throws \Exception if not found
-     */
-    public static function sync(Entities\User $u): void
-    {
-        // SQL to get last_updated on given peripheral
-        $sql = "SELECT UNIX_TIMESTAMP(last_updated) as last_updated
-          FROM users
-          WHERE id = :id;";
-
-        // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
-
-        // Execute
-        $sth->execute(array(':id' => $u->getID()));
-
-        // Retrieve
-        $db_last_updated = $sth->fetchColumn(0);
-
-        // If nil, we throw an exception
-        if ($db_last_updated == null) {
-            throw new \Exception("No such session found");
-        }
-
-        // If empty, that's an Exception
-        if ($db_last_updated == "") {
-            throw new \Exception("Empty last_updated");
-        }
-
-        // Cast it
-        $db_last_updated = (float) $db_last_updated;
-
-        // If the DB was updated BEFORE the last update to the peripheral, push
-        if ($db_last_updated < $u->getLastUpdated()) {
-            self::push($u);
-        } else {
-            self::pull($u);
+        $ok = $u->setMultiple([
+            "display" => $data["display"],
+            "nick" => $data["nick"],
+            "birth_date" => $data["birth_date"],
+            "email" => $data["email"],
+            "phone" => $data["phone"],
+            "password_hashed" => $data["password"],
+            "last_updated" => (float)$data["last_updated"],
+        ]);
+        if ($ok === false) {
+            throw new MultiSetFailedException("User",$data);
         }
     }
 
     /**
-     * Récupérer l'id d'un user
+     * Checks if the given user exists in the database
+     *
      * @param int $id
-     * @return Entities\User ou null si rien n'est trouvé
-     * @throws \Exception
+     * @return bool
      */
-    public static function retrieve(int $id): Entities\User
+    public static function exists(int $id): bool
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -182,16 +141,26 @@ class Users extends Repository
             WHERE id = :id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':id' => $id));
+        $stmt->execute(['id' => $id]);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
+        return $count != 0;
+    }
 
-        // If count is zero, then we return null
-        if ($count == 0) {
+    /**
+     * Récupérer l'id d'un user
+     * @param int $id
+     * @return Entities\User|null , null si rien n'est trouvé
+     * @throws \Exception
+     */
+    public static function retrieve(int $id): ?Entities\User
+    {
+        // If it doesn't exist, then we return null
+        if (!self::exists($id)) {
             return null;
         }
 
@@ -199,7 +168,10 @@ class Users extends Repository
         $u = new Entities\User();
 
         // Set the ID
-        $u->setID($id);
+        $ok = $u->setID($id);
+        if (!$ok) {
+            throw new SetFailedException("User","setID",$id);
+        }
 
         // Call Pull on it
         self::pull($u);
@@ -225,13 +197,16 @@ class Users extends Repository
             WHERE email = :email";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Params
+        $params = ['email' => $email];
 
         // Execute query
-        $sth->execute(array(':email' => $email));
+        $stmt->execute($params);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
 
         // If count is zero, then we return null
         if ($count == 0) {
@@ -246,13 +221,13 @@ class Users extends Repository
             WHERE email = :email";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':email' => $email));
+        $stmt->execute($params);
 
         // Fetch
-        $id = $sth->fetchColumn(0);
+        $id = $stmt->fetchColumn(0);
 
         // Return this ID
         return $id;
@@ -275,13 +250,16 @@ class Users extends Repository
             WHERE nick = :nick";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Parameters
+        $params = ['nick' => $nick];
 
         // Execute query
-        $sth->execute(array(':nick' => $nick));
+        $stmt->execute($params);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
 
         // If count is zero, then we return null
         if ($count == 0) {
@@ -296,13 +274,13 @@ class Users extends Repository
             WHERE nick = :nick";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':nick' => $nick));
+        $stmt->execute($params);
 
         // Fetch
-        $id = $sth->fetchColumn(0);
+        $id = $stmt->fetchColumn(0);
 
         // Return this ID
         return $id;

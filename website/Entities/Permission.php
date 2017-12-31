@@ -9,7 +9,7 @@
 namespace Entities;
 
 
-class Permission
+class Permission extends Entity
 {
     /* PROPERTIES */
 
