@@ -168,12 +168,12 @@ class User
 
     public static function getConnectionPage(\Entities\Request $req): void
     {
-        DisplayManager::display("connexion",array());
+        DisplayManager::display("connexion");
     }
 
     public static function getSubscriptionPage(\Entities\Request $req): void
     {
-        DisplayManager::display("inscription", array());
+        DisplayManager::display("inscription");
     }
 
     public static function getAccountPage(\Entities\Request $req):void
@@ -185,7 +185,7 @@ class User
             return;
         }
 
-        DisplayManager::display("moncompte", array());
+        DisplayManager::display("moncompte");
     }
 
 }
