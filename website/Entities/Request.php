@@ -72,6 +72,10 @@ class Request extends Entity
 
     private $in_debug = false;
 
+    private $request_uri = "";
+
+    private $referer = "";
+
     /* CONSTRUCTOR */
     public function __construct(bool $autosave = false)
     {
@@ -417,6 +421,42 @@ class Request extends Entity
         return true;
     }
 
+    /**
+     * @return string
+     */
+    public function getRequestURI(): string
+    {
+        return $this->request_uri;
+    }
+
+    /**
+     * @param string $request_uri
+     * @return bool
+     */
+    public function setRequestURI(string $request_uri): bool
+    {
+        $this->request_uri = $request_uri;
+        return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReferer(): string
+    {
+        return $this->referer;
+    }
+
+    /**
+     * @param string $referer
+     * @return bool
+     */
+    public function setReferer(string $referer): bool
+    {
+        $this->referer = $referer;
+        return true;
+    }
+
     /* BUSINESS LOGIC */
 
     /**
@@ -473,7 +513,7 @@ class Request extends Entity
         }
 
         // Check for required
-        $required = ["REQUEST_METHOD", "REMOTE_ADDR","HTTP_USER_AGENT", "REQUEST_TIME_FLOAT"];
+        $required = ["REQUEST_METHOD", "REMOTE_ADDR", "HTTP_USER_AGENT", "REQUEST_TIME_FLOAT", "REQUEST_URI"];
         foreach ($required as $key) {
             if (empty($info[$key])) {
                 return false;
@@ -501,6 +541,20 @@ class Request extends Entity
         // Set request time
         $time = (float) $info["REQUEST_TIME_FLOAT"];
         $ok = $this->setStarted($time);
+        if (!$ok) {
+            return false;
+        }
+
+        // Set referer
+        if (!empty($info["HTTP_REFERR"])) {
+            $ok = $this->setReferer($info["HTTP_REFERER"]);
+            if (!$ok) {
+                return false;
+            }
+        }
+
+        // Set request URI
+        $ok = $this->setRequestURI($info["REQUEST_URI"]);
         if (!$ok) {
             return false;
         }
