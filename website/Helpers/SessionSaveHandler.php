@@ -95,7 +95,6 @@ class SessionSaveHandler implements \SessionHandlerInterface
      */
     public function write($session_id, $session_data): bool
     {
-        //echo "écriture de la session ".$session_id."<br/>";
         $sess = null;
         // Retrieve session
         try {
