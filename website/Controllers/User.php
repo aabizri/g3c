@@ -108,6 +108,12 @@ class User
      */
     public static function postConnection(\Entities\Request $req): void
     {
+        // Si l'usager est déjà connecté, le rediriger vers la page d'accueil
+        if ($req->getUserID() !== null) {
+            self::getAccountPage($req);
+            return;
+        }
+
         // Récupère le post
         $post = $req->getPOST();
 
@@ -149,14 +155,15 @@ class User
             return;
         }
 
-        // Ajouter à la session
+        // Ajouter à la session et à la requête
         $_SESSION["user_id"] = $u->getId();
+        $ok = $req->setUser($u);
+        if (!$ok) {
+            Error::getInternalError500($req);
+            return;
+        }
 
-        // Include la page de confirmation
-        $data = [
-            "user" => $u,
-        ];
-        DisplayManager::display("dashboard",$data);
+        self::getAccountPage($req); // TODO: Le rediriger vers la page de sélection de propriété
     }
 
     public static function getConnectionPage(\Entities\Request $req): void
@@ -171,6 +178,13 @@ class User
 
     public static function getAccountPage(\Entities\Request $req):void
     {
+        $u = $req->getUser();
+        if ($u === null) {
+            http_response_code(403);
+            echo "Utilisateur non connecté, nous ne pouvons pas accéder à la page moncompte";
+            return;
+        }
+
         DisplayManager::display("moncompte");
     }
 

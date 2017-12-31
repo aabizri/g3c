@@ -4,9 +4,9 @@ namespace Repositories;
 
 use Entities;
 use PDO;
-use Repositories\Exceptions\MultiSetFailedException;
-use Repositories\Exceptions\RowNotFoundException;
-use Repositories\Exceptions\SetFailedException;
+use Exceptions\MultiSetFailedException;
+use Exceptions\RowNotFoundException;
+use Exceptions\SetFailedException;
 
 class Users extends Repository
 {
@@ -43,7 +43,7 @@ class Users extends Repository
         $id = parent::db()->lastInsertId();
         $ok = $u->setID($id);
         if (!$ok) {
-            throw new SetFailedException("User","setID",$id);
+            throw new SetFailedException($u,"setID",$id);
         }
 
         // We should now pull to populate ID & Times
@@ -108,7 +108,7 @@ class Users extends Repository
 
         // If nil, we throw an error
         if (empty($data)) {
-            throw new RowNotFoundException("User","users");
+            throw new RowNotFoundException($u,"users");
         }
 
         // Store
@@ -122,63 +122,17 @@ class Users extends Repository
             "last_updated" => (float)$data["last_updated"],
         ]);
         if ($ok === false) {
-            throw new MultiSetFailedException("User",$data);
+            throw new MultiSetFailedException($u,$data);
         }
     }
 
     /**
-     * Syncs a user with the database, executing a Pull or a Push on a last_updated timestamp basis
+     * Checks if the given user exists in the database
      *
-     * @param Entities\User $u to be synced
-     *
-     * @return void
-     *
-     * @throws \Exception if not found
-     */
-    public static function sync(Entities\User $u): void
-    {
-        // SQL to get last_updated on given peripheral
-        $sql = "SELECT UNIX_TIMESTAMP(last_updated) AS last_updated
-          FROM users
-          WHERE id = :id;";
-
-        // Prepare statement
-        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
-
-        // Execute
-        $stmt->execute(['id' => $u->getID()]);
-
-        // Retrieve
-        $db_last_updated = $stmt->fetchColumn(0);
-
-        // If nil, we throw an exception
-        if ($db_last_updated == null) {
-            throw new \Exception("No such session found");
-        }
-
-        // If empty, that's an Exception
-        if ($db_last_updated == "") {
-            throw new \Exception("Empty last_updated");
-        }
-
-        // Cast it
-        $db_last_updated = (float)$db_last_updated;
-
-        // If the DB was updated BEFORE the last update to the peripheral, push
-        if ($db_last_updated < $u->getLastUpdated()) {
-            self::push($u);
-        } else {
-            self::pull($u);
-        }
-    }
-
-    /**
-     * Récupérer l'id d'un user
      * @param int $id
-     * @return Entities\User ou null si rien n'est trouvé
-     * @throws \Exception
+     * @return bool
      */
-    public static function retrieve(int $id): Entities\User
+    public static function exists(int $id): bool
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -193,9 +147,19 @@ class Users extends Repository
 
         // Fetch
         $count = $stmt->fetchColumn(0);
+        return $count != 0;
+    }
 
-        // If count is zero, then we return null
-        if ($count == 0) {
+    /**
+     * Récupérer l'id d'un user
+     * @param int $id
+     * @return Entities\User|null , null si rien n'est trouvé
+     * @throws \Exception
+     */
+    public static function retrieve(int $id): ?Entities\User
+    {
+        // If it doesn't exist, then we return null
+        if (!self::exists($id)) {
             return null;
         }
 
@@ -205,7 +169,7 @@ class Users extends Repository
         // Set the ID
         $ok = $u->setID($id);
         if (!$ok) {
-            throw new SetFailedException("User","setID",$id);
+            throw new SetFailedException($u,"setID",$id);
         }
 
         // Call Pull on it

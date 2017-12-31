@@ -9,7 +9,7 @@
 namespace Repositories;
 
 
-use Repositories\Exceptions\SetFailedException;
+use Exceptions\SetFailedException;
 
 class Properties extends Repository
 {
@@ -41,7 +41,7 @@ class Properties extends Repository
         $id = parent::db()->lastInsertId();
         $ok = $p->setID($id);
         if (!$ok) {
-            throw new SetFailedException("Property","setID",$id);
+            throw new SetFailedException($p,"setID",$id);
         }
 
         // We should now pull to populate ID & Times

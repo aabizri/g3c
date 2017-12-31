@@ -15,6 +15,13 @@ class Room
     /*Ajouter une pièce*/
     public function postNewRoom(\Entities\Request $req): void
     {
+        // Si la requête n'est pas associée à une propriété, retourner une erreur
+        $property_id = $req->getPropertyID();
+        if (empty($property_id)) {
+            echo "Requête concernant une propriété mais non associée à une propriété, erreur";
+            return;
+        }
+
         // Récupérer le post
         $post = $req->getPOST();
 
@@ -44,6 +51,13 @@ class Room
 
     public static function getRoomsPage (\Entities\Request $req):void
     {
+        // Si la requête n'est pas associée à une propriété, retourner une erreur
+        $property_id = $req->getPropertyID();
+        if (empty($property_id)) {
+            echo "Requête concernant une propriété mais non associée à une propriété, erreur";
+            return;
+        }
+        
         \Helpers\DisplayManager::display("mespieces");
     }
 }
