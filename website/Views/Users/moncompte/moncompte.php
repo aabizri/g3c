@@ -25,7 +25,7 @@
 
     <div id="modifiermesinformations">
         <h4 id="titremodifierinfos">Modifier mes informations</h4>
-        <form method="post" id="formulairemodif" action="http://localhost/g3c/website/index.php?c=User&a=setMAJInformations">
+        <form method="post" id="formulairemodif" action="http://localhost/g3c/website/index.php?c=User&a=postMAJInformations">
             <p>
                 <label>Nouvel email :</label><input type="text" id="formdroit" name="email"/><br>
             </p>

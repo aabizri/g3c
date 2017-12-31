@@ -2,7 +2,6 @@
 
 body {
 	position : relative;
-	height: 1060px;
 	background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
 	background-size: cover;
 	background-position: center;
@@ -49,8 +48,8 @@ body {
 #identificationutilisateur
 {
 	position: relative;
-	top: -26.5%;
-	left:25%;
+	top: -250px;
+	left:20%;
     font-size: large;
 }
 
@@ -58,7 +57,7 @@ body {
 {
 	display: flex;
 	position: relative;
-	top:15%;
+	top:200px;
 	left:16%;
 }
 
@@ -129,7 +128,7 @@ body {
     text-align: left;
     position: relative;
     left: 16%;
-    margin-top: 120px;
+    margin-top: 150px;
 }
 
 #modifmdp input

@@ -156,23 +156,24 @@ class User
 
     //Mettre à jour les infos
 
-    public static function setMAJInformations (array $get, array $post): void
+    public static function postMAJInformations (array $get, array $post): void
     {
 
         //On récupère des données
         $email = $post["email"];
         $cnewemail = $post["cnewemail"];
-        $newaddress = $post["nouvelleaddresse"];
+        $newaddress = $post["nouvelleaddresse"]; //AJOUTER L'ADDRESSE QUAND L'ABONNEMENT SERA FONCTIONNEL
         $newphone = $post["nouveautel"];
         $mdp = $post["mdp"];
 
-
         //On récupère l'entité de l'utilisateur
-
         //POUR TESTER
-        $session["user_id"] = 7;
+        $_SESSION["user_id"] = 7;
+
         //On récupère l'id en SESSION depuis la page de connexion
-        $user_id = $session["user_id"];
+        $user_id = $_SESSION["user_id"];
+        //$user_id->getUserID();
+
         //On recupère les données grace à cet id
         $user = \Repositories\Users::retrieve($user_id);
 
@@ -181,7 +182,7 @@ class User
             echo "Cet email est déja lié à un compte";
             return;
         }
-        if ($email == $cnewemail AND $email != null) {
+        if ($email === $cnewemail AND $email != null) {
             $user->setEmail($email);
         }
 
@@ -190,8 +191,8 @@ class User
             $user->setPhone($newphone);
         }
 
-        // Insertion de l'entité et de ses maj
-        if ($user->validatePassword($mdp) == true){
+        // Insertion de l'entité et de ses maj si le mdp de vérification est valide
+        if ($user->validatePassword($mdp) === true){
             try {
                 Repositories\Users::push($user);
                 echo "MAJ réussie";
@@ -204,8 +205,6 @@ class User
             return;
         }
     }
-
-
 
     //Changement de mdp
     public static function setMDP(array $get, array $post){
@@ -223,12 +222,12 @@ class User
             $cnewmdp = $post["cnouveaumdp"];
 
         //Vérification de l'ancien mdp
-        if ($user->validatePassword($ancienmdp) == false AND $ancienmdp !== null) {
+        if ($user->validatePassword($ancienmdp) === false AND $ancienmdp !== null) {
             echo "Mot de passe incorrect";
             return;
         }
 
-        if ($ancienmdp == $newmdp){
+        if ($ancienmdp === $newmdp){
             echo "L'ancien mdp ne peut pas être le nouveau";
             return;
         }
