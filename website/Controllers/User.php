@@ -172,12 +172,11 @@ class User
 
     //Afficher les infos du compte
 
-    public static function getInformations (array $get, array $post): void
+    public static function getInformations (\Entities\Request $req): void
     {
-        //POUR TESTER
-        $session["user_id"] = 7;
-        //On récupère l'id en SESSION depuis la page de connexion
-        $user_id = $session["user_id"];
+
+        //On récupère l'id
+        $user_id = $req -> getUserID();
         //On recupère les données grace à cet id
         $user = \Repositories\Users::retrieve($user_id);
 
@@ -190,23 +189,21 @@ class User
 
     //Mettre à jour les infos
 
-    public static function postMAJInformations (array $get, array $post): void
+    public static function postMAJInformations (\Entities\Request $req): void
     {
+        $post=$req->getPOST();
 
         //On récupère des données
         $email = $post["email"];
         $cnewemail = $post["cnewemail"];
-        $newaddress = $post["nouvelleaddresse"]; //AJOUTER L'ADDRESSE QUAND L'ABONNEMENT SERA FONCTIONNEL
+        $newaddress = $post["nouvelleaddresse"]; // TODO: AJOUTER L'ADDRESSE QUAND L'ABONNEMENT SERA FONCTIONNEL
         $newphone = $post["nouveautel"];
         $mdp = $post["mdp"];
 
         //On récupère l'entité de l'utilisateur
-        //POUR TESTER
-        $_SESSION["user_id"] = 7;
 
-        //On récupère l'id en SESSION depuis la page de connexion
-        $user_id = $_SESSION["user_id"];
-        //$user_id->getUserID();
+        //On récupère l'id depuis la page de connexion
+        $user_id = $req -> getUserID();
 
         //On recupère les données grace à cet id
         $user = \Repositories\Users::retrieve($user_id);
@@ -241,12 +238,12 @@ class User
     }
 
     //Changement de mdp
-    public static function setMDP(array $get, array $post){
+    public static function postMDP(\Entities\Request $req){
 
-        //POUR TESTER
-        $session["user_id"] = 7;
+        $post = $req->getPOST();
+
         //On récupère l'id en SESSION depuis la page de connexion
-        $user_id = $session["user_id"];
+        $user_id = $req ->getUserID();
         //On recupère les données grace à cet id
         $user = \Repositories\Users::retrieve($user_id);
 
@@ -272,20 +269,17 @@ class User
         }
 
         $user ->setPassword($newmdp);
-        echo "MAJ du mdp réussie";
 
         // Insertion de l'entité et de ses maj
         try {
             Repositories\Users::push($user);
+            echo "MAJ du mdp réussie";
         } catch (\Exception $e) {
             echo "Error inserting user: " . $e;
         }
 
-
     }
 
-
-    public static function getConnectionPage(array $get, array $post): void
     public static function getConnectionPage(\Entities\Request $req): void
     {
         DisplayManager::display("connexion",array());

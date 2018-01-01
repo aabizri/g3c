@@ -69,6 +69,7 @@ class Users extends Repository
 
         // Prepare data to be updated
         $data = $u->getMultiple([
+            'id',
             'display',
             'nick',
             'birth_date',

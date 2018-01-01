@@ -25,7 +25,7 @@
 
     <div id="modifiermesinformations">
         <h4 id="titremodifierinfos">Modifier mes informations</h4>
-        <form method="post" id="formulairemodif" action="http://localhost/g3c/website/index.php?c=User&a=postMAJInformations">
+        <form method="post" id="formulairemodif" action="http://localhost/g3c/website/index.php?c=User&a=MAJInformations">
             <p>
                 <label>Nouvel email :</label><input type="text" id="formdroit" name="email"/><br>
             </p>
@@ -59,7 +59,7 @@
 
     <div id="modifmdp">
         <h4 id="titremodifmdp">Modifier mon mot de passe</h4>
-        <form method="post" action="http://localhost/g3c/website/index.php?c=User&a=setMDP">
+        <form method="post" action="http://localhost/g3c/website/index.php?c=User&a=MDP">
         <p>
             <label>Ancien mot de passe : </label><input type="password" id="droit" name="ancienmdp"/><br>
         </p>
