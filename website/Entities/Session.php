@@ -9,16 +9,52 @@
 namespace Entities;
 
 
-class Session
+/**
+ * Class Session
+ * @package Entities
+ */
+class Session extends Entity
 {
     /* PROPERTIES */
 
+    /**
+     * @var string
+     */
     private $id;
-    private $user_id;
+
+    /**
+     * @var int|null
+     */
+    private $user_id = null;
+
+    /**
+     * @var User|null
+     */
+    private $user = null;
+
+    /**
+     * @var string
+     */
     private $value = "";
-    private $started = "";
-    private $expiry = "";
+
+    /**
+     * @var float
+     */
+    private $started = 0;
+
+    /**
+     * @var float
+     */
+    private $expiry = 0;
+
+    /**
+     * @var bool
+     */
     private $canceled = false;
+
+    /**
+     * @var float
+     */
     private $last_updated;
 
     /* GETTERS AND SETTERS */
@@ -55,7 +91,42 @@ class Session
      */
     public function setUserID(?int $user_id): bool
     {
+        if ($this->user !== null) {
+            if ($user_id !== $this->user->getID()) {
+                $this->user = null;
+            }
+        }
         $this->user_id = $user_id;
+        return true;
+    }
+
+    /**
+     * @return User|null
+     * @throws \Exception
+     */
+    public function getUser(): ?User
+    {
+        if ($this->user === null) {
+            if ($this->user_id === null) {
+                return null;
+            }
+            $this->user = \Repositories\Sessions::retrieve($this->user_id);
+        }
+        return $this->user;
+    }
+
+    /**
+     * @param User|null $u
+     * @return bool
+     */
+    public function setUser(?User $u): bool
+    {
+        $this->user = $u;
+        if ($u === null) {
+            $this->user_id = null;
+        } else {
+            $this->user_id = $u->getID();
+        }
         return true;
     }
 
@@ -86,7 +157,7 @@ class Session
     }
 
     /**
-     * @param string $expiry
+     * @param float $expiry
      * @return bool
      */
     public function setExpiry(float $expiry): bool
@@ -132,7 +203,7 @@ class Session
     }
 
     /**
-     * @return string
+     * @return float
      */
     public function getLastUpdated(): float
     {
@@ -140,7 +211,7 @@ class Session
     }
 
     /**
-     * @param string $last_updated
+     * @param float $last_updated
      * @return bool
      */
     public function setLastUpdated(float $last_updated): bool
