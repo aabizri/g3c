@@ -9,8 +9,8 @@
 namespace Repositories;
 
 
-use Repositories\Exceptions\MultiSetFailedException;
-use Repositories\Exceptions\SetFailedException;
+use Exceptions\SetFailedException;
+use Exceptions\MultiSetFailedException;
 
 class Requests extends Repository
 {
@@ -52,7 +52,7 @@ class Requests extends Repository
         $id = parent::db()->lastInsertId();
         $ok = $r->setID($id);
         if (!$ok) {
-            throw new SetFailedException("Request","setID",$id);
+            throw new SetFailedException($r,"setID",$id);
         }
     }
 

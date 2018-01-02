@@ -4,22 +4,55 @@ namespace Entities;
 
 /**
  * User est la classe entité pour les utilisateurs
- *
- * @package livewell
- * @author Alexandre A. Bizri <alexandre@bizri.fr>
+ * @package Entities
  */
 class User extends Entity
 {
     /* PROPERTIES */
 
+    /**
+     * @var int
+     */
     private $id;
+
+    /**
+     * @var string
+     */
     private $display;
+
+    /**
+     * @var string
+     */
     private $nick;
+
+    /**
+     * @var string (YYYY-MM-DD)
+     */
     private $birth_date;
+
+    /**
+     * @var float
+     */
     private $creation_date;
+
+    /**
+     * @var string
+     */
     private $email;
+
+    /**
+     * @var string
+     */
     private $password_hashed; // Password hashed & salted with BCrypt
+
+    /**
+     * @var string
+     */
     private $phone;
+
+    /**
+     * @var float
+     */
     private $last_updated;
 
     /* GETTERS AND SETTERS */
@@ -233,7 +266,7 @@ class User extends Entity
      *
      * @return bool
      */
-    public function validatePassword(string $clear): bool
+    public function verifyPassword(string $clear): bool
     {
         // Validate the password
         $ok = password_verify($clear, $this->password_hashed);

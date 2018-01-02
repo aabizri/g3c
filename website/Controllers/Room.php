@@ -46,7 +46,7 @@ class Room
             echo "Erreur" . $e;
         }
 
-        \Helpers\DisplayManager::display("dashboard",array());
+        \Helpers\DisplayManager::display("dashboard");
     }
 
     public static function getRoomsPage (\Entities\Request $req):void
@@ -58,6 +58,6 @@ class Room
             return;
         }
         
-        \Helpers\DisplayManager::display("mespieces", array());
+        \Helpers\DisplayManager::display("mespieces");
     }
 }

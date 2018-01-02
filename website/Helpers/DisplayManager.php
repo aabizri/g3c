@@ -114,7 +114,7 @@ class DisplayManager
      * @param array $data
      * @throws \Exception
      */
-    public static function display(string $name, array $data): void {
+    public static function display(string $name, array $data = []): void {
         // Resolve components
         $components = self::resolveMultipleComponents(["head","header",$name,"footer"]);
         

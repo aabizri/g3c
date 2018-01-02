@@ -110,7 +110,7 @@ class User
     {
         // Si l'usager est déjà connecté, le rediriger vers la page d'accueil
         if ($req->getUserID() !== null) {
-            self::getConnectionPage($req);
+            self::getAccountPage($req);
             return;
         }
 
@@ -150,7 +150,7 @@ class User
         $u = Repositories\Users::retrieve($id);
 
         // Validate
-        if ($u->validatePassword($password_clear) == false) {
+        if ($u->verifyPassword($password_clear) == false) {
             echo "Mot de passe incorrect";
             return;
         }
@@ -163,21 +163,17 @@ class User
             return;
         }
 
-        // Include la page de confirmation
-        $data = [
-            "user" => $u,
-        ];
-        DisplayManager::display("dashboard", $data); // TODO: Le rediriger vers la page de sélection de propriété
+        self::getAccountPage($req); // TODO: Le rediriger vers la page de sélection de propriété
     }
 
     public static function getConnectionPage(\Entities\Request $req): void
     {
-        DisplayManager::display("connexion",array());
+        DisplayManager::display("connexion");
     }
 
     public static function getSubscriptionPage(\Entities\Request $req): void
     {
-        DisplayManager::display("inscription", array());
+        DisplayManager::display("inscription");
     }
 
     public static function getAccountPage(\Entities\Request $req):void
@@ -189,7 +185,7 @@ class User
             return;
         }
 
-        DisplayManager::display("moncompte", array());
+        DisplayManager::display("moncompte");
     }
 
     public static function getSessionList(\Entities\Request $req): void
