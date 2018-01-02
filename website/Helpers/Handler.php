@@ -24,6 +24,10 @@ class Handler
             "cookie_lifetime" => \Helpers\SessionSaveHandler::lifetime * 60 * 60 * 24,
         ];
         session_start($sess_opt);
+        $sess = \Repositories\Sessions::retrieve(session_id());
+        if ($sess !== null && !$sess->isValid()) {
+            session_regenerate_id();
+        }
 
         // Store it in the request
         $req->setSession();

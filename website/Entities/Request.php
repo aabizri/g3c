@@ -228,9 +228,9 @@ class Request extends Entity
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSessionID(): string
+    public function getSessionID(): ?string
     {
         return $this->session_id;
     }
@@ -239,7 +239,7 @@ class Request extends Entity
      * @param string $session_id
      * @return bool
      */
-    public function setSessionID(string $session_id): bool
+    public function setSessionID(?string $session_id): bool
     {
         $this->session_id = $session_id;
         return true;

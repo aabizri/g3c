@@ -188,4 +188,66 @@ class User
         DisplayManager::display("moncompte");
     }
 
+    public static function getSessionList(\Entities\Request $req): void
+    {
+        $user_id = $req->getUserID();
+        if ($user_id === null) {
+            http_response_code(403);
+            echo "Utilisateur non connecté, nous ne pouvons pas accéder à la page demandée";
+            return;
+        }
+
+        // Retrieve sessions
+        $session_ids = \Repositories\Sessions::findAllValidByUserID($user_id);
+        $sessions = [];
+        $requests = [];
+        foreach ($session_ids as $session_id) {
+            $sessions[] = \Repositories\Sessions::retrieve($session_id);
+            $requests[$session_id] = \Repositories\Requests::Retrieve(\Repositories\Requests::findLastBySessionID($session_id));
+        }
+
+        // Publish data
+        $data["sessions"] = $sessions;
+        $data["requests"] = $requests;
+
+        // Publish view
+        DisplayManager::display("mysessions", $data);
+    }
+
+    public static function postSessionCancel(\Entities\Request $req): void
+    {
+        $user_id = $req->getUserID();
+        if ($user_id === null) {
+            http_response_code(403);
+            echo "Utilisateur non connecté, nous ne pouvons pas accéder à la page demandée";
+            return;
+        }
+
+        // Retrieve post parameter for session ids
+        if (empty($req->getPOST()["session_id"])) {
+            http_response_code(400);
+            echo "Mauvaise requête: veuillez indiquer une session ID valide";
+            return;
+        }
+        $session_ids = $req->getPOST()["session_id"];
+
+        foreach ($session_ids as $session_id) {
+            // Retrieve session
+            $s = \Repositories\Sessions::retrieve($session_id);
+
+            // Check for validity
+            if ($s->getUserID() !== $req->getUserID()) {
+                http_response_code(403);
+                echo "Vous ne pouvez pas annuler la session de quelqu'un d'autre";
+            }
+
+            // Cancel it
+            $s->setCanceled(true);
+
+            // Push it
+            \Repositories\Sessions::push($s);
+        }
+        // Return to session list
+        self::getSessionList($req);
+    }
 }
