@@ -1,5 +1,5 @@
 <ul id="Menu">
-    <li id="Moncompte"><a href="index.php?c=User&a=AccountPage"><input type="button" value="Mon compte" /></a></li>
+    <li id="Moncompte"><a href="index.php?c=User&a=Informations"><input type="button" value="Mon compte" /></a></li>
     <li id="Mespieces"><a href="index.php?c=Room&a=RoomsPage"><input type="button" value="Mes pièces" /></a></li>
     <li id="Mesperipheriques"> <a href="index.php?c=Peripheral&a=PeripheralsPage"><input type="button" value="Mes périphériques" /></a></li>
     <li id="Mesfiltres"><a href="Mesfiltres.html"><input type="button" value="Mes filtres" /></a></li>
@@ -31,7 +31,7 @@
             </p>
 
             <p>
-                <label>Confirmer nouvel email : </label><input type="text" id="formdroit" name="cnewemail"/><br>
+                <label>Confirmer nouvel email : </label><input type="text" id="formdroit" name="newemail"/><br>
             </p>
 
             <p>

@@ -174,11 +174,15 @@ class User
 
     public static function getInformations (\Entities\Request $req): void
     {
+        $u = $req->getUser();
+        if ($u === null) {
+            http_response_code(403);
+            echo "Utilisateur non connecté, nous ne pouvons pas accéder à la page moncompte";
+            return;
+        }
 
-        //On récupère l'id
-        $user_id = $req -> getUserID();
-        //On recupère les données grace à cet id
-        $user = \Repositories\Users::retrieve($user_id);
+        //On recupère les données
+        $user = $req->getUser();
 
         //On envoie vers la vue
         $data["user"] = $user;
@@ -195,7 +199,7 @@ class User
 
         //On récupère des données
         $email = $post["email"];
-        $cnewemail = $post["cnewemail"];
+        $newemail = $post["newemail"];
         $newaddress = $post["nouvelleaddresse"]; // TODO: AJOUTER L'ADDRESSE QUAND L'ABONNEMENT SERA FONCTIONNEL
         $newphone = $post["nouveautel"];
         $mdp = $post["mdp"];
@@ -213,7 +217,7 @@ class User
             echo "Cet email est déja lié à un compte";
             return;
         }
-        if ($email === $cnewemail AND $email != null) {
+        if ($email === $newemail AND $email != null) {
             $user->setEmail($email);
         }
 
@@ -226,13 +230,13 @@ class User
         if ($user->validatePassword($mdp) === true){
             try {
                 Repositories\Users::push($user);
-                echo "MAJ réussie";
             } catch (\Exception $e) {
-                echo "Error inserting user: " . $e;
+                Error::getInternalError500();
             }
+            self::getInformations($req);
         }
         else{
-            echo "Mauvais mdp, modifications impossible";
+            self::getInformations($req);
             return;
         }
     }
@@ -242,29 +246,30 @@ class User
 
         $post = $req->getPOST();
 
-        //On récupère l'id en SESSION depuis la page de connexion
-        $user_id = $req ->getUserID();
-        //On recupère les données grace à cet id
-        $user = \Repositories\Users::retrieve($user_id);
+        //On recupère les données
+        $user = $req->getUser();
 
-        //On récupère les infos
+        //On récupère les infos après avoir vérifier qu'elles existent
+        if (isset($ancienmdp) OR isset($newmdp) OR isset($cnewmdp)){
+            self::getInformations($req);
+            return;
+        }
+        else{
             $ancienmdp = $post["ancienmdp"];
             $newmdp = $post['nouveaumdp'];
             $cnewmdp = $post["cnouveaumdp"];
+        }
 
         //Vérification de l'ancien mdp
-        if ($user->validatePassword($ancienmdp) === false AND $ancienmdp !== null) {
-            echo "Mot de passe incorrect";
+        if ($user->validatePassword($ancienmdp) === false) {
             return;
         }
 
         if ($ancienmdp === $newmdp){
-            echo "L'ancien mdp ne peut pas être le nouveau";
             return;
         }
 
         if ($newmdp !== $cnewmdp){
-            echo "Le mdp n'est pas confirmé";
             return;
         }
 
@@ -273,10 +278,12 @@ class User
         // Insertion de l'entité et de ses maj
         try {
             Repositories\Users::push($user);
-            echo "MAJ du mdp réussie";
         } catch (\Exception $e) {
-            echo "Error inserting user: " . $e;
+            Error::getInternalError500();
+            return;
         }
+
+        self::getInformations($req);
 
     }
 
@@ -288,18 +295,6 @@ class User
     public static function getSubscriptionPage(\Entities\Request $req): void
     {
         DisplayManager::display("inscription", array());
-    }
-
-    public static function getAccountPage(\Entities\Request $req):void
-    {
-        $u = $req->getUser();
-        if ($u === null) {
-            http_response_code(403);
-            echo "Utilisateur non connecté, nous ne pouvons pas accéder à la page moncompte";
-            return;
-        }
-
-        DisplayManager::display("moncompte", array());
     }
 
 }
