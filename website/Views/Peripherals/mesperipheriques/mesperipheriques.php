@@ -32,12 +32,12 @@
 
                                 $date = date( "d/m/Y", $p->getLastUpdated()) . ' à ' . date( "H:i",$p->getLastUpdated() );
 
-                                echo '<tr><form action="index.php?c=Peripherals&a=postDissociatePeripheralFromProperty" method="post" >
+                                echo '<tr><form action="index.php?c=Peripherals&a=DissociatePeripheralFromProperty" method="post" >
                                         <td>'. $p->getDisplayName() .'</td>
                                         <td>'. $p->getRoomId() .'</td>
                                         <td>'. $date .'</td>
                                         <td><input type="hidden" name="peripheral_id" value="'. $p->getUUID() .'"/>'. $p->getUUID() .'</td>
-                                        <td><form action="index.php?c=Peripherals&a=postDissociatePeripheralFromProperty" method="post" ><input type="submit" value="Supprimer"/></form></td>
+                                        <td><form action="index.php?c=Peripherals&a=DissociatePeripheralFromProperty" method="post" ><input type="submit" value="Supprimer"/></form></td>
                                       </tr>';}
 
                             }

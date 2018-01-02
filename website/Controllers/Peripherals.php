@@ -68,7 +68,7 @@ class Peripherals
     public function getPeripheralsPage(\Entities\Request $req):void
     {
         //On récupère l'id de la propriété
-        $property_id = 1 /*$req->getPropertyID()*/;
+        $property_id = $req->getPropertyID();
 
         /*Récupère les id des capteurs sous forme de array*/
         $peripheriques_id_list = \Repositories\Peripherals::findAllByPropertyID($property_id);
@@ -119,5 +119,6 @@ class Peripherals
 
         // Push
         \Repositories\Peripherals::push($p);
+
     }
 }
