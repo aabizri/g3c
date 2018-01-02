@@ -100,7 +100,7 @@ class User
         $data = [
             "user" => $u,
         ];
-        DisplayManager::display("connexion",$data);
+        \Helpers\DisplayManager::redirectToController("User", "ConnectionPage");
     }
 
     /**
@@ -110,7 +110,7 @@ class User
     {
         // Si l'usager est déjà connecté, le rediriger vers la page d'accueil
         if ($req->getUserID() !== null) {
-            self::getAccountPage($req);
+            \Helpers\DisplayManager::redirectToController("User", "AccountPage");
             return;
         }
 
@@ -163,7 +163,7 @@ class User
             return;
         }
 
-        self::getAccountPage($req); // TODO: Le rediriger vers la page de sélection de propriété
+        \Helpers\DisplayManager::redirectToController("User", "AccountPage"); /* Redirection du navigateur */; // TODO: Le rediriger vers la page de sélection de propriété
     }
 
     public static function getConnectionPage(\Entities\Request $req): void

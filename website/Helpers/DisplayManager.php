@@ -150,4 +150,24 @@ class DisplayManager
             include($toinc);
         }
     }
+
+    /**
+     * Redirects to destination with 302 (temporary redirect)
+     *
+     * @param string $destination
+     */
+    public static function redirectToController(string $category, string $action): void
+    {
+        self::redirectToPath("index.php?c=$category&a=$action");
+    }
+
+    /**
+     * Redirects to destination with 302 (temporary redirect)
+     *
+     * @param string $destination
+     */
+    public static function redirectToPath(string $destination): void
+    {
+        header("Location: " . \Helpers\DisplayManager::absolutifyURL($destination));
+    }
 }
