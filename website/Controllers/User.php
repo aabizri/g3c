@@ -181,11 +181,8 @@ class User
             return;
         }
 
-        //On recupère les données
-        $user = $req->getUser();
-
         //On envoie vers la vue
-        $data["user"] = $user;
+        $data["user"] = $u;
 
         //Afficher
         \Helpers\DisplayManager::display("moncompte", $data);
@@ -200,7 +197,6 @@ class User
         //On récupère des données
         $email = $post["email"];
         $newemail = $post["newemail"];
-        $newaddress = $post["nouvelleaddresse"]; // TODO: AJOUTER L'ADDRESSE QUAND L'ABONNEMENT SERA FONCTIONNEL
         $newphone = $post["nouveautel"];
         $mdp = $post["mdp"];
 
@@ -231,14 +227,12 @@ class User
             try {
                 Repositories\Users::push($user);
             } catch (\Exception $e) {
-                Error::getInternalError500();
+                Error::getInternalError500($req);
             }
-            self::getInformations($req);
-        }
-        else{
             self::getInformations($req);
             return;
         }
+
     }
 
     //Changement de mdp
@@ -250,15 +244,15 @@ class User
         $user = $req->getUser();
 
         //On récupère les infos après avoir vérifier qu'elles existent
-        if (isset($ancienmdp) OR isset($newmdp) OR isset($cnewmdp)){
+        if (isset($post["ancienmdp"]) OR isset($post["nouveaumdp"]) OR isset($post["cnouveaumdp"])){
             self::getInformations($req);
             return;
         }
-        else{
-            $ancienmdp = $post["ancienmdp"];
-            $newmdp = $post['nouveaumdp'];
-            $cnewmdp = $post["cnouveaumdp"];
-        }
+
+        $ancienmdp = $post["ancienmdp"];
+        $newmdp = $post['nouveaumdp'];
+        $cnewmdp = $post["cnouveaumdp"];
+
 
         //Vérification de l'ancien mdp
         if ($user->validatePassword($ancienmdp) === false) {
@@ -279,7 +273,7 @@ class User
         try {
             Repositories\Users::push($user);
         } catch (\Exception $e) {
-            Error::getInternalError500();
+            Error::getInternalError500($req);
             return;
         }
 

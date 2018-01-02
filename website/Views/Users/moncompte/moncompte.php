@@ -35,10 +35,6 @@
             </p>
 
             <p>
-                <label>Nouvelle addresse : </label><input type="text" id="formdroit" name="nouvelleaddresse"/><br>
-            </p>
-
-            <p>
                 <label>Nouveau téléphone : </label><input type="text" id="formdroit" name="nouveautel"/><br>
             </p><br>
 
