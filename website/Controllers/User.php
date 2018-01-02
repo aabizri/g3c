@@ -19,7 +19,7 @@ class User
     public static function postJoin(\Entities\Request $req): void
     {
         // Récupere le post
-        $post = $req->getPOST();
+        $post = $req->getAllPOST();
 
         // Check if the data exists
         $required = ["nick", "email", "email_conf", "password", "password_conf", "name", "surname", "phone"];
@@ -115,7 +115,7 @@ class User
         }
 
         // Récupère le post
-        $post = $req->getPOST();
+        $post = $req->getAllPOST();
 
         // Check if the data exists
         $required = ["login", "password"];
@@ -224,12 +224,12 @@ class User
         }
 
         // Retrieve post parameter for session ids
-        if (empty($req->getPOST()["session_id"])) {
+        if (empty($req->getAllPOST()["session_id"])) {
             http_response_code(400);
             echo "Mauvaise requête: veuillez indiquer une session ID valide";
             return;
         }
-        $session_ids = $req->getPOST()["session_id"];
+        $session_ids = $req->getPOST("session_id");
 
         foreach ($session_ids as $session_id) {
             // Retrieve session
