@@ -26,7 +26,6 @@ class Error
 
     public static function getInternalError500(\Entities\Request $req, \Throwable $t = null) {
         if ($req->getInDebug()) {
-            ob_clean();
         }
         http_response_code(500);
         echo "Erreur Interne, veuillez nous excuser pour la gène occasionée";
