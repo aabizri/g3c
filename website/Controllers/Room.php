@@ -53,7 +53,7 @@ class Room
 
         /*Créer l'entité*/
         $r = new Entities\Room();
-        $r->setName($name);
+        $ok = $r->setName($name);
 
         /*Insérer l'entité dans la bdd*/
         try {
@@ -63,6 +63,10 @@ class Room
         }
 
         \Helpers\DisplayManager::display("dashboard", array());
+
+        if ($ok === false) {
+            echo "Il y a une erreur";
+        }
     }
 
 
