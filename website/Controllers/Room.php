@@ -17,7 +17,7 @@ class Room
     {
         /*Vérifier que les données existent*/
         if (empty($post["name"])) {
-            echo "Il manque : "."name";
+            echo "Il manque le nom";
             return;
         }
 
@@ -43,7 +43,7 @@ class Room
         {
         /*Vérifier que les données existent*/
         if (empty($post["name"])) {
-            echo "Il manque : "."name";
+            echo "Il manque le nom";
             return;
         }
 
@@ -89,6 +89,6 @@ class Room
     {
         \Helpers\DisplayManager::display("mespieces", array());
     }
-}
+
 }
 ?>
