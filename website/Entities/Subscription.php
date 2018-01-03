@@ -9,18 +9,43 @@
 namespace Entities;
 
 
+/**
+ * Class Subscription
+ * @package Entities
+ */
 class Subscription
 {
     /* Properties */
 
+    /**
+     * @var int
+     */
     private $id;
+
+    /**
+     * @var int
+     */
     private $property_id;
+
+    /**
+     * @var string (YYYY-MM-DD)
+     */
     private $start_date;
+
+    /**
+     * @var string (YYYY-MM-DD)
+     */
     private $expiry_date;
+
+    /**
+     * @var int
+     */
     private $command_id;
+
+    /**
+     * @var float
+     */
     private $last_updated;
-
-
 
     /* GETTERS AND SETTERS */
 
@@ -115,23 +140,20 @@ class Subscription
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getLastUpdated(): string
+    public function getLastUpdated(): float
     {
         return $this->last_updated;
     }
 
     /**
-     * @param string $last_updated
+     * @param float $last_updated
      * @return bool
      */
-    public function setLastUpdated($last_updated)
+    public function setLastUpdated(float $last_updated)
     {
         $this->last_updated = $last_updated;
         return true;
     }
-
-
-
 }
