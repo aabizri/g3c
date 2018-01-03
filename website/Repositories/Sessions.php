@@ -11,9 +11,9 @@ namespace Repositories;
 use Entities;
 use Exception;
 use PDO;
-use Repositories\Exceptions\MultiSetFailedException;
-use Repositories\Exceptions\RowNotFoundException;
-use Repositories\Exceptions\SetFailedException;
+use Exceptions\MultiSetFailedException;
+use Exceptions\RowNotFoundException;
+use Exceptions\SetFailedException;
 
 
 class Sessions extends Repository
@@ -109,7 +109,7 @@ class Sessions extends Repository
 
         // If nil, we throw an error
         if ($data == null) {
-            throw new RowNotFoundException("Session","sessions");
+            throw new RowNotFoundException($s,"sessions");
         }
 
         // Store
@@ -122,7 +122,7 @@ class Sessions extends Repository
             "last_updated" => (float)$data["last_updated"],
         ]);
         if ($ok === false) {
-            throw new MultiSetFailedException("Session",$data);
+            throw new MultiSetFailedException($s,$data);
         }
     }
 
@@ -170,7 +170,7 @@ class Sessions extends Repository
         // Set the ID
         $ok = $s->setID($id);
         if (!$ok) {
-            throw new SetFailedException("Session","setID",$id);
+            throw new SetFailedException($s,"setID",$id);
         }
 
         // Call Pull on it
@@ -191,7 +191,35 @@ class Sessions extends Repository
         // SQL
         $sql = "SELECT id
             FROM sessions
-            WHERE user_id = :user_id;";
+            WHERE user_id = :user_id
+            ORDER BY started DESC;";
+
+        // Prepare statement
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute statement
+        $stmt->execute(["user_id" => $user_id]);
+
+        // Fetch all results
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+        // Return the set
+        return $set;
+    }
+
+    /**
+     * Retrieves all IDs for session belonging to that user_id and that are valid
+     *
+     * @param int $user_id
+     * @return string[] array of session ids
+     */
+    public static function findAllValidByUserID(int $user_id): array
+    {
+        // SQL
+        $sql = "SELECT id
+            FROM sessions
+            WHERE user_id = :user_id AND canceled = FALSE AND expiry > now()
+            ORDER BY started DESC;";
 
         // Prepare statement
         $stmt = parent::db()->prepare($sql, parent::$pdo_params);

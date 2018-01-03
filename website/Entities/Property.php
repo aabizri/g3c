@@ -8,14 +8,37 @@
 
 namespace Entities;
 
+/**
+ * Class Property
+ * @package Entities
+ */
 class Property extends Entity
 {
     /* PROPERTIES */
 
+    /**
+     * @var int
+     */
     private $id;
+
+    /**
+     * @var string
+     */
     private $name;
+
+    /**
+     * @var string
+     */
     private $address;
+
+    /**
+     * @var float
+     */
     private $creation_date;
+
+    /**
+     * @var float
+     */
     private $last_updated;
 
     /* SETTERS AND GETTERS */
