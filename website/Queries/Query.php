@@ -67,6 +67,9 @@ abstract class Query
             throw new \Exception("entity class not a child of \Entities\Entity");
         }
         $this->entity_class_name = $entity_class_name;
+
+        // Initialise the Where
+        $this->where = new \Queries\Clauses\Where("AND");
     }
 
 
@@ -340,8 +343,8 @@ abstract class Query
      */
     protected function filterByColumn(string $key, string $operator, $object)
     {
-        $indicator = $key[0] . $key[1] . count($this->where);
-        $this->where[$key . " " . $operator] = $indicator;
+        $indicator = $key[0] . $key[1] . count($this->where->operands);
+        $this->where->operands[] = new \Queries\Clauses\WhereTriplet($key, $operator, $indicator);
         $this->data[$indicator] = $object;
         return $this;
     }
@@ -444,14 +447,7 @@ abstract class Query
         // Now the where clause
         if (!empty($this->where)) {
             $lexemes[] = "WHERE";
-            foreach ($this->where as $key => $indicator) {
-                $lexemes[] = $key;
-                $lexemes[] = ":".$indicator;
-                $keys = array_keys($this->where);
-                if ($key !== end($keys)){
-                    $lexemes[] = "AND";
-                }
-            }
+            $lexemes[] = $this->where->toSQL();
         }
 
         // Now the order by clause
@@ -570,14 +566,7 @@ abstract class Query
         // Now the where clause
         if (!empty($this->where)) {
             $lexemes[] = "WHERE";
-            foreach ($this->where as $key => $indicator) {
-                $lexemes[] = $key;
-                $lexemes[] = ":".$indicator;
-                $keys = array_keys($this->where);
-                if ($key !== end($keys)){
-                    $lexemes[] = ",";
-                }
-            }
+            $lexemes[] = $this->where->toSQL();
         }
 
         return $lexemes;
