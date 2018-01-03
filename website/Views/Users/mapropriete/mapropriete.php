@@ -12,35 +12,41 @@
 
     <div id="voirutilisateurs">
         <h4 id="titrelisteutilisateurs">Liste des utilisateurs</h4>
+        <table align="center">
         <?php
-                        //Créer un tableau qui s'indente en fonction du nombre d'utilisateurs
-                        $Nbrdonnees = count($data["users_list"]);
-                        if ($Nbrdonnees != 0){
-                            //Ici nous faisons le tableau avec ses titres
-                            echo '<thead><tr>
-                                    <th>Utilisateur</th>
-                                    <th>Gestion</th>
-                                    </tr></thead>';
+                //Créer un tableau qui s'indente en fonction du nombre d'utilisateurs
+                $Nbrdonnees = count($data["users_list"]);
+                if ($Nbrdonnees != 0){
+                    //Ici nous faisons le tableau avec ses titres
+                    echo '<thead><tr>
+                          <th>Utilisateur</th>
+                          <th>Gestion</th>
+                          </tr></thead>';
 
-                            //Ici nous ajoutons une ligne avec les infos
-                            foreach ($data["users_list"] as $u){
-
-                                echo '<tr><form action="index.php?c=Property&a=getPropertyUsers" method="post" >
-                                        <td>'. $u->getNick() .'</td>
-                                        <td><form action="" method="post" ><input type="submit" value="Supprimer"/></form></td>
-                                      </tr>';}
+                    //Ici nous ajoutons une ligne avec les infos et la possibilité de supprimer la personne
+                    foreach ($data["users_list"] as $u){
+                        echo '<tr>
+                              <td>'. $u->getNick() .'</td>
+                              <td>
+                                  <form action="index.php?c=Property&a=DeleteUserFromProperty&pid=1" method="post" >
+                                      <input type="hidden"  name="nickname" value="'. $u->getNick() .'" />
+                                      <input type="submit" value="Supprimer"/>
+                                  </form>
+                              </td>
+                              </tr>';}
                             }
-
                             ?>
+        </table>
     </div>
 
 
     <div id="creerutilisateur">
         <h4 id="titrecreerutilisateur">Ajouter un utilisateur à la propriété</h4>
-        <form action="pagephp">
-            <p><label>Login</label>: <input id="formdroit" type="text" name="login"/></p><br>
-            <input id="validercreationutilisateur" type="submit" value="Valider"
-                   title="Vous créez un nouvel utilisateur"/>
+        <form method="post" action="index.php?c=Property&a=NewPropertyUser&pid=1">
+            <p>
+                <label>Login</label>: <input id="formdroit" type="text" name="nickname"/>
+            </p><br>
+            <input id="validercreationutilisateur" type="submit" value="Valider" title="Vous créez un nouvel utilisateur"/>
         </form>
     </div>
 </div>

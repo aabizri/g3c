@@ -39,7 +39,7 @@ class Roles extends Repository
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
         $ok = $r->setID($id);
-        if ($ok) {
+        if (!$ok) {
             throw new SetFailedException($r,"setID",$id);
         }
 
@@ -300,5 +300,18 @@ class Roles extends Repository
 
         // Return this ID
         return $id;
+    }
+
+    public static function delete(int $id){
+
+        //sql pour supprimer
+        $sql = "DELETE FROM roles WHERE id = :id";
+
+        // Prepare statement
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute request
+        $stmt->execute(["id" => $id]);
+
     }
 }
