@@ -26,7 +26,7 @@ abstract class Query
     private $where;
 
     // Data to be replaced in prepared statement
-    private $data;
+    private $data = [];
 
     // Elements to be inserted
     private $insert_values;
@@ -37,6 +37,9 @@ abstract class Query
     // Fields to order by
     // array of key => ASC or DESC
     private $orderby;
+
+    // Offset to be applied;
+    private $offset;
 
     /**
      * Query constructor.
@@ -380,17 +383,35 @@ abstract class Query
         return $this;
     }
 
+    /**
+     * Offset allows us to query based on an offset
+     *
+     * @param int $offset
+     * @return $this
+     */
+    protected function offset(int $offset)
+    {
+        // Sets the operation to SELCT
+        $this->select();
+
+        // Sets the offset
+        $this->offset($offset);
+        return $this;
+    }
+
     /** ENTITY MAPPING STUFF */
 
     /**
      * Populates the entity given the column names => data mapping
      *
-     * @param $entity
+     * @param \Entities\Entity $entity
      * @param array $results
      *
      * @return bool true on success, false on failure
+     * @throws \Exception
      */
-    private function populateEntity($entity, array $results): bool {
+    private function populateEntity(\Entities\Entity $entity, array $results): bool
+    {
         return $entity->setMultiple($results);
     }
 
@@ -449,6 +470,11 @@ abstract class Query
                 }
             }
         }
+        // Now the offset clause
+        if (!empty($this->offset) && $this->offset !== 0) {
+            $lexemes[] = "OFFSET";
+            $lexemes[] = (string)$this->offset;
+        }
 
         // Now the limit clause
         if (!empty($this->limit_value)) {
@@ -464,6 +490,7 @@ abstract class Query
      * Processes the current instructions and transform them to lexemes, for a INSERT INTO context
      *
      * @return array
+     * @throws \Exception
      */
     private function toLexemesInsertInto(): array {
         // Lexemes
@@ -631,7 +658,15 @@ abstract class Query
         return $statement;
     }
 
+    /**
+     * @param array|null $data
+     * @return \PDOStatement
+     * @throws \Exception
+     */
     private function prepareAndExecute(array $data = null): \PDOStatement {
+        // Prepare statement
+        $stmt = $this->prepare();
+
         // Si on ne nous donne pas d'array, on utilise $this->data
         if (empty($data)) {
             if (!is_array($this->data)) {
@@ -639,9 +674,6 @@ abstract class Query
             }
             $data = $this->data;
         }
-
-        // Prepare statement
-        $stmt = $this->prepare();
 
         // Execute statement
         $stmt->execute($data);

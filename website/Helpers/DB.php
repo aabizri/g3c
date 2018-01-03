@@ -18,6 +18,9 @@ class DB
     private const USERNAME = "root";
     private const PASSWORD = "";
 
+    // Paramètres de configuration
+    public static $pdo_params = array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY);
+
     /* VARIABLE STOQUANT LA CONNEXION a LA BDD*/
     private static $instance = null;
 

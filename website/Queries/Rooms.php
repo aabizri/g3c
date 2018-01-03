@@ -5,8 +5,6 @@
  * Date: 11/27/17
  * Time: 9:15 PM
  */
-
-
 namespace Queries;
 
 require_once("../Helpers/autoloader.php");
@@ -32,7 +30,6 @@ class Rooms extends Query
     public function filterByProperty(\Entities\Property ...$properties): self{
         return $this->filterByEntity("property_id", ...$properties);
     }
-
 }
 
 
