@@ -1,0 +1,145 @@
+body {
+	position : relative;
+	background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
+	background-size: cover;
+	background-position: center;
+	width: auto;
+	font-family: Verdana;
+	overflow-x: hidden;
+}
+
+#Nomdelapage {
+	font-family: Verdana, sans-serif;
+	color: white;
+	position: relative;
+	left: 90%;
+	top: -50px;
+}
+
+#Menu  {
+	position: fixed;
+	list-style: none;
+	left:-49px;
+	top: 20px;
+}
+
+#Menu input
+{
+    background-color: rgb(217,196,177);
+	font-family: Verdana, sans-serif;
+	color: #955252;
+	width: 100%;
+	height: 95px;
+	font-size:14px;
+	margin: -25px 0px;
+	cursor: pointer;
+}
+
+#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres, #Mesparametres
+{
+	position: relative;
+	margin: 50px 10px;
+	width: 100%;
+}
+
+/*Mes pièces*/
+
+#Tableaudebord
+{
+	position: relative;
+	top: 60px;
+	left:20%;
+}
+
+#informationspiece
+{
+	display: flex;
+	position: relative;
+	justify-content: center;
+	font-size: 15px;
+}
+
+#temperature, #luminosite, #humidite, #qualiteair, #presence
+{
+	width: 15%;
+	padding-bottom: 20px;
+	margin: 10px;
+	border: 1px solid #955252 ;
+	border-radius: 5px;;
+}
+
+
+#vueinformation
+{
+	position: relative;
+	left:23%;
+	top: 100px;
+	border: 1px solid #955252;
+	border-radius: 5px;
+	width:70%;
+    background-color: rgb(217,196,177);
+	text-align: center;
+}
+
+#choixsalle
+{
+	position: relative;
+	top: 80px;
+	left:20%;
+}
+
+#choixsalle select
+{
+	border-radius:1px;
+	font-size: medium;
+}
+
+#action
+{
+	position: relative;
+	left: 23%;
+	top: 150px;
+	border: 1px solid #955252;
+	border-radius: 5px;
+	width: 70%;
+    background-color: rgb(217,196,177);
+	text-align: center;
+}
+
+#actionspieces
+{
+	display: flex;
+	justify-content: center;
+	padding: 10px 40px;
+}
+
+#actionspieces p
+{
+	width: 25%;
+	padding-top: 10px;
+	padding-bottom: 50px;
+	margin: 10px;
+	border: 1px solid #955252 ;
+    background-color: #d9c4b19b;
+	border-radius: 5px;
+}
+
+#actionspieces input
+{
+	margin-bottom: 5px;
+}
+
+.action{
+	height: 50%;
+	width: 40%;
+	font-size: large;
+	text-align: center;
+	border-radius:5px;
+}
+
+#valider
+{
+	height: 20px;
+	border-radius: 3px;
+}
+

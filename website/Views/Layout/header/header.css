@@ -1,0 +1,45 @@
+header {
+    color: white;
+    font-family: Verdana, sans-serif;
+    background-color: #955252;
+    position : fixed;
+    top: 0px;
+    right: 0px;
+    left: 0px;
+    height: 60px;
+    z-index: 1000;
+}
+
+
+#logo {
+    display: block;
+    position: relative;
+    top: 5px;
+    left: 20px;
+}
+
+#nom {
+    color: white;
+    font-family: American Typewriter, serif;
+    font-style: oblique;
+    font-size: 30px;
+    position: absolute;
+    top: -11px;
+    left: 70px;
+}
+
+#accroche {
+    font-family: Verdana, sans-serif;
+    color: white;
+    position: relative;
+    left: 40%;
+    top: -45px;
+}
+
+#nomdelapage {
+    font-family: Verdana, sans-serif;
+    color: white;
+    position: relative;
+    left: 90%;
+    top: -80px;
+}

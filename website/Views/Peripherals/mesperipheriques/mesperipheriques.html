@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <link rel="stylesheet" href="mesperipheriques.css" />
+        <title>Mes périphériques</title>
+    </head>
+            <ul id="Menu">
+              <li id="Moncompte"><a href="Moncompte.html"><input type="button" value="Mon compte" /></a></li>
+              <li id="Mespieces"><a href="Mespieces.html"><input type="button" value="Mes pièces" /></a></li>
+              <li id="Mesperipheriques"> <a href="Mesperipheriques.html"><input type="button" value="Mes périphériques" /></a></li>
+              <li id="Mesfiltres"><a href="Mesfiltres.html"><input type="button" value="Mes filtres" /></a></li>
+              <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
+            </ul>
+
+            <h2 id="titreperipherique">Liste des peripériques connectés</h2>
+            <p id="nombrepc">Vous avez actuellement n périphériques connectés.</p>
+
+            <div id="listeperipheriques">
+                <h3 id="peripheriques"><strong>Périphériques</strong><br></h3>
+                <div id="tableperipheriques">
+                    <table align="center">
+                        <thead><tr>
+                            <th>Nom du périphérique</th>
+                            <th>Localisation</th>
+                            <th>Dernière activité</th>
+                        </tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>Thermomètre</td>
+                                <td>Chambre 1</td>
+                                <td>En marche</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="ajouterperipherique">
+                <h3>Ajouter un périphérique</h3>
+                <div id="champsajouterperipherique">
+                    <form name="Ajouter un peripherique" action="php ajouter pièce">
+                        <label>UUID du périphérique : </label><input type="text" /><br><br>
+                        <label>Nom du périphérique : </label><input type="text" /><br><br>
+                        <label>Nom de la salle : </label><input type="text" /><br><br> 
+                        <input type="submit" value="Ajouter un périphérique" id="ajouterperipheriquebouton" >
+                    </form>
+                </div>
+            </div>
+
+</html>

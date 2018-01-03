@@ -10,7 +10,6 @@ class Role
     private $user_id;
     private $property_id;
     private $creation_date;
-    private $perms;
     private $last_update;
 
     /* SETTERS AND GETTERS */
@@ -90,24 +89,6 @@ class Role
     /**
      * @return string
      */
-    public function getPerms(): string
-    {
-        return $this->perms;
-    }
-
-    /**
-     * @param string
-     * @return bool
-     */
-    public function setPerms(string $perms): bool
-    {
-        $this->perms = $perms;
-        return true;
-    }
-
-    /**
-     * @return string
-     */
     public function getLastUpdate(): string
     {
         return $this->last_update;
@@ -121,5 +102,14 @@ class Role
     {
         $this->last_update = $last_update;
         return true;
+    }
+
+    /* BUSINESS LOGIC */
+
+    /**
+     * @return int[] the permissions (id) given to the role
+     */
+    public function retrievePermissions(): array {
+        return \Repositories\Permissions::findAllByRole($this->getId());
     }
 }

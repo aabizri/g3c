@@ -1,0 +1,44 @@
+footer {
+    background-color: rgb(217,196,177);
+    font-family: Verdana, sans-serif;
+    color: #955252;
+    position :relative;
+    bottom:-180px;
+    height: 65px;
+    width: 101.5%;
+    left: -7px;
+}
+
+#SAV {
+    position : relative;
+    bottom : -9px;
+    left : 20px;
+    margin: 1px;
+    font-size: 90%;
+}
+#Reseauxsociaux {
+    position : absolute;
+    bottom : 25px;
+    right : 25px;
+}
+
+#Fb
+{
+    position: absolute;
+    right: 30px;
+    bottom: 0px;
+}
+
+#Twitter
+{
+    position: absolute;
+    right: 90px;
+    bottom: 0px;
+}
+
+#rights{
+    position: absolute;
+    left:45%;
+    bottom: 0px;
+    font-size: 60%;
+}
