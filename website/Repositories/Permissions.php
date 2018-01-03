@@ -9,9 +9,9 @@
 namespace Repositories;
 
 
-use Repositories\Exceptions\RowNotFoundException;
-use Repositories\Exceptions\MultiSetFailedException;
-use Repositories\Exceptions\SetFailedException;
+use Exceptions\RowNotFoundException;
+use Exceptions\MultiSetFailedException;
+use Exceptions\SetFailedException;
 
 class Permissions extends Repository
 {
@@ -43,7 +43,7 @@ class Permissions extends Repository
         $id = parent::db()->lastInsertId();
         $ok = $p->setID($id);
         if (!$ok) {
-            throw new SetFailedException("Permission","setID",$id);
+            throw new SetFailedException($p,"setID",$id);
         }
 
         // We should now pull to populate times
@@ -106,24 +106,23 @@ class Permissions extends Repository
 
         // If nil, we throw an error
         if ($data === false || $data === null) {
-            throw new RowNotFoundException("Permission", "permissions");
+            throw new RowNotFoundException($p, "permissions");
         }
 
         // Store
         $ok = $p->setMultiple($data);
         if (!$ok) {
-            throw new MultiSetFailedException("Permission",$data);
+            throw new MultiSetFailedException($p,$data);
         }
     }
 
     /**
-     * Retrieve a permission from the database given its id
+     * Checks if the given permission exists in the database
      *
-     * @param int $id of the permission to retrieve
-     * @return \Entities\Permission the room if found, null if not
-     * @throws \Exception
+     * @param int $id
+     * @return bool
      */
-    public static function retrieve(int $id): \Entities\Permission
+    public static function exists(int $id): bool
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -138,26 +137,37 @@ class Permissions extends Repository
 
         // Fetch
         $count = $stmt->fetchColumn(0);
+        return $count != 0;
+    }
 
+    /**
+     * Retrieve a permission from the database given its id
+     *
+     * @param int $id of the permission to retrieve
+     * @return \Entities\Permission|null the room if found, null if not
+     * @throws \Exception
+     */
+    public static function retrieve(int $id): ?\Entities\Permission
+    {
         // If count is zero, then we return null
-        if ($count == 0) {
+        if (!self::exists($id)) {
             return null;
         }
 
         // Create a User entity
-        $r = new \Entities\Permission();
+        $p = new \Entities\Permission();
 
         // Set the ID
-        $ok = $r->setID($id);
+        $ok = $p->setID($id);
         if (!$ok) {
-            throw new SetFailedException("Permission","setID",$id);
+            throw new SetFailedException($p,"setID",$id);
         }
 
         // Call Pull on it
-        self::pull($r);
+        self::pull($p);
 
         // Return the user_id
-        return $r;
+        return $p;
     }
 
     /**

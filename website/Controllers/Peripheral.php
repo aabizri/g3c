@@ -13,6 +13,6 @@ class Peripheral
 {
     public static function getPeripheralsPage (\Entities\Request $req):void
     {
-        \Helpers\DisplayManager::display("mesperipheriques", array());
+        \Helpers\DisplayManager::display("mesperipheriques");
     }
 }

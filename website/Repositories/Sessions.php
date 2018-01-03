@@ -11,9 +11,9 @@ namespace Repositories;
 use Entities;
 use Exception;
 use PDO;
-use Repositories\Exceptions\MultiSetFailedException;
-use Repositories\Exceptions\RowNotFoundException;
-use Repositories\Exceptions\SetFailedException;
+use Exceptions\MultiSetFailedException;
+use Exceptions\RowNotFoundException;
+use Exceptions\SetFailedException;
 
 
 class Sessions extends Repository
@@ -109,7 +109,7 @@ class Sessions extends Repository
 
         // If nil, we throw an error
         if ($data == null) {
-            throw new RowNotFoundException("Session","sessions");
+            throw new RowNotFoundException($s,"sessions");
         }
 
         // Store
@@ -122,64 +122,17 @@ class Sessions extends Repository
             "last_updated" => (float)$data["last_updated"],
         ]);
         if ($ok === false) {
-            throw new MultiSetFailedException("Session",$data);
+            throw new MultiSetFailedException($s,$data);
         }
     }
 
     /**
-     * Syncs a session with the database, executing a Pull or a Push on a last_updated timestamp basis
+     * Checks if the given session exists in the database
      *
-     * @param Entities\Session $s to be synced
-     *
-     * @return void
-     *
-     * @throws \Exception if not found
+     * @param string $id
+     * @return bool
      */
-    public static function sync(Entities\Session $s): void
-    {
-        // SQL to get last_updated on given peripheral
-        $sql = "SELECT UNIX_TIMESTAMP(last_updated) AS last_updated
-          FROM sessions
-          WHERE id = :id;";
-
-        // Prepare statement
-        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
-
-        // Execute
-        $stmt->execute(['id' => $s->getID()]);
-
-        // Retrieve
-        $db_last_updated = $stmt->fetchColumn(0);
-
-        // If nil, we throw an exception
-        if ($db_last_updated == null) {
-            throw new \Exception("No such session found");
-        }
-
-        // If empty, that's an Exception
-        if ($db_last_updated == "") {
-            throw new \Exception("Empty last_updated");
-        }
-
-        // Cast it to float
-        $db_last_updated = (float)$db_last_updated;
-
-        // If the DB was updated BEFORE the last update to the peripheral, push
-        if ($db_last_updated < $s->getLastUpdated()) {
-            self::push($s);
-        } else {
-            self::pull($s);
-        }
-    }
-
-    /**
-     * Retrieve a session from the database given its id
-     *
-     * @param string $id of the session to retrieve
-     * @return Entities\Session the it is found, null if not
-     * @throws \Exception
-     */
-    public static function retrieve(string $id): ?Entities\Session
+    public static function exists(string $id): bool
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -194,9 +147,20 @@ class Sessions extends Repository
 
         // Fetch
         $count = $stmt->fetchColumn(0);
+        return $count != 0;
+    }
 
-        // If count is zero, then we return null
-        if ($count == 0) {
+    /**
+     * Retrieve a session from the database given its id
+     *
+     * @param string $id of the session to retrieve
+     * @return Entities\Session|null , null if it is not found
+     * @throws \Exception
+     */
+    public static function retrieve(string $id): ?Entities\Session
+    {
+        // If it doesn't exist, we return null
+        if (!self::exists($id)) {
             return null;
         }
 
@@ -206,7 +170,7 @@ class Sessions extends Repository
         // Set the ID
         $ok = $s->setID($id);
         if (!$ok) {
-            throw new SetFailedException("Session","setID",$id);
+            throw new SetFailedException($s,"setID",$id);
         }
 
         // Call Pull on it
@@ -227,7 +191,35 @@ class Sessions extends Repository
         // SQL
         $sql = "SELECT id
             FROM sessions
-            WHERE user_id = :user_id;";
+            WHERE user_id = :user_id
+            ORDER BY started DESC;";
+
+        // Prepare statement
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute statement
+        $stmt->execute(["user_id" => $user_id]);
+
+        // Fetch all results
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+        // Return the set
+        return $set;
+    }
+
+    /**
+     * Retrieves all IDs for session belonging to that user_id and that are valid
+     *
+     * @param int $user_id
+     * @return string[] array of session ids
+     */
+    public static function findAllValidByUserID(int $user_id): array
+    {
+        // SQL
+        $sql = "SELECT id
+            FROM sessions
+            WHERE user_id = :user_id AND canceled = FALSE AND expiry > now()
+            ORDER BY started DESC;";
 
         // Prepare statement
         $stmt = parent::db()->prepare($sql, parent::$pdo_params);

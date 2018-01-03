@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le :  sam. 16 déc. 2017 à 18:54
+-- Généré le :  Dim 31 déc. 2017 à 01:38
 -- Version du serveur :  10.1.28-MariaDB
 -- Version de PHP :  7.1.11
 
@@ -27,30 +27,20 @@ SET time_zone = "+00:00";
 --
 -- Structure de la table `actuators`
 --
--- Création :  mar. 12 déc. 2017 à 13:59
---
 
 CREATE TABLE `actuators` (
   `id` int(11) NOT NULL,
   `action_type` enum('undefined') COLLATE utf8_unicode_ci NOT NULL,
   `last_action_started` timestamp(3) NULL DEFAULT NULL,
-  `current_situation` int(11) DEFAULT NULL,
+  `last_measure_id` int(11) DEFAULT NULL COMMENT 'A measure ID',
   `peripheral_uuid` varchar(33) COLLATE utf8_unicode_ci NOT NULL,
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- RELATIONS POUR LA TABLE `actuators`:
---   `peripheral_uuid`
---       `peripherals` -> `uuid`
---
 
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `events`
---
--- Création :  mar. 12 déc. 2017 à 13:59
 --
 
 CREATE TABLE `events` (
@@ -63,18 +53,10 @@ CREATE TABLE `events` (
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- RELATIONS POUR LA TABLE `events`:
---   `property_id`
---       `properties` -> `id`
---
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `filters`
---
--- Création :  mar. 12 déc. 2017 à 13:59
 --
 
 CREATE TABLE `filters` (
@@ -90,41 +72,48 @@ CREATE TABLE `filters` (
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- RELATIONS POUR LA TABLE `filters`:
---   `property_id`
---       `properties` -> `id`
---
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `measures`
 --
--- Création :  mar. 12 déc. 2017 à 13:58
---
 
 CREATE TABLE `measures` (
   `id` int(11) NOT NULL,
-  `type` enum('undefined') COLLATE utf8_unicode_ci NOT NULL,
-  `date_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `value` int(11) NOT NULL,
-  `peripheral_uuid` varchar(33) COLLATE utf8_unicode_ci NOT NULL,
-  `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
+  `type_id` int(11) NOT NULL,
+  `date_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `value` double NOT NULL,
+  `sensor_id` int(11) DEFAULT NULL,
+  `actuator_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `measure_types`
+--
+
+CREATE TABLE `measure_types` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Température °C"',
+  `description` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Température en Celsius"',
+  `unit_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Celsius"',
+  `unit_symbol` varchar(6) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "°C"',
+  `min` double DEFAULT NULL COMMENT 'Valeur minimale (opt)',
+  `max` double DEFAULT NULL COMMENT 'Valeur maximale (opt)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- RELATIONS POUR LA TABLE `measures`:
---   `peripheral_uuid`
---       `peripherals` -> `uuid`
+-- Déchargement des données de la table `measure_types`
 --
+
+INSERT INTO `measure_types` (`id`, `name`, `description`, `unit_name`, `unit_symbol`, `min`, `max`) VALUES
+(1, 'Température (*C)', 'Température en degrés Celsius', 'Celsius', '°C', -274, NULL);
 
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `notifications`
---
--- Création :  mar. 12 déc. 2017 à 13:58
 --
 
 CREATE TABLE `notifications` (
@@ -137,18 +126,10 @@ CREATE TABLE `notifications` (
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- RELATIONS POUR LA TABLE `notifications`:
---   `destination_role_id`
---       `roles` -> `id`
---
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `peripherals`
---
--- Création :  mar. 12 déc. 2017 à 13:58
 --
 
 CREATE TABLE `peripherals` (
@@ -161,14 +142,6 @@ CREATE TABLE `peripherals` (
   `room_id` int(11) DEFAULT NULL,
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- RELATIONS POUR LA TABLE `peripherals`:
---   `property_id`
---       `properties` -> `id`
---   `room_id`
---       `rooms` -> `id`
---
 
 --
 -- Déchargement des données de la table `peripherals`
@@ -381,8 +354,6 @@ INSERT INTO `peripherals` (`uuid`, `display_name`, `build_date`, `add_date`, `pu
 --
 -- Structure de la table `permissions`
 --
--- Création :  mar. 12 déc. 2017 à 13:58
---
 
 CREATE TABLE `permissions` (
   `id` int(11) NOT NULL,
@@ -392,16 +363,10 @@ CREATE TABLE `permissions` (
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- RELATIONS POUR LA TABLE `permissions`:
---
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `properties`
---
--- Création :  mar. 12 déc. 2017 à 13:58
 --
 
 CREATE TABLE `properties` (
@@ -411,10 +376,6 @@ CREATE TABLE `properties` (
   `creation_date` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- RELATIONS POUR LA TABLE `properties`:
---
 
 --
 -- Déchargement des données de la table `properties`
@@ -428,8 +389,6 @@ INSERT INTO `properties` (`id`, `name`, `address`, `creation_date`, `last_update
 --
 -- Structure de la table `requests`
 --
--- Création :  jeu. 07 déc. 2017 à 22:28
---
 
 CREATE TABLE `requests` (
   `id` int(11) NOT NULL,
@@ -438,73 +397,45 @@ CREATE TABLE `requests` (
   `user_agent_hash` binary(32) NOT NULL COMMENT 'Hashed with SHA-256',
   `session_id` varchar(128) COLLATE utf8_unicode_ci DEFAULT NULL,
   `controller` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `method` enum('GET','POST','HEAD','PUT','PATCH','DELETE','CONNECT','OPTIONS','TRACE','PATCH') COLLATE utf8_unicode_ci NOT NULL,
   `action` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `in_debug` tinyint(1) NOT NULL DEFAULT '0',
   `started_processing` timestamp(3) NOT NULL DEFAULT '0000-00-00 00:00:00.000',
-  `finished_processing` timestamp(3) NOT NULL DEFAULT '0000-00-00 00:00:00.000'
+  `duration` int(11) NOT NULL COMMENT 'Duration of processing in microseconds',
+  `user_id` int(11) DEFAULT NULL COMMENT 'If linked to a user at any point during the request and/or its treatment',
+  `property_id` int(11) DEFAULT NULL COMMENT 'If linked with a property at any point during the request and/or its treatment',
+  `referer` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `request_uri` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `request_length` int(11) NOT NULL DEFAULT '-1' COMMENT 'In bytes',
+  `response_length` int(11) NOT NULL DEFAULT '-1' COMMENT 'In bytes'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- RELATIONS POUR LA TABLE `requests`:
---   `session_id`
---       `sessions` -> `id`
---
 
 --
 -- Déchargement des données de la table `requests`
 --
 
-INSERT INTO `requests` (`id`, `ip`, `user_agent_txt`, `user_agent_hash`, `session_id`, `controller`, `action`, `started_processing`, `finished_processing`) VALUES
-(26, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '4ac2ae2fa04b6ce3a2116a54efa9aa8d', 'User', 'connexion', '2017-12-13 22:00:56.653', '2017-12-13 22:00:56.656'),
-(27, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '4ac2ae2fa04b6ce3a2116a54efa9aa8d', 'User', 'connexion', '2017-12-13 22:01:02.581', '2017-12-13 22:01:02.584'),
-(28, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '4ac2ae2fa04b6ce3a2116a54efa9aa8d', 'User', 'connexion', '2017-12-13 22:01:03.447', '2017-12-13 22:01:03.451'),
-(29, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '4ac2ae2fa04b6ce3a2116a54efa9aa8d', 'User', 'connexion', '2017-12-13 22:01:04.128', '2017-12-13 22:01:04.132'),
-(30, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '4ac2ae2fa04b6ce3a2116a54efa9aa8d', 'User', 'connexion', '2017-12-13 22:01:05.465', '2017-12-13 22:01:05.469'),
-(31, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '4ac2ae2fa04b6ce3a2116a54efa9aa8d', 'User', 'connexion', '2017-12-13 22:01:07.212', '2017-12-13 22:01:07.215'),
-(32, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '4ac2ae2fa04b6ce3a2116a54efa9aa8d', 'User', 'connexion', '2017-12-13 22:01:08.115', '2017-12-13 22:01:08.118'),
-(33, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '4ac2ae2fa04b6ce3a2116a54efa9aa8d', 'User', 'connexion', '2017-12-13 22:01:09.084', '2017-12-13 22:01:09.088'),
-(34, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '4ac2ae2fa04b6ce3a2116a54efa9aa8d', 'User', 'connexion', '2017-12-13 22:01:10.383', '2017-12-13 22:01:10.386'),
-(35, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '4ac2ae2fa04b6ce3a2116a54efa9aa8d', 'User', 'connexion', '2017-12-13 22:01:11.590', '2017-12-13 22:01:11.593'),
-(36, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '4ac2ae2fa04b6ce3a2116a54efa9aa8d', 'User', 'connexion', '2017-12-13 22:01:12.781', '2017-12-13 22:01:12.784'),
-(37, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '4ac2ae2fa04b6ce3a2116a54efa9aa8d', 'User', 'connexion', '2017-12-13 22:01:13.879', '2017-12-13 22:01:13.882'),
-(38, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '4ac2ae2fa04b6ce3a2116a54efa9aa8d', 'User', 'connexion', '2017-12-13 22:01:14.999', '2017-12-13 22:01:15.002'),
-(39, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '4ac2ae2fa04b6ce3a2116a54efa9aa8d', 'User', 'connexion', '2017-12-13 22:01:15.961', '2017-12-13 22:01:15.964'),
-(40, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '46defb11733028a6cab0a0c0c71c2ad7', 'User', 'connexion', '2017-12-13 22:03:00.854', '2017-12-13 22:03:00.858'),
-(41, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '46defb11733028a6cab0a0c0c71c2ad7', 'User', 'connexion', '2017-12-13 22:03:07.472', '2017-12-13 22:03:07.475'),
-(42, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '46defb11733028a6cab0a0c0c71c2ad7', 'User', 'connexion', '2017-12-13 22:03:08.517', '2017-12-13 22:03:08.520'),
-(43, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '46defb11733028a6cab0a0c0c71c2ad7', 'User', 'connexion', '2017-12-13 22:03:09.546', '2017-12-13 22:03:09.549'),
-(44, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '46defb11733028a6cab0a0c0c71c2ad7', 'User', 'connexion', '2017-12-13 22:03:12.032', '2017-12-13 22:03:12.035'),
-(45, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '4ac2ae2fa04b6ce3a2116a54efa9aa8d', 'User', 'connexion', '2017-12-13 22:03:15.500', '2017-12-13 22:03:15.503'),
-(46, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '46defb11733028a6cab0a0c0c71c2ad7', 'User', 'connexion', '2017-12-13 22:11:47.432', '2017-12-13 22:11:47.436'),
-(47, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '4ac2ae2fa04b6ce3a2116a54efa9aa8d', 'User', 'connexion', '2017-12-13 22:23:43.281', '2017-12-13 22:23:43.377'),
-(48, '::1', 'curl/7.55.1', 0x55703a1051fcff1102d749dc618e4fd784656b9525924fa29d7c216157d7b360, '8e0371c0e74883c4b688fea93a2d948c', 'User', 'connexion', '2017-12-13 22:23:47.416', '2017-12-13 22:23:47.450'),
-(49, '::1', 'curl/7.55.1', 0x55703a1051fcff1102d749dc618e4fd784656b9525924fa29d7c216157d7b360, '5044a057e54984a00a15c9b64ddfdbd3', 'User', 'connexion', '2017-12-13 22:25:27.308', '2017-12-13 22:25:27.320'),
-(50, '::1', 'curl/7.55.1', 0x55703a1051fcff1102d749dc618e4fd784656b9525924fa29d7c216157d7b360, 'a342ca783638b79eb63251bc8d108d96', 'User', 'connexion', '2017-12-13 22:26:17.509', '2017-12-13 22:26:17.513'),
-(51, '::1', 'curl/7.55.1', 0x55703a1051fcff1102d749dc618e4fd784656b9525924fa29d7c216157d7b360, '2c1d80ba9f943e425eaa4c2426f43ff3', 'User', 'connexion', '2017-12-13 22:30:14.534', '2017-12-13 22:30:14.538'),
-(52, '::1', 'curl/7.55.1', 0x55703a1051fcff1102d749dc618e4fd784656b9525924fa29d7c216157d7b360, '21d4d916a51f856e509dc87412aeb008', 'User', 'connexion', '2017-12-13 22:31:11.703', '2017-12-13 22:31:11.712'),
-(53, '::1', 'curl/7.55.1', 0x55703a1051fcff1102d749dc618e4fd784656b9525924fa29d7c216157d7b360, '0f4b9ede16273eb72362f4339c326bcc', 'User', 'connexion', '2017-12-13 22:32:07.598', '2017-12-13 22:32:07.602'),
-(54, '::1', 'curl/7.55.1', 0x55703a1051fcff1102d749dc618e4fd784656b9525924fa29d7c216157d7b360, 'c804bf64b05e0e3d30a04bbf1b89ba94', 'User', 'connexion', '2017-12-13 22:32:54.668', '2017-12-13 22:32:54.672'),
-(55, '::1', 'curl/7.55.1', 0x55703a1051fcff1102d749dc618e4fd784656b9525924fa29d7c216157d7b360, 'db59bec4fff93cbf7d877899d380d1c1', 'User', 'connexion', '2017-12-13 22:33:18.808', '2017-12-13 22:33:18.888'),
-(56, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-14 21:42:20.661', '2017-12-14 21:42:20.675'),
-(57, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-14 21:42:25.723', '2017-12-14 21:42:25.728'),
-(58, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-14 21:42:31.854', '2017-12-14 21:42:31.859'),
-(59, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-14 21:43:17.003', '2017-12-14 21:43:17.017'),
-(60, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-14 22:01:02.839', '2017-12-14 22:01:02.843'),
-(61, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-14 22:01:16.987', '2017-12-14 22:01:16.991'),
-(62, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'join', '2017-12-14 22:01:59.115', '2017-12-14 22:01:59.119'),
-(63, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-14 22:03:47.876', '2017-12-14 22:03:47.879'),
-(64, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-14 22:03:53.927', '2017-12-14 22:03:54.015'),
-(65, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-14 22:05:42.243', '2017-12-14 22:05:42.247'),
-(66, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-14 22:05:48.536', '2017-12-14 22:05:48.542'),
-(67, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-15 13:25:30.058', '2017-12-15 13:25:30.067'),
-(68, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-15 13:26:13.792', '2017-12-15 13:26:13.885'),
-(69, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-15 13:26:24.215', '2017-12-15 13:26:24.299');
+INSERT INTO `requests` (`id`, `ip`, `user_agent_txt`, `user_agent_hash`, `session_id`, `controller`, `method`, `action`, `in_debug`, `started_processing`, `duration`, `user_id`, `property_id`, `referer`, `request_uri`, `request_length`, `response_length`) VALUES
+(461, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'GET', 'SubscriptionPage', 1, '2017-12-31 00:20:41.309', 2147483647, NULL, NULL, '', '/g3c/index.php?c=User&a=SubscriptionPage&debug=true', -1, -1),
+(462, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'GET', 'SubscriptionPage', 1, '2017-12-31 00:30:45.359', 0, NULL, NULL, '', '/g3c/index.php?c=User&a=SubscriptionPage&debug=true', -1, -1),
+(463, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'GET', 'SubscriptionPage', 1, '2017-12-31 00:31:36.773', 0, NULL, NULL, '', '/g3c/index.php?c=User&a=SubscriptionPage&debug=true', -1, -1),
+(464, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'GET', 'SubscriptionPage', 1, '2017-12-31 00:31:58.789', 0, NULL, NULL, '', '/g3c/index.php?c=User&a=SubscriptionPage&debug=true', -1, -1),
+(465, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'GET', 'SubscriptionPage', 1, '2017-12-31 00:32:09.725', 0, NULL, NULL, '', '/g3c/index.php?c=User&a=SubscriptionPage&debug=true', -1, -1),
+(466, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'GET', 'SubscriptionPage', 1, '2017-12-31 00:32:20.654', 0, NULL, NULL, '', '/g3c/index.php?c=User&a=SubscriptionPage&debug=true', -1, -1),
+(467, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'GET', 'SubscriptionPage', 1, '2017-12-31 00:32:45.224', 4367, NULL, NULL, '', '/g3c/index.php?c=User&a=SubscriptionPage&debug=true', -1, -1),
+(468, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'GET', 'SubscriptionPage', 1, '2017-12-31 00:32:55.225', 4697, NULL, NULL, '', '/g3c/index.php?c=User&a=SubscriptionPage&debug=true', -1, -1),
+(469, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'GET', 'SubscriptionPage', 1, '2017-12-31 00:32:56.604', 4905, NULL, NULL, '', '/g3c/index.php?c=User&a=SubscriptionPage&debug=true', -1, -1),
+(470, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'GET', 'SubscriptionPage', 1, '2017-12-31 00:32:58.302', 4570, NULL, NULL, '', '/g3c/index.php?c=User&a=SubscriptionPage&debug=true', -1, -1),
+(471, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'GET', 'SubscriptionPage', 1, '2017-12-31 00:33:13.081', 4184, NULL, NULL, '', '/g3c/index.php?c=User&a=SubscriptionPage&debug=true', -1, -1),
+(472, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'GET', 'SubscriptionPage', 1, '2017-12-31 00:34:27.211', 3822, NULL, NULL, '', '/g3c/index.php?c=User&a=SubscriptionPage&debug=true', -1, -1),
+(473, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'GET', 'SubscriptionPage', 1, '2017-12-31 00:34:30.201', 6226, NULL, NULL, '', '/g3c/index.php?c=User&a=SubscriptionPage&debug=false', -1, -1),
+(474, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'GET', 'SubscriptionPage', 0, '2017-12-31 00:34:33.354', 5380, NULL, NULL, '', '/g3c/index.php?c=User&a=SubscriptionPage', -1, -1),
+(475, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'GET', 'SubscriptionPage', 0, '2017-12-31 00:36:42.152', 5357, NULL, NULL, '', '/g3c/index.php?c=User&a=SubscriptionPage', -1, 1292),
+(476, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '09b7f22a4979b345d8a21b9b0ce9bb75', 'User', 'GET', 'SubscriptionPage', 0, '2017-12-31 00:37:00.125', 4744, NULL, NULL, '', '/g3c/index.php?c=User&a=SubscriptionPage', -1, 1292);
 
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `roles`
---
--- Création :  mar. 12 déc. 2017 à 14:00
 --
 
 CREATE TABLE `roles` (
@@ -515,20 +446,10 @@ CREATE TABLE `roles` (
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- RELATIONS POUR LA TABLE `roles`:
---   `property_id`
---       `properties` -> `id`
---   `user_id`
---       `users` -> `id`
---
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `roles_permissions`
---
--- Création :  mar. 12 déc. 2017 à 14:00
 --
 
 CREATE TABLE `roles_permissions` (
@@ -538,16 +459,10 @@ CREATE TABLE `roles_permissions` (
   `creation_date` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- RELATIONS POUR LA TABLE `roles_permissions`:
---
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `rooms`
---
--- Création :  mar. 12 déc. 2017 à 14:01
 --
 
 CREATE TABLE `rooms` (
@@ -559,48 +474,32 @@ CREATE TABLE `rooms` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- RELATIONS POUR LA TABLE `rooms`:
---   `property_id`
---       `properties` -> `id`
---
-
---
 -- Déchargement des données de la table `rooms`
 --
 
 INSERT INTO `rooms` (`id`, `property_id`, `name`, `creation_date`, `last_updated`) VALUES
-(1, 1, 'Salle de Séjour', '2017-11-20 14:20:49.000', '2017-11-20 15:18:45.000');
+(1, 1, 'updated !', '2017-11-20 14:20:49.000', '2017-12-19 23:22:11.422'),
+(4, 1, 'Inserted but not updated', '2017-12-19 23:22:11.416', '2017-12-19 23:22:11.416'),
+(5, 1, 'Inserted but not updated', '2017-12-19 23:22:40.597', '2017-12-19 23:22:40.597');
 
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `sensors`
 --
--- Création :  mar. 12 déc. 2017 à 14:01
---
 
 CREATE TABLE `sensors` (
   `id` int(11) NOT NULL,
-  `sense_type` enum('undefined') COLLATE utf8_unicode_ci NOT NULL,
-  `last_measure` int(11) DEFAULT NULL,
+  `measure_type_id` int(11) NOT NULL,
+  `last_measure_id` int(11) DEFAULT NULL,
   `peripheral_uuid` varchar(33) COLLATE utf8_unicode_ci NOT NULL,
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- RELATIONS POUR LA TABLE `sensors`:
---   `peripheral_uuid`
---       `peripherals` -> `uuid`
---   `last_measure`
---       `measures` -> `id`
---
 
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `sessions`
---
--- Création :  mar. 12 déc. 2017 à 14:01
 --
 
 CREATE TABLE `sessions` (
@@ -614,34 +513,31 @@ CREATE TABLE `sessions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- RELATIONS POUR LA TABLE `sessions`:
---   `user_id`
---       `users` -> `id`
---
-
---
 -- Déchargement des données de la table `sessions`
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled`, `last_updated`) VALUES
+('09b7f22a4979b345d8a21b9b0ce9bb75', NULL, 'user_id|i:4;', '2017-12-24 18:21:38.683', '2017-12-31 18:21:38.683', 0, '2017-12-24 21:32:50.341'),
 ('0f4b9ede16273eb72362f4339c326bcc', NULL, '', '2017-12-13 22:32:07.602', '2017-12-20 22:32:07.602', 0, '2017-12-13 22:32:07.603'),
 ('21d4d916a51f856e509dc87412aeb008', NULL, '', '2017-12-13 22:31:11.712', '2017-12-20 22:31:11.712', 0, '2017-12-13 22:31:11.712'),
 ('2c1d80ba9f943e425eaa4c2426f43ff3', NULL, '', '2017-12-13 22:30:14.538', '2017-12-20 22:30:14.538', 0, '2017-12-13 22:30:14.538'),
-('439d47c88eba6e7dcd526daa69615a00', NULL, 'user_id|i:7;', '2017-12-14 21:42:20.000', '2017-12-21 21:42:20.000', 0, '2017-12-15 13:26:24.299'),
+('439d47c88eba6e7dcd526daa69615a00', NULL, 'user_id|i:9;', '2017-12-14 21:42:20.000', '2017-12-21 21:42:20.000', 0, '2017-12-20 13:16:51.556'),
 ('46defb11733028a6cab0a0c0c71c2ad7', NULL, '', '2017-12-13 22:03:00.858', '2017-12-20 22:03:00.858', 0, '2017-12-13 22:03:00.858'),
 ('4ac2ae2fa04b6ce3a2116a54efa9aa8d', NULL, '', '2017-12-13 22:00:56.656', '2017-12-20 22:00:56.656', 0, '2017-12-13 22:00:56.656'),
 ('5044a057e54984a00a15c9b64ddfdbd3', NULL, '', '2017-12-13 22:25:27.321', '2017-12-20 22:25:27.321', 0, '2017-12-13 22:25:27.321'),
+('56ec1d6f6bd4fb5139c7d06107f6191f', NULL, 'user_id|i:4;', '2017-12-29 00:06:09.379', '2018-01-05 00:06:09.379', 0, '2017-12-29 00:08:39.873'),
+('61274d212f1a6d84d9073dbf10d90189', NULL, '', '2017-12-27 15:11:28.907', '2018-01-03 15:11:28.907', 0, '2017-12-27 15:11:28.907'),
 ('8e0371c0e74883c4b688fea93a2d948c', NULL, '', '2017-12-13 22:23:47.450', '2017-12-20 22:23:47.450', 0, '2017-12-13 22:23:47.450'),
 ('a342ca783638b79eb63251bc8d108d96', NULL, '', '2017-12-13 22:26:17.513', '2017-12-20 22:26:17.513', 0, '2017-12-13 22:26:17.513'),
 ('c804bf64b05e0e3d30a04bbf1b89ba94', NULL, '', '2017-12-13 22:32:54.673', '2017-12-20 22:32:54.673', 0, '2017-12-13 22:32:54.673'),
-('db59bec4fff93cbf7d877899d380d1c1', NULL, '', '2017-12-13 22:33:18.889', '2017-12-20 22:33:18.889', 0, '2017-12-13 22:33:18.889');
+('db59bec4fff93cbf7d877899d380d1c1', NULL, '', '2017-12-13 22:33:18.889', '2017-12-20 22:33:18.889', 0, '2017-12-13 22:33:18.889'),
+('ebfea88e9e2510746a8a89f7717fccf8', NULL, '', '2017-12-27 15:09:43.438', '2018-01-03 15:09:43.438', 0, '2017-12-27 15:09:43.438'),
+('ecaf919fcbe330a80f400579b25c55f2', NULL, '', '2017-12-27 15:14:38.325', '2018-01-03 15:14:38.325', 0, '2017-12-27 15:14:38.325');
 
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `subscriptions`
---
--- Création :  mar. 12 déc. 2017 à 14:02
 --
 
 CREATE TABLE `subscriptions` (
@@ -653,18 +549,10 @@ CREATE TABLE `subscriptions` (
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- RELATIONS POUR LA TABLE `subscriptions`:
---   `property_id`
---       `properties` -> `id`
---
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `users`
---
--- Création :  mar. 12 déc. 2017 à 14:04
 --
 
 CREATE TABLE `users` (
@@ -680,10 +568,6 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- RELATIONS POUR LA TABLE `users`:
---
-
---
 -- Déchargement des données de la table `users`
 --
 
@@ -691,7 +575,10 @@ INSERT INTO `users` (`id`, `display`, `nick`, `birth_date`, `creation_date`, `em
 (4, 'Alexandre Bizri', 'aabizri', NULL, '2017-12-10 20:21:48.000', 'alexandre@bizri.fr', '$2y$10$5j4BCcVdU9im1OPoHH5as.B2m9W2TrjvZgRn5KpZ/qnjI2v21cg2q', '0651110253', '2017-12-10 20:21:48.000'),
 (5, 'Dinesh Anth', 'drdidi', NULL, '2017-12-11 10:41:26.000', 'drdidi@didi.fr', '$2y$10$CkT0EGlHDH/rFerKmnvQmuixz0DBxlbYXM5Loh18iduubN/WOVSbq', '145771987', '2017-12-11 10:41:26.000'),
 (6, 'Charles Hubert', 'chubert', NULL, '2017-12-14 22:03:54.008', 'chubert@gmail.com', '$2y$10$hXKZp.A3lO6iU6cmXj6xsOSREmX4wme.pbcTYMa3x1j6iwTzm7YXC', 'Non', '2017-12-14 22:03:54.008'),
-(7, 'Phillipot Floriant', 'fphillipot', NULL, '2017-12-15 13:26:13.872', 'fphillipot@gmail.com', '$2y$10$CfLKF1h3NvNVDEJMyBcK4u5l/TZq5Hf0DhS2rqIXu4eEnsrJdPFcm', '0112234563', '2017-12-15 13:26:13.872');
+(7, 'Phillipot Floriant', 'fphillipot', NULL, '2017-12-15 13:26:13.872', 'fphillipot@gmail.com', '$2y$10$CfLKF1h3NvNVDEJMyBcK4u5l/TZq5Hf0DhS2rqIXu4eEnsrJdPFcm', '0112234563', '2017-12-15 13:26:13.872'),
+(8, 'Jean-Pierre Machin', 'jpmachin', NULL, '2017-12-20 13:12:06.082', 'jpmachin@machin.com', '$2y$10$Nu56S.z5y7nSNi9YFUHeXewv.ekdj22iRtRO4Fbadp7imYvdfgKse', '0984038403', '2017-12-20 13:12:06.082'),
+(9, 'Jean-Pierre Bidule', 'jpbidule', NULL, '2017-12-20 13:16:43.743', 'jpmachin@bidule.com', '$2y$10$1H7eCkWEsh6FnHnYelYEze.NrfiybfF20ZyEh6Ep7QU6vLpWUkWuC', '0984038403', '2017-12-20 13:16:43.743'),
+(10, 'testo sterone', 'testosterone', NULL, '2017-12-26 19:06:34.466', 'testo@testo.com', '$2y$10$D6LYVkQDFUF.GbOnaZpr4uoZb3h0FHlac5b5ek4QpCPlOA1Wp4Rae', '09999999', '2017-12-26 19:06:34.466');
 
 --
 -- Index pour les tables déchargées
@@ -702,7 +589,8 @@ INSERT INTO `users` (`id`, `display`, `nick`, `birth_date`, `creation_date`, `em
 --
 ALTER TABLE `actuators`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `peripheral_id` (`peripheral_uuid`) USING BTREE;
+  ADD KEY `peripheral_id` (`peripheral_uuid`) USING BTREE,
+  ADD KEY `current_situation` (`last_measure_id`);
 
 --
 -- Index pour la table `events`
@@ -725,7 +613,15 @@ ALTER TABLE `filters`
 --
 ALTER TABLE `measures`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `peripheral_uuid` (`peripheral_uuid`);
+  ADD KEY `sensor_id` (`sensor_id`),
+  ADD KEY `actuator_id` (`actuator_id`),
+  ADD KEY `type_id` (`type_id`);
+
+--
+-- Index pour la table `measure_types`
+--
+ALTER TABLE `measure_types`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Index pour la table `notifications`
@@ -759,7 +655,9 @@ ALTER TABLE `properties`
 --
 ALTER TABLE `requests`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `session_id` (`session_id`);
+  ADD KEY `session_id` (`session_id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `property_id` (`property_id`);
 
 --
 -- Index pour la table `roles`
@@ -790,7 +688,8 @@ ALTER TABLE `rooms`
 ALTER TABLE `sensors`
   ADD PRIMARY KEY (`id`),
   ADD KEY `peripheral_uuid` (`peripheral_uuid`),
-  ADD KEY `last_measure` (`last_measure`);
+  ADD KEY `last_measure` (`last_measure_id`),
+  ADD KEY `measure_type_id` (`measure_type_id`);
 
 --
 -- Index pour la table `sessions`
@@ -841,6 +740,12 @@ ALTER TABLE `measures`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `measure_types`
+--
+ALTER TABLE `measure_types`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT pour la table `notifications`
 --
 ALTER TABLE `notifications`
@@ -862,7 +767,7 @@ ALTER TABLE `properties`
 -- AUTO_INCREMENT pour la table `requests`
 --
 ALTER TABLE `requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=477;
 
 --
 -- AUTO_INCREMENT pour la table `roles`
@@ -880,7 +785,7 @@ ALTER TABLE `roles_permissions`
 -- AUTO_INCREMENT pour la table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `sensors`
@@ -898,7 +803,7 @@ ALTER TABLE `subscriptions`
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Contraintes pour les tables déchargées
@@ -908,7 +813,8 @@ ALTER TABLE `users`
 -- Contraintes pour la table `actuators`
 --
 ALTER TABLE `actuators`
-  ADD CONSTRAINT `actuators_ibfk_1` FOREIGN KEY (`peripheral_uuid`) REFERENCES `peripherals` (`uuid`);
+  ADD CONSTRAINT `actuators_ibfk_1` FOREIGN KEY (`peripheral_uuid`) REFERENCES `peripherals` (`uuid`),
+  ADD CONSTRAINT `actuators_ibfk_2` FOREIGN KEY (`last_measure_id`) REFERENCES `measures` (`id`);
 
 --
 -- Contraintes pour la table `events`
@@ -926,7 +832,9 @@ ALTER TABLE `filters`
 -- Contraintes pour la table `measures`
 --
 ALTER TABLE `measures`
-  ADD CONSTRAINT `measures_ibfk_1` FOREIGN KEY (`peripheral_uuid`) REFERENCES `peripherals` (`uuid`);
+  ADD CONSTRAINT `measures_ibfk_2` FOREIGN KEY (`actuator_id`) REFERENCES `actuators` (`id`),
+  ADD CONSTRAINT `measures_ibfk_3` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`),
+  ADD CONSTRAINT `measures_ibfk_4` FOREIGN KEY (`type_id`) REFERENCES `measure_types` (`ID`);
 
 --
 -- Contraintes pour la table `notifications`
@@ -965,7 +873,8 @@ ALTER TABLE `rooms`
 --
 ALTER TABLE `sensors`
   ADD CONSTRAINT `sensors_ibfk_1` FOREIGN KEY (`peripheral_uuid`) REFERENCES `peripherals` (`uuid`),
-  ADD CONSTRAINT `sensors_ibfk_2` FOREIGN KEY (`last_measure`) REFERENCES `measures` (`id`);
+  ADD CONSTRAINT `sensors_ibfk_2` FOREIGN KEY (`last_measure_id`) REFERENCES `measures` (`id`),
+  ADD CONSTRAINT `sensors_ibfk_3` FOREIGN KEY (`measure_type_id`) REFERENCES `measure_types` (`ID`);
 
 --
 -- Contraintes pour la table `sessions`
@@ -978,95 +887,6 @@ ALTER TABLE `sessions`
 --
 ALTER TABLE `subscriptions`
   ADD CONSTRAINT `subscriptions_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`id`);
-
-
---
--- Métadonnées
---
-USE `phpmyadmin`;
-
---
--- Métadonnées pour la table actuators
---
-
---
--- Métadonnées pour la table events
---
-
---
--- Métadonnées pour la table filters
---
-
---
--- Métadonnées pour la table measures
---
-
---
--- Métadonnées pour la table notifications
---
-
---
--- Métadonnées pour la table peripherals
---
-
---
--- Déchargement des données de la table `pma__table_uiprefs`
---
-
-INSERT INTO `pma__table_uiprefs` (`username`, `db_name`, `table_name`, `prefs`, `last_update`) VALUES
-('root', 'livewell', 'peripherals', '{\"sorted_col\":\"`peripherals`.`display_name` ASC\"}', '2017-12-04 14:27:12');
-
---
--- Métadonnées pour la table permissions
---
-
---
--- Métadonnées pour la table properties
---
-
---
--- Métadonnées pour la table requests
---
-
---
--- Métadonnées pour la table roles
---
-
---
--- Métadonnées pour la table roles_permissions
---
-
---
--- Métadonnées pour la table rooms
---
-
---
--- Métadonnées pour la table sensors
---
-
---
--- Métadonnées pour la table sessions
---
-
---
--- Métadonnées pour la table subscriptions
---
-
---
--- Métadonnées pour la table users
---
-
---
--- Métadonnées pour la base de données livewell
---
-
---
--- Déchargement des données de la table `pma__central_columns`
---
-
-INSERT INTO `pma__central_columns` (`db_name`, `col_name`, `col_type`, `col_length`, `col_collation`, `col_isNull`, `col_extra`, `col_default`) VALUES
-('livewell', 'creation_date', 'timestamp', '', '', 0, ',', 'CURRENT_TIMESTAMP'),
-('livewell', 'last_updated', 'datetime', '', '', 1, ',on update CURRENT_TIMESTAMP', '');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

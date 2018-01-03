@@ -6,9 +6,9 @@ namespace Repositories;
 use Entities;
 use Exception;
 use PDO;
-use Repositories\Exceptions\MultiSetFailedException;
-use Repositories\Exceptions\RowNotFoundException;
-use Repositories\Exceptions\SetFailedException;
+use Exceptions\MultiSetFailedException;
+use Exceptions\RowNotFoundException;
+use Exceptions\SetFailedException;
 
 class Roles extends Repository
 {
@@ -40,7 +40,7 @@ class Roles extends Repository
         $id = parent::db()->lastInsertId();
         $ok = $r->setID($id);
         if ($ok) {
-            throw new SetFailedException("Role","setID",$id);
+            throw new SetFailedException($r,"setID",$id);
         }
 
         // We should now pull to populate times
@@ -103,7 +103,7 @@ class Roles extends Repository
 
         // If nil, we throw an error
         if ($data === false || $data === null) {
-            new RowNotFoundException("Role","roles");
+            new RowNotFoundException($r,"roles");
         }
 
         // Store
@@ -114,18 +114,17 @@ class Roles extends Repository
             "last_updated" => (float)$data["last_updated"],
         ]);
         if (!$ok) {
-            throw new MultiSetFailedException("Role",$data);
+            throw new MultiSetFailedException($r,$data);
         }
     }
 
     /**
-     * Retrieve a role from the database given its id
+     * Checks if the given role exists in the database
      *
-     * @param int $id of the room to retrieve
-     * @return Entities\Role the room if found, null if not
-     * @throws Exception
+     * @param int $id
+     * @return bool
      */
-    public static function retrieve(int $id): Entities\Role
+    public static function exists(int $id): bool
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -140,9 +139,20 @@ class Roles extends Repository
 
         // Fetch
         $count = $stmt->fetchColumn(0);
+        return $count != 0;
+    }
 
-        // If count is zero, then we return null
-        if ($count == 0) {
+    /**
+     * Retrieve a role from the database given its id
+     *
+     * @param int $id of the room to retrieve
+     * @return Entities\Role|null the room if found, null if not
+     * @throws Exception
+     */
+    public static function retrieve(int $id): ?Entities\Role
+    {
+        // If it doesn't exists, we return null
+        if (!self::exists($id)) {
             return null;
         }
 
@@ -152,7 +162,7 @@ class Roles extends Repository
         // Set the ID
         $ok = $r->setID($id);
         if (!$ok) {
-            throw new SetFailedException("Role","setID",$id);
+            throw new SetFailedException($r,"setID",$id);
         }
 
         // Call Pull on it
@@ -245,10 +255,10 @@ class Roles extends Repository
      *
      * @param int $uid user_id id
      * @param int $pid property id
-     * @return int role id
+     * @return int|null role id or null if not found
      * @throws Exception
      */
-    public static function findByUserAndProperty(int $uid, int $pid): int
+    public static function findByUserAndProperty(int $uid, int $pid): ?int
     {
         // SQL for counting
         $sql = "SELECT count(*)
