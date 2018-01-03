@@ -113,7 +113,6 @@ class Peripherals
         // Supprimer le périphérique
         $p->setDisplayName(null);
         $p->setAddDate(null);
-        $p->setLastUpdated(null);
         $p->setPropertyID(null);
         $p->setRoomID(null);
 
