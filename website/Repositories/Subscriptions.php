@@ -24,8 +24,7 @@ class Subscriptions
     public static function insert(Entities\Subscription $s)
     {
         // SQL
-        $sql = "INSERT INTO subscriptions (property_id, start_date, expiry_date
-, command_id)
+        $sql = "INSERT INTO subscriptions (property_id, start_date, expiry_date, command_id)
         VALUES (:property_id, :start_date, :expiry_date, :command_id);";
 
         // Prepare statement
@@ -33,11 +32,10 @@ class Subscriptions
 
         // Prepare data to be inserted
         $data = [
-            ':property_id' => $s->getPropertyId(),
-            ':start_date' => $s->getStartDate(),
-            ':expiry_date' => $s->getExpiryDate(),
-            ':command_id' => $s->getCommandId(),
-
+            'property_id' => $s->getPropertyId(),
+            'start_date' => $s->getStartDate(),
+            'expiry_date' => $s->getExpiryDate(),
+            'command_id' => $s->getCommandId(),
         ];
 
         // Execute query
@@ -62,11 +60,11 @@ class Subscriptions
 
         // Prepare data to be updated
         $data = [
-            ':id' => $s->getID(),
-            ':display_name' => $s->getPropertyId(),
-            ':build_date' => $s->getStartDate(),
-            ':add_date' => $s->getExpiryDate(),
-            ':public_key' => $s->getCommandId(),
+            'id' => $s->getID(),
+            'display_name' => $s->getPropertyId(),
+            'build_date' => $s->getStartDate(),
+            'add_date' => $s->getExpiryDate(),
+            'public_key' => $s->getCommandId(),
         ]; // We don't have the ID in the Push, as they are only updated by the attachToXXX methods
 
         // Execute query
@@ -93,7 +91,7 @@ class Subscriptions
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':uuid' => $s->getUUID()));
+        $sth->execute([':uuid' => $s->getUUID()]);
 
         // Retrieve
         $data = $sth->fetch(PDO::FETCH_ASSOC);
@@ -104,13 +102,13 @@ class Subscriptions
         }
 
         // Store
-        $arr = array(
+        $arr = [
             "setPropertyId" => $data["property_id"],
             "setStartDate" => $data["start_date"],
             "setExpiryDate" => $data["expiry_date"],
             "setCommandId" => $data["command_id"],
             "setLastUpdated" => (float) $data["last_updated"],
-        );
+        ];
         parent::executeSetterArray($s, $arr);
     }
 
@@ -177,7 +175,7 @@ class Subscriptions
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':id' => $id));
+        $sth->execute([':id' => $id]);
 
         // Fetch
         $count = $sth->fetchColumn(0);
@@ -247,7 +245,7 @@ class Subscriptions
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':property_id' => $property_id));
+        $sth->execute(['property_id' => $property_id]);
 
         // Fetch
         $id = $sth->fetchColumn(0);
