@@ -27,9 +27,9 @@ class Rooms extends Query
         parent::__construct(self::table, self::columns, self::entity_class_name);
     }
 
-    public function filterByProperty(string $operator, \Entities\Property ...$properties): self
+    public function filterByProperty(string $operator, \Entities\Property $property): self
     {
-        return $this->filterByEntity("property_id", $operator, ...$properties);
+        return $this->filterByEntity("property_id", $operator, $property);
     }
 }
 

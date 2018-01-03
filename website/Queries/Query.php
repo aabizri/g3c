@@ -335,16 +335,14 @@ abstract class Query
      * filterBy filters the result set by the given column, which should match a given condition
      *
      * @param string $key
-     * @param array ...$objects
+     * @param mixed $object
      * @return $this
      */
-    protected function filterByColumn(string $key, string $operator, ...$objects)
+    protected function filterByColumn(string $key, string $operator, $object)
     {
-        foreach ($objects as $index => $object) {
-            $indicator = $key[0].$key[1].$index;
-            $this->where[$key . " " . $operator] = $indicator;
-            $this->data[$indicator] = $object;
-        }
+        $indicator = $key[0] . $key[1] . count($this->where);
+        $this->where[$key . " " . $operator] = $indicator;
+        $this->data[$indicator] = $object;
         return $this;
     }
 
@@ -352,19 +350,16 @@ abstract class Query
      * filterByEntity filters the result set by the given column, which should match a given entity's ID
      *
      * @param string $key
-     * @param \Entities\Entity[] ...$entities
+     * @param \Entities\Entity $entity
      * @return $this
      */
-    protected function filterByEntity(string $key, string $operator, \Entities\Entity ...$entities)
+    protected function filterByEntity(string $key, string $operator, \Entities\Entity $entity)
     {
         // Extract the IDs
-        $ids = [];
-        foreach ($entities as $entity) {
-            $ids[] = $entity->getID();
-        }
+        $id = $entity->getID();
 
         // Call filterBy
-        return $this->filterByColumn($key, $operator, ...$ids);
+        return $this->filterByColumn($key, $operator, $id);
     }
 
     /**
@@ -454,7 +449,7 @@ abstract class Query
                 $lexemes[] = ":".$indicator;
                 $keys = array_keys($this->where);
                 if ($key !== end($keys)){
-                    $lexemes[] = ",";
+                    $lexemes[] = "AND";
                 }
             }
         }
