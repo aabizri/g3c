@@ -27,8 +27,9 @@ class Rooms extends Query
         parent::__construct(self::table, self::columns, self::entity_class_name);
     }
 
-    public function filterByProperty(\Entities\Property ...$properties): self{
-        return $this->filterByEntity("property_id", ...$properties);
+    public function filterByProperty(string $operator, \Entities\Property ...$properties): self
+    {
+        return $this->filterByEntity("property_id", $operator, ...$properties);
     }
 }
 
@@ -50,5 +51,5 @@ $ok = (new Rooms)->onColumns("name")->update($room);
 var_dump($room);
 
 // Find query
-$res = (new Rooms)->select()->filterByProperty($property)->findOne();
+$res = (new Rooms)->select()->filterByProperty("=", $property)->findOne();
 var_dump($res);

@@ -202,7 +202,7 @@ abstract class Query
         $this->operation = "UPDATE";
 
         // ID of the value as a where
-        $this->filterByEntity("id",$entity);
+        $this->filterByEntity("id", "=", $entity);
 
         // Values to be inserted
         $entity_values = $entity->getMultiple($this->manipulate_columns);
@@ -338,10 +338,11 @@ abstract class Query
      * @param array ...$objects
      * @return $this
      */
-    protected function filterByColumn(string $key, ...$objects) {
+    protected function filterByColumn(string $key, string $operator, ...$objects)
+    {
         foreach ($objects as $index => $object) {
             $indicator = $key[0].$key[1].$index;
-            $this->where[$key] = $indicator;
+            $this->where[$key . " " . $operator] = $indicator;
             $this->data[$indicator] = $object;
         }
         return $this;
@@ -351,10 +352,11 @@ abstract class Query
      * filterByEntity filters the result set by the given column, which should match a given entity's ID
      *
      * @param string $key
-     * @param array ...$entities
+     * @param \Entities\Entity[] ...$entities
      * @return $this
      */
-    protected function filterByEntity(string $key, ...$entities) {
+    protected function filterByEntity(string $key, string $operator, \Entities\Entity ...$entities)
+    {
         // Extract the IDs
         $ids = [];
         foreach ($entities as $entity) {
@@ -362,7 +364,7 @@ abstract class Query
         }
 
         // Call filterBy
-        return $this->filterByColumn($key,...$ids);
+        return $this->filterByColumn($key, $operator, ...$ids);
     }
 
     /**
@@ -449,7 +451,6 @@ abstract class Query
             $lexemes[] = "WHERE";
             foreach ($this->where as $key => $indicator) {
                 $lexemes[] = $key;
-                $lexemes[] = "=";
                 $lexemes[] = ":".$indicator;
                 $keys = array_keys($this->where);
                 if ($key !== end($keys)){
@@ -576,7 +577,6 @@ abstract class Query
             $lexemes[] = "WHERE";
             foreach ($this->where as $key => $indicator) {
                 $lexemes[] = $key;
-                $lexemes[] = "=";
                 $lexemes[] = ":".$indicator;
                 $keys = array_keys($this->where);
                 if ($key !== end($keys)){
