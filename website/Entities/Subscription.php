@@ -27,7 +27,7 @@ class Subscription
     /**
      * @return int
      */
-    public function getId()
+    public function getID()
     {
         return $this->id;
     }
@@ -36,7 +36,7 @@ class Subscription
      * @param int $id
      * @return bool
      */
-    public function setId(int $id): bool
+    public function setID(int $id): bool
     {
         $this->id = $id;
         return true;
@@ -45,7 +45,7 @@ class Subscription
     /**
      * @return int
      */
-    public function getPropertyId(): int
+    public function getPropertyID(): int
     {
         return $this->property_id;
     }
@@ -54,7 +54,7 @@ class Subscription
      * @param int $property_id
      * @return bool
      */
-    public function setPropertyId(int $property_id): bool
+    public function setPropertyID(int $property_id): bool
     {
         $this->property_id = $property_id;
         return true;
@@ -99,7 +99,7 @@ class Subscription
     /**
      * @return int
      */
-    public function getCommandId(): int
+    public function getCommandID(): int
     {
         return $this->command_id;
     }
@@ -108,7 +108,7 @@ class Subscription
      * @param int $command_id
      * @return bool
      */
-    public function setCommandId(int $command_id): bool
+    public function setCommandID(int $command_id): bool
     {
         $this->command_id = $command_id;
         return true;
