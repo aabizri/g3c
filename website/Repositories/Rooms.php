@@ -48,18 +48,6 @@ class Rooms extends Repository
         self::pull($r);
     }
 
-    public static function delete(int $id): void
-    {
-        // SQL
-        $sql = "DELETE FROM rooms 
-        WHERE id = :id;";
-
-        // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
-
-        // Execute query
-        $sth->execute(["id" => $id]);
-    }
     /**
      * Push an existing room to the database
      *
@@ -122,7 +110,8 @@ class Rooms extends Repository
 
         // Store
         $arr = array(
-            "setPropertyId" => $data["property_id"],
+            "setID" => $data["id"],
+            "setPropertyID" => $data["property_id"],
             "setCreationDate" => $data["creation_date"],
             "setLastUpdated" => (float) $data["last_updated"],
         );

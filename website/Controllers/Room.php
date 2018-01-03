@@ -16,7 +16,7 @@ class Room
     public function postNewRoom(array $get, array $post): void
     {
         /*Vérifier que les données existent*/
-        if (empty($post("name"))) {
+        if (empty($post["name"])) {
             echo "Il manque le nom";
             return;
         }
@@ -40,19 +40,20 @@ class Room
 
 
     public function postDeleteRoom(array $get, array $post): void
-    {
+        {
         /*Vérifier que les données existent*/
-        if (empty($post("name"))) {
-            echo "Il manque : " . "name";
+        if (empty($post["name"])) {
+            echo "Il manque le nom";
             return;
         }
+
 
         /*Assigne les valeurs*/
         $name = $post["name"];
 
         /*Créer l'entité*/
         $r = new Entities\Room();
-        $r->setName($name);
+        $ok = $r->setName($name);
 
         /*Insérer l'entité dans la bdd*/
         try {
@@ -62,12 +63,15 @@ class Room
         }
 
         \Helpers\DisplayManager::display("dashboard", array());
+
+        if ($ok === false) {
+            echo "Il y a une erreur";
+        }
     }
 
 
     public function getRooms(array $get, array $post): void
     {
-
         /*Verifier que la propriété existe */
         if(empty($_GET['pid']))
         {
@@ -84,6 +88,10 @@ class Room
         }
 
         \Helpers\DisplayManager::display("mespieces",[$rooms]);
+    }
+    public static function getRoomsPage (array $get, array $post):void
+    {
+        \Helpers\DisplayManager::display("mespieces", array());
     }
 
 }
