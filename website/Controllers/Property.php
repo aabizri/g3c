@@ -14,7 +14,14 @@ use Entities;
 
 class Property
 {
-
+    public static function getSelectProperty(\Entities\Request $req): void {
+        $user_id = $req->getUserID();
+        if ($user_id === null) {
+            http_response_code(403);
+            echo "Non connecté";
+        }
+        $roles_ids = \Repositories\Roles::findAllByUserID($user_id);
+    }
 }
         // Assign Values
     $name = $post["Name"];
