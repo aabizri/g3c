@@ -54,7 +54,7 @@
             <div id="ajouterperipherique">
                 <h3>Ajouter un périphérique</h3>
                 <div id="champsajouterperipherique">
-                    <form name="Ajouter un peripherique" method="post" action="index.php?c=Peripherals&a=postAddPeripheral">
+                    <form name="Ajouter un peripherique" method="post" action="index.php?c=Peripherals&a=AddPeripheral">
                         <label>UUID : </label><input type="text" name="uuid" /><br><br>
                         <label>Nom du périphérique : </label><input type="text" name="display_name" />
                             <p> Dans quelle salle ? <!-- Faire un lien avec la branche dev-room. Utiliser une liste
