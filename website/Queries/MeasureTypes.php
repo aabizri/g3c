@@ -13,7 +13,13 @@ class MeasureTypes extends Query
 {
     /* COMMON CONSTANTS */
     private const table = "measure_types";
-    private const columns = ["id", "name", "description", "unit_name", "unit_symbol", "min", "max"];
+    private const columns = ["id" => "",
+                             "name" => "",
+                             "description" => "",
+                             "unit_name" => "",
+                             "unit_symbol" => "",
+                             "min" => "",
+                             "max" => ""];
     private const entity_class_name = "\Entities\MeasureType";
 
     /**

@@ -13,7 +13,11 @@ class Properties extends Query
 {
     /* COMMON CONSTANTS */
     private const table = "properties";
-    private const columns = ["id", "name", "address", "creation_date", "last_updated"];
+    private const columns = ["id" => "",
+                             "name" => "",
+                             "address" => "",
+                             "creation_date" => "",
+                             "last_updated" => ""];
     private const entity_class_name = "\Entities\Property";
 
     /**

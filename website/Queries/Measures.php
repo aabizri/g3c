@@ -12,7 +12,12 @@ class Measures extends Query
 {
     /* COMMON CONSTANTS */
     private const table = "measures";
-    private const columns = ["id", "type_id", "date_time", "value", "sensor_id", "actuator_id"];
+    private const columns = ["id" => "",
+                             "type_id" => "",
+                             "date_time" => "",
+                             "value" => "",
+                             "sensor_id" => "",
+                             "actuator_id" => ""];
     private const entity_class_name = "\Entities\Measure";
 
     /**

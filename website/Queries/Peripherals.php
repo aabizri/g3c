@@ -13,7 +13,14 @@ class Peripherals extends Query
 {
     /* COMMON CONSTANTS */
     private const table = "peripherals";
-    private const columns = ["uuid", "display_name", "build_date", "add_date", "public_key", "property_id", "room_id", "last_updated"];
+    private const columns = ["uuid" => "",
+                             "display_name" => "",
+                             "build_date" => "",
+                             "add_date" => "",
+                             "public_key" => "",
+                             "property_id" => "",
+                             "room_id" => "",
+                             "last_updated" => ""];
     private const entity_class_name = "\Entities\Peripheral";
 
     /**
