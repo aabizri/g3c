@@ -10,7 +10,7 @@ abstract class Query
     // Table on to execute
     private $table;
 
-    // Columns of the table
+    // Columns of the table, associative array of KEY => TYPE
     private $table_columns;
 
     // Entity class name
@@ -69,7 +69,7 @@ abstract class Query
         $this->entity_class_name = $entity_class_name;
 
         // Initialise the Where
-        $this->where = new \Queries\Clauses\Where("AND");
+        $this->where = new \Queries\Clauses\Where("OR");
     }
 
 
@@ -85,7 +85,7 @@ abstract class Query
     public function onColumns(string ...$columns)
     {
         // Check that the columns exist
-        $diff = array_diff($columns, $this->table_columns);
+        $diff = array_diff($columns, array_keys($this->table_columns));
         if (!empty($diff)) {
             throw new \Exception("INVALID COLUMNS INCLUDED :" . $diff);
         }
@@ -195,7 +195,7 @@ abstract class Query
         $this->select();
 
         // Set all columns to be retrieved
-        $this->manipulate_columns = $this->table_columns;
+        $this->manipulate_columns = array_keys($this->table_columns);
 
         // Set the limit to one
         $this->limit(1);
@@ -233,7 +233,7 @@ abstract class Query
         $this->select();
 
         // Set all columns to be retrieved
-        $this->manipulate_columns = $this->table_columns;
+        $this->manipulate_columns = array_keys($this->table_columns);
 
         // Prepare the statement
         $stmt = $this->prepareAndExecute();
@@ -694,7 +694,6 @@ abstract class Query
             $sql = $this->toSQL();
         }
         var_dump($sql);
-
         // Preparer
         $statement = $this->db->prepare($sql, \Helpers\DB::$pdo_params);
 

@@ -35,7 +35,7 @@ class Where
         foreach ($this->operands as $index => $operand) {
             $out .= $operand->toSQL();
             if ($index !== (count($this->operands) - 1)) {
-                $out .= $this->operator;
+                $out .= " " . $this->operator . " ";
             }
         }
         $out .= " )";
