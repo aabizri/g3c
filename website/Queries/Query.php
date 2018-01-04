@@ -75,6 +75,98 @@ abstract class Query
 
     /* PUBLIC METHODS */
 
+    /* MULTI-OPERATION */
+
+    /**
+     * @param string[] ...$columns
+     * @return $this
+     * @throws \Exception
+     */
+    public function onColumns(string ...$columns)
+    {
+        // Check that the columns exist
+        $diff = array_diff($columns, $this->table_columns);
+        if (!empty($diff)) {
+            throw new \Exception("INVALID COLUMNS INCLUDED :" . $diff);
+        }
+
+        // Write
+        $this->manipulate_columns = $columns;
+        return $this;
+    }
+
+    /**
+     * @param \Entities\Entity $entity
+     * @return bool
+     * @throws \Exception
+     */
+    public function save(\Entities\Entity $entity): bool
+    {
+        // Récupère le compte
+        $count = $this
+            ->filterByEntity("id", "=", $entity)
+            ->count();
+
+        // Selon si l'entité existe déjà, on peut soit faire un INSERT soit un UPDATE
+        switch ($count) {
+            case 0:
+                return $this->insert($entity);
+            case 1:
+                return $this->update($entity);
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * filterBy filters the result set by the given column, which should match a given condition
+     *
+     * @param string $key
+     * @param mixed $object
+     * @return $this
+     */
+    protected function filterByColumn(string $key, string $operator, $object)
+    {
+        $indicator = $key[0] . $key[1] . count($this->where->operands);
+        $this->where->operands[] = new \Queries\Clauses\WhereTriplet($key, $operator, $indicator);
+        $this->data[$indicator] = $object;
+        return $this;
+    }
+
+    /**
+     * filterByEntity filters the result set by the given column, which should match a given entity's ID
+     *
+     * @param string $key
+     * @param \Entities\Entity $entity
+     * @return $this
+     */
+    protected function filterByEntity(string $key, string $operator, \Entities\Entity $entity)
+    {
+        // Extract the IDs
+        $id = $entity->getID();
+
+        // Call filterBy
+        return $this->filterByColumn($key, $operator, $id);
+    }
+
+    /* ON SELECT */
+
+    /**
+     * Sets the operation to SELECT
+     *
+     * If it is already set to something else, throws an exception
+     *
+     * @return $this
+     */
+    public function select()
+    {
+        // Set operation to select
+        $this->operation = "SELECT";
+
+        // Return
+        return $this;
+    }
+
     /**
      * Puts a limit on the number of results returned from the query.
      *
@@ -89,21 +181,6 @@ abstract class Query
 
         // Set the limit value
         $this->limit_value = $limit;
-
-        // Return
-        return $this;
-    }
-
-    /**
-     * Sets the operation to SELECT
-     *
-     * If it is already set to something else, throws an exception
-     *
-     * @return $this
-     */
-    public function select() {
-        // Set operation to select
-        $this->operation="SELECT";
 
         // Return
         return $this;
@@ -179,21 +256,63 @@ abstract class Query
     }
 
     /**
-     * @param string[] ...$columns
-     * @return $this
+     * @return int
      * @throws \Exception
      */
-    public function onColumns(string ...$columns) {
-        // Check that the columns exist
-        $diff = array_diff($columns,$this->table_columns);
-        if (!empty($diff)) {
-            throw new \Exception("INVALID COLUMNS INCLUDED :".$diff);
+    public function count(): int
+    {
+        // Set la fonction à être executée (un count)
+        $this->manipulate_columns = ["COUNT(*)"];
+
+        // Prepare the statement
+        $stmt = $this->prepareAndExecute();
+
+        // Fetch & check
+        $res = $stmt->fetchColumn(0);
+        if ($res === false) {
+            throw new \Exception("Erreur fatale: rien de retournée dans un count");
         }
 
-        // Write
-        $this->manipulate_columns = $columns;
+        // Return
+        return $res;
+    }
+
+    /**
+     * OrderBy allows us to order the result set on the given column, and either ascending (default) or descending
+     *
+     * Only for SELECTs, sets SELECT if not already set
+     *
+     * @param string $key
+     * @param bool $asc
+     * @return $this
+     */
+    protected function orderBy(string $key, bool $asc = true)
+    {
+        // Sets the operation to SELCT
+        $this->select();
+
+        // Sets the orderby directive
+        $this->orderby[$key] = $asc;
         return $this;
     }
+
+    /**
+     * Offset allows us to query based on an offset
+     *
+     * @param int $offset
+     * @return $this
+     */
+    protected function offset(int $offset)
+    {
+        // Sets the operation to SELCT
+        $this->select();
+
+        // Sets the offset
+        $this->offset($offset);
+        return $this;
+    }
+
+    /* ON UPDATE */
 
     /**
      * @param object $entity
@@ -225,6 +344,8 @@ abstract class Query
         // Return
         return true;
     }
+
+    /* ON INSERT */
 
     /**
      * @param $entity
@@ -330,73 +451,6 @@ abstract class Query
             default:
                 return $this->insertMultipleAtOnce($entities);
         }
-    }
-
-    /* METHODS FOR SUB-CLASSES */
-
-    /**
-     * filterBy filters the result set by the given column, which should match a given condition
-     *
-     * @param string $key
-     * @param mixed $object
-     * @return $this
-     */
-    protected function filterByColumn(string $key, string $operator, $object)
-    {
-        $indicator = $key[0] . $key[1] . count($this->where->operands);
-        $this->where->operands[] = new \Queries\Clauses\WhereTriplet($key, $operator, $indicator);
-        $this->data[$indicator] = $object;
-        return $this;
-    }
-
-    /**
-     * filterByEntity filters the result set by the given column, which should match a given entity's ID
-     *
-     * @param string $key
-     * @param \Entities\Entity $entity
-     * @return $this
-     */
-    protected function filterByEntity(string $key, string $operator, \Entities\Entity $entity)
-    {
-        // Extract the IDs
-        $id = $entity->getID();
-
-        // Call filterBy
-        return $this->filterByColumn($key, $operator, $id);
-    }
-
-    /**
-     * OrderBy allows us to order the result set on the given column, and either ascending (default) or descending
-     *
-     * Only for SELECTs, sets SELECT if not already set
-     *
-     * @param string $key
-     * @param bool $asc
-     * @return $this
-     */
-    protected function orderBy(string $key, bool $asc = true) {
-        // Sets the operation to SELCT
-        $this->select();
-
-        // Sets the orderby directive
-        $this->orderby[$key] = $asc;
-        return $this;
-    }
-
-    /**
-     * Offset allows us to query based on an offset
-     *
-     * @param int $offset
-     * @return $this
-     */
-    protected function offset(int $offset)
-    {
-        // Sets the operation to SELCT
-        $this->select();
-
-        // Sets the offset
-        $this->offset($offset);
-        return $this;
     }
 
     /** ENTITY MAPPING STUFF */
