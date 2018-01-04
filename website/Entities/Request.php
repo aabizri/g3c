@@ -284,7 +284,7 @@ class Request extends Entity
     /**
      * @return float
      */
-    public function getStarted(): float
+    public function getStartedProcessing(): float
     {
         return $this->started;
     }
@@ -293,7 +293,7 @@ class Request extends Entity
      * @param float $started
      * @return bool
      */
-    public function setStarted(float $started): bool
+    public function setStartedProcessing(float $started): bool
     {
         $this->started = $started;
         return true;
@@ -407,9 +407,9 @@ class Request extends Entity
     /**
      * Return the value associated with the given key in the POST array
      *
-     * @return string|null, null if not found
+     * @return string|array|null, null if not found
      */
-    public function getPOST(string $key): ?string
+    public function getPOST(string $key)
     {
         if (!isset($this->post[$key])) {
             return null;
@@ -421,10 +421,10 @@ class Request extends Entity
      * Sets the value of a POST variable given the key and value
      *
      * @param string $key
-     * @param string|null $value
+     * @param string|array|null $value
      * @return bool
      */
-    public function setPOST(string $key, ?string $value): bool
+    public function setPOST(string $key, $value): bool
     {
         if ($value === null && isset($this->post[$key])) {
             unset($this->post[$key]);
@@ -654,7 +654,7 @@ class Request extends Entity
         if ($finished_at === null) {
             $finished_at = microtime(true);
         }
-        $in_seconds = (float)$finished_at - $this->getStarted();
+        $in_seconds = (float)$finished_at - $this->getStartedProcessing();
         $in_microseconds = (int)($in_seconds * (10 ** 6));
         return $this->setDuration($in_microseconds);
     }
@@ -749,7 +749,7 @@ class Request extends Entity
 
         // Set request time
         $time = (float) $info["REQUEST_TIME_FLOAT"];
-        $ok = $this->setStarted($time);
+        $ok = $this->setStartedProcessing($time);
         if (!$ok) {
             return false;
         }

@@ -13,7 +13,13 @@ class Sessions extends Query
 {
     /* COMMON CONSTANTS */
     private const table = "sessions";
-    private const columns = ["id", "user_id", "value", "started", "expiry", "canceled", "last_updated"];
+    private const columns = ["id" => "",
+                             "user_id" => "",
+                             "value" => "",
+                             "started" => "",
+                             "expiry" => "",
+                             "canceled" => "",
+                             "last_updated" => "timestamp"];
     private const entity_class_name = "\Entities\Session";
 
     /**
@@ -31,6 +37,12 @@ class Sessions extends Query
     {
         return $this->filterByEntity("user_id", $operator, $user);
     }
+
+    public function filterByCanceled(bool $canceled): self
+    {
+        return $this->filterbyColumn("canceled", "=", $canceled, "AND");
+    }
+
 
     public function save(\Entities\Session $session): bool
     {
