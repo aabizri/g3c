@@ -2,9 +2,6 @@
 
 namespace Entities;
 
-// ONLY FOR DEBUG
-require_once("../index.php");
-
 use Helpers\UUID;
 use Repositories;
 
@@ -18,13 +15,54 @@ class Peripheral extends Entity
 {
     /* PROPERTIES */
 
+    /**
+     * @var string
+     */
     private $uuid;
+
+    /**
+     * @var string
+     */
     private $display_name;
+
+    /**
+     * @var string (MM-DD)
+     */
     private $build_date;
+
+    /**
+     * @var string (ISO 8601)
+     */
     private $add_date;
+
+    /**
+     * @var string
+     */
     private $public_key;
+
+    /**
+     * @var int
+     */
     private $property_id;
+
+    /**
+     * @var Property
+     */
+    private $property;
+
+    /**
+     * @var int
+     */
     private $room_id;
+
+    /**
+     * @var Room
+     */
+    private $room;
+
+    /**
+     * @var float
+     */
     private $last_updated;
 
     /* CONSTRUCTOR */
@@ -167,6 +205,35 @@ class Peripheral extends Entity
     }
 
     /**
+     * @return Property|null
+     */
+    public function getProperty(): ?Property
+    {
+        if ($this->property === null) {
+            if ($this->property_id === null) {
+                return null;
+            }
+            $this->room = \Repositories\Properties::retrieve($this->property_id);
+        }
+        return $this->property;
+    }
+
+    /**
+     * @param Property|null $p
+     * @return bool
+     */
+    public function setProperty(?Property $p): bool
+    {
+        $this->property = $p;
+        if ($p === null) {
+            $this->property_id = null;
+        } else {
+            $this->property_id = $p->getID();
+        }
+        return true;
+    }
+
+    /**
      * @return int|null
      */
     public function getRoomID(): ?int
@@ -185,18 +252,48 @@ class Peripheral extends Entity
     }
 
     /**
-     * @return string|null
+     * @return Room|null
+     * @throws \Exception
      */
-    public function getLastUpdated(): ?string
+    public function getRoom(): ?Room
+    {
+        if ($this->room === null) {
+            if ($this->room_id === null) {
+                return null;
+            }
+            $this->room = \Repositories\Rooms::retrieve($this->room_id);
+        }
+        return $this->room;
+    }
+
+    /**
+     * @param Room|null $r
+     * @return bool
+     */
+    public function setRoom(?Room $r): bool
+    {
+        $this->room = $r;
+        if ($r === null) {
+            $this->room_id = null;
+        } else {
+            $this->room_id = $r->getID();
+        }
+        return true;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getLastUpdated(): ?float
     {
         return $this->last_updated;
     }
 
     /**
-     * @param string $last_updated
+     * @param float $last_updated
      * @return bool
      */
-    public function setLastUpdated(string $last_updated): bool
+    public function setLastUpdated(float $last_updated): bool
     {
         $this->last_updated = $last_updated;
         return true;

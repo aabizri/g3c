@@ -4,22 +4,55 @@ namespace Entities;
 
 /**
  * User est la classe entité pour les utilisateurs
- *
- * @package livewell
- * @author Alexandre A. Bizri <alexandre@bizri.fr>
+ * @package Entities
  */
 class User extends Entity
 {
     /* PROPERTIES */
 
+    /**
+     * @var int
+     */
     private $id;
+
+    /**
+     * @var string
+     */
     private $display;
+
+    /**
+     * @var string
+     */
     private $nick;
+
+    /**
+     * @var string (YYYY-MM-DD)
+     */
     private $birth_date;
+
+    /**
+     * @var float
+     */
     private $creation_date;
+
+    /**
+     * @var string
+     */
     private $email;
+
+    /**
+     * @var string
+     */
     private $password_hashed; // Password hashed & salted with BCrypt
+
+    /**
+     * @var string
+     */
     private $phone;
+
+    /**
+     * @var float
+     */
     private $last_updated;
 
     /* GETTERS AND SETTERS */
@@ -110,25 +143,6 @@ class User extends Entity
     /**
      * @return string
      */
-    public function getCreationDate(): string
-    {
-        return $this->creation_date;
-    }
-
-    /**
-     * @param string $creation_date
-     *
-     * @return bool false if invalid
-     */
-    public function setCreationDate(string $creation_date): bool
-    {
-        $this->creation_date = $creation_date;
-        return true;
-    }
-
-    /**
-     * @return string
-     */
     public function getEmail(): string
     {
         return $this->email;
@@ -149,7 +163,6 @@ class User extends Entity
 
         // Verifier que le courriel est correct
         if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-            echo "invalid email";
             return false; // Email invalid
         }
 
@@ -195,18 +208,37 @@ class User extends Entity
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getLastUpdated(): string
+    public function getCreationDate(): float
+    {
+        return $this->creation_date;
+    }
+
+    /**
+     * @param float $creation_date
+     *
+     * @return bool false if invalid
+     */
+    public function setCreationDate(float $creation_date): bool
+    {
+        $this->creation_date = $creation_date;
+        return true;
+    }
+
+    /**
+     * @return float
+     */
+    public function getLastUpdated(): float
     {
         return $this->last_updated;
     }
 
     /**
-     * @param string $last_updated
+     * @param float $last_updated
      * @return bool
      */
-    public function setLastUpdated(string $last_updated): bool
+    public function setLastUpdated(float $last_updated): bool
     {
         $this->last_updated = $last_updated;
         return true;
@@ -234,7 +266,7 @@ class User extends Entity
      *
      * @return bool
      */
-    public function validatePassword(string $clear): bool
+    public function verifyPassword(string $clear): bool
     {
         // Validate the password
         $ok = password_verify($clear, $this->password_hashed);
