@@ -105,6 +105,16 @@ abstract class Query
      */
     public function saveEntity(\Entities\Entity $entity): bool
     {
+        // On vérifie si l'entité a une ID
+
+        try {
+            $entity->getID();
+        } catch (\TypeError $te) {
+            unset($this->manipulate_columns[0]);
+            $this->manipulate_columns = array_values($this->manipulate_columns);
+            return $this->insert($entity);
+        }
+
         // Récupère le compte
         $count = $this
             ->filterByEntity("id", "=", $entity)
@@ -207,9 +217,6 @@ abstract class Query
         // This is a select
         $this->select();
 
-        // Set all columns to be retrieved
-        $this->manipulate_columns = array_keys($this->table_columns);
-
         // Set the limit to one
         $this->limit(1);
 
@@ -244,9 +251,6 @@ abstract class Query
     public function find(): array {
         // This is a select
         $this->select();
-
-        // Set all columns to be retrieved
-        $this->manipulate_columns = array_keys($this->table_columns);
 
         // Prepare the statement
         $stmt = $this->prepareAndExecute();
@@ -339,11 +343,6 @@ abstract class Query
      * @throws \Exception
      */
     public function update($entity): bool {
-        // If not set, select all columns
-        if (!isset($this->manipulate_columns)) {
-            $this->manipulate_columns = array_keys($this->table_columns);
-        }
-
         // Operation is an UPDATE
         $this->operation = "UPDATE";
 

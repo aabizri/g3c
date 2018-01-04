@@ -60,6 +60,6 @@ class Requests extends Query
 
     public function save(\Entities\Request $request): bool
     {
-        return parent::saveEntity($request);
+        return $this->saveEntity($request);
     }
 }
