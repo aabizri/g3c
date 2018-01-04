@@ -95,7 +95,7 @@ class Room extends Entity
     public function getProperty(): Property
     {
         if ($this->property === null) {
-            $this->property = \Repositories\Properties::retrieve($this->property_id);
+            $this->property = (new \Queries\Properties)->retrieve($this->property_id);
         }
         return $this->property;
     }

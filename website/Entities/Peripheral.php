@@ -213,7 +213,7 @@ class Peripheral extends Entity
             if ($this->property_id === null) {
                 return null;
             }
-            $this->room = \Repositories\Properties::retrieve($this->property_id);
+            $this->room = (new \Queries\Properties)->retrieve($this->property_id);
         }
         return $this->property;
     }
@@ -261,7 +261,7 @@ class Peripheral extends Entity
             if ($this->room_id === null) {
                 return null;
             }
-            $this->room = \Repositories\Rooms::retrieve($this->room_id);
+            $this->room = (new \Queries\Rooms)->retrieve($this->room_id);
         }
         return $this->room;
     }

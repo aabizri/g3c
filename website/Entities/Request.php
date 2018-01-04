@@ -520,7 +520,7 @@ class Request extends Entity
         }
 
         if ($this->user === null) {
-            $this->user = \Repositories\Users::retrieve($this->user_id);
+            $this->user = (new \Queries\Users)->retrieve($this->user_id);
         }
 
         return $this->user;
@@ -575,7 +575,7 @@ class Request extends Entity
         }
 
         if ($this->property === null) {
-            $this->property = \Repositories\Properties::retrieve($this->property_id);
+            $this->property = (new \Queries\Properties)->retrieve($this->property_id);
         }
 
         return $this->property;
@@ -835,7 +835,7 @@ class Request extends Entity
         session_write_close();
 
         // Now insert
-        \Repositories\Requests::insert($this);
+        (new \Queries\Requests)->save($this);
     }
 
     /**

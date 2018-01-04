@@ -98,7 +98,7 @@ class Measure extends Entity
     public function getType(): MeasureType
     {
         if ($this->type === null) {
-            $this->type = \Repositories\MeasureTypes::retrieve($this->type_id);
+            $this->type = (new \Queries\MeasureTypes)->retrieve($this->type_id);
         }
         return $this->type;
     }
