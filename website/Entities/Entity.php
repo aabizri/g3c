@@ -71,6 +71,8 @@ abstract class Entity
         // Return true
         return true;
     }
+
+    abstract public function getID();
 }
 
 
