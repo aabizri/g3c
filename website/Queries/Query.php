@@ -125,7 +125,7 @@ abstract class Query
      * @param mixed $object
      * @return $this
      */
-    protected function filterByColumn(string $key, string $operator, $object, string $logical_operator = "OR")
+    public function filterByColumn(string $key, string $operator, $object, string $logical_operator = "OR")
     {
         $indicator = $key[0] . $key[1] . count($this->where->operands);
         $this->where->operands[] = new \Queries\Clauses\WhereTriplet($key, $operator, $indicator);
@@ -141,7 +141,7 @@ abstract class Query
      * @param \Entities\Entity $entity
      * @return $this
      */
-    protected function filterByEntity(string $key, string $operator, \Entities\Entity $entity)
+    public function filterByEntity(string $key, string $operator, \Entities\Entity $entity)
     {
         // Extract the IDs
         $id = $entity->getID();
