@@ -66,8 +66,8 @@ class User
          * @var int $nickDuplicate
          */
         $count = (new \Queries\Users)
-            ->filterByNick($nick)
-            ->filterByEmail($email)// OR
+            ->filterByNick("=", $nick)
+            ->filterByEmail("=", $email)// OR
             ->count();
         if ($count !== 0) {
             echo "A user with this nick and/or email already exists";
@@ -78,7 +78,7 @@ class User
         $u = new Entities\User();
         $u->setNick($nick);
         $u->setEmail($email);
-        $u->setPassword($password_clear);
+        $u->setPasswordClear($password_clear);
         $u->setDisplay($display);
         $u->setPhone($phone);
 
@@ -127,9 +127,9 @@ class User
          * Vérifier que le nick et/ou e-mail existe et récupérer l'entité liée
          * @var int $id
          */
-        $u = (new \Queries\Users)->filterByNick($login)->findOne(); //trouve l'id lié au nickname
+        $u = (new \Queries\Users)->filterByNick("=", $login)->findOne(); //trouve l'id lié au nickname
         if ($u === null) {
-            $u = (new \Queries\Users)->filterByEmail($login)->findOne();
+            $u = (new \Queries\Users)->filterByEmail("=", $login)->findOne();
         }
         if ($u === null) {
             echo "Ce login n'existe pas";
@@ -143,7 +143,7 @@ class User
         }
 
         // Ajouter à la session et à la requête
-        $_SESSION["user_id"] = $u->getId();
+        $_SESSION["user_id"] = $u->getID();
         $ok = $req->setUser($u);
         if (!$ok) {
             Error::getInternalError500($req);
