@@ -27,14 +27,14 @@ class Peripherals extends Query
         parent::__construct(self::table, self::columns, self::entity_class_name);
     }
 
-    public function filterByProperty(string $operator, \Entities\Property ...$properties): self
+    public function filterByProperty(string $operator, \Entities\Property $property): self
     {
-        return $this->filterByEntity("property_id", $operator, ...$properties);
+        return $this->filterByEntity("property_id", $operator, $property);
     }
 
-    public function filterByRoom(string $operator, \Entities\Room ...$rooms): self
+    public function filterByRoom(string $operator, \Entities\Room $room): self
     {
-        return $this->filterByEntity("room_id", $operator, ...$rooms);
+        return $this->filterByEntity("room_id", $operator, $room);
     }
 
     public function save(\Entities\Peripherals $peripheral): bool
