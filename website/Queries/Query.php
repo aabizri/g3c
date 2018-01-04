@@ -60,7 +60,7 @@ abstract class Query
         $this->table_columns = $table_columns;
 
         // By default, we manipulate all columns
-        $this->manipulate_columns = $table_columns;
+        $this->manipulate_columns = array_keys($table_columns);
 
         // Validate the entity class name
         if (!is_subclass_of($entity_class_name,"\Entities\Entity")) {
@@ -125,10 +125,11 @@ abstract class Query
      * @param mixed $object
      * @return $this
      */
-    protected function filterByColumn(string $key, string $operator, $object)
+    protected function filterByColumn(string $key, string $operator, $object, string $logical_operator = "OR")
     {
         $indicator = $key[0] . $key[1] . count($this->where->operands);
         $this->where->operands[] = new \Queries\Clauses\WhereTriplet($key, $operator, $indicator);
+        $this->where->operator = $logical_operator;
         $this->data[$indicator] = $object;
         return $this;
     }
@@ -184,6 +185,15 @@ abstract class Query
 
         // Return
         return $this;
+    }
+
+    /**
+     * Retrieves a single entity
+     */
+    public function retrieve($id)
+    {
+        $this->filterByColumn("id", "=", $id);
+        return $this->findOne();
     }
 
     /**
@@ -326,6 +336,11 @@ abstract class Query
      * @throws \Exception
      */
     public function update($entity): bool {
+        // If not set, select all columns
+        if (!isset($this->manipulate_columns)) {
+            $this->manipulate_columns = array_keys($this->table_columns);
+        }
+
         // Operation is an UPDATE
         $this->operation = "UPDATE";
 
@@ -693,7 +708,7 @@ abstract class Query
         if (empty($sql)) {
             $sql = $this->toSQL();
         }
-        var_dump($sql);
+        //var_dump($sql);
         // Preparer
         $statement = $this->db->prepare($sql, \Helpers\DB::$pdo_params);
 
