@@ -63,31 +63,33 @@ class Handler
                 $category = "User";
                 $action = "ConnectionPage";
             } else {
-                $category = "Property";
-                $action = "Select";
+                $category = "User"; // = "Property";
+                $action = "AccountPage"; // = "Select";
             }
+            // Redirection
+            DisplayManager::redirectToController($category, $action);
         } else if (empty($category) XOR empty($action)) {
             \Controllers\Error::getControllerNotFound404($req);
             return;
-        }
+        } else {
+            // Méthode
+            $method = $req->getMethod();
 
-        // Méthode
-        $method = $req->getMethod();
+            // Envoie au controlleur
+            $call = self::controllerCall($category, $action, $method);
 
-        // Envoie au controlleur
-        $call = self::controllerCall($category, $action, $method);
+            // Si ça n'existe pas, appelle le controlleur 404
+            if (empty($call)) {
+                \Controllers\Error::getControllerNotFound404($req);
+                return;
+            }
 
-        // Si ça n'existe pas, appelle le controlleur 404
-        if (empty($call)) {
-            \Controllers\Error::getControllerNotFound404($req);
-            return;
-        }
-
-        // Si ça existe, on appelle la fonction
-        try {
-            $call($req);
-        } catch (\Throwable $t) {
-            \Controllers\Error::getInternalError500($req,$t);
+            // Si ça existe, on appelle la fonction
+            try {
+                $call($req);
+            } catch (\Throwable $t) {
+                \Controllers\Error::getInternalError500($req, $t);
+            }
         }
 
         // Finalisation de la temporisation (Niveau 1)
