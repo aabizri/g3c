@@ -213,10 +213,10 @@ class Subscriptions
      * @throws \Exception if there is more than one active subscription found with this property
      */
 
-    public static function FindActiveByPropertyID(int $property_id): ?int
+    public static function findActiveByPropertyID(int $property_id): ?int
     {
 
-        $sql = "SELECT id
+        $sql = "SELECT count(*)
           FROM subscriptions
           WHERE property_id = :property_id AND start_date < now() AND expiry_date > now()";
 
@@ -267,7 +267,7 @@ class Subscriptions
      *
      */
 
-    public static function FindByCommandID(int $command_id): array
+    public static function findByCommandID(int $command_id): array
     {
         // SQL for counting all by command_id
         $sql = "SELECT count(*)
