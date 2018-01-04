@@ -39,6 +39,6 @@ class Peripherals extends Query
 
     public function save(\Entities\Peripherals $peripheral): bool
     {
-        return parent::save($peripheral);
+        return parent::saveEntity($peripheral);
     }
 }

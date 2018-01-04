@@ -34,7 +34,7 @@ class Rooms extends Query
 
     public function save(\Entities\Room $room): bool
     {
-        return parent::save($room);
+        return parent::saveEntity($room);
     }
 }
 

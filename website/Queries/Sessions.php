@@ -34,6 +34,6 @@ class Sessions extends Query
 
     public function save(\Entities\Session $session): bool
     {
-        return parent::save($session);
+        return parent::saveEntity($session);
     }
 }

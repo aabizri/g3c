@@ -39,6 +39,6 @@ class Roles extends Query
 
     public function save(\Entities\Role $role): bool
     {
-        return parent::save($role);
+        return parent::saveEntity($role);
     }
 }

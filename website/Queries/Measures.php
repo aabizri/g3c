@@ -33,6 +33,6 @@ class Measures extends Query
 
     public function save(\Entities\Measure $measure): bool
     {
-        return parent::save($measure);
+        return parent::saveEntity($measure);
     }
 }

@@ -29,6 +29,6 @@ class Permissions extends Query
 
     public function save(\Entities\Permission $permission): bool
     {
-        return parent::save($permission);
+        return parent::saveEntity($permission);
     }
 }

@@ -100,7 +100,7 @@ abstract class Query
      * @return bool
      * @throws \Exception
      */
-    public function save(\Entities\Entity $entity): bool
+    public function saveEntity(\Entities\Entity $entity): bool
     {
         // Récupère le compte
         $count = $this
@@ -191,6 +191,9 @@ abstract class Query
      * @throws \Exception
      */
     public function findOne() {
+        // This is a select
+        $this->select();
+
         // Set all columns to be retrieved
         $this->manipulate_columns = $this->table_columns;
 
@@ -226,8 +229,11 @@ abstract class Query
      * @throws \Exception
      */
     public function find(): array {
+        // This is a select
+        $this->select();
+
         // Set all columns to be retrieved
-        $this->onColumns();
+        $this->manipulate_columns = $this->table_columns;
 
         // Prepare the statement
         $stmt = $this->prepareAndExecute();
@@ -286,7 +292,7 @@ abstract class Query
      * @param bool $asc
      * @return $this
      */
-    protected function orderBy(string $key, bool $asc = true)
+    public function orderBy(string $key, bool $asc = true)
     {
         // Sets the operation to SELCT
         $this->select();
@@ -302,7 +308,7 @@ abstract class Query
      * @param int $offset
      * @return $this
      */
-    protected function offset(int $offset)
+    public function offset(int $offset)
     {
         // Sets the operation to SELCT
         $this->select();
@@ -650,7 +656,7 @@ abstract class Query
             case "DELETE":
                 return $this->toLexemesDelete();
             default:
-                return null;
+                return [];
         }
     }
 

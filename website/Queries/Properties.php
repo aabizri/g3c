@@ -29,6 +29,6 @@ class Properties extends Query
 
     public function save(\Entities\Property $property): bool
     {
-        return parent::save($property);
+        return parent::saveEntity($property);
     }
 }

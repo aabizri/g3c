@@ -38,6 +38,6 @@ class Users extends Query
 
     public function save(\Entities\User $user): bool
     {
-        return parent::save($user);
+        return parent::saveEntity($user);
     }
 }

@@ -29,6 +29,6 @@ class MeasureTypes extends Query
 
     public function save(\Entities\MeasureType $measure_type): bool
     {
-        return parent::save($measure_type);
+        return parent::saveEntity($measure_type);
     }
 }
