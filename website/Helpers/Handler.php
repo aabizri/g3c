@@ -5,6 +5,10 @@ namespace Helpers;
 class Handler
 {
     // Handle the request
+    /**
+     * @param \Entities\Request $req
+     * @throws \Exception
+     */
     public static function handle(\Entities\Request $req)
     {
         // UTF8 Header
@@ -24,7 +28,7 @@ class Handler
             "cookie_lifetime" => \Helpers\SessionSaveHandler::lifetime * 60 * 60 * 24,
         ];
         session_start($sess_opt);
-        $sess = \Repositories\Sessions::retrieve(session_id());
+        $sess = (new \Queries\Sessions)->retrieve(session_id());
         if ($sess !== null && !$sess->isValid()) {
             session_regenerate_id();
         }
@@ -39,7 +43,11 @@ class Handler
 
         // Vérifie que le User a le droit d'accéder à la propriété
         if ($req->getUserID() !== null && $req->getPropertyID() !== null) {
-            if (\Repositories\Roles::findByUserAndProperty($req->getUserID(), $req->getPropertyID()) === null) {
+            $count = (new \Queries\Roles)
+                ->filterByColumn("property_id", "=", $req->getPropertyID(), "AND")
+                ->filterByColumn("user_id", "=", $req->getUserID(), "AND")
+                ->count();
+            if ($count !== 0) {
                 echo "L'utilisateur n'a pas de connexion à cette propriété, interdit !";
             }
         }

@@ -17,7 +17,7 @@ class Properties extends Query
                              "name" => "",
                              "address" => "",
                              "creation_date" => "",
-                             "last_updated" => ""];
+                             "last_updated" => "timestamp"];
     private const entity_class_name = "\Entities\Property";
 
     /**

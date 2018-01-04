@@ -16,8 +16,8 @@ class Sessions extends Query
     private const columns = ["id" => "",
                              "user_id" => "",
                              "value" => "",
-                             "started" => "",
-                             "expiry" => "",
+                             "started" => "timestamp",
+                             "expiry" => "timestamp",
                              "canceled" => "",
                              "last_updated" => "timestamp"];
     private const entity_class_name = "\Entities\Session";

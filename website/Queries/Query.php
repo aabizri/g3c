@@ -22,7 +22,10 @@ abstract class Query
     // Columns to be manipulated (SELECT, INSERT INTO, UPDATE)
     private $manipulate_columns;
 
-    // Where clause
+    /**
+     * Where clause
+     * @var Clauses\Where
+     */
     private $where;
 
     // Data to be replaced in prepared statement
@@ -509,7 +512,23 @@ abstract class Query
 
         // Then with the columns to retrieve
         foreach ($this->manipulate_columns as $index => $column) {
-            $lexemes[] = $column;
+            $column_attribute = $this->table_columns[$column];
+            switch ($column_attribute) {
+                case "hex":
+                    $lexemes[] = "HEX(";
+                    $lexemes[] = $column;
+                    $lexemes[] = ") as ";
+                    $lexemes[] = $column;
+                    break;
+                case "timestamp":
+                    $lexemes[] = "UNIX_TIMESTAMP(";
+                    $lexemes[] = $column;
+                    $lexemes[] = ") as ";
+                    $lexemes[] = $column;
+                    break;
+                default:
+                    $lexemes[] = $column;
+            }
             if ($index !== count($this->manipulate_columns)-1){
                 $lexemes[] = ",";
             }
@@ -593,7 +612,23 @@ abstract class Query
                 $this->data[$key] = $value;
 
                 // Write the key as lexeme
-                $lexemes[] = ":".$key;
+                $column_attribute = $this->table_columns[$column_name];
+
+                $to_be_inserted = ":" . $key;
+                switch ($column_attribute) {
+                    case "hex":
+                        $lexemes[] = "UNHEX(";
+                        $lexemes[] = $to_be_inserted;
+                        $lexemes[] = ")";
+                        break;
+                    case "timestamp":
+                        $lexemes[] = "FROM_UNIXTIME(";
+                        $lexemes[] = $to_be_inserted;
+                        $lexemes[] = ")";
+                        break;
+                    default:
+                        $lexemes[] = $to_be_inserted;
+                }
 
                 // If we're not at the end, add a coma
                 if ($column_name !== $last_column_name) {
@@ -632,7 +667,21 @@ abstract class Query
         foreach ($this->manipulate_columns as $index => $column) {
             $lexemes[] = $column;
             $lexemes[] = "=";
-            $lexemes[] = ":".$column;
+            $column_attribute = $this->table_columns[$column];
+            switch ($column_attribute) {
+                case "hex":
+                    $lexemes[] = "UNHEX(";
+                    $lexemes[] = ":" . $column;
+                    $lexemes[] = ")";
+                    break;
+                case "timestamp":
+                    $lexemes[] = "FROM_UNIXTIME(";
+                    $lexemes[] = ":" . $column;
+                    $lexemes[] = ")";
+                    break;
+                default:
+                    $lexemes[] = ":" . $column;
+            }
             if ($index !== count($this->manipulate_columns)-1){
                 $lexemes[] = ",";
             }
@@ -708,7 +757,7 @@ abstract class Query
         if (empty($sql)) {
             $sql = $this->toSQL();
         }
-        //var_dump($sql);
+
         // Preparer
         $statement = $this->db->prepare($sql, \Helpers\DB::$pdo_params);
 

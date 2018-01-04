@@ -20,7 +20,7 @@ class Peripherals extends Query
                              "public_key" => "",
                              "property_id" => "",
                              "room_id" => "",
-                             "last_updated" => ""];
+                             "last_updated" => "timestamp"];
     private const entity_class_name = "\Entities\Peripheral";
 
     /**
