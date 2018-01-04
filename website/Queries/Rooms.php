@@ -31,6 +31,11 @@ class Rooms extends Query
     {
         return $this->filterByEntity("property_id", $operator, $property);
     }
+
+    public function save(\Entities\Room $room): bool
+    {
+        return parent::save($room);
+    }
 }
 
 
