@@ -23,15 +23,11 @@
     </table>
 
     <script>
-        let xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState !== xhr.DONE) {
-                return;
-            }
-
-            // Parse
-            let users = JSON.parse(xhr.response);
-
+        /**
+         * Applies JSON to update table
+         * @param users
+         */
+        function applyJSON(users) {
             // Select
             let tbody = document.getElementById("users");
 
@@ -67,9 +63,29 @@
                 // Deal with the row itself
                 tbody.appendChild(row);
             }
-        };
+        }
 
-        function getCurrentParameters() {
+        /**
+         * Applies the response to update the table
+         *
+         * @param res
+         */
+        function applyResponse(res) {
+            // If not ok, log & return
+            if (!res.ok) {
+                return;
+            }
+
+            // Decode to JSON
+            res.json().then(applyJSON);
+        }
+
+        /**
+         * Retrieves hash (#) parameters
+         *
+         * @returns {{}}
+         */
+        function getParameters() {
             let hash = window.location.hash.substr(1);
 
             let result = hash.split('&').reduce(function (result, item) {
@@ -81,7 +97,12 @@
             return result;
         }
 
-        function setCurrentParameters(params) {
+        /**
+         * Sets hash (#) parameters
+         *
+         * @params {{}}
+         */
+        function setParameters(params) {
             let hash = "";
             for (property in params) {
                 hash += "&" + property + "=" + params[property];
@@ -90,25 +111,29 @@
             window.location.hash = hash;
         }
 
-        function hydrate() {
+        /**
+         * Syncs the table
+         */
+        function sync() {
             // Get the parameters
-            let params = getCurrentParameters();
+            let params = getParameters();
 
             // Build the new URL
             let url = new URL(window.location.href);
             url.searchParams.set("v", "json");
             for (property in params) {
+                if (!params.hasOwnProperty(property)) {
+                    console.log("Hash parameters don't have property index " + property);
+                    break;
+                }
                 url.searchParams.set(property, params[property]);
             }
 
             // Execute request
-            xhr.open("GET", url.href, true);
-
-            // Send
-            xhr.send();
+            fetch(url.href).then(applyResponse);
         }
 
-        window.addEventListener("hashchange", hydrate, false);
-        hydrate();
+        window.addEventListener("hashchange", sync, false);
+        sync();
     </script>
 </main>
