@@ -25,7 +25,7 @@
 
     <div id="modifiermesinformations">
         <h4 id="titremodifierinfos">Modifier mes informations</h4>
-        <form method="post" id="formulairemodif" action="http://localhost/g3c/website/index.php?c=User&a=MAJInformations" name="modifierinfos" onsubmit="return validateEmail()">
+        <form method="post" id="formulairemodif" action="http://localhost/g3c/website/index.php?c=User&a=MAJInformations&debug=true" name="modifierinfos" onsubmit="return validateEmail()">
             <p>
                 <label>Nouvel email :</label><input type="text" id="formdroit" name="email"/><br>
             </p>

@@ -223,15 +223,17 @@ class User
         }
 
         // Insertion de l'entité et de ses maj si le mdp de vérification est valide
-        if ($user->validatePassword($mdp) === true){
-            try {
-                Repositories\Users::push($user);
-            } catch (\Exception $e) {
-                Error::getInternalError500($req);
-            }
-            self::getInformations($req);
+        if ($user->validatePassword($mdp) === false){
             return;
         }
+        try {
+            Repositories\Users::push($user);
+        } catch (\Exception $e) {
+            Error::getInternalError500();
+         }
+        \Helpers\DisplayManager::display(self::getInformations($req));
+
+        return;
 
     }
 
@@ -256,6 +258,7 @@ class User
 
         //Vérification de l'ancien mdp
         if ($user->validatePassword($ancienmdp) === false) {
+            Error::getInternalError500();
             return;
         }
 
@@ -277,7 +280,7 @@ class User
             return;
         }
 
-        self::getInformations($req);
+        \Helpers\DisplayManager::display(self::getInformations($req));
 
     }
 
