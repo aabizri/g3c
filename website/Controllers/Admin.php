@@ -23,7 +23,8 @@ class Admin
      * GET root/admin/users
      * @param \Entities\Request $req
      */
-    public function getUserList(\Entities\Request $req): void {
+    public function getUsers(\Entities\Request $req): void
+    {
         // TODO: Check authorisation for viewer
 
         // Retrieve values necessary
@@ -32,11 +33,40 @@ class Admin
         $order_by_column = $req->getGET("order_by_column") ?? "creation_date";
         $order_by_direction = $req->getGET("order_by_direction") ?? "DESC";
 
-        // TODO: Retrieve the values
-        $users = [];
+        // Retrieve the values
+        $users = (new \Queries\Users)
+            ->orderBy("creation_date")
+            ->limit(200)
+            ->find();
 
         // Return view
-        // TODO: Switch on $req->getView() for HTML or JSON
+        switch ($req->getGET("v")) {
+            case "json":
+                // Object array to be encoded
+                $to_be_encoded = [];
+
+                // For each user, transform it into a a minimal object
+                foreach ($users as $user) {
+                    $to_be_encoded[] = (object)[
+                        "id" => $user->getID(),
+                        "nick" => $user->getNick(),
+                        "email" => $user->getEmail(),
+                        "name" => $user->getDisplay(),
+                    ];
+                }
+
+                // Encode output
+                $output = json_encode($to_be_encoded);
+
+                // Output it & break
+                echo $output;
+                break;
+            default:
+                \Helpers\DisplayManager::display("users", $users);
+        }
+
+        // Return
+        return;
     }
 
     /**
