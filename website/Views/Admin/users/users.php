@@ -42,6 +42,7 @@
             for (let user of users) {
                 // Create the row
                 let row = document.createElement("tr");
+                row.setAttribute("onclick", "window.location.href = \"index.html?c=Admin&a=User&uid=" + user.id + "\"");
 
                 // Properties
                 let properties = ["id", "name", "nick", "email"];
