@@ -33,7 +33,7 @@ class Measures extends Query
 
     public function filterByMeasureType(string $operator, \Entities\MeasureType $measure_type): self
     {
-        return $this->filterByEntity("property_id", $operator, $measure_type);
+        return $this->filterByEntity("type_id", $operator, $measure_type);
     }
 
     public function save(\Entities\Measure $measure): bool
