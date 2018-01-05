@@ -23,13 +23,13 @@ class Room
         }
 
         /*Vérifier que les données existent*/
-        if (empty($req->getGET("name"))) {
+        if (empty($req->getPOST("name"))) {
             echo "Il manque : "."name";
             return;
             }
 
         /*Assigne les valeurs*/
-        $name = $post["name"];
+        $name = $req->getPOST("name");
 
         /*Créer l'entité*/
         $r = new Entities\Room();
@@ -37,7 +37,7 @@ class Room
 
         /*Insérer l'entité dans la bdd*/
         try {
-            Repositories\Rooms::insert($r);
+            (new \Queries\Rooms)->insert($r);
         } catch (\Exception $e) {
             echo "Erreur" . $e;
         }

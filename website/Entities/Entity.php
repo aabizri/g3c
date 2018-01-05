@@ -64,6 +64,20 @@ abstract class Entity
                 throw new UnknownSetterException($this,$setter_name);
             }
 
+            // Get its type
+            $reflection_method = new \ReflectionMethod($this, $setter_name);
+            $reflection_parameters = $reflection_method->getParameters();
+            $reflection_parameter = $reflection_parameters[0];
+            $reflection_parameter_type = $reflection_parameter->getType();
+            switch ($reflection_parameter_type->getName()) {
+                case "string":
+                    $data = (string)$data;
+                    break;
+                case "float":
+                    $data = (float)$data;
+                    break;
+            }
+
             // Apply it
             $success = $this->$setter_name($data);
             if ($success === false) {
@@ -77,6 +91,8 @@ abstract class Entity
         // Return true
         return true;
     }
+
+    abstract public function getID();
 }
 
 
