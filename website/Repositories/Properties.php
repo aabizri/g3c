@@ -9,6 +9,8 @@
 namespace Repositories;
 
 
+use Exceptions\SetFailedException;
+
 class Properties extends Repository
 {
     /**
@@ -24,21 +26,22 @@ class Properties extends Repository
           VALUES (:name, :address);";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
-        $data = [
-            ":name" => $p->getName(),
-            ":address" => $p->getAddress(),
-        ];
+        $data = $p->getMultiple([
+            "name",
+            "address",
+        ]);
 
         // Execute request
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Get ID of the insert
         $id = parent::db()->lastInsertId();
-        if ($p->setID($id) == false) {
-            throw new \Exception("error setting id");
+        $ok = $p->setID($id);
+        if (!$ok) {
+            throw new SetFailedException($p,"setID",$id);
         }
 
         // We should now pull to populate ID & Times

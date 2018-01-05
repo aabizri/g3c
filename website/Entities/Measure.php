@@ -8,17 +8,50 @@
 
 namespace Entities;
 
-
-class Measure
+/**
+ * Class Measure
+ * @package Entities
+ * @todo actuator & sensor getters and setters
+ */
+class Measure extends Entity
 {
     /* PROPERTIES */
 
+    /**
+     * @var int
+     */
     private $id;
+
+    /**
+     * @var int
+     */
+    private $type_id;
+
+    /**
+     * @var MeasureType
+     */
     private $type;
+
+    /**
+     * @var string date_time
+     */
     private $date_time;
+
+    /**
+     * @var double
+     */
     private $value;
-    private $peripheral_uuid;
-    private $last_updated;
+
+    /**
+     * @var int
+     */
+    private $actuator_id;
+
+    /**
+     * @var int
+     */
+    private $sensor_id;
+
 
     /* GETTERS AND SETTERS */
 
@@ -43,18 +76,41 @@ class Measure
     /**
      * @return string
      */
-    public function getType(): string
+    public function getTypeID(): string
     {
+        return $this->type_id;
+    }
+
+    /**
+     * @param string $type_id
+     * @return bool
+     */
+    public function setTypeID(string $type_id): bool
+    {
+        $this->type_id = $type_id;
+        return true;
+    }
+
+    /**
+     * @return MeasureType
+     * @throws \Exception
+     */
+    public function getType(): MeasureType
+    {
+        if ($this->type === null) {
+            $this->type = \Repositories\MeasureTypes::retrieve($this->type_id);
+        }
         return $this->type;
     }
 
     /**
-     * @param string $type
+     * @param MeasureType $mt
      * @return bool
      */
-    public function setType(string $type): bool
+    public function setType(MeasureType $mt): bool
     {
-        $this->type = $type;
+        $this->type = $mt;
+        $this->type_id = $mt->getID();
         return true;
     }
 
@@ -77,56 +133,56 @@ class Measure
     }
 
     /**
-     * @return int
+     * @return double
      */
-    public function getValue(): int
+    public function getValue(): float
     {
         return $this->value;
     }
 
     /**
-     * @param int $value
+     * @param double $value
      * @return bool
      */
-    public function setValue(int $value): bool
+    public function setValue(double $value): bool
     {
         $this->value = $value;
         return true;
     }
 
     /**
-     * @return string
+     * @return int|null
      */
-    public function getPeripheralUUID(): string
+    public function getActuatorID(): ?int
     {
-        return $this->peripheral_uuid;
+        return $this->actuator_id;
     }
 
     /**
-     * @param string $peripheral_uuid
+     * @param int $actuator_id
      * @return bool
      */
-    public function setPeripheralUUID(string $peripheral_uuid): bool
+    public function setActuatorID(int $actuator_id): bool
     {
-        $this->peripheral_uuid = $peripheral_uuid;
+        $this->actuator_id = $actuator_id;
         return true;
     }
 
     /**
-     * @return float
+     * @return int|null
      */
-    public function getLastUpdated(): float
+    public function getSensorID(): ?int
     {
-        return $this->last_updated;
+        return $this->sensor_id;
     }
 
     /**
-     * @param float $last_updated
+     * @param int $sensor_id
      * @return bool
      */
-    public function setLastUpdated(float $last_updated): bool
+    public function setSensorID(int $sensor_id): bool
     {
-        $this->last_updated = $last_updated;
+        $this->sensor_id = $sensor_id;
         return true;
     }
 }

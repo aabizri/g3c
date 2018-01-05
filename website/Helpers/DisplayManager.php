@@ -8,9 +8,6 @@
 
 namespace Helpers;
 
-
-$sql = "SELECT id FROM sensors WHERE peripheral_uuid IN (SELECT uuid FROM peripherals WHERE room_id = :room_id)";
-
 /**
  * Class DisplayManager
  * @package Helpers
@@ -29,6 +26,7 @@ class DisplayManager
         "moncompte" => "Users",
         "mespieces" => "Rooms",
         "mesperipheriques"=> "Peripherals",
+        "mysessions" => "Users",
     ];
 
     private static function subroot(): string {
@@ -54,7 +52,7 @@ class DisplayManager
      * @return string
      */
     public static function websiteRootURL(string $dir = ""): string{
-        return "http://localhost/".str_replace("\\","/", self::subroot())."/".$dir;
+        return "/".str_replace("\\","/", self::subroot())."/".$dir;
     }
 
     /**
@@ -116,7 +114,7 @@ class DisplayManager
      * @param array $data
      * @throws \Exception
      */
-    public static function display(string $name, array $data): void {
+    public static function display(string $name, array $data = []): void {
         // Resolve components
         $components = self::resolveMultipleComponents(["head","header",$name,"footer"]);
         
@@ -152,5 +150,25 @@ class DisplayManager
         foreach ($php as $toinc) {
             include($toinc);
         }
+    }
+
+    /**
+     * Redirects to destination with 302 (temporary redirect)
+     *
+     * @param string $destination
+     */
+    public static function redirectToController(string $category, string $action): void
+    {
+        self::redirectToPath("index.php?c=$category&a=$action");
+    }
+
+    /**
+     * Redirects to destination with 302 (temporary redirect)
+     *
+     * @param string $destination
+     */
+    public static function redirectToPath(string $destination): void
+    {
+        header("Location: " . \Helpers\DisplayManager::absolutifyURL($destination));
     }
 }

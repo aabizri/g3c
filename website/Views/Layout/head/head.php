@@ -47,4 +47,5 @@
             include_linked($js,  "<script src='");
         }
     ?>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
