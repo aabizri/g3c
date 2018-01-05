@@ -122,10 +122,6 @@
             let url = new URL(window.location.href);
             url.searchParams.set("v", "json");
             for (property in params) {
-                if (!params.hasOwnProperty(property)) {
-                    console.log("Hash parameters don't have property index " + property);
-                    break;
-                }
                 url.searchParams.set(property, params[property]);
             }
 
