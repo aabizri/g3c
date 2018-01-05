@@ -319,7 +319,7 @@ abstract class Query
         $this->select();
 
         // Sets the orderby directive
-        $this->orderby[$key] = $asc;
+        $this->orderby[$key] = $asc ? "ASC" : "DESC";
         return $this;
     }
 
