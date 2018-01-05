@@ -22,6 +22,7 @@ class Admin
     /**
      * GET root/admin/users
      * @param \Entities\Request $req
+     * @throws \Exception
      */
     public function getUsers(\Entities\Request $req): void
     {
@@ -31,12 +32,16 @@ class Admin
         $count = $req->getGET("count") ?? 20;
         $offset = $req->getGET("offset") ?? 0;
         $order_by_column = $req->getGET("order_by_column") ?? "creation_date";
-        $order_by_direction = $req->getGET("order_by_direction") ?? "DESC";
+        $order_by_direction = $req->getGET("order_by_direction");
+        if ($order_by_direction !== "ASC" && $order_by_direction !== "DESC") {
+            $order_by_direction = "DESC";
+        }
 
         // Retrieve the values
         $users = (new \Queries\Users)
-            ->orderBy("creation_date")
-            ->limit(200)
+            ->orderBy($order_by_column, $order_by_direction === "ASC")
+            ->limit($count)
+            ->offset($offset)
             ->find();
 
         // Return view
