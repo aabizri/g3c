@@ -81,7 +81,13 @@ class Peripherals
         $peripherals_list = [];
         foreach ($peripheriques_id_list as $peripherals_ID) {
             $peripherals = \Repositories\Peripherals::retrieve($peripherals_ID);
-            $peripherals_list[] = $peripherals;
+
+            //Récupérer le nom
+            $room_id = $peripherals->getRoomID();
+            $room= \Repositories\Rooms::retrieve($room_id);
+
+            //Ajouter les infos à la liste
+            $peripherals_list = $peripherals + $room ;
         }
 
         // Peupler la vue

@@ -115,6 +115,7 @@ class Rooms extends Repository
         // Store
         $ok = $r->setMultiple([
             "id" => $data["id"],
+            "name" => $data["name"],
             "property_id" => $data["property_id"],
             "creation_date" => $data["creation_date"],
             "last_updated" => (float)$data["last_updated"],
