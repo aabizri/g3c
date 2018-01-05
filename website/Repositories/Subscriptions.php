@@ -210,7 +210,6 @@ class Subscriptions
      *
      * @throws \Exception if there is more than one active subscription found with this property
      */
-
     public static function findActiveByPropertyID(int $property_id): ?int
     {
 
@@ -259,54 +258,12 @@ class Subscriptions
      *
      * @param int $command_id the id of the command with which to find the given Entity\Subscription_ID
      *
-     * @return string array of the ID of the subscription in question, or null if none are found
-     *
-     * @throws \Exception if there is more than one subscription for the same property in one command.
-     *
+     * @return array
      */
-
     public static function findByCommandID(int $command_id): array
     {
-        // SQL for counting all by command_id
-        $sql = "SELECT count(*)
-            FROM subscriptions
-            WHERE command_id = :command_id";
-
-        // SQL for counting by command_id and only one per property_id
-        $sql1 = "SELECT count(DISTINCT property_id) 
-            FROM subscriptions
-            WHERE command_id = :command_id";
-
-
-        // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
-        $sth1 = parent::db()->prepare($sql1, parent::$pdo_params);
-
-        // Execute query
-        $sth->execute(array(':command_id' => $command_id));
-        $sth1->execute(array(':command_id' => $command_id));
-
-        // Fetch
-        $count = $sth->fetchColumn(0);
-        $count1 = $sth1->fetchColumn(0);
-
-
-        // If count is zero, then we return null
-        if ($count == 0) {
-            return null;
-        }
-
-        // If there is two or more subscription for the same property in one command.
-        else if ($count > 1 and $count != $count1 ) {
-
-            throw new \Exception("More than one subscription for the same property in one command !");
-        }
-
-
-        // SQL for selecting if there is only one subscription per property in this command.
-        $sql = "SELECT id
-            FROM subscriptions
-            WHERE command_id = :command_id";
+        // Prepare SQL
+        $sql = "SELECT id FROM subscriptions WHERE command_id = :command_id GROUP BY property_id";
 
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
