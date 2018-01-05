@@ -8,14 +8,42 @@
 
 namespace Entities;
 
-class Room
+/**
+ * Class Room
+ * @package Entities
+ */
+class Room extends Entity
 {
     /* PROPERTIES */
 
+    /**
+     * @var int
+     */
     private $id;
+
+    /**
+     * @var int
+     */
     private $property_id;
+
+    /**
+     * @var Property
+     */
+    private $property;
+
+    /**
+     * @var string
+     */
     private $name;
+
+    /**
+     * @var float
+     */
     private $creation_date;
+
+    /**
+     * @var float
+     */
     private $last_updated;
 
     /* GETTERS AND SETTERS */
@@ -52,7 +80,34 @@ class Room
      */
     public function setPropertyID(int $property_id): bool
     {
+        if ($this->property !== null) {
+            if ($property_id !== $this->property->getID()) {
+                $this->property = null;
+            }
+        }
         $this->property_id = $property_id;
+        return true;
+    }
+
+    /**
+     * @return Property
+     */
+    public function getProperty(): Property
+    {
+        if ($this->property === null) {
+            $this->property = \Repositories\Properties::retrieve($this->property_id);
+        }
+        return $this->property;
+    }
+
+    /**
+     * @param Property $p
+     * @return bool
+     */
+    public function setProperty(Property $p): bool
+    {
+        $this->property = $p;
+        $this->property_id = $p->getID();
         return true;
     }
 
@@ -117,6 +172,10 @@ class Room
 
     /* BUSINESS LOGIC */
 
+    /**
+     * @param int $property_id
+     * @return bool
+     */
     public function attachToProperty(int $property_id): bool
     {
         // Check if it exists

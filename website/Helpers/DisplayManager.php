@@ -25,9 +25,7 @@ class DisplayManager
         "inscription" => "Users",
         "moncompte" => "Users",
         "mespieces" => "Rooms",
-        "mesperipheriques" => "Peripherals",
-        "maintenance" => "Maintenance",
-
+        "mesperipheriques"=> "Peripherals",
     ];
 
     private static function subroot(): string {

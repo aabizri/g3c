@@ -13,11 +13,17 @@ use Entities;
 class Room
 {
     /*Ajouter une pièce*/
-    public function postNewRoom(array $get, array $post): void
+    public function postNewRoom(\Entities\Request $req): void
     {
+        // Si la requête n'est pas associée à une propriété, retourner une erreur
+        $property_id = $req->getPropertyID();
+        if (empty($property_id)) {
+            echo "Requête concernant une propriété mais non associée à une propriété, erreur";
+            return;
+        }
+
         /*Vérifier que les données existent*/
-        $required = ["name"];
-        if (empty($post("name"))) {
+        if (empty($req->getGET("name"))) {
             echo "Il manque : "."name";
             return;
             }
@@ -36,11 +42,18 @@ class Room
             echo "Erreur" . $e;
         }
 
-        \Helpers\DisplayManager::display("dashboard",array());
+        \Helpers\DisplayManager::redirectToController("Rooms", "RoomsPage");
     }
 
-    public static function getRoomsPage (array $get, array $post):void
+    public static function getRoomsPage (\Entities\Request $req):void
     {
-        \Helpers\DisplayManager::display("mespieces", array());
+        // Si la requête n'est pas associée à une propriété, retourner une erreur
+        $property_id = $req->getPropertyID();
+        if (empty($property_id)) {
+            echo "Requête concernant une propriété mais non associée à une propriété, erreur";
+            return;
+        }
+        
+        \Helpers\DisplayManager::display("mespieces");
     }
 }
