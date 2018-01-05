@@ -228,9 +228,9 @@ class Request extends Entity
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getSessionID(): string
+    public function getSessionID(): ?string
     {
         return $this->session_id;
     }
@@ -239,7 +239,7 @@ class Request extends Entity
      * @param string $session_id
      * @return bool
      */
-    public function setSessionID(string $session_id): bool
+    public function setSessionID(?string $session_id): bool
     {
         $this->session_id = $session_id;
         return true;
@@ -341,7 +341,7 @@ class Request extends Entity
     /**
      * @return array
      */
-    public function getGET(): array
+    public function getAllGET(): array
     {
         return $this->get;
     }
@@ -350,15 +350,46 @@ class Request extends Entity
      * @param array $get
      * @return bool
      */
-    public function setGET(array $get): bool {
+    public function setAllGET(array $get): bool
+    {
         $this->get = $get;
+        return true;
+    }
+
+    /**
+     * Return the value associated with the given key in the GET array
+     *
+     * @return string|null, or null if not found
+     */
+    public function getGET(string $key): ?string
+    {
+        if (!isset($this->get[$key])) {
+            return null;
+        }
+        return $this->get[$key];
+    }
+
+    /**
+     * Sets the value of a GET variable given the key and value
+     *
+     * @param string $key
+     * @param string|null $value
+     * @return bool
+     */
+    public function setGET(string $key, ?string $value): bool
+    {
+        if ($value === null && isset($this->get[$key])) {
+            unset($this->get[$key]);
+            return true;
+        }
+        $this->get[$key] = $value;
         return true;
     }
 
     /**
      * @return array
      */
-    public function getPOST(): array
+    public function getAllPOST(): array
     {
         return $this->post;
     }
@@ -367,8 +398,39 @@ class Request extends Entity
      * @param array $post
      * @return bool
      */
-    public function setPOST(array $post): bool {
+    public function setAllPOST(array $post): bool
+    {
         $this->post = $post;
+        return true;
+    }
+
+    /**
+     * Return the value associated with the given key in the POST array
+     *
+     * @return string|null, null if not found
+     */
+    public function getPOST(string $key): ?string
+    {
+        if (!isset($this->post[$key])) {
+            return null;
+        }
+        return $this->post[$key];
+    }
+
+    /**
+     * Sets the value of a POST variable given the key and value
+     *
+     * @param string $key
+     * @param string|null $value
+     * @return bool
+     */
+    public function setPOST(string $key, ?string $value): bool
+    {
+        if ($value === null && isset($this->post[$key])) {
+            unset($this->post[$key]);
+            return true;
+        }
+        $this->post[$key] = $value;
         return true;
     }
 
@@ -638,11 +700,11 @@ class Request extends Entity
         if ($get === null) {
             $get = $_GET;
         }
-        $this->setGET($get);
+        $this->setAllGET($get);
         if ($post === null) {
             $post = $_POST;
         }
-        $this->setPOST($post);
+        $this->setAllPOST($post);
         return true;
     }
 

@@ -22,12 +22,8 @@ class Room
             return;
         }
 
-        // Récupérer le post
-        $post = $req->getPOST();
-
         /*Vérifier que les données existent*/
-        $required = ["name"];
-        if (empty($post("name"))) {
+        if (empty($req->getGET("name"))) {
             echo "Il manque : "."name";
             return;
             }
@@ -46,7 +42,7 @@ class Room
             echo "Erreur" . $e;
         }
 
-        \Helpers\DisplayManager::display("dashboard");
+        \Helpers\DisplayManager::redirectToController("Rooms", "RoomsPage");
     }
 
     public static function getRoomsPage (\Entities\Request $req):void

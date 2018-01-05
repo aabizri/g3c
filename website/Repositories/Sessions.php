@@ -191,7 +191,35 @@ class Sessions extends Repository
         // SQL
         $sql = "SELECT id
             FROM sessions
-            WHERE user_id = :user_id;";
+            WHERE user_id = :user_id
+            ORDER BY started DESC;";
+
+        // Prepare statement
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
+
+        // Execute statement
+        $stmt->execute(["user_id" => $user_id]);
+
+        // Fetch all results
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
+
+        // Return the set
+        return $set;
+    }
+
+    /**
+     * Retrieves all IDs for session belonging to that user_id and that are valid
+     *
+     * @param int $user_id
+     * @return string[] array of session ids
+     */
+    public static function findAllValidByUserID(int $user_id): array
+    {
+        // SQL
+        $sql = "SELECT id
+            FROM sessions
+            WHERE user_id = :user_id AND canceled = FALSE AND expiry > now()
+            ORDER BY started DESC;";
 
         // Prepare statement
         $stmt = parent::db()->prepare($sql, parent::$pdo_params);
