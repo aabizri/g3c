@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le :  sam. 16 déc. 2017 à 18:54
+-- Généré le :  jeu. 04 jan. 2018 à 07:29
 -- Version du serveur :  10.1.28-MariaDB
 -- Version de PHP :  7.1.11
 
@@ -27,8 +27,6 @@ SET time_zone = "+00:00";
 --
 -- Structure de la table `actuators`
 --
--- Création :  mar. 12 déc. 2017 à 13:59
---
 
 CREATE TABLE `actuators` (
   `id` int(11) NOT NULL,
@@ -39,18 +37,10 @@ CREATE TABLE `actuators` (
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- RELATIONS POUR LA TABLE `actuators`:
---   `peripheral_uuid`
---       `peripherals` -> `uuid`
---
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `events`
---
--- Création :  mar. 12 déc. 2017 à 13:59
 --
 
 CREATE TABLE `events` (
@@ -63,18 +53,10 @@ CREATE TABLE `events` (
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- RELATIONS POUR LA TABLE `events`:
---   `property_id`
---       `properties` -> `id`
---
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `filters`
---
--- Création :  mar. 12 déc. 2017 à 13:59
 --
 
 CREATE TABLE `filters` (
@@ -90,41 +72,25 @@ CREATE TABLE `filters` (
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- RELATIONS POUR LA TABLE `filters`:
---   `property_id`
---       `properties` -> `id`
---
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `measures`
 --
--- Création :  mar. 12 déc. 2017 à 13:58
---
 
 CREATE TABLE `measures` (
   `id` int(11) NOT NULL,
   `type` enum('undefined') COLLATE utf8_unicode_ci NOT NULL,
-  `date_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `value` int(11) NOT NULL,
   `peripheral_uuid` varchar(33) COLLATE utf8_unicode_ci NOT NULL,
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- RELATIONS POUR LA TABLE `measures`:
---   `peripheral_uuid`
---       `peripherals` -> `uuid`
---
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `notifications`
---
--- Création :  mar. 12 déc. 2017 à 13:58
 --
 
 CREATE TABLE `notifications` (
@@ -137,18 +103,10 @@ CREATE TABLE `notifications` (
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- RELATIONS POUR LA TABLE `notifications`:
---   `destination_role_id`
---       `roles` -> `id`
---
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `peripherals`
---
--- Création :  mar. 12 déc. 2017 à 13:58
 --
 
 CREATE TABLE `peripherals` (
@@ -161,14 +119,6 @@ CREATE TABLE `peripherals` (
   `room_id` int(11) DEFAULT NULL,
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- RELATIONS POUR LA TABLE `peripherals`:
---   `property_id`
---       `properties` -> `id`
---   `room_id`
---       `rooms` -> `id`
---
 
 --
 -- Déchargement des données de la table `peripherals`
@@ -381,8 +331,6 @@ INSERT INTO `peripherals` (`uuid`, `display_name`, `build_date`, `add_date`, `pu
 --
 -- Structure de la table `permissions`
 --
--- Création :  mar. 12 déc. 2017 à 13:58
---
 
 CREATE TABLE `permissions` (
   `id` int(11) NOT NULL,
@@ -392,16 +340,36 @@ CREATE TABLE `permissions` (
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+-- --------------------------------------------------------
+
 --
--- RELATIONS POUR LA TABLE `permissions`:
+-- Structure de la table `products`
 --
+
+CREATE TABLE `products` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `description` text,
+  `category` enum('peripheral','accessory') DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `products`
+--
+
+INSERT INTO `products` (`id`, `name`, `description`, `category`) VALUES
+(1, 'HomeMaster CeMac', NULL, 'peripheral'),
+(2, 'HomeMaster Thermomètre', NULL, 'peripheral'),
+(3, 'HomeMaster Luxmètre', NULL, 'peripheral'),
+(4, 'HomeMaster Watcher\r\n', NULL, 'peripheral'),
+(5, 'HomeMaster Pure Breath', NULL, 'peripheral'),
+(6, 'HomeMaster Fire Guard', NULL, 'peripheral'),
+(7, 'HomeMaster Loading Battery', NULL, 'accessory');
 
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `properties`
---
--- Création :  mar. 12 déc. 2017 à 13:58
 --
 
 CREATE TABLE `properties` (
@@ -411,10 +379,6 @@ CREATE TABLE `properties` (
   `creation_date` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- RELATIONS POUR LA TABLE `properties`:
---
 
 --
 -- Déchargement des données de la table `properties`
@@ -428,8 +392,6 @@ INSERT INTO `properties` (`id`, `name`, `address`, `creation_date`, `last_update
 --
 -- Structure de la table `requests`
 --
--- Création :  jeu. 07 déc. 2017 à 22:28
---
 
 CREATE TABLE `requests` (
   `id` int(11) NOT NULL,
@@ -442,12 +404,6 @@ CREATE TABLE `requests` (
   `started_processing` timestamp(3) NOT NULL DEFAULT '0000-00-00 00:00:00.000',
   `finished_processing` timestamp(3) NOT NULL DEFAULT '0000-00-00 00:00:00.000'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
---
--- RELATIONS POUR LA TABLE `requests`:
---   `session_id`
---       `sessions` -> `id`
---
 
 --
 -- Déchargement des données de la table `requests`
@@ -497,14 +453,218 @@ INSERT INTO `requests` (`id`, `ip`, `user_agent_txt`, `user_agent_hash`, `sessio
 (66, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-14 22:05:48.536', '2017-12-14 22:05:48.542'),
 (67, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-15 13:25:30.058', '2017-12-15 13:25:30.067'),
 (68, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-15 13:26:13.792', '2017-12-15 13:26:13.885'),
-(69, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-15 13:26:24.215', '2017-12-15 13:26:24.299');
+(69, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-15 13:26:24.215', '2017-12-15 13:26:24.299'),
+(70, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'connexion', '2017-12-18 09:12:34.860', '2017-12-18 09:12:34.887'),
+(71, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-18 09:12:40.532', '2017-12-18 09:12:40.549'),
+(72, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'connexion', '2017-12-18 12:51:31.388', '2017-12-18 12:51:31.396'),
+(73, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-18 12:51:36.203', '2017-12-18 12:51:36.219'),
+(74, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-18 12:51:46.070', '2017-12-18 12:51:46.077'),
+(75, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-18 12:51:49.963', '2017-12-18 12:51:49.966'),
+(76, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-18 12:51:55.415', '2017-12-18 12:51:55.503'),
+(77, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getAccountPage', '2017-12-18 12:51:57.491', '2017-12-18 12:51:57.500'),
+(78, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'Room', 'getRoomsPage', '2017-12-18 12:51:58.287', '2017-12-18 12:51:58.297'),
+(79, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'Peripheral', 'getPeripheralsPage', '2017-12-18 12:51:59.855', '2017-12-18 12:51:59.865'),
+(80, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'Peripheral', 'getPeripheralsPage', '2017-12-18 12:52:03.091', '2017-12-18 12:52:03.094'),
+(81, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'Peripheral', 'getPeripheralsPage', '2017-12-18 12:52:09.465', '2017-12-18 12:52:09.468'),
+(82, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-18 12:56:34.645', '2017-12-18 12:56:34.649'),
+(83, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-18 12:56:36.839', '2017-12-18 12:56:36.843'),
+(84, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-18 12:56:43.011', '2017-12-18 12:56:43.091'),
+(85, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getAccountPage', '2017-12-18 12:56:51.577', '2017-12-18 12:56:51.580'),
+(86, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-18 14:18:37.342', '2017-12-18 14:18:37.368'),
+(87, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-18 14:19:07.501', '2017-12-18 14:19:07.554'),
+(88, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-18 14:19:12.747', '2017-12-18 14:19:12.879'),
+(89, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'Peripheral', 'getPeripheralsPage', '2017-12-18 14:19:17.852', '2017-12-18 14:19:17.868'),
+(90, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'Room', 'getRoomsPage', '2017-12-18 14:19:19.091', '2017-12-18 14:19:19.099'),
+(91, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getAccountPage', '2017-12-18 14:19:19.989', '2017-12-18 14:19:19.996'),
+(92, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'Room', 'getRoomsPage', '2017-12-18 14:19:20.733', '2017-12-18 14:19:20.736'),
+(93, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'Room', 'getRoomsPage', '2017-12-18 14:19:29.218', '2017-12-18 14:19:29.247'),
+(94, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-20 12:54:14.533', '2017-12-20 12:54:14.842'),
+(95, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 12:55:43.859', '2017-12-20 12:55:44.009'),
+(96, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 12:59:24.374', '2017-12-20 12:59:24.521'),
+(97, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-20 12:59:39.875', '2017-12-20 12:59:40.070'),
+(98, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 12:59:44.314', '2017-12-20 12:59:44.316'),
+(99, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-20 12:59:47.447', '2017-12-20 12:59:47.451'),
+(100, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 12:59:48.179', '2017-12-20 12:59:48.185'),
+(101, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:01:53.281', '2017-12-20 13:01:53.304'),
+(102, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:01:55.999', '2017-12-20 13:01:56.007'),
+(103, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:03:32.953', '2017-12-20 13:03:33.126'),
+(104, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:03:35.156', '2017-12-20 13:03:35.159'),
+(105, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:03:36.556', '2017-12-20 13:03:36.560'),
+(106, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:04:54.987', '2017-12-20 13:04:55.004'),
+(107, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:04:58.845', '2017-12-20 13:04:58.848'),
+(108, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:05:11.224', '2017-12-20 13:05:11.228'),
+(109, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:05:11.959', '2017-12-20 13:05:11.964'),
+(110, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:06:05.759', '2017-12-20 13:06:05.796'),
+(111, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:06:12.868', '2017-12-20 13:06:12.872'),
+(112, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:06:15.449', '2017-12-20 13:06:15.453'),
+(113, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:06:21.608', '2017-12-20 13:06:21.634'),
+(114, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:11:19.480', '2017-12-20 13:11:19.590'),
+(115, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:11:27.877', '2017-12-20 13:11:28.048'),
+(116, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:11:38.124', '2017-12-20 13:11:38.264'),
+(117, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:11:41.410', '2017-12-20 13:11:41.420'),
+(118, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:12:05.985', '2017-12-20 13:12:06.099'),
+(119, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-20 13:12:13.392', '2017-12-20 13:12:13.488'),
+(120, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getSubscriptionPage', '2017-12-20 13:13:07.824', '2017-12-20 13:13:07.956'),
+(121, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:13:27.004', '2017-12-20 13:13:27.098'),
+(122, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-20 13:13:47.925', '2017-12-20 13:13:47.928'),
+(123, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:13:59.256', '2017-12-20 13:13:59.372'),
+(124, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:14:32.241', '2017-12-20 13:14:32.322'),
+(125, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:15:27.742', '2017-12-20 13:15:27.855'),
+(126, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:15:35.996', '2017-12-20 13:15:36.087'),
+(127, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:16:05.511', '2017-12-20 13:16:05.622'),
+(128, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:16:11.286', '2017-12-20 13:16:11.370'),
+(129, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:16:37.323', '2017-12-20 13:16:37.327'),
+(130, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:16:40.230', '2017-12-20 13:16:40.233'),
+(131, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postJoin', '2017-12-20 13:16:43.660', '2017-12-20 13:16:43.757'),
+(132, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'getConnectionPage', '2017-12-20 13:16:46.361', '2017-12-20 13:16:46.365'),
+(133, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3d6caf08d6cd781d0e2ef5cd32c347ce19b5dd63a3540c1f7afa51d6fafd5b87, '439d47c88eba6e7dcd526daa69615a00', 'User', 'postConnection', '2017-12-20 13:16:51.476', '2017-12-20 13:16:51.556'),
+(134, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'User', 'getConnectionPage', '2017-12-22 14:48:15.304', '2017-12-22 14:48:15.309'),
+(135, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'User', 'getConnectionPage', '2017-12-22 14:49:37.452', '2017-12-22 14:49:37.455'),
+(136, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'User', 'getConnectionPage', '2017-12-22 14:49:57.179', '2017-12-22 14:49:57.182'),
+(137, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'User', 'getConnectionPage', '2017-12-22 14:49:58.310', '2017-12-22 14:49:58.313'),
+(138, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'User', 'getConnectionPage', '2017-12-22 14:58:31.006', '2017-12-22 14:58:31.009'),
+(139, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'User', 'getConnectionPage', '2017-12-22 14:58:31.943', '2017-12-22 14:58:31.946'),
+(140, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'User', 'getConnectionPage', '2017-12-22 14:58:32.655', '2017-12-22 14:58:32.658'),
+(141, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'User', 'getConnectionPage', '2017-12-22 14:58:51.184', '2017-12-22 14:58:51.187'),
+(142, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'User', 'getConnectionPage', '2017-12-22 14:59:15.156', '2017-12-22 14:59:15.159'),
+(143, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getConnectionPage', '2017-12-22 14:59:37.177', '2017-12-22 14:59:37.179'),
+(144, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getConnectionPage', '2017-12-22 14:59:58.158', '2017-12-22 14:59:58.161'),
+(145, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getConnectionPage', '2017-12-22 15:03:02.262', '2017-12-22 15:03:02.265'),
+(146, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getConnectionPage', '2017-12-22 15:03:06.388', '2017-12-22 15:03:06.391'),
+(147, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getConnectionPage', '2017-12-22 15:05:22.921', '2017-12-22 15:05:22.924'),
+(148, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getConnectionPage', '2017-12-22 15:05:24.233', '2017-12-22 15:05:24.236'),
+(149, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'postConnection', '2017-12-22 15:05:41.367', '2017-12-22 15:05:41.446'),
+(150, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getConnectionPage', '2017-12-22 15:05:46.793', '2017-12-22 15:05:46.797'),
+(151, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'User', 'getConnectionPage', '2017-12-22 15:08:06.728', '2017-12-22 15:08:06.730'),
+(152, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'User', 'getConnectionPage', '2017-12-22 15:08:42.176', '2017-12-22 15:08:42.179'),
+(153, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'Room', 'postNewRoom', '2017-12-22 15:10:36.940', '2017-12-22 15:10:36.943'),
+(154, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'Room', 'postNewRoom', '2017-12-22 15:12:52.436', '2017-12-22 15:12:52.438'),
+(155, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'Room', 'postNewRoom', '2017-12-22 15:29:09.889', '2017-12-22 15:29:09.891'),
+(156, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'Room', 'postNewRoom', '2017-12-22 15:29:12.367', '2017-12-22 15:29:12.369'),
+(157, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'Room', 'postNewRoom', '2017-12-22 15:29:21.842', '2017-12-22 15:29:21.844'),
+(158, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'Room', 'postNewRoom', '2017-12-22 15:29:26.581', '2017-12-22 15:29:26.583'),
+(159, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'Room', 'getRoomsPage', '2017-12-22 15:29:34.470', '2017-12-22 15:29:34.473'),
+(160, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'Room', 'getRoomsPage', '2017-12-22 15:32:36.250', '2017-12-22 15:32:36.252'),
+(161, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'Room', 'getRoomsPage', '2017-12-22 15:32:39.856', '2017-12-22 15:32:39.858'),
+(162, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'Room', 'getRoomsPage', '2017-12-22 15:33:55.536', '2017-12-22 15:33:55.538'),
+(163, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'Room', 'getRoomsPage', '2017-12-22 15:33:56.539', '2017-12-22 15:33:56.541'),
+(164, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.4.7 (KHTML, like Gecko) Version/11.0.2 Safari/604.4.7', 0x6120ef48d67188022df9ffeab78070f8b694aa2a0f87e6caaad8ad8c3277a16f, '288ab2ed58a7427c4208fee2cf72612e', 'Room', 'getRoomsPage', '2017-12-22 15:33:58.644', '2017-12-22 15:33:58.646'),
+(165, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getConnectionPage', '2017-12-22 15:34:39.246', '2017-12-22 15:34:39.248'),
+(166, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getConnectionPage', '2017-12-22 15:36:02.522', '2017-12-22 15:36:02.525'),
+(167, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getConnectionPage', '2017-12-22 15:36:04.362', '2017-12-22 15:36:04.365'),
+(168, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getRoomsPage', '2017-12-22 15:36:08.025', '2017-12-22 15:36:08.027'),
+(169, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-22 15:36:15.319', '2017-12-22 15:36:15.321'),
+(170, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-23 10:57:18.497', '2017-12-23 10:57:18.515'),
+(171, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-23 10:57:29.208', '2017-12-23 10:57:29.211'),
+(172, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-23 10:57:56.263', '2017-12-23 10:57:56.268'),
+(173, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-23 11:20:37.715', '2017-12-23 11:20:37.722'),
+(174, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-23 11:41:15.456', '2017-12-23 11:41:15.461'),
+(175, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-23 11:41:46.520', '2017-12-23 11:41:46.524'),
+(176, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-23 11:41:48.247', '2017-12-23 11:41:48.249'),
+(177, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-23 11:42:12.050', '2017-12-23 11:42:12.053'),
+(178, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-23 11:42:23.433', '2017-12-23 11:42:23.435'),
+(179, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-23 11:44:07.214', '2017-12-23 11:44:07.216'),
+(180, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRooms', '2017-12-23 11:44:47.205', '2017-12-23 11:44:47.208'),
+(181, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRooms', '2017-12-23 11:44:50.358', '2017-12-23 11:44:50.361'),
+(182, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-23 11:46:04.835', '2017-12-23 11:46:04.840'),
+(183, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-23 11:46:14.567', '2017-12-23 11:46:14.569'),
+(184, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-23 11:49:09.423', '2017-12-23 11:49:09.425'),
+(185, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-23 11:49:25.274', '2017-12-23 11:49:25.276'),
+(186, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-23 11:57:37.045', '2017-12-23 11:57:37.048'),
+(187, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-24 16:25:27.341', '2017-12-24 16:25:27.360');
+INSERT INTO `requests` (`id`, `ip`, `user_agent_txt`, `user_agent_hash`, `session_id`, `controller`, `action`, `started_processing`, `finished_processing`) VALUES
+(188, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-24 19:04:22.165', '2017-12-24 19:04:22.180'),
+(189, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getRoomsPage', '2017-12-24 20:31:13.159', '2017-12-24 20:31:13.163'),
+(190, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getConnectionPage', '2017-12-24 20:31:26.519', '2017-12-24 20:31:26.522'),
+(191, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Room', 'getConnectionPage()', '2017-12-24 20:32:11.407', '2017-12-24 20:32:11.409'),
+(192, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getConnectionPage()', '2017-12-24 20:32:18.349', '2017-12-24 20:32:18.351'),
+(193, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getConnectionPage', '2017-12-24 20:32:21.081', '2017-12-24 20:32:21.084'),
+(194, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getSubscriptionPage', '2017-12-24 20:32:31.859', '2017-12-24 20:32:31.863'),
+(195, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'postJoin', '2017-12-24 20:33:06.633', '2017-12-24 20:33:06.734'),
+(196, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getConnectionPage', '2017-12-24 20:33:08.255', '2017-12-24 20:33:08.258'),
+(197, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'postConnection', '2017-12-24 20:33:19.179', '2017-12-24 20:33:19.182'),
+(198, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getConnectionPage', '2017-12-24 20:33:24.485', '2017-12-24 20:33:24.488'),
+(199, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 22:07:21.452', '2017-12-24 22:07:21.465'),
+(200, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 22:25:43.957', '2017-12-24 22:25:43.962'),
+(201, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'MaintenancePage', '2017-12-24 22:25:47.934', '2017-12-24 22:25:47.936'),
+(202, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 22:26:00.762', '2017-12-24 22:26:00.768'),
+(203, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 22:34:05.937', '2017-12-24 22:34:05.949'),
+(204, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail', '2017-12-24 22:34:45.827', '2017-12-24 22:34:45.836'),
+(205, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 22:36:11.843', '2017-12-24 22:36:11.862'),
+(206, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 22:37:57.527', '2017-12-24 22:37:57.534'),
+(207, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail', '2017-12-24 22:38:06.581', '2017-12-24 22:38:06.588'),
+(208, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail', '2017-12-24 22:39:16.445', '2017-12-24 22:39:16.452'),
+(209, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 22:39:17.833', '2017-12-24 22:39:17.839'),
+(210, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail', '2017-12-24 22:39:19.292', '2017-12-24 22:39:19.296'),
+(211, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail', '2017-12-24 23:02:11.195', '2017-12-24 23:02:11.201'),
+(212, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail', '2017-12-24 23:02:27.197', '2017-12-24 23:02:27.217'),
+(213, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'MaintenancePage', '2017-12-24 23:02:40.549', '2017-12-24 23:02:40.552'),
+(214, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:02:45.209', '2017-12-24 23:02:45.211'),
+(215, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail', '2017-12-24 23:02:52.051', '2017-12-24 23:02:52.062'),
+(216, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'User', 'getMaintenancePage', '2017-12-24 23:04:41.306', '2017-12-24 23:04:41.309'),
+(217, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:04:49.104', '2017-12-24 23:04:49.110'),
+(218, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail', '2017-12-24 23:04:52.890', '2017-12-24 23:04:52.894'),
+(219, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:13:26.515', '2017-12-24 23:13:26.518'),
+(220, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail', '2017-12-24 23:13:31.992', '2017-12-24 23:13:31.997'),
+(221, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:20:11.423', '2017-12-24 23:20:11.427'),
+(222, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Peripherals', 'getPeripheralsPage', '2017-12-24 23:26:20.145', '2017-12-24 23:26:20.147'),
+(223, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Peripheral', 'getPeripheralsPage', '2017-12-24 23:28:16.400', '2017-12-24 23:28:16.405'),
+(224, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:31:24.255', '2017-12-24 23:31:24.258'),
+(225, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:35:36.095', '2017-12-24 23:35:36.098'),
+(226, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:36:50.728', '2017-12-24 23:36:50.731'),
+(227, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:36:52.117', '2017-12-24 23:36:52.121'),
+(228, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:38:31.904', '2017-12-24 23:38:31.907'),
+(229, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'get', '2017-12-24 23:39:49.807', '2017-12-24 23:39:49.809'),
+(230, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:39:53.936', '2017-12-24 23:39:53.939'),
+(231, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:41:15.212', '2017-12-24 23:41:15.215'),
+(232, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:41:43.348', '2017-12-24 23:41:43.351'),
+(233, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:42:48.682', '2017-12-24 23:42:48.685'),
+(234, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:48:45.816', '2017-12-24 23:48:45.819'),
+(235, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:49:03.224', '2017-12-24 23:49:03.230'),
+(236, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:50:29.761', '2017-12-24 23:50:29.764'),
+(237, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:50:54.165', '2017-12-24 23:50:54.168'),
+(238, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:54:39.824', '2017-12-24 23:54:39.827'),
+(239, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:54:49.408', '2017-12-24 23:54:49.410'),
+(240, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:55:14.662', '2017-12-24 23:55:14.665'),
+(241, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:56:19.706', '2017-12-24 23:56:19.709'),
+(242, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:56:59.188', '2017-12-24 23:56:59.191'),
+(243, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:57:10.009', '2017-12-24 23:57:10.012'),
+(244, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:57:21.493', '2017-12-24 23:57:21.496'),
+(245, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:57:36.732', '2017-12-24 23:57:36.734'),
+(246, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:57:49.902', '2017-12-24 23:57:49.905'),
+(247, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:58:00.178', '2017-12-24 23:58:00.181'),
+(248, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-24 23:58:40.283', '2017-12-24 23:58:40.285'),
+(249, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail', '2017-12-24 23:58:46.789', '2017-12-24 23:58:46.793'),
+(250, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-25 00:00:08.332', '2017-12-25 00:00:08.336'),
+(251, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-25 00:01:06.042', '2017-12-25 00:01:06.046'),
+(252, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-25 00:01:07.548', '2017-12-25 00:01:07.551'),
+(253, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-25 00:01:16.881', '2017-12-25 00:01:16.883'),
+(254, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-25 00:01:25.096', '2017-12-25 00:01:25.100'),
+(255, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-25 00:05:44.756', '2017-12-25 00:05:44.759'),
+(256, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail2', '2017-12-25 00:05:49.018', '2017-12-25 00:05:49.024'),
+(257, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-25 06:18:41.274', '2017-12-25 06:18:41.383'),
+(258, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail2', '2017-12-25 06:18:45.544', '2017-12-25 06:18:45.564'),
+(259, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-25 06:20:22.327', '2017-12-25 06:20:22.379'),
+(260, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail', '2017-12-25 06:20:26.471', '2017-12-25 06:20:26.496'),
+(261, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-25 07:14:14.983', '2017-12-25 07:14:15.006'),
+(262, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail', '2017-12-25 07:14:21.854', '2017-12-25 07:14:21.873'),
+(263, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-25 08:33:32.512', '2017-12-25 08:33:32.515'),
+(264, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail', '2017-12-25 08:33:36.404', '2017-12-25 08:33:36.408'),
+(265, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-25 08:57:06.929', '2017-12-25 08:57:06.980'),
+(266, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail', '2017-12-25 08:57:10.217', '2017-12-25 08:57:10.221'),
+(267, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'getMaintenancePage', '2017-12-25 08:58:31.991', '2017-12-25 08:58:32.031'),
+(268, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'ca39900fd70d4529f4247e9d45f39fdb', 'Maintenance', 'postSendMail', '2017-12-25 08:58:35.143', '2017-12-25 08:58:35.157'),
+(269, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'Room', 'postDeleteRoom', '2017-12-30 22:31:21.819', '2017-12-30 22:31:21.958'),
+(270, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'Room', 'postDeleteRoom', '2017-12-30 22:31:36.385', '2017-12-30 22:31:36.387'),
+(271, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'Room', 'postDeleteRoom', '2017-12-31 02:06:38.163', '2017-12-31 02:06:38.199'),
+(272, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'Room', 'postDeleteRoom', '2017-12-31 02:06:39.726', '2017-12-31 02:06:39.728'),
+(273, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'Room', 'getRoomsPage', '2017-12-31 02:22:04.880', '2017-12-31 02:22:04.891'),
+(274, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'Room', 'postDeleteRoom', '2017-12-31 02:22:12.558', '2017-12-31 02:22:12.566');
 
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `roles`
---
--- Création :  mar. 12 déc. 2017 à 14:00
 --
 
 CREATE TABLE `roles` (
@@ -515,20 +675,10 @@ CREATE TABLE `roles` (
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- RELATIONS POUR LA TABLE `roles`:
---   `property_id`
---       `properties` -> `id`
---   `user_id`
---       `users` -> `id`
---
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `roles_permissions`
---
--- Création :  mar. 12 déc. 2017 à 14:00
 --
 
 CREATE TABLE `roles_permissions` (
@@ -538,16 +688,10 @@ CREATE TABLE `roles_permissions` (
   `creation_date` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- RELATIONS POUR LA TABLE `roles_permissions`:
---
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `rooms`
---
--- Création :  mar. 12 déc. 2017 à 14:01
 --
 
 CREATE TABLE `rooms` (
@@ -559,24 +703,18 @@ CREATE TABLE `rooms` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- RELATIONS POUR LA TABLE `rooms`:
---   `property_id`
---       `properties` -> `id`
---
-
---
 -- Déchargement des données de la table `rooms`
 --
 
 INSERT INTO `rooms` (`id`, `property_id`, `name`, `creation_date`, `last_updated`) VALUES
-(1, 1, 'Salle de Séjour', '2017-11-20 14:20:49.000', '2017-11-20 15:18:45.000');
+(1, 1, 'updated !', '2017-11-20 14:20:49.000', '2017-12-19 23:22:11.422'),
+(4, 1, 'Inserted but not updated', '2017-12-19 23:22:11.416', '2017-12-19 23:22:11.416'),
+(5, 1, 'Inserted but not updated', '2017-12-19 23:22:40.597', '2017-12-19 23:22:40.597');
 
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `sensors`
---
--- Création :  mar. 12 déc. 2017 à 14:01
 --
 
 CREATE TABLE `sensors` (
@@ -587,20 +725,10 @@ CREATE TABLE `sensors` (
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- RELATIONS POUR LA TABLE `sensors`:
---   `peripheral_uuid`
---       `peripherals` -> `uuid`
---   `last_measure`
---       `measures` -> `id`
---
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `sessions`
---
--- Création :  mar. 12 déc. 2017 à 14:01
 --
 
 CREATE TABLE `sessions` (
@@ -614,34 +742,29 @@ CREATE TABLE `sessions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- RELATIONS POUR LA TABLE `sessions`:
---   `user_id`
---       `users` -> `id`
---
-
---
 -- Déchargement des données de la table `sessions`
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled`, `last_updated`) VALUES
 ('0f4b9ede16273eb72362f4339c326bcc', NULL, '', '2017-12-13 22:32:07.602', '2017-12-20 22:32:07.602', 0, '2017-12-13 22:32:07.603'),
 ('21d4d916a51f856e509dc87412aeb008', NULL, '', '2017-12-13 22:31:11.712', '2017-12-20 22:31:11.712', 0, '2017-12-13 22:31:11.712'),
+('288ab2ed58a7427c4208fee2cf72612e', NULL, '', '2017-12-22 14:45:52.275', '2017-12-29 14:45:52.275', 0, '2017-12-22 14:45:52.275'),
 ('2c1d80ba9f943e425eaa4c2426f43ff3', NULL, '', '2017-12-13 22:30:14.538', '2017-12-20 22:30:14.538', 0, '2017-12-13 22:30:14.538'),
-('439d47c88eba6e7dcd526daa69615a00', NULL, 'user_id|i:7;', '2017-12-14 21:42:20.000', '2017-12-21 21:42:20.000', 0, '2017-12-15 13:26:24.299'),
+('439d47c88eba6e7dcd526daa69615a00', NULL, 'user_id|i:9;', '2017-12-14 21:42:20.000', '2017-12-21 21:42:20.000', 0, '2017-12-20 13:16:51.556'),
 ('46defb11733028a6cab0a0c0c71c2ad7', NULL, '', '2017-12-13 22:03:00.858', '2017-12-20 22:03:00.858', 0, '2017-12-13 22:03:00.858'),
 ('4ac2ae2fa04b6ce3a2116a54efa9aa8d', NULL, '', '2017-12-13 22:00:56.656', '2017-12-20 22:00:56.656', 0, '2017-12-13 22:00:56.656'),
 ('5044a057e54984a00a15c9b64ddfdbd3', NULL, '', '2017-12-13 22:25:27.321', '2017-12-20 22:25:27.321', 0, '2017-12-13 22:25:27.321'),
 ('8e0371c0e74883c4b688fea93a2d948c', NULL, '', '2017-12-13 22:23:47.450', '2017-12-20 22:23:47.450', 0, '2017-12-13 22:23:47.450'),
 ('a342ca783638b79eb63251bc8d108d96', NULL, '', '2017-12-13 22:26:17.513', '2017-12-20 22:26:17.513', 0, '2017-12-13 22:26:17.513'),
+('c774997a09960454dff823b0472122f3', NULL, '', '2017-12-30 22:31:21.959', '2018-01-06 22:31:21.959', 0, '2017-12-30 22:31:21.959'),
 ('c804bf64b05e0e3d30a04bbf1b89ba94', NULL, '', '2017-12-13 22:32:54.673', '2017-12-20 22:32:54.673', 0, '2017-12-13 22:32:54.673'),
+('ca39900fd70d4529f4247e9d45f39fdb', NULL, 'user_id|i:4;', '2017-12-22 14:59:37.179', '2017-12-29 14:59:37.179', 0, '2017-12-22 15:05:41.446'),
 ('db59bec4fff93cbf7d877899d380d1c1', NULL, '', '2017-12-13 22:33:18.889', '2017-12-20 22:33:18.889', 0, '2017-12-13 22:33:18.889');
 
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `subscriptions`
---
--- Création :  mar. 12 déc. 2017 à 14:02
 --
 
 CREATE TABLE `subscriptions` (
@@ -653,18 +776,10 @@ CREATE TABLE `subscriptions` (
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- RELATIONS POUR LA TABLE `subscriptions`:
---   `property_id`
---       `properties` -> `id`
---
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `users`
---
--- Création :  mar. 12 déc. 2017 à 14:04
 --
 
 CREATE TABLE `users` (
@@ -680,10 +795,6 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
--- RELATIONS POUR LA TABLE `users`:
---
-
---
 -- Déchargement des données de la table `users`
 --
 
@@ -691,7 +802,10 @@ INSERT INTO `users` (`id`, `display`, `nick`, `birth_date`, `creation_date`, `em
 (4, 'Alexandre Bizri', 'aabizri', NULL, '2017-12-10 20:21:48.000', 'alexandre@bizri.fr', '$2y$10$5j4BCcVdU9im1OPoHH5as.B2m9W2TrjvZgRn5KpZ/qnjI2v21cg2q', '0651110253', '2017-12-10 20:21:48.000'),
 (5, 'Dinesh Anth', 'drdidi', NULL, '2017-12-11 10:41:26.000', 'drdidi@didi.fr', '$2y$10$CkT0EGlHDH/rFerKmnvQmuixz0DBxlbYXM5Loh18iduubN/WOVSbq', '145771987', '2017-12-11 10:41:26.000'),
 (6, 'Charles Hubert', 'chubert', NULL, '2017-12-14 22:03:54.008', 'chubert@gmail.com', '$2y$10$hXKZp.A3lO6iU6cmXj6xsOSREmX4wme.pbcTYMa3x1j6iwTzm7YXC', 'Non', '2017-12-14 22:03:54.008'),
-(7, 'Phillipot Floriant', 'fphillipot', NULL, '2017-12-15 13:26:13.872', 'fphillipot@gmail.com', '$2y$10$CfLKF1h3NvNVDEJMyBcK4u5l/TZq5Hf0DhS2rqIXu4eEnsrJdPFcm', '0112234563', '2017-12-15 13:26:13.872');
+(7, 'Phillipot Floriant', 'fphillipot', NULL, '2017-12-15 13:26:13.872', 'fphillipot@gmail.com', '$2y$10$CfLKF1h3NvNVDEJMyBcK4u5l/TZq5Hf0DhS2rqIXu4eEnsrJdPFcm', '0112234563', '2017-12-15 13:26:13.872'),
+(8, 'Jean-Pierre Machin', 'jpmachin', NULL, '2017-12-20 13:12:06.082', 'jpmachin@machin.com', '$2y$10$Nu56S.z5y7nSNi9YFUHeXewv.ekdj22iRtRO4Fbadp7imYvdfgKse', '0984038403', '2017-12-20 13:12:06.082'),
+(9, 'Jean-Pierre Bidule', 'jpbidule', NULL, '2017-12-20 13:16:43.743', 'jpmachin@bidule.com', '$2y$10$1H7eCkWEsh6FnHnYelYEze.NrfiybfF20ZyEh6Ep7QU6vLpWUkWuC', '0984038403', '2017-12-20 13:16:43.743'),
+(10, 'Ilan Nabeth', 'Ilanou', NULL, '2017-12-24 20:33:06.727', 'Ilannnn@gmail.com', '$2y$10$.HDCkEDvdkdvxPrI//d25.vkBkaut75JWnex40ANbvoNnk5Gn8eVO', '0761369634', '2017-12-24 20:33:06.727');
 
 --
 -- Index pour les tables déchargées
@@ -746,6 +860,12 @@ ALTER TABLE `peripherals`
 -- Index pour la table `permissions`
 --
 ALTER TABLE `permissions`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `products`
+--
+ALTER TABLE `products`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -853,6 +973,12 @@ ALTER TABLE `permissions`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `products`
+--
+ALTER TABLE `products`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
 -- AUTO_INCREMENT pour la table `properties`
 --
 ALTER TABLE `properties`
@@ -862,7 +988,7 @@ ALTER TABLE `properties`
 -- AUTO_INCREMENT pour la table `requests`
 --
 ALTER TABLE `requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=70;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=275;
 
 --
 -- AUTO_INCREMENT pour la table `roles`
@@ -880,7 +1006,7 @@ ALTER TABLE `roles_permissions`
 -- AUTO_INCREMENT pour la table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `sensors`
@@ -898,7 +1024,7 @@ ALTER TABLE `subscriptions`
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Contraintes pour les tables déchargées
@@ -978,95 +1104,6 @@ ALTER TABLE `sessions`
 --
 ALTER TABLE `subscriptions`
   ADD CONSTRAINT `subscriptions_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`id`);
-
-
---
--- Métadonnées
---
-USE `phpmyadmin`;
-
---
--- Métadonnées pour la table actuators
---
-
---
--- Métadonnées pour la table events
---
-
---
--- Métadonnées pour la table filters
---
-
---
--- Métadonnées pour la table measures
---
-
---
--- Métadonnées pour la table notifications
---
-
---
--- Métadonnées pour la table peripherals
---
-
---
--- Déchargement des données de la table `pma__table_uiprefs`
---
-
-INSERT INTO `pma__table_uiprefs` (`username`, `db_name`, `table_name`, `prefs`, `last_update`) VALUES
-('root', 'livewell', 'peripherals', '{\"sorted_col\":\"`peripherals`.`display_name` ASC\"}', '2017-12-04 14:27:12');
-
---
--- Métadonnées pour la table permissions
---
-
---
--- Métadonnées pour la table properties
---
-
---
--- Métadonnées pour la table requests
---
-
---
--- Métadonnées pour la table roles
---
-
---
--- Métadonnées pour la table roles_permissions
---
-
---
--- Métadonnées pour la table rooms
---
-
---
--- Métadonnées pour la table sensors
---
-
---
--- Métadonnées pour la table sessions
---
-
---
--- Métadonnées pour la table subscriptions
---
-
---
--- Métadonnées pour la table users
---
-
---
--- Métadonnées pour la base de données livewell
---
-
---
--- Déchargement des données de la table `pma__central_columns`
---
-
-INSERT INTO `pma__central_columns` (`db_name`, `col_name`, `col_type`, `col_length`, `col_collation`, `col_isNull`, `col_extra`, `col_default`) VALUES
-('livewell', 'creation_date', 'timestamp', '', '', 0, ',', 'CURRENT_TIMESTAMP'),
-('livewell', 'last_updated', 'datetime', '', '', 1, ',on update CURRENT_TIMESTAMP', '');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

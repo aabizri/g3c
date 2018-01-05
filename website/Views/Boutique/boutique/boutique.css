@@ -57,7 +57,7 @@ body {
 	top: 50px;
 	position: relative;
 	flex-direction: row;
-	justify-content: space-between;
+	justify-content: space-around;
 	align-items: center;
 	display: flex;
 	flex-wrap: wrap;
@@ -79,23 +79,9 @@ body {
 	box-shadow:1px 1px 3px #999;
 	width: 250px;
 
-
-
 }
 
-#camera{
-	border-radius:12px 0 12px 0;
-	background-color: rgb(217,196,177);
-	font-family: Verdana, sans-serif;
-	font-size: 20px;
-	padding:6px 0px 6px 0;
-	box-shadow:1px 1px 3px #999;
-	width: 250px;
-
-
-}
-
-#CeMac {
+#Periphériques {
 	border-radius:12px 0 12px 0;
 	background-color: rgb(217,196,177);
 	font-family: Verdana, sans-serif;
@@ -104,7 +90,6 @@ body {
 	box-shadow:1px 1px 3px #999;
 	text-align: center;
 	width: 250px;
-
 
 }
 
@@ -122,7 +107,7 @@ body {
 }
 
 
-#cemac, #caméras, #accessoires {
+#peripheriques, #accessoires {
 	position: relative;
 	left: 30px;
 	border: 1px solid #955252;
@@ -134,7 +119,7 @@ body {
 	width: 95%;
 }
 
-#titre1, #titre2, #titre3 {
+#titre1, #titre2 {
 	text-align: center;
 }
 
@@ -144,10 +129,9 @@ body {
 	top: 160px;
 }
 
-#caméras{
-	top:170px;
+#peripheriques{
+	top:160px;
 }
-
 #accessoires{
 	top:180px;
 }
