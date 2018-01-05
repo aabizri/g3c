@@ -105,4 +105,47 @@ class Property
 
         self::getPropertyPage($req);
     }
+
+    //Envoyer les users de la propriete en JSON
+    public static function getPropertyUsers(\Entities\Request $req){
+
+        //On récupère l'id de la propriété
+        $property_id = $req->getPropertyID();
+
+        //Grace à l'id de la propriété, on récupère tous les ids des roles avec le même id de propriété
+        $property_users_list = \Repositories\Roles::findAllByPropertyID($property_id);
+        if ($property_users_list===null){
+            echo "il n'y a pas d'utilisateurs";
+            return;
+        }
+
+        //On récupère ensuite les entités des roles grace à leurs ids
+        $users_entities_list=[];
+        foreach ($property_users_list as $role_id){
+            $r=\Repositories\Roles::retrieve($role_id);
+            $users_entities_list[] = $r;
+        }
+
+        //Depuis ces entités on récupère les id des utilisateurs
+        $users_DisplayId_list =[];
+        foreach ($users_entities_list as $user_entity){
+            $user_id = $user_entity->getUserId();
+            $users_DisplayId_list[] = $user_id;
+        }
+
+        //Enfin grace aux ids des utilisateurs, on peut récupérer leurs entités (entre autre pour faire apparaitre le nickname)
+        $users_list=[];
+        foreach ($users_list as $uid){
+            $user = \Repositories\Users::retrieve($uid);
+            $users_list[] = $user;
+        }
+
+        //On rajoute le display name de chaque utilisateurs à la liste qui a deja un id
+        foreach ($users_list as $user_entity){
+            $user_display = $user_entity->getDisplay();
+            $users_DisplayId_list [] = $user_display;
+        }
+
+        return json_encode($users_DisplayId_list);
+        }
 }
