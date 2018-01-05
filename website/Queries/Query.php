@@ -542,7 +542,7 @@ abstract class Query
         $lexemes[] = $this->table;
 
         // Now the where clause
-        if (!empty($this->where)) {
+        if (!empty($this->where) && !empty($this->where->operands)) {
             $lexemes[] = "WHERE";
             $lexemes[] = $this->where->toSQL();
         }
