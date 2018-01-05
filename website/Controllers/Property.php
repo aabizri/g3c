@@ -31,7 +31,6 @@ class Property
         $name = $post["name"];
         $address = $post["address"];
 
-
         // Create the entity
         $p = new Entities\Property();
         $p->setName($name);
@@ -44,12 +43,6 @@ class Property
             echo "Error inserting property" . $e;
         }
     }
-
-    public function configureProperty():void
-    {
-    
-    }
-
 }
 
 
