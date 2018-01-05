@@ -335,7 +335,7 @@ abstract class Query
         $this->select();
 
         // Sets the offset
-        $this->offset($offset);
+        $this->offset = $offset;
         return $this;
     }
 
