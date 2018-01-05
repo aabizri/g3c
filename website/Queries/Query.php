@@ -559,17 +559,19 @@ abstract class Query
                 }
             }
         }
-        // Now the offset clause
-        if (!empty($this->offset) && $this->offset !== 0) {
-            $lexemes[] = "OFFSET";
-            $lexemes[] = (string)$this->offset;
-        }
 
         // Now the limit clause
         if (!empty($this->limit_value)) {
             $lexemes[] = "LIMIT";
             $lexemes[] = (string) $this->limit_value;
         }
+
+        // Now the offset clause (ALWAYS JUST AFTER LIMIT)
+        if (!empty($this->offset) && $this->offset !== 0) {
+            $lexemes[] = "OFFSET";
+            $lexemes[] = (string)$this->offset;
+        }
+
 
         // Return
         return $lexemes;
