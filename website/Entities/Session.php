@@ -9,23 +9,60 @@
 namespace Entities;
 
 
-class Session
+/**
+ * Class Session
+ * @package Entities
+ */
+class Session extends Entity
 {
+    /* PROPERTIES */
+
+    /**
+     * @var string
+     */
     private $id;
-    private $user;
+
+    /**
+     * @var int|null
+     */
+    private $user_id = null;
+
+    /**
+     * @var User|null
+     */
+    private $user = null;
+
+    /**
+     * @var string
+     */
     private $value = "";
-    private $started = "";
-    private $expiry = "";
-    private $cancelled = false;
-    private $ip = "";
-    private $user_agent_txt = "";
-    private $user_agent_hash = "";
+
+    /**
+     * @var float
+     */
+    private $started = 0;
+
+    /**
+     * @var float
+     */
+    private $expiry = 0;
+
+    /**
+     * @var bool
+     */
+    private $canceled = false;
+
+    /**
+     * @var float
+     */
     private $last_updated;
+
+    /* GETTERS AND SETTERS */
 
     /**
      * @return string
      */
-    public function getId(): string
+    public function getID(): string
     {
         return $this->id;
     }
@@ -34,7 +71,7 @@ class Session
      * @param string $id
      * @return bool
      */
-    public function setId(string $id): bool
+    public function setID(string $id): bool
     {
         $this->id = $id;
         return true;
@@ -43,52 +80,87 @@ class Session
     /**
      * @return int
      */
-    public function getUser(): ?int
+    public function getUserID(): ?int
     {
-        return $this->user;
+        return $this->user_id;
     }
 
     /**
-     * @param int $user
+     * @param int $user_id
      * @return bool
      */
-    public function setUser(?int $user): bool
+    public function setUserID(?int $user_id): bool
     {
-        $this->user = $user;
+        if ($this->user !== null) {
+            if ($user_id !== $this->user->getID()) {
+                $this->user = null;
+            }
+        }
+        $this->user_id = $user_id;
         return true;
     }
 
     /**
-     * @return string
+     * @return User|null
+     * @throws \Exception
      */
-    public function getStarted(): string
+    public function getUser(): ?User
+    {
+        if ($this->user === null) {
+            if ($this->user_id === null) {
+                return null;
+            }
+            $this->user = \Repositories\Sessions::retrieve($this->user_id);
+        }
+        return $this->user;
+    }
+
+    /**
+     * @param User|null $u
+     * @return bool
+     */
+    public function setUser(?User $u): bool
+    {
+        $this->user = $u;
+        if ($u === null) {
+            $this->user_id = null;
+        } else {
+            $this->user_id = $u->getID();
+        }
+        return true;
+    }
+
+    /**
+     * @return float
+     */
+    public function getStarted(): float
     {
         return $this->started;
     }
 
     /**
-     * @param string $started
+     * @param float $started
      * @return bool
      */
-    public function setStarted(string $started): bool
+    public function setStarted(float $started): bool
     {
         $this->started = $started;
         return true;
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getExpiry(): string
+    public function getExpiry(): float
     {
         return $this->expiry;
     }
 
     /**
-     * @param string $expiry
+     * @param float $expiry
      * @return bool
      */
-    public function setExpiry(string $expiry): bool
+    public function setExpiry(float $expiry): bool
     {
         $this->expiry = $expiry;
         return true;
@@ -97,74 +169,18 @@ class Session
     /**
      * @return bool
      */
-    public function getCancelled(): bool
+    public function getCanceled(): bool
     {
-        return $this->cancelled;
+        return $this->canceled;
     }
 
     /**
-     * @param bool $cancelled
+     * @param bool $canceled
      * @return bool
      */
-    public function setCancelled(bool $cancelled): bool
+    public function setCanceled(bool $canceled): bool
     {
-        $this->cancelled = $cancelled;
-        return true;
-    }
-
-    /**
-     * @return string
-     */
-    public function getIp(): string
-    {
-        return $this->ip;
-    }
-
-    /**
-     * @param string $ip
-     * @return bool
-     */
-    public function setIp(string $ip): bool
-    {
-        if (filter_var($ip, FILTER_VALIDATE_IP) == false) {
-            return false;
-        }
-        $this->ip = $ip;
-        return true;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserAgentTxt(): string
-    {
-        return $this->user_agent_txt;
-    }
-
-    /**
-     * @param mixed $user_agent_txt
-     */
-    public function setUserAgentTxt(string $user_agent_txt): bool
-    {
-        $this->user_agent_txt = $user_agent_txt;
-        return true;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserAgentHash(): string
-    {
-        return $this->user_agent_hash;
-    }
-
-    /**
-     * @param string $user_agent_hash
-     * @return bool
-     */
-    public function setUserAgentHash(string $user_agent_hash): bool
-    {
-        $this->user_agent_hash = $user_agent_hash;
+        $this->canceled = $canceled;
         return true;
     }
 
@@ -187,18 +203,18 @@ class Session
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getLastUpdated(): string
+    public function getLastUpdated(): float
     {
         return $this->last_updated;
     }
 
     /**
-     * @param string $last_updated
+     * @param float $last_updated
      * @return bool
      */
-    public function setLastUpdated(string $last_updated): bool
+    public function setLastUpdated(float $last_updated): bool
     {
         $this->last_updated = $last_updated;
         return true;
@@ -207,28 +223,10 @@ class Session
     /* BUSINESS LOGIC */
 
     /**
-     * setUserAgent permet d'enregistrer les informations du navigateur
-     * @param string $ua
-     * @return bool
+     * isValid vérifie si cette session est valide: que canceled n'est pas activé, et que la date d'éxpiration est dans le futur
      */
-    public function setUserAgent(string $ua): bool
+    public function isValid(): bool
     {
-        if ($this->setUserAgentTxt($ua) == false) {
-            return false;
-        }
-
-        $hash = hash('sha256', $ua);
-        if ($this->setUserAgentHash($hash) == false) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * isValid vérifie si cette session est valide: que cancelled n'est pas activé, et que la date d'éxpiration est dans le futur
-     */
-    public function isValid(): bool {
-        return $this->getCancelled() && (time() < strtotime($this->getExpiry()));
+        return (!$this->getCanceled()) && (microtime(true) < $this->getExpiry());
     }
 }

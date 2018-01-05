@@ -11,6 +11,9 @@ namespace Repositories;
 use Entities;
 use Exception;
 use PDO;
+use Exceptions\MultiSetFailedException;
+use Exceptions\RowNotFoundException;
+use Exceptions\SetFailedException;
 
 
 class Sessions extends Repository
@@ -26,27 +29,24 @@ class Sessions extends Repository
     public static function insert(\Entities\Session $s): void
     {
         //On écrit une reqûete SQL
-        $sql = "INSERT INTO sessions (id, user, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, value)
-        VALUES (:id, :user, :started, :expiry, :canceled, :ip, :user_agent_txt, :user_agent_hash, :value);";
+        $sql = "INSERT INTO sessions (id, user_id, started, expiry, canceled, value)
+        VALUES (:id, :user_id, FROM_UNIXTIME(:started), FROM_UNIXTIME(:expiry), :canceled, :value);";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // On prépare les données qui vont être insérées
-        $data = [
-            'id' => $s->getID(),
-            'user' => $s->getUser(),
-            'started' => $s->getStarted(),
-            'expiry' => $s->getExpiry(),
-            'canceled' => $s->getCancelled(),
-            'ip' => $s->getIp(),
-            'user_agent_txt' => $s->getUserAgentTxt(),
-            'user_agent_hash' => $s->getUserAgentHash(),
-            'value' => $s->getValue(),
-        ];
+        $data = $s->getMultiple([
+            'id',
+            'user_id',
+            'started',
+            'expiry',
+            'canceled',
+            'value',
+        ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Pull
         self::pull($s);
@@ -62,27 +62,24 @@ class Sessions extends Repository
     {
         // SQL
         $sql = "UPDATE sessions
-        SET user = :user, started = :started, expiry = :expiry, canceled = :canceled, ip = :ip, user_agent_txt = :user_agent_txt, user_agent_hash = :user_agent_hash, value = :value
+        SET user_id = :user_id, started = FROM_UNIXTIME(:started), expiry = FROM_UNIXTIME(:expiry), canceled = :canceled, value = :value
         WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
-        // Data for the request
-        $data = [
-            "id" => $s->getId(),
-            'user' => $s->getUser(),
-            'started' => $s->getStarted(),
-            'expiry' => $s->getExpiry(),
-            'canceled' => $s->getCancelled(),
-            'ip' => $s->getIp(),
-            'user_agent_txt' => $s->getUserAgentTxt(),
-            'user_agent_hash' => $s->getUserAgentHash(),
-            'value' => $s->getValue(),
-        ];
+        // On prépare les données qui vont être poussées
+        $data = $s->getMultiple([
+            'id',
+            'user_id',
+            'started',
+            'expiry',
+            'canceled',
+            'value',
+        ]);
 
         // Execute query
-        $sth->execute($data);
+        $stmt->execute($data);
 
         // Pull
         self::pull($s);
@@ -97,90 +94,45 @@ class Sessions extends Repository
     public static function pull(Entities\Session $s): void
     {
         // SQL
-        $sql = "SELECT user, value, started, expiry, canceled, ip, user_agent_txt, user_agent_hash, last_updated
+        $sql = "SELECT user_id, value, UNIX_TIMESTAMP(started) AS started, UNIX_TIMESTAMP(expiry) AS expiry, canceled, UNIX_TIMESTAMP(last_updated) AS last_updated
         FROM sessions
         WHERE id = :id;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute(array(':id' => $s->getId()));
+        $stmt->execute(['id' => $s->getID()]);
 
         // Retrieve
-        $data = $sth->fetch(PDO::FETCH_ASSOC);
+        $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
         if ($data == null) {
-            throw new Exception("Nous n'avons pas trouvé de session correspondante");
+            throw new RowNotFoundException($s,"sessions");
         }
 
         // Store
-        $arr = array(
-            "setUser" => $data["user"],
-            "setValue" => $data["value"],
-            "setStarted" => $data["started"],
-            "setExpiry" => $data["expiry"],
-            "setCancelled" => $data["canceled"],
-            "setIp" => $data["ip"],
-            "setUserAgentTxt" => $data["user_agent_txt"],
-            "setUserAgentHash" => $data["user_agent_hash"],
-            "setLastUpdated" => $data["last_updated"],
-        );
-        parent::executeSetterArray($s, $arr);
-    }
-
-    /**
-     * Syncs a session with the database, executing a Pull or a Push on a last_updated timestamp basis
-     *
-     * @param Entities\Session $s to be synced
-     *
-     * @return void
-     *
-     * @throws \Exception if not found
-     */
-    public static function sync(Entities\Session $s): void
-    {
-        // SQL to get last_updated on given peripheral
-        $sql = "SELECT last_updated
-          FROM sessions
-          WHERE id = :id;";
-
-        // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
-
-        // Execute
-        $sth->execute(array(':id' => $s->getId()));
-
-        // Retrieve
-        $db_last_updated = $sth->fetchColumn(0);
-
-        // If nil, we throw an exception
-        if ($db_last_updated == null) {
-            throw new \Exception("No such session found");
-        }
-
-        // If empty, that's an Exception
-        if ($db_last_updated == "") {
-            throw new \Exception("Empty last_updated");
-        }
-
-        // If the DB was updated BEFORE the last update to the peripheral, push
-        if (strtotime($db_last_updated) < strtotime($s->getLastUpdated())) {
-            self::push($s);
-        } else {
-            self::pull($s);
+        $ok = $s->setMultiple([
+            "user_id" => $data["user_id"],
+            "value" => $data["value"],
+            "started" => (float)$data["started"],
+            "expiry" => (float)$data["expiry"],
+            "canceled" => $data["canceled"],
+            "last_updated" => (float)$data["last_updated"],
+        ]);
+        if ($ok === false) {
+            throw new MultiSetFailedException($s,$data);
         }
     }
 
     /**
-     * Retrieve a session from the database given its id
+     * Checks if the given session exists in the database
      *
-     * @param string $id of the session to retrieve
-     * @return Entities\Session the it is found, null if not
-     * @throws \Exception
+     * @param string $id
+     * @return bool
      */
-    public static function retrieve(string $id): ?Entities\Session
+    public static function exists(string $id): bool
     {
         // SQL for counting
         $sql = "SELECT count(*)
@@ -188,16 +140,27 @@ class Sessions extends Repository
             WHERE id = :id";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':id' => $id));
+        $stmt->execute(['id' => $id]);
 
         // Fetch
-        $count = $sth->fetchColumn(0);
+        $count = $stmt->fetchColumn(0);
+        return $count != 0;
+    }
 
-        // If count is zero, then we return null
-        if ($count == 0) {
+    /**
+     * Retrieve a session from the database given its id
+     *
+     * @param string $id of the session to retrieve
+     * @return Entities\Session|null , null if it is not found
+     * @throws \Exception
+     */
+    public static function retrieve(string $id): ?Entities\Session
+    {
+        // If it doesn't exist, we return null
+        if (!self::exists($id)) {
             return null;
         }
 
@@ -205,7 +168,10 @@ class Sessions extends Repository
         $s = new Entities\Session;
 
         // Set the ID
-        $s->setId($id);
+        $ok = $s->setID($id);
+        if (!$ok) {
+            throw new SetFailedException($s,"setID",$id);
+        }
 
         // Call Pull on it
         self::pull($s);
@@ -215,7 +181,7 @@ class Sessions extends Repository
     }
 
     /**
-     * Retrieves all IDs for session belonging to that user
+     * Retrieves all IDs for session belonging to that user_id
      *
      * @param int $user_id
      * @return string[] array of session ids
@@ -225,42 +191,44 @@ class Sessions extends Repository
         // SQL
         $sql = "SELECT id
             FROM sessions
-            WHERE user = :user_id;";
+            WHERE user_id = :user_id
+            ORDER BY started DESC;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":user_id" => $user_id]);
+        $stmt->execute(["user_id" => $user_id]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;
     }
 
     /**
-     * Retrieves all IDs for session started by that IP
+     * Retrieves all IDs for session belonging to that user_id and that are valid
      *
-     * @param string $ip
+     * @param int $user_id
      * @return string[] array of session ids
      */
-    public static function findAllByIP(string $ip): array
+    public static function findAllValidByUserID(int $user_id): array
     {
         // SQL
         $sql = "SELECT id
             FROM sessions
-            WHERE ip = :ip;";
+            WHERE user_id = :user_id AND canceled = FALSE AND expiry > now()
+            ORDER BY started DESC;";
 
         // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
+        $stmt = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute statement
-        $sth->execute([":ip" => $ip]);
+        $stmt->execute(["user_id" => $user_id]);
 
         // Fetch all results
-        $set = $sth->fetchAll(\PDO::FETCH_COLUMN, 0);
+        $set = $stmt->fetchAll(\PDO::FETCH_COLUMN, 0);
 
         // Return the set
         return $set;

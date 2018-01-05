@@ -4,6 +4,11 @@ namespace Helpers;
 
 class UUID
 {
+    /**
+     * Génère une UUID v4
+     *
+     * @return string
+     */
     public static function v4(): string
     {
         return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
@@ -28,6 +33,12 @@ class UUID
         );
     }
 
+    /**
+     * Vérifie si une UUID est valide
+     *
+     * @param string $uuid
+     * @return bool true if correct, false if incorrect
+     */
     public static function is_valid(string $uuid): bool
     {
         return preg_match('/^\{?[0-9a-f]{8}\-?[0-9a-f]{4}\-?[0-9a-f]{4}\-?' .

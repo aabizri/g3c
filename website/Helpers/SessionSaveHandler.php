@@ -10,8 +10,8 @@ namespace Helpers;
 
 class SessionSaveHandler implements \SessionHandlerInterface
 {
-    public const lifetime = 7;
-    private const lifetime_intervalspec = "P".self::lifetime."D";
+    public const lifetime = 7; // DAys
+    private const lifetime_intervalspec = "P" . self::lifetime . "D";
 
     public function close(): bool
     {
@@ -29,7 +29,7 @@ class SessionSaveHandler implements \SessionHandlerInterface
         $sess = null;
         try {
             $sess = \Repositories\Sessions::retrieve($session_id);
-        }catch (\Throwable $t) {
+        } catch (\Throwable $t) {
             return false;
         }
 
@@ -39,7 +39,7 @@ class SessionSaveHandler implements \SessionHandlerInterface
         }
 
         // Cancel it
-        $sess->setCancelled(true);
+        $sess->setCanceled(true);
 
         // Push it
         try {
@@ -81,8 +81,8 @@ class SessionSaveHandler implements \SessionHandlerInterface
             return "";
         }
 
-        // If it is valid, return it
-        if ($sess->isValid()) {
+        // If it is invalid, return nothing
+        if (!$sess->isValid()) {
             return "";
         }
         return $sess->getValue();
@@ -95,7 +95,6 @@ class SessionSaveHandler implements \SessionHandlerInterface
      */
     public function write($session_id, $session_data): bool
     {
-        //echo "écriture de la session ".$session_id."<br/>";
         $sess = null;
         // Retrieve session
         try {
@@ -109,23 +108,22 @@ class SessionSaveHandler implements \SessionHandlerInterface
         if ($sess == null) {
             // Create a new entity
             $sess = new \Entities\Session;
-            $sess->setId($session_id);
+            $sess->setID($session_id);
+
+            // Extract the user_id value from ($_SESSION)
+            $user_id = $_SESSION["user_id"] ?? null;
+            $sess->setUserID($user_id);
+
+            // Set the value
             $sess->setValue($session_data);
 
             // Started
-            $now = new \DateTime();
-            $sess->setStarted($now->format(\DateTime::ATOM));
+            $now = microtime(true);
+            $sess->setStarted($now);
 
             // Expiry
-            $interval = new \DateInterval(self::lifetime_intervalspec);
-            $expiry = (new \DateTime())->add($interval);
-            $sess->setExpiry($expiry->format(\DateTime::ATOM));
-
-            // User Agent
-            $sess->setUserAgent($_SERVER["HTTP_USER_AGENT"]);
-
-            // IP
-            $sess->setIp($_SERVER["REMOTE_ADDR"]);
+            $expiry = $now + self::lifetime * 24 * 60 * 60;
+            $sess->setExpiry($expiry);
 
             // Insert in DB
             try {
@@ -135,6 +133,10 @@ class SessionSaveHandler implements \SessionHandlerInterface
                 return false;
             }
         } else { // If not we modify the existing one
+            // Extract the user_id value from ($_SESSION)
+            $user_id = $_SESSION["user_id"] ?? null;
+            $sess->setUserID($user_id);
+
             // Set the value
             $sess->setValue($session_data);
 

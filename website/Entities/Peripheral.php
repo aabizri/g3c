@@ -2,9 +2,6 @@
 
 namespace Entities;
 
-// ONLY FOR DEBUG
-require_once("../index.php");
-
 use Helpers\UUID;
 use Repositories;
 
@@ -14,17 +11,61 @@ use Repositories;
  * @package livewell
  * @author Alexandre A. Bizri <alexandre@bizri.fr>
  */
-class Peripheral
+class Peripheral extends Entity
 {
-    // Values of this object
+    /* PROPERTIES */
+
+    /**
+     * @var string
+     */
     private $uuid;
+
+    /**
+     * @var string
+     */
     private $display_name;
+
+    /**
+     * @var string (MM-DD)
+     */
     private $build_date;
+
+    /**
+     * @var string (ISO 8601)
+     */
     private $add_date;
+
+    /**
+     * @var string
+     */
     private $public_key;
+
+    /**
+     * @var int
+     */
     private $property_id;
+
+    /**
+     * @var Property
+     */
+    private $property;
+
+    /**
+     * @var int
+     */
     private $room_id;
+
+    /**
+     * @var Room
+     */
+    private $room;
+
+    /**
+     * @var float
+     */
     private $last_updated;
+
+    /* CONSTRUCTOR */
 
     /**
      * Peripheral constructor.
@@ -34,6 +75,8 @@ class Peripheral
         // Generate UUID
         $this->setUUID(UUID::v4());
     }
+
+    /* GETTERS AND SETTERS */
 
     /**
      * @return string
@@ -141,7 +184,7 @@ class Peripheral
     /**
      * @return int|null
      */
-    public function getPropertyId(): ?int
+    public function getPropertyID(): ?int
     {
         return $this->property_id;
     }
@@ -150,16 +193,45 @@ class Peripheral
      * @param int|null $property_id
      * @return bool
      */
-    public function setPropertyId(?int $property_id): bool
+    public function setPropertyID(?int $property_id): bool
     {
         $this->property_id = $property_id;
         return true;
     }
 
     /**
+     * @return Property|null
+     */
+    public function getProperty(): ?Property
+    {
+        if ($this->property === null) {
+            if ($this->property_id === null) {
+                return null;
+            }
+            $this->room = \Repositories\Properties::retrieve($this->property_id);
+        }
+        return $this->property;
+    }
+
+    /**
+     * @param Property|null $p
+     * @return bool
+     */
+    public function setProperty(?Property $p): bool
+    {
+        $this->property = $p;
+        if ($p === null) {
+            $this->property_id = null;
+        } else {
+            $this->property_id = $p->getID();
+        }
+        return true;
+    }
+
+    /**
      * @return int|null
      */
-    public function getRoomId(): ?int
+    public function getRoomID(): ?int
     {
         return $this->room_id;
     }
@@ -168,25 +240,55 @@ class Peripheral
      * @param int|null $room_id
      * @return bool
      */
-    public function setRoomId(?int $room_id): bool
+    public function setRoomID(?int $room_id): bool
     {
         $this->room_id = $room_id;
         return true;
     }
 
     /**
-     * @return string|null
+     * @return Room|null
+     * @throws \Exception
      */
-    public function getLastUpdated(): ?string
+    public function getRoom(): ?Room
+    {
+        if ($this->room === null) {
+            if ($this->room_id === null) {
+                return null;
+            }
+            $this->room = \Repositories\Rooms::retrieve($this->room_id);
+        }
+        return $this->room;
+    }
+
+    /**
+     * @param Room|null $r
+     * @return bool
+     */
+    public function setRoom(?Room $r): bool
+    {
+        $this->room = $r;
+        if ($r === null) {
+            $this->room_id = null;
+        } else {
+            $this->room_id = $r->getID();
+        }
+        return true;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getLastUpdated(): ?float
     {
         return $this->last_updated;
     }
 
     /**
-     * @param string $last_updated
+     * @param float $last_updated
      * @return bool
      */
-    public function setLastUpdated(string $last_updated): bool
+    public function setLastUpdated(float $last_updated): bool
     {
         $this->last_updated = $last_updated;
         return true;
@@ -195,11 +297,11 @@ class Peripheral
     /* BUSINESS LOGIC */
 
     /**
-     * Attach the Peripheral to a Room
+     * Attach the Peripheral to a Room.php
      *
-     * It checks if the Room is linked to the same Property as the Peripheral, returns an Exception if it fails.
+     * It checks if the Room.php is linked to the same Property as the Peripheral, returns an Exception if it fails.
      *
-     * @param int $roomID is the ID of the Room this Peripheral should be attached to
+     * @param int $roomID is the ID of the Room.php this Peripheral should be attached to
      *
      * @return void
      *
@@ -224,7 +326,8 @@ class Peripheral
         Repositories\Peripherals::attachToProperty($this, $propertyID);
     }
 
-    public function __toString(): string {
+    public function __toString(): string
+    {
         return sprintf("Périphérique \"%s\"<br/>
             UUID:\t\t%s<br/>
             Display Name:\t\t%s<br/>
@@ -232,7 +335,7 @@ class Peripheral
             Add Date:\t\t%s<br/>
             Public Key:\t\t%s<br/>
             Property ID: \t\t%s<br/>
-            Room ID:\t\t%s<br/>
+            Room.php ID:\t\t%s<br/>
             Last Updated:\t\t%s<br/>",
             $this->getDisplayName(),
             $this->getUUID(),
@@ -240,8 +343,8 @@ class Peripheral
             $this->getBuildDate(),
             $this->getAddDate(),
             $this->getPublicKey(),
-            $this->getPropertyId(),
-            $this->getRoomId(),
+            $this->getPropertyID(),
+            $this->getRoomID(),
             $this->getLastUpdated());
     }
 }
@@ -251,14 +354,14 @@ function testPeripheralModel()
     // Create a new entity
     echo "<b>Création d'un nouveau Entities\Peripheral...</b>";
     $p1 = new Peripheral();
-    echo "<b>Succès !</b>"."<br/>";
+    echo "<b>Succès !</b>" . "<br/>";
     echo $p1;
     echo "<br/>";
 
     // Insert it
     echo "<b>Insertion de cet objet dans la BDD...</b>";
     Repositories\Peripherals::insert($p1);
-    echo "<b>Succès !</b>"."<br/>";
+    echo "<b>Succès !</b>" . "<br/>";
     echo $p1;
 
     // Change data
@@ -268,24 +371,24 @@ function testPeripheralModel()
     // Push
     echo "<b>Push des dernières modifications...</b>";
     Repositories\Peripherals::push($p1);
-    echo "<b>Succès !</b>"."<br/>";
+    echo "<b>Succès !</b>" . "<br/>";
 
     // Pull
     echo "<b>Pull post-push...</b>";
     Repositories\Peripherals::pull($p1);
-    echo "<b>Succès !</b>"."<br/>";
+    echo "<b>Succès !</b>" . "<br/>";
 
     // Attach to property
     echo "<b>Attachement à la propriété...</b>";
     $p1->attachToProperty(1);
-    echo "<b>Succès !</b>"."<br/>";
+    echo "<b>Succès !</b>" . "<br/>";
     echo $p1;
     echo "<br/>";
 
     // Attach to room
     echo "<b>Attachement à la pièce...</b>";
     $p1->attachToRoom(1);
-    echo "<b>Succès !</b>"."<br/>";
+    echo "<b>Succès !</b>" . "<br/>";
     echo $p1;
     echo "<br/>";
 }
