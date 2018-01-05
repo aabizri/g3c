@@ -13,23 +13,22 @@ class Property
 {
     /**
      * Create a property
-     * @param array $get
-     * @param array $post
+     * @param Entities\Request $req
      */
-    public function postCreate(array $get, array $post ): void
+    public function postCreate(\Entities\Request $req): void
     {
         // Check if the data exists
         $required = ["name", "address"];
         foreach ($required as $key) {
-            if (empty($post[$key])){
+            if (empty($req->getPOST($key))){
                 echo "Missing key: ".$key;
                 return;
             }
         }
 
         // Assign values
-        $name = $post["name"];
-        $address = $post["address"];
+        $name = $req->getPOST("name");
+        $address = $req->getPOST("address");
 
         // Create the entity
         $p = new Entities\Property();
