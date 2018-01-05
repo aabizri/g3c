@@ -11,7 +11,7 @@ use Entities;
 use Exception;
 use PDO;
 
-class Subscriptions
+class Subscriptions extends Repository
 {
     /**
      * Insert a new Subscription to the database
@@ -220,8 +220,11 @@ class Subscriptions
         // Prepare statement
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
+        // Preparer les paremètres
+        $params = ['property_id' => $property_id];
+
         // Execute query
-        $sth->execute(array(':property_id' => $property_id));
+        $sth->execute($params);
 
         // Fetch
         $count = $sth->fetchColumn(0);
@@ -244,7 +247,7 @@ class Subscriptions
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(['property_id' => $property_id]);
+        $sth->execute($params);
 
         // Fetch
         $id = $sth->fetchColumn(0);
@@ -269,7 +272,7 @@ class Subscriptions
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute(array(':command_id' => $command_id));
+        $sth->execute([':command_id' => $command_id]);
 
         // Fetch
         $id = $sth->fetchColumn(0);
