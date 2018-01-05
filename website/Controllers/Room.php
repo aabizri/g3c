@@ -13,47 +13,31 @@ use Entities;
 class Room
 {
     /*Ajouter une pièce*/
-    public function postNewRoom(array $get, array $post): void
+    public function postNewRoom(\Entities\Request $req): void
     {
+        // Si la requête n'est pas associée à une propriété, retourner une erreur
+        $property_id = $req->getPropertyID();
+        if (empty($property_id)) {
+            echo "Requête concernant une propriété mais non associée à une propriété, erreur";
+            return;
+        }
+
         /*Vérifier que les données existent*/
-        if (empty($post["name"])) {
+        if (empty($req->getPOST("name"))) {
             echo "Il manque le nom";
             return;
         }
 
         /*Assigne les valeurs*/
-        $name = $post["name"];
-
-        /*Créer l'entité*/
-        $r = new Entities\Room();
-        $r->setName($name);
-
-        /*Insérer l'entité dans la bdd*/
-        try {
-            Repositories\Rooms::insert($r);
-        } catch (\Exception $e) {
-            echo "Erreur" . $e;
-        }
-
-        \Helpers\DisplayManager::display("dashboard", array());
-    }
-
-
-    public function postDeleteRoom(array $get, array $post): void
-        {
-        /*Vérifier que les données existent*/
-        if (empty($post["name"])) {
-            echo "Il manque le nom";
-            return;
-        }
-
-
-        /*Assigne les valeurs*/
-        $name = $post["name"];
+        $name = $req->getPOST("name");
 
         /*Créer l'entité*/
         $r = new Entities\Room();
         $ok = $r->setName($name);
+        if ($ok === false) {
+            echo "Il y a une erreur";
+            return;
+        }
 
         /*Insérer l'entité dans la bdd*/
         try {
@@ -62,25 +46,21 @@ class Room
             echo "Erreur" . $e;
         }
 
-        \Helpers\DisplayManager::display("dashboard", array());
-
-        if ($ok === false) {
-            echo "Il y a une erreur";
-        }
+        \Helpers\DisplayManager::redirectToController("Rooms", "RoomsPage");
     }
 
-
-    public function getRooms(array $get, array $post): void
+    public function getRooms(\Entities\Request $req): void
     {
-        /*Verifier que la propriété existe */
-        if(empty($_GET['pid']))
-        {
+        // Si la requête n'est pas associée à une propriété, retourner une erreur
+        $property_id = $req->getPropertyID();
+        if (empty($property_id)) {
+            echo "Requête concernant une propriété mais non associée à une propriété, erreur";
             return;
         }
 
         //Récupérer liste des pièces
         $rooms = [];
-        $room_ids= \Repositories\Rooms::findAllByPropertyID($_GET['pid']);
+        $room_ids= \Repositories\Rooms::findAllByPropertyID($property_id);
         foreach ($room_ids as $rid)
         {
             $room = \Repositories\Rooms::retrieve($rid);
@@ -89,10 +69,3 @@ class Room
 
         \Helpers\DisplayManager::display("mespieces",[$rooms]);
     }
-    public static function getRoomsPage (array $get, array $post):void
-    {
-        \Helpers\DisplayManager::display("mespieces", array());
-    }
-
-}
-?>
