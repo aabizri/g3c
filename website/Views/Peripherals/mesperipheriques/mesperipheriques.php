@@ -31,10 +31,11 @@
                             foreach ($data["peripherals_list"] as $p){
 
                                 $date = date( "d/m/Y", $p->getLastUpdated()) . ' à ' . date( "H:i",$p->getLastUpdated() );
+                                $room = $p->getRoom();
 
                                 echo '<tr><form action="index.php?c=Peripherals&a=DissociatePeripheralFromProperty" method="post" >
-                                        <td>'. $p->getDisplayName() .'</td>
-                                        <td>'. $p->getRoom() .'</td>
+                                        <td>'. $p->getDisplayName() .'</td> 
+                                        <td>'. $room->getName() .'</td>
                                         <td>'. $date .'</td>
                                         <td><input type="hidden" name="peripheral_id" value="'. $p->getUUID() .'"/>'. $p->getUUID() .'</td>
                                         <td><form action="index.php?c=Peripherals&a=DissociatePeripheralFromProperty" method="post" ><input type="submit" value="Supprimer"/></form></td>

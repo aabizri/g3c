@@ -80,14 +80,10 @@ class Peripherals
         //Récupérer les données des périphériques pour chaque périphérique
         $peripherals_list = [];
         foreach ($peripheriques_id_list as $peripherals_ID) {
-            $peripherals = \Repositories\Peripherals::retrieve($peripherals_ID);
-
-            //Récupérer le nom
-            $room_id = $peripherals->getRoomID();
-            $room= \Repositories\Rooms::retrieve($room_id);
+            $peripheral = \Repositories\Peripherals::retrieve($peripherals_ID);
 
             //Ajouter les infos à la liste
-            $peripherals_list = $peripherals + $room ;
+            $peripherals_list[] = $peripheral;
         }
 
         // Peupler la vue
@@ -95,6 +91,7 @@ class Peripherals
 
         //Afficher
         \Helpers\DisplayManager::display("mesperipheriques",$data);
+
     }
 
     //Supprimer un périphérique
