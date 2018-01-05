@@ -23,7 +23,7 @@ class MeasureTypes extends Query
     private const entity_class_name = "\Entities\MeasureType";
 
     /**
-     * Rooms constructor.
+     * MeasureTypes constructor.
      * Calls the parent's one.
      *
      * @throws \Exception
@@ -33,6 +33,13 @@ class MeasureTypes extends Query
         parent::__construct(self::table, self::columns, self::entity_class_name);
     }
 
+    /* OTHERS */
+
+    /**
+     * @param \Entities\MeasureType $measure_type
+     * @return bool
+     * @throws \Exception
+     */
     public function save(\Entities\MeasureType $measure_type): bool
     {
         return parent::saveEntity($measure_type);

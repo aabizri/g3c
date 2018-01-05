@@ -9,6 +9,10 @@
 namespace Queries;
 
 
+/**
+ * Class Peripherals
+ * @package Queries
+ */
 class Peripherals extends Query
 {
     /* COMMON CONSTANTS */
@@ -24,7 +28,7 @@ class Peripherals extends Query
     private const entity_class_name = "\Entities\Peripheral";
 
     /**
-     * Rooms constructor.
+     * Peripherals constructor.
      * Calls the parent's one.
      *
      * @throws \Exception
@@ -34,16 +38,55 @@ class Peripherals extends Query
         parent::__construct(self::table, self::columns, self::entity_class_name);
     }
 
+    /* FILTERS */
+
+    /**
+     * @param string $operator
+     * @param \Entities\Property $property
+     * @return Peripherals
+     */
     public function filterByProperty(string $operator, \Entities\Property $property): self
     {
         return $this->filterByEntity("property_id", $operator, $property);
     }
 
+    /**
+     * @param string $operator
+     * @param int $property_id
+     * @return Peripherals
+     */
+    public function filterByPropertyID(string $operator, int $property_id): self
+    {
+        return $this->filterByColumn("property_id", $operator, $property_id);
+    }
+
+    /**
+     * @param string $operator
+     * @param \Entities\Room $room
+     * @return Peripherals
+     */
     public function filterByRoom(string $operator, \Entities\Room $room): self
     {
         return $this->filterByEntity("room_id", $operator, $room);
     }
 
+    /**
+     * @param string $operator
+     * @param int $room_id
+     * @return Peripherals
+     */
+    public function filterByRoomID(string $operator, int $room_id): self
+    {
+        return $this->filterByColumn("room_id", $operator, $room_id);
+    }
+
+    /* OTHERS */
+
+    /**
+     * @param \Entities\Peripherals $peripheral
+     * @return bool
+     * @throws \Exception
+     */
     public function save(\Entities\Peripherals $peripheral): bool
     {
         return parent::saveEntity($peripheral);

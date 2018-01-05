@@ -9,6 +9,10 @@
 namespace Queries;
 
 
+/**
+ * Class Properties
+ * @package Queries
+ */
 class Properties extends Query
 {
     /* COMMON CONSTANTS */
@@ -31,6 +35,13 @@ class Properties extends Query
         parent::__construct(self::table, self::columns, self::entity_class_name);
     }
 
+    /* OTHERS */
+
+    /**
+     * @param \Entities\Property $property
+     * @return bool
+     * @throws \Exception
+     */
     public function save(\Entities\Property $property): bool
     {
         return parent::saveEntity($property);

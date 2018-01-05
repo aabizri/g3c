@@ -2,6 +2,10 @@
 
 namespace Queries;
 
+/**
+ * Class Query
+ * @package Queries
+ */
 abstract class Query
 {
     // DB Instance

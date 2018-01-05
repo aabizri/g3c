@@ -9,6 +9,10 @@
 namespace Queries;
 
 
+/**
+ * Class Permissions
+ * @package Queries
+ */
 class Permissions extends Query
 {
     /* COMMON CONSTANTS */
@@ -21,7 +25,7 @@ class Permissions extends Query
     private const entity_class_name = "\Entities\Permission";
 
     /**
-     * Rooms constructor.
+     * Permissions constructor.
      * Calls the parent's one.
      *
      * @throws \Exception
@@ -31,6 +35,13 @@ class Permissions extends Query
         parent::__construct(self::table, self::columns, self::entity_class_name);
     }
 
+    /* OTHERS */
+
+    /**
+     * @param \Entities\Permission $permission
+     * @return bool
+     * @throws \Exception
+     */
     public function save(\Entities\Permission $permission): bool
     {
         return parent::saveEntity($permission);

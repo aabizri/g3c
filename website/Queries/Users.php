@@ -8,6 +8,10 @@
 
 namespace Queries;
 
+/**
+ * Class Users
+ * @package Queries
+ */
 class Users extends Query
 {
     /* COMMON CONSTANTS */
@@ -34,16 +38,35 @@ class Users extends Query
         parent::__construct(self::table, self::columns, self::entity_class_name);
     }
 
+    /* FILTERS */
+
+    /**
+     * @param string $operator
+     * @param string $email
+     * @return Users
+     */
     public function filterByEmail(string $operator, string $email): self
     {
         return $this->filterByColumn("email", $operator, $email);
     }
 
+    /**
+     * @param string $operator
+     * @param string $nick
+     * @return Users
+     */
     public function filterByNick(string $operator, string $nick): self
     {
         return $this->filterByColumn("nick", $operator, $nick);
     }
 
+    /* OTHERS */
+
+    /**
+     * @param \Entities\User $user
+     * @return bool
+     * @throws \Exception
+     */
     public function save(\Entities\User $user): bool
     {
         return parent::saveEntity($user);

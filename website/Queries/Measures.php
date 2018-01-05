@@ -8,6 +8,10 @@
 
 namespace Queries;
 
+/**
+ * Class Measures
+ * @package Queries
+ */
 class Measures extends Query
 {
     /* COMMON CONSTANTS */
@@ -15,13 +19,13 @@ class Measures extends Query
     private const columns = ["id" => "",
                              "type_id" => "",
                              "date_time" => "",
-                             "value" => "",
+                             "value" => "double",
                              "sensor_id" => "",
                              "actuator_id" => ""];
     private const entity_class_name = "\Entities\Measure";
 
     /**
-     * Rooms constructor.
+     * Measures constructor.
      * Calls the parent's one.
      *
      * @throws \Exception
@@ -31,11 +35,35 @@ class Measures extends Query
         parent::__construct(self::table, self::columns, self::entity_class_name);
     }
 
+    /* FILTERS */
+
+    /**
+     * @param string $operator
+     * @param \Entities\MeasureType $measure_type
+     * @return Measures
+     */
     public function filterByMeasureType(string $operator, \Entities\MeasureType $measure_type): self
     {
         return $this->filterByEntity("type_id", $operator, $measure_type);
     }
 
+    /**
+     * @param string $operator
+     * @param int $measure_type_id
+     * @return Measures
+     */
+    public function filterByMeasureTypeID(string $operator, int $measure_type_id): self
+    {
+        return $this->filterByColumn("type_id", $operator, $measure_type_id);
+    }
+
+    /* OTHERS */
+
+    /**
+     * @param \Entities\Measure $measure
+     * @return bool
+     * @throws \Exception
+     */
     public function save(\Entities\Measure $measure): bool
     {
         return parent::saveEntity($measure);
