@@ -131,7 +131,7 @@
             for (property in params) {
                 hash += "&" + property + "=" + params[property];
             }
-            hash[0] = "#";
+            hash = "#" + hash.substr(1);
             window.location.hash = hash;
         }
 
