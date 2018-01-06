@@ -30,12 +30,32 @@
                             //Ici nous ajoutons une ligne avec les infos
                             foreach ($data["peripherals_list"] as $p){
 
+                                //On met la date sous le bon format
                                 $date = date( "d/m/Y", $p->getLastUpdated()) . ' à ' . date( "H:i",$p->getLastUpdated() );
+
+                                //On récupère l'entité salle lié au périphérique pour récupérer le nom de la salle
                                 $room = $p->getRoom();
 
+                                //Si le périphérique n'est lié à aucune salle
+                                if ($p->getRoomId() !== null){
+                                    $room_name= $room->getName();
+                                }
+                                else{
+                                    $room_name = "Ce périphériques n'est pas lié à une salle";
+                                }
+
+                                //Le nom du périphérique
+                                if ($p->getDisplayName()=== null){
+                                    $peripheral_name = "Ce périphérique n'a pas de nom";
+                                }
+                                else{
+                                    $peripheral_name = $p->getDisplayName();
+                                }
+
+
                                 echo '<tr><form action="index.php?c=Peripherals&a=DissociatePeripheralFromProperty" method="post" >
-                                        <td>'. $p->getDisplayName() .'</td> 
-                                        <td>'. $room->getName() .'</td>
+                                        <td>'. $peripheral_name .'</td> 
+                                        <td>'. $room_name .'</td>
                                         <td>'. $date .'</td>
                                         <td><input type="hidden" name="peripheral_id" value="'. $p->getUUID() .'"/>'. $p->getUUID() .'</td>
                                         <td><form action="index.php?c=Peripherals&a=DissociatePeripheralFromProperty" method="post" ><input type="submit" value="Supprimer"/></form></td>
