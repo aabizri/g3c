@@ -41,6 +41,7 @@ class Handler
         if ($req->getUserID() !== null && $req->getPropertyID() !== null) {
             if (\Repositories\Roles::findByUserAndProperty($req->getUserID(), $req->getPropertyID()) === null) {
                 echo "L'utilisateur n'a pas de connexion à cette propriété, interdit !";
+                // TODO: A fixer (faire un return)
             }
         }
 

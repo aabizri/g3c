@@ -1,7 +1,9 @@
             <ul id="Menu">
               <li id="Moncompte"><a href="index.php?c=User&a=AccountPage"><input type="button" value="Mon compte" /></a></li>
               <li id="Mespieces"><a href="index.php?c=Room&a=RoomsPage"><input type="button" value="Mes pièces" /></a></li>
-              <li id="Mesperipheriques"> <a href="index.php?c=Peripherals&a=PeripheralsPage"><input type="button" value="Mes périphériques" /></a></li>
+                <li id="Mesperipheriques"><a href="index.php?c=Peripherals&a=List"><input type="button"
+                                                                                          value="Mes périphériques"/></a>
+                </li>
               <li id="Mesfiltres"><a href="Mesfiltres.html"><input type="button" value="Mes filtres" /></a></li>
               <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
             </ul>
@@ -53,12 +55,12 @@
                                 }
 
 
-                                echo '<tr><form action="index.php?c=Peripherals&a=DissociatePeripheralFromProperty" method="post" >
+                                echo '<tr><form action="index.php?c=Peripherals&a=Remove" method="post" >
                                         <td>'. $peripheral_name .'</td> 
                                         <td>'. $room_name .'</td>
                                         <td>'. $date .'</td>
                                         <td><input type="hidden" name="peripheral_id" value="'. $p->getUUID() .'"/>'. $p->getUUID() .'</td>
-                                        <td><form action="index.php?c=Peripherals&a=DissociatePeripheralFromProperty" method="post" ><input type="submit" value="Supprimer"/></form></td>
+                                        <td><form action="index.php?c=Peripherals&a=Remove" method="post" ><input type="submit" value="Supprimer"/></form></td>
                                       </tr>';}
 
                             }
@@ -75,11 +77,11 @@
             <div id="ajouterperipherique">
                 <h3>Ajouter un périphérique</h3>
                 <div id="champsajouterperipherique">
-                    <form name="Ajouter un peripherique" method="post" action="index.php?c=Peripherals&a=AddPeripheral">
+                    <form name="Ajouter un peripherique" method="post" action="index.php?c=Peripherals&a=Add">
                         <label>UUID : </label><input type="text" name="uuid" /><br><br>
                         <label>Nom du périphérique : </label><input type="text" name="display_name" />
-                            <p> Dans quelle salle ? <!-- Faire un lien avec la branche dev-room. Utiliser une liste
-                             déroulante et récupérer les id qui correspondent ici à la value-->
+                        <p> Dans quelle salle ?
+                            <!-- Utiliser une liste déroulante et récupérer les id qui correspondent ici à la value-->
                                 <input type="checkbox" value="1" name="room_id"/> <!--value = 1 pour tester--><label>Chambre</label>
                             </p>
                         <br>
