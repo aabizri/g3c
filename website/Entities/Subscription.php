@@ -13,7 +13,7 @@ namespace Entities;
  * Class Subscription
  * @package Entities
  */
-class Subscription
+class Subscription extends Entity
 {
     /* Properties */
 
@@ -124,7 +124,7 @@ class Subscription
     /**
      * @return int
      */
-    public function getCommandID(): int
+    public function getCommandID(): ?int
     {
         return $this->command_id;
     }
@@ -133,7 +133,7 @@ class Subscription
      * @param int $command_id
      * @return bool
      */
-    public function setCommandID(int $command_id): bool
+    public function setCommandID(?int $command_id): bool
     {
         $this->command_id = $command_id;
         return true;
