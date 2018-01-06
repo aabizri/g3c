@@ -161,7 +161,7 @@ class Rooms extends Repository
             return null;
         }
 
-        // Create a User entity
+        // Create a Room entity
         $r = new Entities\Room();
 
         // Set the ID
