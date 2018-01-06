@@ -22,24 +22,23 @@ class Room
             return;
         }
 
-        /*Vérifier que les données existent*/
-        if (empty($req->getPOST("name"))) {
+        // Assigne & vérifie que les données existent
+        $name = $req->getPOST("name");
+        if (empty($name)) {
             echo "Il manque le nom";
             return;
         }
 
-        /*Assigne les valeurs*/
-        $name = $req->getPOST("name");
-
-        /*Créer l'entité*/
+        // Créer l'entité
         $r = new Entities\Room();
         $ok = $r->setName($name);
         if ($ok === false) {
-            echo "Il y a une erreur";
+            http_response_code(400);
+            echo "Il y a une erreur dans le nom et/ou prénom";
             return;
         }
 
-        /*Insérer l'entité dans la bdd*/
+        // Insérer l'entité dans la bdd
         try {
             Repositories\Rooms::insert($r);
         } catch (\Exception $e) {
@@ -54,6 +53,7 @@ class Room
         // Si la requête n'est pas associée à une propriété, retourner une erreur
         $property_id = $req->getPropertyID();
         if (empty($property_id)) {
+            http_response_code(403);
             echo "Requête concernant une propriété mais non associée à une propriété, erreur";
             return;
         }

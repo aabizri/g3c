@@ -41,6 +41,7 @@ class User
                 $captcha = new \Helpers\ReCAPTCHA("", "6Le5Pz4UAAAAAK3tAgJ2sCG3SF8qz0zVeILYJiuo");
                 $ok = $captcha->verify($response);
                 if (!$ok) {
+                    http_response_code(400);
                     echo "Invalid captcha";
                     return;
                 }
@@ -57,6 +58,7 @@ class User
         $phone = $post["phone"];
 
         if (($email_conf != $email) || ($password_clear != $password_clear_conf)){
+            http_response_code(400);
             echo "La confirmation n'est pas valide !";
             return;
         }
@@ -67,6 +69,7 @@ class User
          */
         $nickDuplicate = Repositories\Users::findByNick($nick) != null;
         if ($nickDuplicate) {
+            http_response_code(400);
             echo "A user with this nick already exists";
             return;
         }
@@ -77,6 +80,7 @@ class User
          */
         $emailDuplicate = Repositories\Users::findByEmail($email) != null;
         if ($emailDuplicate) {
+            http_response_code(400);
             echo "A user with this email already exists";
             return;
         }
@@ -97,9 +101,6 @@ class User
         }
 
         // Include la page de confirmation
-        $data = [
-            "user" => $u,
-        ];
         \Helpers\DisplayManager::redirectToController("User", "ConnectionPage");
     }
 
@@ -114,21 +115,14 @@ class User
             return;
         }
 
-        // Récupère le post
-        $post = $req->getAllPOST();
-
-        // Check if the data exists
-        $required = ["login", "password"];
-        foreach ($required as $key) {
-            if (empty($post[$key])) {
-                echo "Missing key: " . $key;
-                return;
-            }
-        }
-
         // Récupérer les données
-        $login = $_POST['login'];
-        $password_clear = $_POST['password'];
+        $login = $req->getPOST('login');
+        $password_clear = $req->getPOST('password');
+        if (empty($login) || empty($password_clear)) {
+            http_response_code(400);
+            echo "Login et/ou mot de passe non spécifié";
+            return;
+        }
 
         /**
          * Vérifier que le nick et/ou e-mail existe
@@ -139,6 +133,7 @@ class User
             $id = Repositories\Users::findByEmail($login);
         }
         if ($id == 0) {
+            http_response_code(400);
             echo "Ce login n'existe pas";
             return;
         }
@@ -156,7 +151,7 @@ class User
         }
 
         // Ajouter à la session et à la requête
-        $_SESSION["user_id"] = $u->getId();
+        $_SESSION["user_id"] = $u->getID();
         $ok = $req->setUser($u);
         if (!$ok) {
             Error::getInternalError500($req);
@@ -224,12 +219,12 @@ class User
         }
 
         // Retrieve post parameter for session ids
-        if (empty($req->getAllPOST()["session_id"])) {
+        $session_ids = $req->getPOST("session_id");
+        if (empty($session_ids)) {
             http_response_code(400);
             echo "Mauvaise requête: veuillez indiquer une session ID valide";
             return;
         }
-        $session_ids = $req->getPOST("session_id");
 
         foreach ($session_ids as $session_id) {
             // Retrieve session
