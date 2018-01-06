@@ -9,6 +9,9 @@
 namespace Repositories;
 use Entities;
 use Exception;
+use Exceptions\MultiSetFailedException;
+use Exceptions\RowNotFoundException;
+use Exceptions\SetFailedException;
 use PDO;
 
 class Subscriptions extends Repository
@@ -31,12 +34,12 @@ class Subscriptions extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be inserted
-        $data = [
-            'property_id' => $s->getPropertyId(),
-            'start_date' => $s->getStartDate(),
-            'expiry_date' => $s->getExpiryDate(),
-            'command_id' => $s->getCommandId(),
-        ];
+        $data = $s->getMultiple([
+            'property_id',
+            'start_date',
+            'expiry_date',
+            'command_id',
+        ]);
 
         // Execute query
         $sth->execute($data);
@@ -59,13 +62,13 @@ class Subscriptions extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Prepare data to be updated
-        $data = [
-            'id' => $s->getID(),
-            'display_name' => $s->getPropertyId(),
-            'build_date' => $s->getStartDate(),
-            'add_date' => $s->getExpiryDate(),
-            'public_key' => $s->getCommandId(),
-        ]; // We don't have the ID in the Push, as they are only updated by the attachToXXX methods
+        $data = $s->getMultiple([
+            'id',
+            'display_name',
+            'build_date',
+            'add_date',
+            'public_key',
+        ]);
 
         // Execute query
         $sth->execute($data);
@@ -97,19 +100,21 @@ class Subscriptions extends Repository
         $data = $sth->fetch(PDO::FETCH_ASSOC);
 
         // If nil, we throw an error
-        if ($data === false || $data === null) {
-            throw new Exception("No such Model\Peripheral found");
+        if ($data === false) {
+            throw new RowNotFoundException($s, "subscriptions");
         }
 
         // Store
-        $arr = [
-            "setPropertyId" => $data["property_id"],
-            "setStartDate" => $data["start_date"],
-            "setExpiryDate" => $data["expiry_date"],
-            "setCommandId" => $data["command_id"],
-            "setLastUpdated" => (float) $data["last_updated"],
-        ];
-        parent::executeSetterArray($s, $arr);
+        $ok = $s->setMultiple([
+            "property_id" => $data["property_id"],
+            "start_date" => $data["start_date"],
+            "expiry_date" => $data["expiry_date"],
+            "command_id" => $data["command_id"],
+            "last_updated" => (float)$data["last_updated"],
+        ]);
+        if (!$ok) {
+            throw new MultiSetFailedException($s, $data);
+        }
     }
 
     /**
@@ -132,14 +137,14 @@ class Subscriptions extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute
-        $sth->execute(array(':id' => $s->getID()));
+        $sth->execute([':id' => $s->getID()]);
 
         // Retrieve
         $db_last_updated = $sth->fetchColumn(0);
 
         // If nil, we throw an exception
-        if ($db_last_updated === null) {
-            throw new Exception("No such Subscription found");
+        if ($db_last_updated === false) {
+            throw new RowNotFoundException($s, "subscriptions");
         }
 
         // If empty, that's an Exception
@@ -180,8 +185,8 @@ class Subscriptions extends Repository
         // Fetch
         $count = $sth->fetchColumn(0);
 
-        // If count is zero, then we return null
-        if ($count == 0) {
+        // If count is zero or false, then we return null
+        if ($count === 0 || $count === false) {
             return null;
         }
 
@@ -191,7 +196,7 @@ class Subscriptions extends Repository
         // Set the UUID
         $ok = $s->setID($id);
         if ($ok == false) {
-            throw new Exception("Error setting ID in Subscription");
+            throw new SetFailedException($s, "setID", $id);
         }
 
         // Call Pull on it
