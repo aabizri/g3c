@@ -90,7 +90,8 @@ class Admin
      * @param \Entities\Request $req
      * @throws \Exception
      */
-    public function getUserInfo(\Entities\Request $req): void {
+    public function getUser(\Entities\Request $req): void
+    {
         // Retrieve the user ID
         $queried_user_id = $req->getGET("uid");
         if (empty($queried_user_id)) {
@@ -98,7 +99,7 @@ class Admin
         }
 
         // Retrieve the user
-        $queried_user = \Repositories\Users::retrieve($queried_user_id);
+        $queried_user = (new \Queries\Users)->retrieve($queried_user_id);
     }
 
     /**
