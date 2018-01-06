@@ -515,7 +515,7 @@ abstract class Query
 
         // Then with the columns to retrieve
         foreach ($this->manipulate_columns as $index => $column) {
-            $column_attribute = $this->table_columns[$column];
+            $column_attribute = $this->table_columns[$column] ?? null;
             switch ($column_attribute) {
                 case "hex":
                     $lexemes[] = "HEX(";
