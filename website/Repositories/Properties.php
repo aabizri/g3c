@@ -86,7 +86,6 @@ class Properties extends Repository
      *
      * @throws \Exception if there is no such Model\Property
      */
-
     public static function pull(\Entities\Property $p)
     {
         // SQL
