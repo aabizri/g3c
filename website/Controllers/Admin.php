@@ -47,12 +47,12 @@ class Admin
         // Return view
         switch ($req->getGET("v")) {
             case "json":
-                // Object array to be encoded
-                $to_be_encoded = [];
+                // Users array to be encoded
+                $tbe_users = [];
 
                 // For each user, transform it into a a minimal object
                 foreach ($users as $user) {
-                    $to_be_encoded[] = (object)[
+                    $tbe_users[] = (object)[
                         "id" => $user->getID(),
                         "nick" => $user->getNick(),
                         "email" => $user->getEmail(),
@@ -60,8 +60,19 @@ class Admin
                     ];
                 }
 
+                // Pagination
+                $tbe_pagination = (object)[
+                    "total" => (new \Queries\Users)->select()->count(),
+                ];
+
+                // Complete object
+                $tbe = (object)[
+                    "pagination" => $tbe_pagination,
+                    "users" => $tbe_users,
+                ];
+
                 // Encode output
-                $output = json_encode($to_be_encoded);
+                $output = json_encode($tbe);
 
                 // Output it & break
                 echo $output;
