@@ -212,30 +212,6 @@ class Subscriptions extends Repository
      */
     public static function findActiveByPropertyID(int $property_id): ?int
     {
-
-        $sql = "SELECT count(*)
-          FROM subscriptions
-          WHERE property_id = :property_id AND start_date < now() AND expiry_date > now()";
-
-        // Prepare statement
-        $sth = parent::db()->prepare($sql, parent::$pdo_params);
-
-        // Preparer les paremètres
-        $params = ['property_id' => $property_id];
-
-        // Execute query
-        $sth->execute($params);
-
-        // Fetch
-        $count = $sth->fetchColumn(0);
-
-        // If count is zero, then we return null
-        if ($count == 0) {
-            return null;
-        } else if ($count > 1) {
-            throw new \Exception("More than one active Subscription !");
-        }
-
         // SQL for selecting
         $sql = "SELECT id
           FROM subscriptions
@@ -247,10 +223,13 @@ class Subscriptions extends Repository
         $sth = parent::db()->prepare($sql, parent::$pdo_params);
 
         // Execute query
-        $sth->execute($params);
+        $sth->execute(["property_id" => $property_id]);
 
         // Fetch
         $id = $sth->fetchColumn(0);
+        if ($id === false) {
+            return null;
+        }
 
         // Return this ID
         return $id;
