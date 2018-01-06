@@ -2,6 +2,7 @@
 
 namespace Controllers;
 
+use Helpers\DisplayManager;
 use Repositories;
 use Entities;
 
@@ -62,6 +63,8 @@ class Peripherals
         } catch (\Throwable $t) {
             return;
         }
+
+        DisplayManager::redirectToController(Peripherals, PeripheralsPage );
     }
 
     //Afficher les périphériques
@@ -81,7 +84,6 @@ class Peripherals
         $peripherals_list = [];
         foreach ($peripheriques_id_list as $peripherals_ID) {
             $peripheral = \Repositories\Peripherals::retrieve($peripherals_ID);
-
             //Ajouter les infos à la liste
             $peripherals_list[] = $peripheral;
         }
@@ -97,13 +99,11 @@ class Peripherals
     //Supprimer un périphérique
     public function postDissociatePeripheralFromProperty(\Entities\Request $req): void
     {
-        $post= $req->getPOST();
-
         // Propriété transmise (ID)
         $property_id = $req->getPropertyID();
 
         // Périphérique à supprimer
-        $uuid = $post["peripheral_id"];
+        $uuid = $req->getPOST("peripheral_id");
 
         // Récupérer le périphérique
         $p = \Repositories\Peripherals::retrieve($uuid);
@@ -122,5 +122,7 @@ class Peripherals
         // Push
         \Repositories\Peripherals::push($p);
 
+        //Affichage de la page peripherique mise a jour
+        \Helpers\DisplayManager::redirectToController(Peripherals, PeripheralsPage);
     }
 }
