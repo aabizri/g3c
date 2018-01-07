@@ -107,8 +107,19 @@ class Peripherals
             $peripherals_list[] = $peripheral;
         }
 
+        //Trouver toutes les rooms id de la propriété
+        $property_id_room = \Repositories\Rooms::findAllByPropertyID($property_id);
+
+        //Retrieve les rooms
+        $property_room=[];
+        foreach ($property_id_room as $room_Id){
+            $room_entity = \Repositories\Rooms::retrieve($room_Id);
+            $property_room[] = $room_entity;
+        }
+
         // Peupler la vue
         $data["peripherals_list"] = $peripherals_list;
+        $data["property_room"] = $property_room;
 
         //Afficher
         \Helpers\DisplayManager::display("mesperipheriques",$data);

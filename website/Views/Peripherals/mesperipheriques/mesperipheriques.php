@@ -77,15 +77,21 @@
             <div id="ajouterperipherique">
                 <h3>Ajouter un périphérique</h3>
                 <div id="champsajouterperipherique">
-                    <form name="Ajouter un peripherique" method="post" action="index.php?c=Peripherals&a=Add">
+                    <form name="Ajouter un peripherique" method="post" action="index.php?c=Peripherals&a=Add&pid=1">
                         <label>UUID : </label><input type="text" name="uuid" /><br><br>
                         <label>Nom du périphérique : </label><input type="text" name="display_name" />
                         <p> Dans quelle salle ?
-                            <!-- Utiliser une liste déroulante et récupérer les id qui correspondent ici à la value-->
-                                <input type="checkbox" value="1" name="room_id"/> <!--value = 1 pour tester--><label>Chambre</label>
-                            </p>
-                        <br>
+                            <select name="room_id">
+                                <?php
+                                foreach ($data["property_room"] as $pr){
+                                    echo "<option value='".$pr->getID()."'>".$pr->getName() ."</option>";
+                                }
+                                ?>
+                            </select>
+                        </p>
                         <input type="submit" value="Ajouter un périphérique" id="ajouterperipheriquebouton" >
+                        <br>
                     </form>
                 </div>
             </div>
+
