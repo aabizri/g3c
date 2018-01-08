@@ -49,6 +49,13 @@ class Product
 
     public static function getProductList(\Entities\Request $req): void
     {
-        $products_list = (new \Queries\Products)->filterByProduct($myproduct)->find();
+        $products_list = (new \Queries\Products)->find();
+        var_dump($products_list);
+
+        // Publish data
+        $data["products"] = $products_list;
+
+        // Publish view
+        DisplayManager::display("boutique", $data);
     }
 }

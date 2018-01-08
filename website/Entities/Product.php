@@ -41,7 +41,7 @@ class Product extends Entity
     /**
      * @var int
      */
-    private $quantité;
+    private $quantity;
 
 
 
@@ -143,9 +143,9 @@ class Product extends Entity
     /**
      * @return int
      */
-    public function getQuantité(): int
+    public function getQuantity(): int
     {
-        return $this->quantité;
+        return $this->quantity;
     }
 
     /**
@@ -153,9 +153,9 @@ class Product extends Entity
      * @param string $quantité
      * @return bool
      */
-    public function setQuantité(string $quantité) : bool
+    public function setQuantity(string $quantity) : bool
     {
-        $this->quantité = $quantité;
+        $this->quantité = $quantity;
         return true;
     }
 
