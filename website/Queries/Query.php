@@ -109,20 +109,53 @@ abstract class Query
      */
     public function saveEntity(\Entities\Entity $entity): bool
     {
-        // On vérifie si l'entité a une ID
+        /* On récupère la colonne ID en itérant sur toutes les colonnes,
+         * et pour celle qui a pour attribut "id" on la note comme étant la colonne ID
+         */
+        $id_column = null;
+        foreach ($this->manipulate_columns as $column) {
+            // On récupère les attributs de la colonne
+            $attributes = $this->table_columns[$column] ?? null;
 
-        try {
-            $entity->getID();
-        } catch (\TypeError $te) {
-            unset($this->manipulate_columns[0]);
-            $this->manipulate_columns = array_values($this->manipulate_columns);
-            return $this->insert($entity);
+            // Si l'attribut ID est présent, on quitte
+            $has_id_attribute = array_search("id", $attributes) !== false;
+            if ($has_id_attribute) {
+                $id_column = $column;
+                break; // @see https://secure.php.net/manual/en/control-structures.break.php
+            }
+        }
+        if (empty($id_column)) {
+            throw new \Exception("Query has no column indicated as acting as ID");
         }
 
-        // Récupère le compte
-        $count = $this
-            ->filterByEntity("id", "=", $entity)
-            ->count();
+        // Récupère l'ID si possible
+        $id = null;
+        try {
+            $id = $entity->getMultiple([$id_column]);
+        } catch (\Throwable $t) {
+        }
+
+        // Récupère le compte si on a pu récuperer l'ID, sinon 0
+        $count = 0;
+        if ($id !== null) {
+            $count = $this
+                ->filterByEntity($id_column, "=", $entity)
+                ->count();
+        }
+
+        /*
+        * On vérifie si la valeur pour cette couronne est générée par la BDD (gen-on-insert)
+        */
+        $id_column_value_generated_on_insert =
+            array_search("gen-on-insert", $this->table_columns[$id_column]) !== false;
+
+        /*
+         * Si l'ID est générée par la BDD ou si va faire un update, on ne push pas la valeur
+         */
+        if ($id_column_value_generated_on_insert || $count === 1) {
+            unset($this->manipulate_columns[array_search($id_column, $this->manipulate_columns)]);
+            $this->manipulate_columns = array_values($this->manipulate_columns); // Re-key
+        }
 
         // Selon si l'entité existe déjà, on peut soit faire un INSERT soit un UPDATE
         switch ($count) {
@@ -516,23 +549,24 @@ abstract class Query
 
         // Then with the columns to retrieve
         foreach ($this->manipulate_columns as $index => $column) {
-            $column_attribute = $this->table_columns[$column] ?? null;
-            switch ($column_attribute) {
-                case "hex":
-                    $lexemes[] = "HEX(";
-                    $lexemes[] = $column;
-                    $lexemes[] = ") as ";
-                    $lexemes[] = $column;
-                    break;
-                case "timestamp":
-                    $lexemes[] = "UNIX_TIMESTAMP(";
-                    $lexemes[] = $column;
-                    $lexemes[] = ") as ";
-                    $lexemes[] = $column;
-                    break;
-                default:
-                    $lexemes[] = $column;
+            $column_attributes = $this->table_columns[$column] ?? [];
+
+            // Check for special attributes
+            if (array_search("hex", $column_attributes) !== false) {
+                $lexemes[] = "HEX(";
+                $lexemes[] = $column;
+                $lexemes[] = ") as ";
+                $lexemes[] = $column;
+            } else if (array_search("timestamp", $column_attributes) !== false) {
+                $lexemes[] = "UNIX_TIMESTAMP(";
+                $lexemes[] = $column;
+                $lexemes[] = ") as ";
+                $lexemes[] = $column;
+            } else {
+                $lexemes[] = $column;
             }
+
+            // If we're not finished, insert a comma
             if ($index !== count($this->manipulate_columns)-1){
                 $lexemes[] = ",";
             }
@@ -618,22 +652,21 @@ abstract class Query
                 $this->data[$key] = $value;
 
                 // Write the key as lexeme
-                $column_attribute = $this->table_columns[$column_name];
+                $column_attributes = $this->table_columns[$column_name] ?? [];
 
                 $to_be_inserted = ":" . $key;
-                switch ($column_attribute) {
-                    case "hex":
-                        $lexemes[] = "UNHEX(";
-                        $lexemes[] = $to_be_inserted;
-                        $lexemes[] = ")";
-                        break;
-                    case "timestamp":
-                        $lexemes[] = "FROM_UNIXTIME(";
-                        $lexemes[] = $to_be_inserted;
-                        $lexemes[] = ")";
-                        break;
-                    default:
-                        $lexemes[] = $to_be_inserted;
+
+                // Check for special attributes
+                if (array_search("hex", $column_attributes) !== false) {
+                    $lexemes[] = "UNHEX(";
+                    $lexemes[] = $to_be_inserted;
+                    $lexemes[] = ")";
+                } else if (array_search("timestamp", $column_attributes) !== false) {
+                    $lexemes[] = "FROM_UNIXTIME(";
+                    $lexemes[] = $to_be_inserted;
+                    $lexemes[] = ")";
+                } else {
+                    $lexemes[] = $to_be_inserted;
                 }
 
                 // If we're not at the end, add a coma
@@ -673,21 +706,23 @@ abstract class Query
         foreach ($this->manipulate_columns as $index => $column) {
             $lexemes[] = $column;
             $lexemes[] = "=";
-            $column_attribute = $this->table_columns[$column];
-            switch ($column_attribute) {
-                case "hex":
-                    $lexemes[] = "UNHEX(";
-                    $lexemes[] = ":" . $column;
-                    $lexemes[] = ")";
-                    break;
-                case "timestamp":
-                    $lexemes[] = "FROM_UNIXTIME(";
-                    $lexemes[] = ":" . $column;
-                    $lexemes[] = ")";
-                    break;
-                default:
-                    $lexemes[] = ":" . $column;
+            $column_attributes = $this->table_columns[$column];
+
+            $to_be_inserted = ":" . $column;
+            // Check for special attributes
+            if (array_search("hex", $column_attributes) !== false) {
+                $lexemes[] = "UNHEX(";
+                $lexemes[] = $to_be_inserted;
+                $lexemes[] = ")";
+            } else if (array_search("timestamp", $column_attributes) !== false) {
+                $lexemes[] = "FROM_UNIXTIME(";
+                $lexemes[] = $to_be_inserted;
+                $lexemes[] = ")";
+            } else {
+                $lexemes[] = $to_be_inserted;
             }
+
+            // If not the last,
             if ($index !== count($this->manipulate_columns)-1){
                 $lexemes[] = ",";
             }

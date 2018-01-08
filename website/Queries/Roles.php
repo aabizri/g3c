@@ -17,11 +17,11 @@ class Roles extends Query
 {
     /* COMMON CONSTANTS */
     private const table = "roles";
-    private const columns = ["id" => "",
-                             "user_id" => "",
-                             "property_id" => "",
-                             "creation_date" => "",
-                             "last_updated" => ""];
+    private const columns = ["id" => ["id", "gen-on-insert"],
+                             "user_id" => [],
+                             "property_id" => [],
+                             "creation_date" => ["timestamp"],
+                             "last_updated" => ["timestamp"]];
     private const entity_class_name = "\Entities\Role";
 
     /**
