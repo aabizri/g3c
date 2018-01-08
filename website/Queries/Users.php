@@ -69,6 +69,11 @@ class Users extends Query
      */
     public function save(\Entities\User $user): bool
     {
+        $columns = array_keys(self::columns);
+        unset($columns[array_search("id", $columns)]);
+        unset($columns[array_search("creation_date", $columns)]);
+        unset($columns[array_search("last_updated", $columns)]);
+        $this->onColumns(...$columns);
         return parent::saveEntity($user);
     }
 }

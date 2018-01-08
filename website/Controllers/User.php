@@ -86,7 +86,7 @@ class User
 
         // Insert it
         try {
-            (new \Queries\Users)->insert($u);
+            (new \Queries\Users)->save($u);
         } catch (\Exception $e) {
             echo "Error inserting user: " . $e;
         }
