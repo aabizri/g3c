@@ -43,7 +43,7 @@ class Peripherals
         }
 
         // Récupére l'entité périphérique ayant cet uuid
-        $peripheral = Repositories\Peripherals::retrieve($uuid);
+        $peripheral = (new \Queries\Peripherals) -> filterByUUID("=", $uuid) -> findOne();
         if ($peripheral == null) {
             return;
         }
@@ -70,7 +70,7 @@ class Peripherals
 
         // Mettre à jour la BDD
         try {
-            Repositories\Peripherals::push($peripheral);
+            (new \Queries\Peripherals) -> save($peripheral);
         } catch (\Throwable $t) {
             return;
         }
@@ -94,28 +94,12 @@ class Peripherals
             return;
         }
 
-        // Récupère les id des capteurs sous forme de array
-        $peripheriques_id_list = \Repositories\Peripherals::findAllByPropertyID($property_id);
+        // Récupère les entités des périphériques sous forme de array
+        $peripherals_list = (new \Queries\Peripherals) -> filterByPropertyID("=", $property_id) -> find();
 
-        // Récupérer les données des périphériques pour chaque périphérique
-        $peripherals_list = [];
-        foreach ($peripheriques_id_list as $peripherals_ID) {
-            // Récupérer les infos
-            $peripheral = \Repositories\Peripherals::retrieve($peripherals_ID);
-
-            // Ajouter les infos à la liste
-            $peripherals_list[] = $peripheral;
-        }
 
         //Trouver toutes les rooms id de la propriété
-        $property_id_room = \Repositories\Rooms::findAllByPropertyID($property_id);
-
-        //Retrieve les rooms
-        $property_room=[];
-        foreach ($property_id_room as $room_Id){
-            $room_entity = \Repositories\Rooms::retrieve($room_Id);
-            $property_room[] = $room_entity;
-        }
+        $property_room = (new \Queries\Rooms()) -> filterByPropertyID("=", $property_id) -> find();
 
         // Peupler la vue
         $data["peripherals_list"] = $peripherals_list;
@@ -141,7 +125,7 @@ class Peripherals
         $uuid = $req->getPOST("peripheral_id");
 
         // Récupérer le périphérique
-        $peripheral = \Repositories\Peripherals::retrieve($uuid);
+        $peripheral = (new \Queries\Peripherals) ->filterByUUID("=", $uuid) ->findOne();
 
         // Vérifier que le périphérique est associé à la propriété
         if ($peripheral->getPropertyID() !== $property_id) {
@@ -157,7 +141,7 @@ class Peripherals
         $peripheral->setRoomID(null);
 
         // Push
-        \Repositories\Peripherals::push($peripheral);
+        (new \Queries\Peripherals) -> save($peripheral);
 
         //Affichage de la page peripherique mise a jour
         \Helpers\DisplayManager::redirectToController("Peripherals", "List");

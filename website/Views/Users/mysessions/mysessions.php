@@ -18,7 +18,7 @@
             function formatRow(\Entities\Session $session, \Entities\Request $last_request): string
             {
                 $session_creation = date(\DATE_RFC1123, $session->getStarted());
-                $last_usage = date(\DATE_RFC1123, $last_request->getStarted());
+                $last_usage = date(\DATE_RFC1123, $last_request->getStartedProcessing());
                 $last_ip = $last_request->getIP();
                 $last_user_agent = htmlspecialchars($last_request->getUserAgentTxt());
 

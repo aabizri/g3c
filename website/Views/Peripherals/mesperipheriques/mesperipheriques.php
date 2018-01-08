@@ -55,12 +55,12 @@
                                 }
 
 
-                                echo '<tr><form action="index.php?c=Peripherals&a=Remove" method="post" >
+                                echo '<tr><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" >
                                         <td>'. $peripheral_name .'</td> 
                                         <td>'. $room_name .'</td>
                                         <td>'. $date .'</td>
                                         <td><input type="hidden" name="peripheral_id" value="'. $p->getUUID() .'"/>'. $p->getUUID() .'</td>
-                                        <td><form action="index.php?c=Peripherals&a=Remove" method="post" ><input type="submit" value="Supprimer"/></form></td>
+                                        <td><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" ><input type="submit" value="Supprimer"/></form></td>
                                       </tr>';}
 
                             }
