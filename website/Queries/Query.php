@@ -111,8 +111,13 @@ abstract class Query
     {
         // On vérifie si l'entité a une ID
 
+        $id_column = "id";
+        if (method_exists($entity,"getUUID")) {
+            $id_column = "uuid";
+        }
+        $method_name = "get" . strtoupper($id_column);
         try {
-            $entity->getID();
+            $entity->$method_name();
         } catch (\TypeError $te) {
             unset($this->manipulate_columns[0]);
             $this->manipulate_columns = array_values($this->manipulate_columns);
@@ -120,8 +125,8 @@ abstract class Query
         }
 
         // Récupère le compte
-        $count = $this
-            ->filterByEntity("id", "=", $entity)
+        $count = (clone $this)
+            ->filterByEntity($id_column, "=", $entity)
             ->count();
 
         // Selon si l'entité existe déjà, on peut soit faire un INSERT soit un UPDATE
