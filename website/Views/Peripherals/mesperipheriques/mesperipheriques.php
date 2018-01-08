@@ -21,17 +21,15 @@
                 <div id="tableperipheriques">
                     <table align="center">
                         <thead><tr>
-                            <th>Nom du périphérique</th>
+                            <th>Type périphérique</th>
                             <th>Localisation</th>
-                            <th>Dernière activité</th>
+                            <th>Etat</th>
                         </tr></thead>
-                        <tbody>
-                            <tr>
-                                <td>Thermomètre</td>
-                                <td>Chambre 1</td>
-                                <td>En marche</td>
-                            </tr>
-                        </tbody>
+                        <tbody><tr>
+                            <td>Thermomètre</td>
+                            <td>Chambre 1</td>
+                            <td>En marche</td>
+                        </tr></tbody>
                     </table>
                 </div>
             </div>
@@ -40,9 +38,27 @@
                 <h3>Ajouter un périphérique</h3>
                 <div id="champsajouterperipherique">
                     <form name="Ajouter un peripherique" action="php ajouter pièce">
-                        <label>UUID du périphérique : </label><input type="text" /><br><br>
-                        <label>Nom du périphérique : </label><input type="text" /><br><br>
-                        <label>Nom de la salle : </label><input type="text" /><br><br> 
+                        <label>Nom du périphérique : </label><input type="text" />
+                        <form method="post" action="php pour ajouter à la salle" id="choixsalle">
+                            <p> Dans quelle salle ?
+                            <select name="Choix de la salle">
+                                <option value="" >Salon</option>
+                                <option value="">Salle de bain</option>
+                                <option value="">Cuisine</option>
+                                <option value="">Chambre 1</option>
+                                <option value="">Chambre 2</option>
+                            </select>
+                            </p>
+                        </form>
+                        <label>Type de périphérique : </label><br><br>
+                        <input type="checkbox" value="capteurtempérature" name=""> Température
+                        <input type="checkbox" value="capteurpresence" name=""> Présence
+                        <input type="checkbox" value="capteurpression" name=""> Pression
+                        <input type="checkbox" value="capteurluminosite" name=""> Luminosité
+                        <input type="checkbox" value="capteurqualiteair" name=""> Qualité de l'air
+                        <input type="checkbox" value="capteurhumidite" name=""> Humidité
+                        <br>
+                        <br>
                         <input type="submit" value="Ajouter un périphérique" id="ajouterperipheriquebouton" >
                     </form>
                 </div>

@@ -1,74 +1,47 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: arnoldrandy
- * Date: 18/12/2017
- * Time: 11:26
- */
 
 namespace Controllers;
 
 use Repositories;
 use Entities;
 
+/**
+ * Class Property
+ * @package Controllers
+ */
 class Property
 {
-
-
-    public static function getSelectProperty(\Entities\Request $req): void {
-        $user_id = $req->getUserID();
-        if ($user_id === null) {
-            http_response_code(403);
-            echo "Non connecté";
-        }
-        $roles_ids = \Repositories\Roles::findAllByUserID($user_id);
-
-    }
-
-    public static function postNew(\Entities\Request $req): void
+    /**
+     * Create a property
+     * @param Entities\Request $req
+     */
+    public function postCreate(\Entities\Request $req): void
     {
-
         // Check if the data exists
-        $address = $req->getPost("addresss");
-        $name = $req->getPost("name");
-
-
-        if ($address !== null OR $name !== null) {
-            echo "erreur";
+        $required = ["name", "address"];
+        foreach ($required as $key) {
+            if (empty($req->getPOST($key))){
+                echo "Missing key: ".$key;
+                return;
+            }
         }
 
-        $p = new Entities\Property();
-        $p->setAddress($address);
-        $p->setName($name);
+        // Assign values
+        $name = $req->getPOST("name");
+        $address = $req->getPOST("address");
 
+        // Create the entity
+        $p = new Entities\Property();
+        $p->setName($name);
+        $p->setAddress($address);
+
+        // Insert it
         try {
             Repositories\Properties::insert($p);
         } catch (\Exception $e) {
-            Error::getInternalError500($e);
+            echo "Error inserting property" . $e;
         }
-
-        return;
     }
-
 }
 
 
-    /* Assign Values
-    $name = $post["Name"];
-    $address = $post["address"];
-    $creation_date = $post["creation_date"];
-    $last_updated = $post["last_updated"];
-
-    $u = new Entities\Property();
-    $u->setName($name);
-    $u->setAddress($address);
-    $u->setCreationDate($creation_date);
-    $u->setLastUpdated($last_updated);
-
-    $addressDuplicate = Repositories\Property::findByAddress($nick) != null;
-    if ($addressDuplicate) {
-        echo "A property with this address already exists";
-        return;
-    }
-
-*/

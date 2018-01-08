@@ -75,7 +75,7 @@ body {
 button {
 	padding: 20px 140px;
 	margin: 0px;
-	background: #d9c4b19b;
+	background-color: rgb(217,196,177);
 	position: relative;
 	font-size: large;
 	float: left;
@@ -86,8 +86,8 @@ button {
 	position: relative;
 	left: 30px;
 	border: 1px solid #955252 ;
-	background-color: #d9c4b19b ;
-	padding-bottom: 20px;
+	background-color: rgb(217,196,177);
+	padding-bottom: 100px;
 	padding-top: 10px;
 	border-radius: 20px;
 	font-size: 20px;
@@ -108,7 +108,7 @@ button {
 }
 
 footer {
-	background-color: #d9c4b19b;
+	background-color: rgb(217,196,177);
 	font-family: Verdana, sans-serif;
 	color: #955252;
 	position : absolute;

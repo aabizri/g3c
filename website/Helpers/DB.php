@@ -11,21 +11,37 @@ use PDO;
  */
 class DB
 {
+    /* CONSTANTES DE CONNEXION A LA BDD */
+
     private const HOST = "localhost";
     private const DBNAME = "livewell";
     private const USERNAME = "root";
     private const PASSWORD = "";
 
+    // Paramètres de configuration
+    public static $pdo_params = array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY);
+
+    /* VARIABLE STOQUANT LA CONNEXION a LA BDD*/
     private static $instance = null;
 
+    /* CONSTRUCTEUR & DESCTRUCTEUR */
+    // Constructeur vide car on ne veut pas que cette classe soit instanciée
     private function __construct()
     {
     }
 
+    // Cloneur vide idem
     private function __clone()
     {
     }
 
+    /* METHODE */
+
+    /**
+     * Récupère l'instance de connexion à la BDD, l'instanciant si besoin
+     *
+     * @return PDO
+     */
     public static function getInstance(): PDO
     {
         if (!isset(self::$instance)) {

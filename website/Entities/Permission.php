@@ -9,37 +9,81 @@
 namespace Entities;
 
 
-class Permission
+/**
+ * Class Permission
+ * @package Entities
+ */
+class Permission extends Entity
 {
     /* PROPERTIES */
+
+    /**
+     * @var int
+     */
     private $id;
+
+    /**
+     * @var string
+     */
     private $name;
+
+    /**
+     * @var string
+     */
     private $description;
 
     /* GETTERS AND SETTERS */
-    public function getId(): int {
+
+    /**
+     * @return int
+     */
+    public function getID(): int
+    {
         return $this->id;
     }
 
-    public function setId(int $id): bool {
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function setID(int $id): bool
+    {
         $this->id = $id;
         return true;
     }
 
-    public function getName(): string {
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
         return $this->name;
     }
 
-    public function setName(string $name): bool {
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function setName(string $name): bool
+    {
         $this->name = $name;
         return true;
     }
 
-    public function getDescription(): string {
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
         return $this->description;
     }
 
-    public function setDescription(string $description): bool {
+    /**
+     * @param string $description
+     * @return bool
+     */
+    public function setDescription(string $description): bool
+    {
         $this->description = $description;
         return true;
     }

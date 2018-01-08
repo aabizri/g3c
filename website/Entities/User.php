@@ -4,31 +4,63 @@ namespace Entities;
 
 /**
  * User est la classe entité pour les utilisateurs
- *
- * @package livewell
- * @author Alexandre A. Bizri <alexandre@bizri.fr>
+ * @package Entities
  */
-class User
+class User extends Entity
 {
+    /* PROPERTIES */
 
-    private $id;
-    private $display;
-    private $nick;
-    private $birth_date;
-    private $creation_date;
-    private $email;
     /**
-     * Password hashed & salted with BCrypt
+     * @var int
+     */
+    private $id;
+
+    /**
      * @var string
      */
-    private $password_hashed;
+    private $display;
+
+    /**
+     * @var string
+     */
+    private $nick;
+
+    /**
+     * @var string (YYYY-MM-DD)
+     */
+    private $birth_date;
+
+    /**
+     * @var float
+     */
+    private $creation_date;
+
+    /**
+     * @var string
+     */
+    private $email;
+
+    /**
+     * @var string
+     */
+    private $password_hashed; // Password hashed & salted with BCrypt
+
+    /**
+     * @var string
+     */
     private $phone;
+
+    /**
+     * @var float
+     */
     private $last_updated;
+
+    /* GETTERS AND SETTERS */
 
     /**
      * @return int
      */
-    public function getId(): int
+    public function getID(): int
     {
         return $this->id;
     }
@@ -37,7 +69,7 @@ class User
      * @param string $id
      * @return bool
      */
-    public function setId(string $id): bool
+    public function setID(string $id): bool
     {
         $this->id = $id;
         return true;
@@ -111,25 +143,6 @@ class User
     /**
      * @return string
      */
-    public function getCreationDate(): string
-    {
-        return $this->creation_date;
-    }
-
-    /**
-     * @param string $creation_date
-     *
-     * @return bool false if invalid
-     */
-    public function setCreationDate(string $creation_date): bool
-    {
-        $this->creation_date = $creation_date;
-        return true;
-    }
-
-    /**
-     * @return string
-     */
     public function getEmail(): string
     {
         return $this->email;
@@ -150,7 +163,6 @@ class User
 
         // Verifier que le courriel est correct
         if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-            echo "invalid email";
             return false; // Email invalid
         }
 
@@ -159,22 +171,9 @@ class User
     }
 
     /**
-     * Set the password, hashing & salting it via BCRYPT
-     *
-     * @param string $clear is the password
-     *
-     * @return bool false if invalid
-     */
-    public function setPassword(string $clear): bool
-    {
-        // Calculer le hash associé au mot de passe via BCRYPT, le salt étant généré automatiquement
-        return $this->setPasswordHashed(password_hash($clear, PASSWORD_BCRYPT));
-    }
-
-    /**
      * @return string
      */
-    public function getPasswordHashed(): string
+    public function getPassword(): string
     {
         return $this->password_hashed;
     }
@@ -183,7 +182,7 @@ class User
      * @param string $hashed
      * @return bool
      */
-    public function setPasswordHashed(string $hashed): bool
+    public function setPassword(string $hashed): bool
     {
         $this->password_hashed = $hashed;
         return true;
@@ -209,21 +208,55 @@ class User
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getLastUpdated(): string
+    public function getCreationDate(): float
+    {
+        return $this->creation_date;
+    }
+
+    /**
+     * @param float $creation_date
+     *
+     * @return bool false if invalid
+     */
+    public function setCreationDate(float $creation_date): bool
+    {
+        $this->creation_date = $creation_date;
+        return true;
+    }
+
+    /**
+     * @return float
+     */
+    public function getLastUpdated(): float
     {
         return $this->last_updated;
     }
 
     /**
-     * @param string $last_updated
+     * @param float $last_updated
      * @return bool
      */
-    public function setLastUpdated(string $last_updated): bool
+    public function setLastUpdated(float $last_updated): bool
     {
         $this->last_updated = $last_updated;
         return true;
+    }
+
+    /* BUSINESS LOGIC */
+
+    /**
+     * Set the password, hashing & salting it via BCRYPT
+     *
+     * @param string $clear is the password
+     *
+     * @return bool false if invalid
+     */
+    public function setPasswordClear(string $clear): bool
+    {
+        // Calculer le hash associé au mot de passe via BCRYPT, le salt étant généré automatiquement
+        return $this->setPassword(password_hash($clear, PASSWORD_BCRYPT));
     }
 
     /**
@@ -233,39 +266,10 @@ class User
      *
      * @return bool
      */
-    public function validatePassword(string $clear): bool
+    public function verifyPassword(string $clear): bool
     {
         // Validate the password
         $ok = password_verify($clear, $this->password_hashed);
         return $ok;
-    }
-
-    /* BUSINESS LOGIC */
-
-    /**
-     * Validate that this is correct
-     *
-     * @return bool true if correct, false if incorrect
-     */
-    public function validate(): bool
-    {
-        // Verifier que $birth_date est inférieur à la date actuelle
-        if (strtotime($this->birth_date) > time()) {
-            return false; // Birth Date invalid
-        }
-
-        // Verifier que le courriel est correct
-        if (!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
-            return false; // Email invalid
-        }
-
-        return is_int($this->id) &&
-            is_string($this->display) &&
-            is_string($this->nick) &&
-            is_string($this->birth_date) &&
-            is_string($this->creation_date) &&
-            is_string($this->email) &&
-            is_string($this->phone) &&
-            is_string($this->last_updated);
     }
 }

@@ -9,14 +9,26 @@
  * Charge une classe en utilisant son Namespace comme structure de dossier
  *
  * @param string $classname
- * @throws Exception
+ * @throws \Exception
  */
 function __autoload(string $classname)
 {
-    $path = str_replace('\\', DIRECTORY_SEPARATOR, $classname) . '.php';
-    $path = __DIR__.'/../'.$path;
+    $path = classToPath($classname);
     if (!file_exists($path)) {
-        throw new Exception("File does not exist : $path");
+        throw new \Exception("File does not exist : $path");
     }
     require_once($path);
+}
+
+function classFileExists(string $classname): bool
+{
+    $path = classToPath($classname);
+    return file_exists($path);
+}
+
+function classToPath(string $classname): string
+{
+    $path = str_replace('\\', DIRECTORY_SEPARATOR, $classname) . '.php';
+    $path = str_replace('/', DIRECTORY_SEPARATOR, __DIR__ . '/../' . $path);
+    return $path;
 }

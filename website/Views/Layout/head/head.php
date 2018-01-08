@@ -6,12 +6,12 @@
         if (!empty($meta) && is_array($meta)) {
             // Title tag
             if (array_key_exists("page_title", $meta)){
-                echo "<title>" . $meta["page_title"] . "</title>\n";
+                echo "<title>" . $meta["page_title"] . "</title>";
             }
 
             // Base tag
             if (array_key_exists("base", $meta)){
-                echo '<base> href="'. $meta["base"] . '</base>\n';
+                echo '<base href="'. $meta["base"] . '"/>';
             }
 
             // Other meta tags
@@ -47,4 +47,5 @@
             include_linked($js,  "<script src='");
         }
     ?>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
 </head>
