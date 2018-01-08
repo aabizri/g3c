@@ -20,6 +20,9 @@ abstract class Query
     // Entity class name
     private $entity_class_name;
 
+    // Entity ID column name
+    private $entity_id_column_name;
+
     // Operation to be executed (SELECT, INSERT INTO, UPDATE, DELETE)
     private $operation;
 
@@ -66,6 +69,9 @@ abstract class Query
         // Note the columns
         $this->table_columns = $table_columns;
 
+        // Set the ID column
+        $this->entity_id_column_name = self::extractIDColumn($table_columns);
+
         // By default, we manipulate all columns
         $this->manipulate_columns = array_keys($table_columns);
 
@@ -79,6 +85,27 @@ abstract class Query
         $this->where = new \Queries\Clauses\Where("OR");
     }
 
+    /**
+     * @param array $table_columns
+     * @return string
+     * @throws \Exception
+     */
+    private static function extractIDColumn(array $table_columns): string
+    {
+        $id_column = "";
+        foreach ($table_columns as $column_name => $attributes) {
+            // Si l'attribut ID est présent, on quitte
+            $has_id_attribute = array_search("id", $attributes) !== false;
+            if ($has_id_attribute) {
+                $id_column = $column_name;
+                break; // @see https://secure.php.net/manual/en/control-structures.break.php
+            }
+        }
+        if (empty($id_column)) {
+            throw new \Exception("Query has no column indicated as acting as ID");
+        }
+        return $id_column;
+    }
 
     /* PUBLIC METHODS */
 
@@ -109,20 +136,30 @@ abstract class Query
      */
     public function saveEntity(\Entities\Entity $entity): bool
     {
-        // On vérifie si l'entité a une ID
-
+        // Récupère l'ID si possible
+        $id = null;
         try {
-            $entity->getID();
-        } catch (\TypeError $te) {
-            unset($this->manipulate_columns[0]);
-            $this->manipulate_columns = array_values($this->manipulate_columns);
-            return $this->insert($entity);
+            $id = $entity->getMultiple([$this->entity_id_column_name]);
+        } catch (\Throwable $t) {
         }
 
-        // Récupère le compte
-        $count = $this
-            ->filterByEntity("id", "=", $entity)
-            ->count();
+        // Récupère le compte si on a pu récuperer l'ID, sinon 0
+        $count = 0;
+        if ($id !== null) {
+            $count = $this
+                ->filterByEntity($this->entity_id_column_name, "=", $entity)
+                ->count();
+        }
+
+        // On vérifie si la valeur pour cette couronne est générée par la BDD (gen-on-insert)
+        $id_column_value_generated_on_insert =
+            array_search("gen-on-insert", $this->table_columns[$this->entity_id_column_name]) !== false;
+
+        // Si l'ID est générée par la BDD ou si va faire un update, on ne push pas la valeur
+        if ($id_column_value_generated_on_insert || $count === 1) {
+            unset($this->manipulate_columns[array_search($this->entity_id_column_name, $this->manipulate_columns)]);
+            $this->manipulate_columns = array_values($this->manipulate_columns); // Re-key
+        }
 
         // Selon si l'entité existe déjà, on peut soit faire un INSERT soit un UPDATE
         switch ($count) {
@@ -343,11 +380,12 @@ abstract class Query
     /* ON UPDATE */
 
     /**
-     * @param object $entity
+     * @param \Entities\Entity $entity
      * @return bool
      * @throws \Exception
      */
-    public function update($entity): bool {
+    public function update(\Entities\Entity $entity): bool
+    {
         // Operation is an UPDATE
         $this->operation = "UPDATE";
 
@@ -380,7 +418,8 @@ abstract class Query
      * @return bool
      * @throws \Exception
      */
-    private function insertSingle($entity): bool {
+    private function insertSingle(\Entities\Entity $entity): bool
+    {
         // Set the operation to insert
         $this->operation = "INSERT INTO";
 
@@ -399,10 +438,10 @@ abstract class Query
             return false;
         }
 
-        // Get the insert ID
-        if (method_exists($entity,"setID")) {
-            $insert_id = (int)$this->db->lastInsertId();
-            $entity->setID($insert_id);
+        // On récupère la colonne ID en itérant sur toutes les colonnes, et si elle est gen-on-insert on récupère l'ID
+        if (array_search("gen-on-insert", $this->table_columns[$this->entity_id_column_name]) !== false) {
+            $insert_id = (int)$this->db->lastInsertId(); // INT as currently all our IDs are ints
+            $entity->setMultiple([$this->entity_id_column_name => $insert_id]);
         }
 
         // Return
@@ -410,7 +449,7 @@ abstract class Query
     }
 
     /**
-     * @param array $entities
+     * @param \Entities\Entity[] $entities
      * @return bool
      * @throws \Exception
      */
@@ -453,11 +492,12 @@ abstract class Query
 
         // Get their insert ID
         // No race condition because of LOCK/UNLOCK tables (right ??)
-        if (method_exists($entities[0],"setID")) {
+        // On récupère la colonne ID en itérant sur toutes les colonnes, et si elle est gen-on-insert on récupère l'ID
+        if (array_search("gen-on-insert", $this->table_columns[$this->entity_id_column_name]) !== false) {
             $last_insert_id = (int)$this->db->lastInsertId();
             for ($i = 0; $i < $row_count; $i++) {
                 $id = $last_insert_id + $row_count;
-                $entities[$i]->setID($id);
+                $entities[$i]->setMultiple([$this->entity_id_column_name => $id]);
             }
         }
 
@@ -466,11 +506,12 @@ abstract class Query
     }
 
     /**
-     * @param array ...$entities
+     * @param \Entities\Entity[] ...$entities
      * @return bool
      * @throws \Exception
      */
-    public function insert(...$entities): bool {
+    public function insert(\Entities\Entity ...$entities): bool
+    {
         switch (count($entities)) {
             case 0:
                 return false;
@@ -516,23 +557,24 @@ abstract class Query
 
         // Then with the columns to retrieve
         foreach ($this->manipulate_columns as $index => $column) {
-            $column_attribute = $this->table_columns[$column] ?? null;
-            switch ($column_attribute) {
-                case "hex":
-                    $lexemes[] = "HEX(";
-                    $lexemes[] = $column;
-                    $lexemes[] = ") as ";
-                    $lexemes[] = $column;
-                    break;
-                case "timestamp":
-                    $lexemes[] = "UNIX_TIMESTAMP(";
-                    $lexemes[] = $column;
-                    $lexemes[] = ") as ";
-                    $lexemes[] = $column;
-                    break;
-                default:
-                    $lexemes[] = $column;
+            $column_attributes = $this->table_columns[$column] ?? [];
+
+            // Check for special attributes
+            if (array_search("hex", $column_attributes) !== false) {
+                $lexemes[] = "HEX(";
+                $lexemes[] = $column;
+                $lexemes[] = ") as ";
+                $lexemes[] = $column;
+            } else if (array_search("timestamp", $column_attributes) !== false) {
+                $lexemes[] = "UNIX_TIMESTAMP(";
+                $lexemes[] = $column;
+                $lexemes[] = ") as ";
+                $lexemes[] = $column;
+            } else {
+                $lexemes[] = $column;
             }
+
+            // If we're not finished, insert a comma
             if ($index !== count($this->manipulate_columns)-1){
                 $lexemes[] = ",";
             }
@@ -618,22 +660,21 @@ abstract class Query
                 $this->data[$key] = $value;
 
                 // Write the key as lexeme
-                $column_attribute = $this->table_columns[$column_name];
+                $column_attributes = $this->table_columns[$column_name] ?? [];
 
                 $to_be_inserted = ":" . $key;
-                switch ($column_attribute) {
-                    case "hex":
-                        $lexemes[] = "UNHEX(";
-                        $lexemes[] = $to_be_inserted;
-                        $lexemes[] = ")";
-                        break;
-                    case "timestamp":
-                        $lexemes[] = "FROM_UNIXTIME(";
-                        $lexemes[] = $to_be_inserted;
-                        $lexemes[] = ")";
-                        break;
-                    default:
-                        $lexemes[] = $to_be_inserted;
+
+                // Check for special attributes
+                if (array_search("hex", $column_attributes) !== false) {
+                    $lexemes[] = "UNHEX(";
+                    $lexemes[] = $to_be_inserted;
+                    $lexemes[] = ")";
+                } else if (array_search("timestamp", $column_attributes) !== false) {
+                    $lexemes[] = "FROM_UNIXTIME(";
+                    $lexemes[] = $to_be_inserted;
+                    $lexemes[] = ")";
+                } else {
+                    $lexemes[] = $to_be_inserted;
                 }
 
                 // If we're not at the end, add a coma
@@ -673,21 +714,23 @@ abstract class Query
         foreach ($this->manipulate_columns as $index => $column) {
             $lexemes[] = $column;
             $lexemes[] = "=";
-            $column_attribute = $this->table_columns[$column];
-            switch ($column_attribute) {
-                case "hex":
-                    $lexemes[] = "UNHEX(";
-                    $lexemes[] = ":" . $column;
-                    $lexemes[] = ")";
-                    break;
-                case "timestamp":
-                    $lexemes[] = "FROM_UNIXTIME(";
-                    $lexemes[] = ":" . $column;
-                    $lexemes[] = ")";
-                    break;
-                default:
-                    $lexemes[] = ":" . $column;
+            $column_attributes = $this->table_columns[$column];
+
+            $to_be_inserted = ":" . $column;
+            // Check for special attributes
+            if (array_search("hex", $column_attributes) !== false) {
+                $lexemes[] = "UNHEX(";
+                $lexemes[] = $to_be_inserted;
+                $lexemes[] = ")";
+            } else if (array_search("timestamp", $column_attributes) !== false) {
+                $lexemes[] = "FROM_UNIXTIME(";
+                $lexemes[] = $to_be_inserted;
+                $lexemes[] = ")";
+            } else {
+                $lexemes[] = $to_be_inserted;
             }
+
+            // If not the last,
             if ($index !== count($this->manipulate_columns)-1){
                 $lexemes[] = ",";
             }

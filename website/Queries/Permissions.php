@@ -17,11 +17,11 @@ class Permissions extends Query
 {
     /* COMMON CONSTANTS */
     private const table = "permissions";
-    private const columns = ["id" => "",
-                             "name" => "",
-                             "description" => "",
-                             "creation_date" => "timestamp",
-                             "last_updated" => "timestamp"];
+    private const columns = ["id" => ["id", "gen-on-insert"],
+                             "name" => [],
+                             "description" => [],
+                             "creation_date" => ["timestamp"],
+                             "last_updated" => ["timestamp"]];
     private const entity_class_name = "\Entities\Permission";
 
     /**
