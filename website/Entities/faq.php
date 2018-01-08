@@ -2,9 +2,9 @@
 
 namespace Entities;
 
-class faq extends Entity {
+class QuestionAnswer extends Entity {
 
-    private $question_id; //int
+    private $id; //int
     private $question; //varchar
     private $answer; //text
     private $creation_date;
@@ -12,18 +12,18 @@ class faq extends Entity {
 
     // getters & setters
 
-    public function getQuestionID(): int
+    public function getID(): int
     {
-        return $this->question_id;
+        return $this->id;
     }
 
     /**
      * @param int $id
      * @return bool
      */
-    public function setQuestionID(int $question_id): bool
+    public function setID(int $id): bool
     {
-        $this->question_id = $question_id;
+        $this->id = $id;
         return true;
     }
 
