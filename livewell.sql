@@ -90,6 +90,29 @@ CREATE TABLE `measures` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `measure_types`
+--
+
+CREATE TABLE `measure_types` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Température °C"',
+  `description` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Température en Celsius"',
+  `unit_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Celsius"',
+  `unit_symbol` varchar(6) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "°C"',
+  `min` double DEFAULT NULL COMMENT 'Valeur minimale (opt)',
+  `max` double DEFAULT NULL COMMENT 'Valeur maximale (opt)'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Déchargement des données de la table `measure_types`
+--
+
+INSERT INTO `measure_types` (`id`, `name`, `description`, `unit_name`, `unit_symbol`, `min`, `max`) VALUES
+(1, 'Température (*C)', 'Température en degrés Celsius', 'Celsius', '°C', -274, NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `notifications`
 --
 
@@ -350,23 +373,21 @@ CREATE TABLE `products` (
   `id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `description` text,
-  `category` enum('peripheral','accessory') DEFAULT NULL,
-  `prix` int(11) DEFAULT NULL,
-  `quantité` int(11) DEFAULT NULL
+  `category` enum('peripheral','accessory') DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `description`, `category`, `prix`, `quantité`) VALUES
-  (1, 'HomeMaster CeMac', NULL, 'peripheral', NULL, NULL),
-  (2, 'HomeMaster Thermomètre', NULL, 'peripheral', NULL, NULL),
-  (3, 'HomeMaster Luxmètre', NULL, 'peripheral', NULL, NULL),
-  (4, 'HomeMaster Watcher\r\n', NULL, 'peripheral', NULL, NULL),
-  (5, 'HomeMaster Pure Breath', NULL, 'peripheral', NULL, NULL),
-  (6, 'HomeMaster Fire Guard', NULL, 'peripheral', NULL, NULL),
-  (7, 'HomeMaster Loading Battery', NULL, 'accessory', NULL, NULL);
+INSERT INTO `products` (`id`, `name`, `description`, `category`) VALUES
+  (1, 'HomeMaster CeMac', NULL, 'peripheral'),
+  (2, 'HomeMaster Thermomètre', NULL, 'peripheral'),
+  (3, 'HomeMaster Luxmètre', NULL, 'peripheral'),
+  (4, 'HomeMaster Watcher\r\n', NULL, 'peripheral'),
+  (5, 'HomeMaster Pure Breath', NULL, 'peripheral'),
+  (6, 'HomeMaster Fire Guard', NULL, 'peripheral'),
+  (7, 'HomeMaster Loading Battery', NULL, 'accessory');
 
 -- --------------------------------------------------------
 
@@ -387,7 +408,7 @@ CREATE TABLE `properties` (
 --
 
 INSERT INTO `properties` (`id`, `name`, `address`, `creation_date`, `last_updated`) VALUES
-  (1, 'Chez Bizri', '54 Boulevard de Grenelle', '2017-11-20 14:20:18.000', '2017-11-20 15:17:55.000');
+(1, 'Chez Bizri', '54 Boulevard de Grenelle', '2017-11-20 14:20:18.000', '2017-11-20 15:17:55.000');
 
 -- --------------------------------------------------------
 
@@ -683,6 +704,12 @@ ALTER TABLE `measures`
   ADD KEY `type_id` (`type_id`);
 
 --
+-- Index pour la table `measure_types`
+--
+ALTER TABLE `measure_types`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Index pour la table `notifications`
 --
 ALTER TABLE `notifications`
@@ -805,6 +832,12 @@ ALTER TABLE `measures`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `measure_types`
+--
+ALTER TABLE `measure_types`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT pour la table `notifications`
 --
 ALTER TABLE `notifications`
@@ -899,7 +932,7 @@ ALTER TABLE `filters`
 ALTER TABLE `measures`
   ADD CONSTRAINT `measures_ibfk_2` FOREIGN KEY (`actuator_id`) REFERENCES `actuators` (`id`),
   ADD CONSTRAINT `measures_ibfk_3` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`),
-  ADD CONSTRAINT `measures_ibfk_4` FOREIGN KEY (`type_id`) REFERENCES `measure_types` (`id`);
+  ADD CONSTRAINT `measures_ibfk_4` FOREIGN KEY (`type_id`) REFERENCES `measure_types` (`ID`);
 
 --
 -- Contraintes pour la table `notifications`

@@ -78,6 +78,11 @@ class Peripheral extends Entity
 
     /* GETTERS AND SETTERS */
 
+    public function getID(): string
+    {
+        return $this->getUUID();
+    }
+
     /**
      * @return string
      */
@@ -208,7 +213,7 @@ class Peripheral extends Entity
             if ($this->property_id === null) {
                 return null;
             }
-            $this->room = \Repositories\Properties::retrieve($this->property_id);
+            $this->room = (new \Queries\Properties)->retrieve($this->property_id);
         }
         return $this->property;
     }
@@ -256,7 +261,7 @@ class Peripheral extends Entity
             if ($this->room_id === null) {
                 return null;
             }
-            $this->room = \Repositories\Rooms::retrieve($this->room_id);
+            $this->room = (new \Queries\Rooms)->retrieve($this->room_id);
         }
         return $this->room;
     }
@@ -326,71 +331,4 @@ class Peripheral extends Entity
         Repositories\Peripherals::attachToProperty($this, $propertyID);
     }
 
-    public function __toString(): string
-    {
-        return sprintf("Périphérique \"%s\"<br/>
-            UUID:\t\t%s<br/>
-            Display Name:\t\t%s<br/>
-            Build Date:\t\t%s<br/>
-            Add Date:\t\t%s<br/>
-            Public Key:\t\t%s<br/>
-            Property ID: \t\t%s<br/>
-            Room.php ID:\t\t%s<br/>
-            Last Updated:\t\t%s<br/>",
-            $this->getDisplayName(),
-            $this->getUUID(),
-            $this->getDisplayName(),
-            $this->getBuildDate(),
-            $this->getAddDate(),
-            $this->getPublicKey(),
-            $this->getPropertyID(),
-            $this->getRoomID(),
-            $this->getLastUpdated());
-    }
 }
-
-function testPeripheralModel()
-{
-    // Create a new entity
-    echo "<b>Création d'un nouveau Entities\Peripheral...</b>";
-    $p1 = new Peripheral();
-    echo "<b>Succès !</b>" . "<br/>";
-    echo $p1;
-    echo "<br/>";
-
-    // Insert it
-    echo "<b>Insertion de cet objet dans la BDD...</b>";
-    Repositories\Peripherals::insert($p1);
-    echo "<b>Succès !</b>" . "<br/>";
-    echo $p1;
-
-    // Change data
-    $p1->setDisplayName("Périphérique de Test");
-    $p1->setBuildDate("1997-04-09");
-
-    // Push
-    echo "<b>Push des dernières modifications...</b>";
-    Repositories\Peripherals::push($p1);
-    echo "<b>Succès !</b>" . "<br/>";
-
-    // Pull
-    echo "<b>Pull post-push...</b>";
-    Repositories\Peripherals::pull($p1);
-    echo "<b>Succès !</b>" . "<br/>";
-
-    // Attach to property
-    echo "<b>Attachement à la propriété...</b>";
-    $p1->attachToProperty(1);
-    echo "<b>Succès !</b>" . "<br/>";
-    echo $p1;
-    echo "<br/>";
-
-    // Attach to room
-    echo "<b>Attachement à la pièce...</b>";
-    $p1->attachToRoom(1);
-    echo "<b>Succès !</b>" . "<br/>";
-    echo $p1;
-    echo "<br/>";
-}
-
-testPeripheralModel();

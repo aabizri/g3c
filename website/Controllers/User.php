@@ -41,6 +41,7 @@ class User
                 $captcha = new \Helpers\ReCAPTCHA("", "6Le5Pz4UAAAAAK3tAgJ2sCG3SF8qz0zVeILYJiuo");
                 $ok = $captcha->verify($response);
                 if (!$ok) {
+                    http_response_code(400);
                     echo "Invalid captcha";
                     return;
                 }
@@ -57,6 +58,7 @@ class User
         $phone = $post["phone"];
 
         if (($email_conf != $email) || ($password_clear != $password_clear_conf)){
+            http_response_code(400);
             echo "La confirmation n'est pas valide !";
             return;
         }
@@ -65,19 +67,12 @@ class User
          * Check if an entity with the same nick exists
          * @var int $nickDuplicate
          */
-        $nickDuplicate = Repositories\Users::findByNick($nick) != null;
-        if ($nickDuplicate) {
-            echo "A user with this nick already exists";
-            return;
-        }
-
-        /**
-         * Check if an entity with the same email exists
-         * @var int $emailDuplicate
-         */
-        $emailDuplicate = Repositories\Users::findByEmail($email) != null;
-        if ($emailDuplicate) {
-            echo "A user with this email already exists";
+        $count = (new \Queries\Users)
+            ->filterByNick("=", $nick)
+            ->filterByEmail("=", $email)// OR
+            ->count();
+        if ($count !== 0) {
+            echo "A user with this nick and/or email already exists";
             return;
         }
 
@@ -85,21 +80,18 @@ class User
         $u = new Entities\User();
         $u->setNick($nick);
         $u->setEmail($email);
-        $u->setPassword($password_clear);
+        $u->setPasswordClear($password_clear);
         $u->setDisplay($display);
         $u->setPhone($phone);
 
         // Insert it
         try {
-            Repositories\Users::insert($u);
+            (new \Queries\Users)->save($u);
         } catch (\Exception $e) {
             echo "Error inserting user: " . $e;
         }
 
         // Include la page de confirmation
-        $data = [
-            "user" => $u,
-        ];
         \Helpers\DisplayManager::redirectToController("User", "ConnectionPage");
     }
 
@@ -114,40 +106,28 @@ class User
             return;
         }
 
-        // Récupère le post
-        $post = $req->getAllPOST();
-
-        // Check if the data exists
-        $required = ["login", "password"];
-        foreach ($required as $key) {
-            if (empty($post[$key])) {
-                echo "Missing key: " . $key;
-                return;
-            }
-        }
-
         // Récupérer les données
-        $login = $_POST['login'];
-        $password_clear = $_POST['password'];
-
-        /**
-         * Vérifier que le nick et/ou e-mail existe
-         * @var int $id
-         */
-        $id = Repositories\Users::findByNick($login); //trouve l'id lié au nickname
-        if ($id == -1) {
-            $id = Repositories\Users::findByEmail($login);
-        }
-        if ($id == 0) {
-            echo "Ce login n'existe pas";
+        $login = $req->getPOST('login');
+        $password_clear = $req->getPOST('password');
+        if (empty($login) || empty($password_clear)) {
+            http_response_code(400);
+            echo "Login et/ou mot de passe non spécifié";
             return;
         }
 
         /**
-         * Avec cet ID, on récupère l'entité User
-         * @var Entities\User $u
+         * Vérifier que le nick et/ou e-mail existe et récupérer l'entité liée
+         * @var int $id
          */
-        $u = Repositories\Users::retrieve($id);
+        $u = (new \Queries\Users)->filterByNick("=", $login)->findOne(); //trouve l'id lié au nickname
+        if ($u === null) {
+            $u = (new \Queries\Users)->filterByEmail("=", $login)->findOne();
+        }
+        if ($u === null) {
+            http_response_code(400);
+            echo "Ce login n'existe pas";
+            return;
+        }
 
         // Validate
         if ($u->verifyPassword($password_clear) == false) {
@@ -156,7 +136,7 @@ class User
         }
 
         // Ajouter à la session et à la requête
-        $_SESSION["user_id"] = $u->getId();
+        $_SESSION["user_id"] = $u->getID();
         $ok = $req->setUser($u);
         if (!$ok) {
             Error::getInternalError500($req);
@@ -188,22 +168,34 @@ class User
         DisplayManager::display("moncompte");
     }
 
+    /**
+     * @param Entities\Request $req
+     * @throws \Exception
+     */
     public static function getSessionList(\Entities\Request $req): void
     {
-        $user_id = $req->getUserID();
-        if ($user_id === null) {
+        $user = $req->getUser();
+        if ($user === null) {
             http_response_code(403);
             echo "Utilisateur non connecté, nous ne pouvons pas accéder à la page demandée";
             return;
         }
 
         // Retrieve sessions
-        $session_ids = \Repositories\Sessions::findAllValidByUserID($user_id);
-        $sessions = [];
-        $requests = [];
-        foreach ($session_ids as $session_id) {
-            $sessions[] = \Repositories\Sessions::retrieve($session_id);
-            $requests[$session_id] = \Repositories\Requests::Retrieve(\Repositories\Requests::findLastBySessionID($session_id));
+        $sessions = (new \Queries\Sessions)
+            ->filterByUser("=", $user)
+            ->filterByCanceled(false)
+            ->find();
+
+        // Retrieve requests
+        $requests_query = (new \Queries\Requests);
+        foreach ($sessions as $session) {
+            $requests_query->filterBySession("=", $session);
+        }
+        $requests = $requests_query->orderBy("started_processing", false)->find();
+        foreach ($requests as $index => $request) {
+            $requests[$request->getSessionID()] = $request;
+            unset($requests[$index]);
         }
 
         // Publish data
@@ -224,16 +216,16 @@ class User
         }
 
         // Retrieve post parameter for session ids
-        if (empty($req->getAllPOST()["session_id"])) {
+        $session_ids = $req->getPOST("session_id");
+        if (empty($session_ids)) {
             http_response_code(400);
             echo "Mauvaise requête: veuillez indiquer une session ID valide";
             return;
         }
-        $session_ids = $req->getPOST("session_id");
 
         foreach ($session_ids as $session_id) {
             // Retrieve session
-            $s = \Repositories\Sessions::retrieve($session_id);
+            $s = (new \Queries\Sessions)->retrieve($session_id);
 
             // Check for validity
             if ($s->getUserID() !== $req->getUserID()) {
@@ -245,8 +237,9 @@ class User
             $s->setCanceled(true);
 
             // Push it
-            \Repositories\Sessions::push($s);
+            (new \Queries\Sessions)->update($s);
         }
+
         // Return to session list
         self::getSessionList($req);
     }
