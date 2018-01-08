@@ -27,8 +27,8 @@ class Products extends Repository
     public static function insert(Entities\Product $p): void
     {
         // SQL
-        $sql = "INSERT INTO products (name, description, category)
-        VALUES (:name, :description, :category)";
+        $sql = "INSERT INTO products (name, description, category, prix, quantité)
+        VALUES (:name, :description, :category, :prix, :quantité)";
 
         // Prepare statement
         $stmt = parent::db()->prepare($sql, parent::$pdo_params);
@@ -38,6 +38,8 @@ class Products extends Repository
             "name",
             "description",
             "category",
+            "prix",
+            "quantité",
         ]);
 
         // Execute query
@@ -47,7 +49,7 @@ class Products extends Repository
         $id = parent::db()->lastInsertId();
         $ok = $p->setID($id);
         if (!$ok) {
-            throw new SetFailedException($p,"setID",$id);
+            throw new SetFailedException($p, "setID", $id);
         }
 
         // Pull
@@ -65,7 +67,7 @@ class Products extends Repository
     {
         // SQL
         $sql = "UPDATE products
-        SET name = :name, description = :description, category = :category
+        SET name = :name, description = :description, category = :category, prix = :prix, quantité = :quantité
         WHERE id = :id;";
 
         // Prepare statement
@@ -76,6 +78,8 @@ class Products extends Repository
             "name",
             "description",
             "category",
+            "prix",
+            "quantité",
         ]);
 
         // Execute query
@@ -119,7 +123,10 @@ class Products extends Repository
         $ok = $p->setMultiple([
             "name" => $data["name"],
             "description" => $data["description"],
-            "category" => (float)$data["category"],
+            "category" => $data["category"],
+            "prix" => (float) $data["prix"],
+            "quantité" => (int) $data["quantité"],
+
         ]);
         if ($ok === false) {
             throw new MultiSetFailedException($p, $data);
@@ -170,7 +177,7 @@ class Products extends Repository
         // Set the ID
         $ok = $p->setID($id);
         if (!$ok) {
-            throw new SetFailedException($p,"setID",$id);
+            throw new SetFailedException($p, "setID", $id);
         }
 
         // Call Pull on it
@@ -178,5 +185,10 @@ class Products extends Repository
 
         // Return the user_id
         return $p;
+    }
+
+    public static function retrieveAllProduct(): array
+    {
+
     }
 }

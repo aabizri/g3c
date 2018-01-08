@@ -33,6 +33,19 @@ class Product extends Entity
      */
     private $category = null;
 
+    /**
+     * @var int
+     */
+    private $prix;
+
+    /**
+     * @var int
+     */
+    private $quantité;
+
+
+
+
 
     /* GETTERS AND SETTERS */
 
@@ -106,6 +119,43 @@ class Product extends Entity
     public function setCategory(string $category) : bool
     {
         $this->category = $category;
+        return true;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPrix(): int
+    {
+        return $this->prix;
+    }
+
+    /**
+     * @param string $prix
+     * @return bool
+     */
+    public function setPrix(string $prix) : bool
+    {
+        $this->prix = $prix;
+        return true;
+    }
+
+    /**
+     * @return int
+     */
+    public function getQuantité(): int
+    {
+        return $this->quantité;
+    }
+
+    /**
+     * @param $quantité
+     * @param string $quantité
+     * @return bool
+     */
+    public function setQuantité(string $quantité) : bool
+    {
+        $this->quantité = $quantité;
         return true;
     }
 

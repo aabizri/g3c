@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le :  jeu. 04 jan. 2018 à 09:46
+-- Généré le :  jeu. 04 jan. 2018 à 19:23
 -- Version du serveur :  10.1.28-MariaDB
 -- Version de PHP :  7.1.11
 
@@ -350,21 +350,23 @@ CREATE TABLE `products` (
   `id` int(11) NOT NULL,
   `name` varchar(255) DEFAULT NULL,
   `description` text,
-  `category` enum('peripheral','accessory') DEFAULT NULL
+  `category` enum('peripheral','accessory') DEFAULT NULL,
+  `prix` int(11) DEFAULT NULL,
+  `quantité` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Déchargement des données de la table `products`
 --
 
-INSERT INTO `products` (`id`, `name`, `description`, `category`) VALUES
-  (1, 'HomeMaster CeMac', NULL, 'peripheral'),
-  (2, 'HomeMaster Thermomètre', NULL, 'peripheral'),
-  (3, 'HomeMaster Luxmètre', NULL, 'peripheral'),
-  (4, 'HomeMaster Watcher\r\n', NULL, 'peripheral'),
-  (5, 'HomeMaster Pure Breath', NULL, 'peripheral'),
-  (6, 'HomeMaster Fire Guard', NULL, 'peripheral'),
-  (7, 'HomeMaster Loading Battery', NULL, 'accessory');
+INSERT INTO `products` (`id`, `name`, `description`, `category`, `prix`, `quantité`) VALUES
+  (1, 'HomeMaster CeMac', NULL, 'peripheral', NULL, NULL),
+  (2, 'HomeMaster Thermomètre', NULL, 'peripheral', NULL, NULL),
+  (3, 'HomeMaster Luxmètre', NULL, 'peripheral', NULL, NULL),
+  (4, 'HomeMaster Watcher\r\n', NULL, 'peripheral', NULL, NULL),
+  (5, 'HomeMaster Pure Breath', NULL, 'peripheral', NULL, NULL),
+  (6, 'HomeMaster Fire Guard', NULL, 'peripheral', NULL, NULL),
+  (7, 'HomeMaster Loading Battery', NULL, 'accessory', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -452,7 +454,46 @@ INSERT INTO `requests` (`id`, `ip`, `user_agent_txt`, `user_agent_hash`, `sessio
   (492, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'AccountPage', 0, '2018-01-04 08:43:47.089', 5777, NULL, NULL, '', '/g3c/website/index.php?c=User&a=AccountPage', -1, 1295),
   (493, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'Peripheral', 'GET', 'PeripheralsPage', 0, '2018-01-04 08:43:48.497', 5392, NULL, NULL, '', '/g3c/website/index.php?c=Peripheral&a=PeripheralsPage', -1, 1343),
   (494, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'SessionList', 0, '2018-01-04 08:44:06.358', 6994, NULL, NULL, '', '/g3c/website/index.php?c=User&a=SessionList', -1, 952),
-  (495, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'Peripheral', 'GET', 'PeripheralsPage', 0, '2018-01-04 08:43:48.497', 17870134, NULL, NULL, '', '/g3c/website/index.php?c=Peripheral&a=PeripheralsPage', -1, 1343);
+  (495, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'Peripheral', 'GET', 'PeripheralsPage', 0, '2018-01-04 08:43:48.497', 17870134, NULL, NULL, '', '/g3c/website/index.php?c=Peripheral&a=PeripheralsPage', -1, 1343),
+  (496, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'SessionList', 0, '2018-01-04 08:53:00.104', 7580, NULL, NULL, '', '/g3c/website/index.php?c=User&a=SessionList', -1, 952),
+  (497, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'SessionList', 0, '2018-01-04 08:44:06.358', 533756342, NULL, NULL, '', '/g3c/website/index.php?c=User&a=SessionList', -1, 952),
+  (498, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'POST', 'SessionCancel', 0, '2018-01-04 08:57:03.708', 4467, NULL, NULL, '', '/g3c/website/index.php?c=User&a=SessionCancel', -1, 78),
+  (499, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'SessionList', 0, '2018-01-04 08:57:06.312', 6589, NULL, NULL, '', '/g3c/website/index.php?c=User&a=SessionList', -1, 953),
+  (500, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'POST', 'SessionCancel', 0, '2018-01-04 08:57:03.708', 2613299, NULL, NULL, '', '/g3c/website/index.php?c=User&a=SessionCancel', -1, 78),
+  (501, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'SessionList', 0, '2018-01-04 08:57:24.811', 8170, NULL, NULL, '', '/g3c/website/index.php?c=User&a=SessionList', -1, 953),
+  (502, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'SessionList', 0, '2018-01-04 08:57:06.312', 18509515, NULL, NULL, '', '/g3c/website/index.php?c=User&a=SessionList', -1, 953),
+  (503, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'SessionList', 0, '2018-01-04 08:58:19.726', 7172, NULL, NULL, '', '/g3c/website/index.php?c=User&a=SessionList', -1, 953),
+  (504, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'SessionList', 0, '2018-01-04 08:57:24.811', 54924615, NULL, NULL, '', '/g3c/website/index.php?c=User&a=SessionList', -1, 953),
+  (505, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'Room', 'GET', 'getRoomsPage', 0, '2018-01-04 08:59:53.181', 4022, NULL, NULL, '', '/g3c/website/index.php?c=Room&a=getRoomsPage', -1, -1),
+  (506, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'Room', 'GET', 'Rooms', 0, '2018-01-04 09:00:00.511', 3445, NULL, NULL, '', '/g3c/website/index.php?c=Room&a=Rooms', -1, 85),
+  (507, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'Room', 'GET', 'RoomPage', 0, '2018-01-04 09:00:07.321', 3091, NULL, NULL, '', '/g3c/website/index.php?c=Room&a=RoomPage', -1, -1),
+  (508, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'SessionList', 0, '2018-01-04 09:31:42.301', 6475, NULL, NULL, '', '/g3c/website/index.php?c=User&a=SessionList', -1, 82),
+  (509, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'Room', 'GET', 'RoomPage', 0, '2018-01-04 09:00:07.321', 1894989473, NULL, NULL, '', '/g3c/website/index.php?c=Room&a=RoomPage', -1, -1),
+  (510, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'SessionList', 0, '2018-01-04 09:31:45.822', 4670, NULL, NULL, '', '/g3c/website/index.php?c=User&a=SessionList', -1, 82),
+  (511, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'SessionList', 0, '2018-01-04 09:31:42.301', 3528455, NULL, NULL, '', '/g3c/website/index.php?c=User&a=SessionList', -1, 82),
+  (512, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'ConnectionPage', 0, '2018-01-04 09:32:11.975', 6209, NULL, NULL, '', '/g3c/website/index.php?c=User&a=ConnectionPage', -1, 82),
+  (513, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'ConnectionPage', 0, '2018-01-04 09:32:14.143', 3885, NULL, NULL, '', '/g3c/website/index.php?c=User&a=ConnectionPage', -1, 82),
+  (514, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'debug=true', 0, '2018-01-04 09:35:00.729', 3772, NULL, NULL, '', '/g3c/website/index.php?c=User&a=debug=true', -1, -1),
+  (515, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'ConnectionPagedebug=true', 0, '2018-01-04 09:35:09.092', 4126, NULL, NULL, '', '/g3c/website/index.php?c=User&a=ConnectionPagedebug=true', -1, -1),
+  (516, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'ConnectionPage', 1, '2018-01-04 09:35:40.232', 3314, NULL, NULL, '', '/g3c/website/index.php?c=User&a=ConnectionPage&debug=true', -1, 375),
+  (517, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'ConnectionPage', 1, '2018-01-04 09:39:30.324', 3857, NULL, NULL, '', '/g3c/website/index.php?c=User&a=ConnectionPage&debug=true', -1, 375),
+  (518, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'Users', 'GET', 'ConnectionPage', 0, '2018-01-04 09:39:38.176', 3681, NULL, NULL, '', '/g3c/website/index.php?c=Users&a=ConnectionPage', -1, -1),
+  (519, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'ConnectionPage', 0, '2018-01-04 09:39:42.264', 3971, NULL, NULL, '', '/g3c/website/index.php?c=User&a=ConnectionPage', -1, 82),
+  (520, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'ConnectionPage', 0, '2018-01-04 09:43:06.081', 3540, NULL, NULL, '', '/g3c/website/index.php?c=User&a=ConnectionPage', -1, 82),
+  (521, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'ConnectionPage', 0, '2018-01-04 09:45:21.934', 4343, NULL, NULL, '', '/g3c/website/index.php?c=User&a=ConnectionPage', -1, 1170),
+  (522, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'ConnectionPage', 0, '2018-01-04 09:45:34.081', 5189, NULL, NULL, '', '/g3c/website/index.php?c=User&a=ConnectionPage', -1, 1170),
+  (523, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'POST', 'Connection', 0, '2018-01-04 09:45:39.548', 4369, NULL, NULL, '', '/g3c/website/index.php?c=User&a=Connection', 34, 20),
+  (524, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'AccountPage', 0, '2018-01-04 09:45:39.556', 5813, NULL, NULL, '', '/g3c/website/index.php?c=User&a=AccountPage', -1, 1295),
+  (525, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'ConnectionPage', 0, '2018-01-04 09:46:20.755', 3775, NULL, NULL, '', '/g3c/website/index.php?c=User&a=ConnectionPage', -1, 82),
+  (526, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'AccountPage', 0, '2018-01-04 09:46:27.422', 7974, NULL, NULL, '', '/g3c/website/index.php?c=User&a=AccountPage', -1, 82),
+  (527, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'ConnectionPage', 0, '2018-01-04 12:38:22.531', 3778, NULL, NULL, '', '/g3c/website/index.php?c=User&a=ConnectionPage', -1, 82),
+  (528, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'ConnectionPage', 0, '2018-01-04 12:38:37.098', 4583, NULL, NULL, '', '/g3c/website/index.php?c=User&a=ConnectionPage', -1, 1170),
+  (529, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'ConnectionPage', 0, '2018-01-04 12:38:52.799', 4796, NULL, NULL, '', '/g3c/website/index.php?c=User&a=ConnectionPage', -1, 1170),
+  (530, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'ConnectionPage', 0, '2018-01-04 12:39:53.179', 4166, NULL, NULL, '', '/g3c/website/index.php?c=User&a=ConnectionPage', -1, 1170),
+  (531, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'POST', 'Connection', 0, '2018-01-04 12:40:26.947', 4632, NULL, NULL, '', '/g3c/website/index.php?c=User&a=Connection', 34, 20),
+  (532, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'AccountPage', 0, '2018-01-04 12:40:26.957', 5081, NULL, NULL, '', '/g3c/website/index.php?c=User&a=AccountPage', -1, 1295),
+  (533, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'SessionList', 0, '2018-01-04 13:13:44.184', 7952, NULL, NULL, '', '/g3c/website/index.php?c=User&a=SessionList', -1, 955),
+  (534, '192.168.64.1', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36', 0x086830c0f1d4a2f8e4175fefe3825682bdb726b4f003ab0235c97e0573b2f046, 'c774997a09960454dff823b0472122f3', 'User', 'GET', 'AccountPage', 0, '2018-01-04 12:40:26.957', 1997237430, NULL, NULL, '', '/g3c/website/index.php?c=User&a=AccountPage', -1, 1295);
 
 -- --------------------------------------------------------
 
@@ -791,7 +832,7 @@ ALTER TABLE `properties`
 -- AUTO_INCREMENT pour la table `requests`
 --
 ALTER TABLE `requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=496;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=535;
 
 --
 -- AUTO_INCREMENT pour la table `roles`
