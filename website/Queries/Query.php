@@ -20,6 +20,9 @@ abstract class Query
     // Entity class name
     private $entity_class_name;
 
+    // Entity ID column name
+    private $entity_id_column_name;
+
     // Operation to be executed (SELECT, INSERT INTO, UPDATE, DELETE)
     private $operation;
 
@@ -66,6 +69,9 @@ abstract class Query
         // Note the columns
         $this->table_columns = $table_columns;
 
+        // Set the ID column
+        $this->entity_id_column_name = self::extractIDColumn($table_columns);
+
         // By default, we manipulate all columns
         $this->manipulate_columns = array_keys($table_columns);
 
@@ -79,6 +85,27 @@ abstract class Query
         $this->where = new \Queries\Clauses\Where("OR");
     }
 
+    /**
+     * @param array $table_columns
+     * @return string
+     * @throws \Exception
+     */
+    private static function extractIDColumn(array $table_columns): string
+    {
+        $id_column = "";
+        foreach ($table_columns as $column_name => $attributes) {
+            // Si l'attribut ID est présent, on quitte
+            $has_id_attribute = array_search("id", $attributes) !== false;
+            if ($has_id_attribute) {
+                $id_column = $column_name;
+                break; // @see https://secure.php.net/manual/en/control-structures.break.php
+            }
+        }
+        if (empty($id_column)) {
+            throw new \Exception("Query has no column indicated as acting as ID");
+        }
+        return $id_column;
+    }
 
     /* PUBLIC METHODS */
 
@@ -109,29 +136,10 @@ abstract class Query
      */
     public function saveEntity(\Entities\Entity $entity): bool
     {
-        /* On récupère la colonne ID en itérant sur toutes les colonnes,
-         * et pour celle qui a pour attribut "id" on la note comme étant la colonne ID
-         */
-        $id_column = null;
-        foreach ($this->manipulate_columns as $column) {
-            // On récupère les attributs de la colonne
-            $attributes = $this->table_columns[$column] ?? null;
-
-            // Si l'attribut ID est présent, on quitte
-            $has_id_attribute = array_search("id", $attributes) !== false;
-            if ($has_id_attribute) {
-                $id_column = $column;
-                break; // @see https://secure.php.net/manual/en/control-structures.break.php
-            }
-        }
-        if (empty($id_column)) {
-            throw new \Exception("Query has no column indicated as acting as ID");
-        }
-
         // Récupère l'ID si possible
         $id = null;
         try {
-            $id = $entity->getMultiple([$id_column]);
+            $id = $entity->getMultiple([$this->entity_id_column_name]);
         } catch (\Throwable $t) {
         }
 
@@ -139,21 +147,17 @@ abstract class Query
         $count = 0;
         if ($id !== null) {
             $count = $this
-                ->filterByEntity($id_column, "=", $entity)
+                ->filterByEntity($this->entity_id_column_name, "=", $entity)
                 ->count();
         }
 
-        /*
-        * On vérifie si la valeur pour cette couronne est générée par la BDD (gen-on-insert)
-        */
+        // On vérifie si la valeur pour cette couronne est générée par la BDD (gen-on-insert)
         $id_column_value_generated_on_insert =
-            array_search("gen-on-insert", $this->table_columns[$id_column]) !== false;
+            array_search("gen-on-insert", $this->table_columns[$this->entity_id_column_name]) !== false;
 
-        /*
-         * Si l'ID est générée par la BDD ou si va faire un update, on ne push pas la valeur
-         */
+        // Si l'ID est générée par la BDD ou si va faire un update, on ne push pas la valeur
         if ($id_column_value_generated_on_insert || $count === 1) {
-            unset($this->manipulate_columns[array_search($id_column, $this->manipulate_columns)]);
+            unset($this->manipulate_columns[array_search($this->entity_id_column_name, $this->manipulate_columns)]);
             $this->manipulate_columns = array_values($this->manipulate_columns); // Re-key
         }
 
@@ -376,11 +380,12 @@ abstract class Query
     /* ON UPDATE */
 
     /**
-     * @param object $entity
+     * @param \Entities\Entity $entity
      * @return bool
      * @throws \Exception
      */
-    public function update($entity): bool {
+    public function update(\Entities\Entity $entity): bool
+    {
         // Operation is an UPDATE
         $this->operation = "UPDATE";
 
@@ -413,7 +418,8 @@ abstract class Query
      * @return bool
      * @throws \Exception
      */
-    private function insertSingle($entity): bool {
+    private function insertSingle(\Entities\Entity $entity): bool
+    {
         // Set the operation to insert
         $this->operation = "INSERT INTO";
 
@@ -432,29 +438,10 @@ abstract class Query
             return false;
         }
 
-        /* On récupère la colonne ID en itérant sur toutes les colonnes,
-         * et pour celle qui a pour attribut "id" on la note comme étant la colonne ID.
-         *
-         * On vérifie qu'il y a "gen-on-insert" pour récupérer l'ID d'insertion, sinon $id_column est null
-         */
-        $id_column = null;
-        foreach ($this->manipulate_columns as $column) {
-            // On récupère les attributs de la colonne
-            $attributes = $this->table_columns[$column] ?? null;
-
-            // Si l'attribut ID & gen-on-insert est présent, on quitte
-            $has_id_attribute = array_search("id", $attributes) !== false;
-            $has_gen_on_insert_attribute = array_search("gen-on-insert", $attributes) !== false;
-            if ($has_id_attribute && $has_gen_on_insert_attribute) {
-                $id_column = $column;
-                break;
-            }
-        }
-
-        // Get the insert ID
-        if ($id_column !== null) {
+        // On récupère la colonne ID en itérant sur toutes les colonnes, et si elle est gen-on-insert on récupère l'ID
+        if (array_search("gen-on-insert", $this->table_columns[$this->entity_id_column_name]) !== false) {
             $insert_id = (int)$this->db->lastInsertId(); // INT as currently all our IDs are ints
-            $entity->setMultiple([$id_column => $insert_id]);
+            $entity->setMultiple([$this->entity_id_column_name => $insert_id]);
         }
 
         // Return
@@ -462,7 +449,7 @@ abstract class Query
     }
 
     /**
-     * @param array $entities
+     * @param \Entities\Entity[] $entities
      * @return bool
      * @throws \Exception
      */
@@ -505,11 +492,12 @@ abstract class Query
 
         // Get their insert ID
         // No race condition because of LOCK/UNLOCK tables (right ??)
-        if (method_exists($entities[0],"setID")) {
+        // On récupère la colonne ID en itérant sur toutes les colonnes, et si elle est gen-on-insert on récupère l'ID
+        if (array_search("gen-on-insert", $this->table_columns[$this->entity_id_column_name]) !== false) {
             $last_insert_id = (int)$this->db->lastInsertId();
             for ($i = 0; $i < $row_count; $i++) {
                 $id = $last_insert_id + $row_count;
-                $entities[$i]->setID($id);
+                $entities[$i]->setMultiple([$this->entity_id_column_name => $id]);
             }
         }
 
@@ -518,11 +506,12 @@ abstract class Query
     }
 
     /**
-     * @param array ...$entities
+     * @param \Entities\Entity[] ...$entities
      * @return bool
      * @throws \Exception
      */
-    public function insert(...$entities): bool {
+    public function insert(\Entities\Entity ...$entities): bool
+    {
         switch (count($entities)) {
             case 0:
                 return false;
