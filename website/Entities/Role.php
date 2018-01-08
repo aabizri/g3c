@@ -95,7 +95,7 @@ class Role extends Entity
     public function getUser(): User
     {
         if ($this->user === null) {
-            $this->user = \Repositories\Users::retrieve($this->user_id);
+            $this->user = (new \Queries\Users)->retrieve($this->user_id);
         }
         return $this->user;
     }
@@ -139,7 +139,7 @@ class Role extends Entity
     public function getProperty(): Property
     {
         if ($this->property === null) {
-            $this->property = \Repositories\Properties::retrieve($this->property_id);
+            $this->property = (new \Queries\Properties)->retrieve($this->property_id);
         }
         return $this->property;
     }
@@ -194,7 +194,7 @@ class Role extends Entity
     /* BUSINESS LOGIC */
 
     /**
-     * @return int[] the permissions (id) given to the role
+     * @return \Entities\Permission[] the permissions given to the role
      */
     public function retrievePermissions(): array
     {
