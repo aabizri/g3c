@@ -110,7 +110,7 @@ class Session extends Entity
             if ($this->user_id === null) {
                 return null;
             }
-            $this->user = \Repositories\Sessions::retrieve($this->user_id);
+            $this->user = (new \Queries\Sessions)->retrieve($this->user_id);
         }
         return $this->user;
     }
@@ -205,7 +205,7 @@ class Session extends Entity
     /**
      * @return float
      */
-    public function getLastUpdated(): float
+    public function getLastUpdated(): ?float
     {
         return $this->last_updated;
     }
@@ -214,7 +214,7 @@ class Session extends Entity
      * @param float $last_updated
      * @return bool
      */
-    public function setLastUpdated(float $last_updated): bool
+    public function setLastUpdated(?float $last_updated): bool
     {
         $this->last_updated = $last_updated;
         return true;

@@ -40,7 +40,7 @@ class Room
 
         // Insérer l'entité dans la bdd
         try {
-            Repositories\Rooms::insert($r);
+            (new \Queries\Rooms)->insert($r);
         } catch (\Exception $e) {
             echo "Erreur" . $e;
         }
