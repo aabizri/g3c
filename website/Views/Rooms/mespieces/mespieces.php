@@ -8,8 +8,8 @@
 
             <h2 id="nompagepieces">Gestion de mes pièces</h2>
 
-          <form method="post" action="index.php?c=Room&a=getRooms" id="choixsalle">
-            <select name="Choix de la salle">
+          <form method="post" action="index.php?c=Room&a=AccessRoom" id="choixsalle">
+            <select name="salle">
                 <?php
 
                     foreach ( $data["rooms"] as $room) {
@@ -18,16 +18,18 @@
                 ?>
             </select>
 
+              <input type="submit" value="valider" />
+
           </form>
 
             <div id="vueinformation">
             <h3>Informations sur la pièce</h3>
                 <div id="informationspiece">
-                    <p id="temperature"><strong>Température</strong><br><br>20°C</p>
-                    <p id="humidite"><strong>Humidité</strong><br><br>20%</p>
-                    <p id="luminosite"><strong>Lumisosité</strong><br><br>70%</p>
-                    <p id="qualiteair"><strong>Qualité de l'air</strong><br><br>Bonne</p>
-                    <p id="presence"><strong>Présence</strong><br><br>1</p>
+                    <p id="temperature"><strong>Température</strong><br><br>.</p>
+                    <p id="humidite"><strong>Humidité</strong><br><br>.</p>
+                    <p id="luminosite"><strong>Lumisosité</strong><br><br>.</p>
+                    <p id="qualiteair"><strong>Qualité de l'air</strong><br><br>.</p>
+                    <p id="presence"><strong>Présence</strong><br><br>.</p>
                 </div>
             </div>
 

@@ -67,4 +67,11 @@ class Room
 
         \Helpers\DisplayManager::display("mespieces", $data);
     }
+
+    public function AccessRoom(\Entities\Request $req): void
+    {
+        /* Si la requête n'est pas associé à une salle, retourner une erreur */
+        $room_id= $req ->getPOST("salle");
+
+    }
 }
