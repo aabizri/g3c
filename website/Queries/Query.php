@@ -319,7 +319,7 @@ abstract class Query
         $this->select();
 
         // Sets the orderby directive
-        $this->orderby[$key] = $asc;
+        $this->orderby[$key] = $asc ? "ASC" : "DESC";
         return $this;
     }
 
@@ -335,7 +335,7 @@ abstract class Query
         $this->select();
 
         // Sets the offset
-        $this->offset($offset);
+        $this->offset = $offset;
         return $this;
     }
 
@@ -515,7 +515,7 @@ abstract class Query
 
         // Then with the columns to retrieve
         foreach ($this->manipulate_columns as $index => $column) {
-            $column_attribute = $this->table_columns[$column];
+            $column_attribute = $this->table_columns[$column] ?? null;
             switch ($column_attribute) {
                 case "hex":
                     $lexemes[] = "HEX(";
@@ -542,7 +542,7 @@ abstract class Query
         $lexemes[] = $this->table;
 
         // Now the where clause
-        if (!empty($this->where)) {
+        if (!empty($this->where) && !empty($this->where->operands)) {
             $lexemes[] = "WHERE";
             $lexemes[] = $this->where->toSQL();
         }
@@ -559,17 +559,19 @@ abstract class Query
                 }
             }
         }
-        // Now the offset clause
-        if (!empty($this->offset) && $this->offset !== 0) {
-            $lexemes[] = "OFFSET";
-            $lexemes[] = (string)$this->offset;
-        }
 
         // Now the limit clause
         if (!empty($this->limit_value)) {
             $lexemes[] = "LIMIT";
             $lexemes[] = (string) $this->limit_value;
         }
+
+        // Now the offset clause (ALWAYS JUST AFTER LIMIT)
+        if (!empty($this->offset) && $this->offset !== 0) {
+            $lexemes[] = "OFFSET";
+            $lexemes[] = (string)$this->offset;
+        }
+
 
         // Return
         return $lexemes;
