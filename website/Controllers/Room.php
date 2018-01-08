@@ -72,6 +72,6 @@ class Room
             ->filterByPropertyID("=", $property_id)
             ->find();
 
-        \Helpers\DisplayManager::display("mespieces", [$rooms]);
+        \Helpers\DisplayManager::display("mespieces", ["rooms" => $rooms]);
     }
 }
