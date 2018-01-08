@@ -59,13 +59,12 @@ class Room
         }
 
         //Récupérer liste des pièces
-        $rooms = [];
-        $room_ids = \Repositories\Rooms::findAllByPropertyID($property_id);
-        foreach ($room_ids as $rid) {
-            $room = \Repositories\Rooms::retrieve($rid);
-            $rooms[] = $room;
-        }
+        $rooms = (new \Queries\Rooms)
+            -> filterByPropertyID( '=',$property_id)
+            -> find();
 
-        \Helpers\DisplayManager::display("mespieces", [$rooms]);
+        $data["rooms"] = $rooms;
+
+        \Helpers\DisplayManager::display("mespieces", $data);
     }
 }

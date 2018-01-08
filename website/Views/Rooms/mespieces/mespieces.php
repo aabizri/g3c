@@ -11,17 +11,12 @@
           <form method="post" action="index.php?c=Room&a=getRooms" id="choixsalle">
             <select name="Choix de la salle">
                 <?php
-                    if (empty($data["rooms"])) {
-                        die ("No rooms indicated");
-                    }
-                    $rooms = $data["rooms"];
-                    foreach ($rooms as $room) {
-                        echo "<option value=".$room->getID()."\">".$room->getName()."/>";
+
+                    foreach ( $data["rooms"] as $room) {
+                        echo "<option value=". $room -> getID() .">".$room->getName()."</option>";
                     }
                 ?>
             </select>
-
-              <input type="submit" value="Valider" title="Valider pour accéder à la salle" />
 
           </form>
 

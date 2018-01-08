@@ -7,8 +7,6 @@
  */
 namespace Queries;
 
-require_once("../Helpers/autoloader.php");
-
 /**
  * Class Rooms
  * @package Queries
