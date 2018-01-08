@@ -290,6 +290,7 @@ abstract class Query
     {
         // Set la fonction à être executée (un count)
         $this->manipulate_columns = ["COUNT(*)"];
+        $this->select();
 
         // Prepare the statement
         $stmt = $this->prepareAndExecute();
