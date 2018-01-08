@@ -432,10 +432,29 @@ abstract class Query
             return false;
         }
 
+        /* On récupère la colonne ID en itérant sur toutes les colonnes,
+         * et pour celle qui a pour attribut "id" on la note comme étant la colonne ID.
+         *
+         * On vérifie qu'il y a "gen-on-insert" pour récupérer l'ID d'insertion, sinon $id_column est null
+         */
+        $id_column = null;
+        foreach ($this->manipulate_columns as $column) {
+            // On récupère les attributs de la colonne
+            $attributes = $this->table_columns[$column] ?? null;
+
+            // Si l'attribut ID & gen-on-insert est présent, on quitte
+            $has_id_attribute = array_search("id", $attributes) !== false;
+            $has_gen_on_insert_attribute = array_search("gen-on-insert", $attributes) !== false;
+            if ($has_id_attribute && $has_gen_on_insert_attribute) {
+                $id_column = $column;
+                break;
+            }
+        }
+
         // Get the insert ID
-        if (method_exists($entity,"setID")) {
-            $insert_id = (int)$this->db->lastInsertId();
-            $entity->setID($insert_id);
+        if ($id_column !== null) {
+            $insert_id = (int)$this->db->lastInsertId(); // INT as currently all our IDs are ints
+            $entity->setMultiple([$id_column => $insert_id]);
         }
 
         // Return
