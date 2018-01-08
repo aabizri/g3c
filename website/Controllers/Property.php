@@ -27,9 +27,10 @@ class Property
     {
         // Check if the data exists
         $address = $req->getPost("addresss");
-        $name = pareol;
+        $name = $req->getPost("name");
 
-        //
+
+
 
     }
 }
