@@ -54,8 +54,9 @@ class Room
 
     /**
      * Récupère la liste des pièces : GET /properties/{property_id}/rooms
-     * @param Entities\Request $req
+     * @param Entities\Room $req
      * @throws \Exception
+     * @return array of rooms
      */
     public function getRooms(\Entities\Room $req): void
     {
