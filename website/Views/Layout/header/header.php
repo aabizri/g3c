@@ -7,7 +7,7 @@
     <?php
     //Si connecté n'affiche rien
     if (!empty($_SESSION["user_id"])){
-        echo '<form action="index.php?a=User&c=Deconnexion" id="deconnexion"><input type="submit" value="Déconnexion"/></form>';
+        echo '<form action="index.php?c=User&a=deconnexion&debug=true" id="deconnexion" method="post"><input type="submit" value="Déconnexion"/></form>';
     }
     ?>
 </header>

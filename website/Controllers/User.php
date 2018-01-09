@@ -346,12 +346,12 @@ class User
     }
 
     //Déconnexion
-    public static function getDeconnexion (\Entities\Request $req){
+    public static function postDeconnexion (\Entities\Request $req){
 
         //On détruit la session
         session_destroy();
 
         //On redirige vers la page de connexion
-        DisplayManager::redirectToController(user, connectionpage);
+        DisplayManager::redirectToController(User, ConnectionPage);
     }
 }
