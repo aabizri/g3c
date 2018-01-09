@@ -40,68 +40,90 @@
 
 
     <script>
+
         /**
-         * Applies JSON to update table
-         * @param {{}} data
+         * Takes an array of elements, returns the rows to be inserted
+         * @param columns the columns to be inserted
+         * @param {{}} values the values to be transformed into rows
+         * @param callback the callback to be called at each row
+         * @return array
          */
-        function applyJSON(data) {
-            // Select
-            let tbody = document.getElementById("users");
-
-            // Purge inside
-            tbody.innerHTML = "";
-
-            // Pagination data
-            let totalAmount = data.pagination.total;
-            document.getElementById("displayed-count").innerText = data.users.length;
-            document.getElementById("total-count").innerText = totalAmount;
-
-            // Deal with all users
-            let users = data.users;
-            for (let user of users) {
+        function createRow(columns, values, rowCallback) {
+            for (let value of values) {
                 // Create the row
                 let row = document.createElement("tr");
-                row.setAttribute("onclick", "window.location.href = \"index.html?c=Admin&a=User&uid=" + user.id + "\"");
-                row.setAttribute("title", "Obtenir plus d'informations sur l'utilisateur \"" + user.nick + "\"");
 
-                // Properties
-                let properties = ["id", "name", "nick", "email"];
+                // Attributes
+                row.setAttribute("onclick", "window.location.href = \"index.html?c=Admin&a=User&uid=" + value.id + "\"");
+                row.setAttribute("title", "Obtenir plus d'informations sur l'utilisateur \"" + value.nick + "\"");
 
                 // Deal with them
-                for (let property of properties) {
+                for (let column of columns) {
                     // Create the td
                     let td = document.createElement("td");
 
                     // Set the necessary attributes
-                    td.setAttribute("id", "user-" + user.id);
-                    td.setAttribute("class", property);
+                    td.setAttribute("id", "user-" + value.id + "-" + column);
+                    td.setAttribute("class", column);
 
                     // Place the content
-                    let content = document.createTextNode(user[property]);
+                    let content = document.createTextNode(value[column]);
 
                     // Add it all up
                     td.appendChild(content);
                     row.appendChild(td);
                 }
 
-                // Deal with the row itself
-                tbody.appendChild(row);
+                // Call the row callback
+                rowCallback(row);
             }
+        }
+
+        /**
+         * Update all data
+         * @param tbodyID a string
+         * @param fieldName the name of the field in the JSON
+         * @param {{}} data
+         */
+        function updateData(tbodyID, fieldName, columns, data) {
+            // Select
+            let tbody = document.getElementById(tbodyID);
+
+            // Purge inside
+            tbody.innerHTML = "";
+
+            // Pagination data
+            let totalAmount = data.pagination.total;
+            document.getElementById("displayed-count").innerText = data[fieldName].length;
+            document.getElementById("total-count").innerText = totalAmount;
+
+            // Deal with all users
+            let users = data[fieldName];
+
+            // Call createRow
+            createRow(columns, users, function (row) {
+                tbody.appendChild(row);
+            });
         }
 
         /**
          * Applies the response to update the table
          *
+         * @param tbodyID
+         * @param fieldName
+         * @param columns
          * @param res
          */
-        function applyResponse(res) {
+        function applyResponse(tbodyID, fieldName, columns, res) {
             // If not ok, log & return
             if (!res.ok) {
                 return;
             }
 
             // Decode to JSON
-            res.json().then(applyJSON);
+            res.json().then(function (res) {
+                updateData(tbodyID, fieldName, columns, res)
+            });
         }
 
         /**
@@ -126,10 +148,10 @@
          *
          * @params {{}}
          */
-        function setParameters(params) {
+        function setParameters(parameters) {
             let hash = "";
-            for (property in params) {
-                hash += "&" + property + "=" + params[property];
+            for (parameterName in parameters) {
+                hash += "&" + parameterName + "=" + parameters[parameterName];
             }
             hash = "#" + hash.substr(1);
             window.location.hash = hash;
@@ -150,7 +172,10 @@
             }
 
             // Execute request
-            fetch(url.href).then(applyResponse);
+            fetch(url.href).then(function (res) {
+                let columns = ["id", "name", "nick", "email"];
+                applyResponse("users", "users", columns, res);
+            });
         }
 
         function formSubmit() {
