@@ -141,7 +141,7 @@ class Peripherals
         $peripheral->setRoomID(null);
 
         // Push
-        (new \Queries\Peripherals) -> save($peripheral);
+        (new \Queries\Peripherals) -> update($peripheral);
 
         //Affichage de la page peripherique mise a jour
         \Helpers\DisplayManager::redirectToController("Peripherals", "List");
