@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use Helpers\DisplayManager;
+use MongoDB\Driver\Query;
 use Repositories;
 use Entities;
 
@@ -105,7 +106,7 @@ class User
     {
         // Si l'usager est déjà connecté, le rediriger vers la page d'accueil
         if ($req->getUserID() !== null) {
-            \Helpers\DisplayManager::redirectToController("User", "AccountPage");
+            \Helpers\DisplayManager::redirectToController("User", "Informations");
             return;
         }
 
@@ -132,12 +133,6 @@ class User
             return;
         }
 
-        /**
-         * Avec cet ID, on récupère l'entité User
-         * @var Entities\User $u
-         */
-        $u = Repositories\Users::retrieve($id);
-
         // Validate
         if ($u->verifyPassword($password_clear) == false) {
             echo "Mot de passe incorrect";
@@ -152,7 +147,7 @@ class User
             return;
         }
 
-        \Helpers\DisplayManager::redirectToController("User", "AccountPage"); /* Redirection du navigateur */; // TODO: Le rediriger vers la page de sélection de propriété
+        \Helpers\DisplayManager::redirectToController("User", "Informations"); /* Redirection du navigateur */; // TODO: Le rediriger vers la page de sélection de propriété
     }
 
     public static function getConnectionPage(\Entities\Request $req): void
@@ -170,7 +165,6 @@ class User
         $u = $req->getUser();
         if ($u === null) {
             http_response_code(403);
-            echo "Utilisateur non connecté, nous ne pouvons pas accéder à la page moncompte";
             return;
         }
 
@@ -185,7 +179,7 @@ class User
 
     public static function postMAJInformations (\Entities\Request $req): void
     {
-        $post=$req->getPOST();
+        $post= $req->getAllPOST();
 
         //On récupère des données
         $email = $post["email"];
@@ -195,15 +189,13 @@ class User
 
         //On récupère l'entité de l'utilisateur
 
-        //On récupère l'id depuis la page de connexion
-        $user_id = $req -> getUserID();
-
-        //On recupère les données grace à cet id
-        $user = \Repositories\Users::retrieve($user_id);
+        //On récupère l'entité user depuis la page de connexion
+        $user = $req -> getUser();
 
         //MAJ de l'email si besoin
-        if (\Repositories\Users::findByEmail($email) != null) {
-            echo "Cet email est déja lié à un compte";
+        if ((new \Queries\Users) -> filterByEmail("=", $email) -> findOne() != null)
+        {
+            DisplayManager::redirectToController(user , informations );
             return;
         }
         if ($email === $newemail AND $email != null) {
@@ -216,75 +208,65 @@ class User
         }
 
         // Insertion de l'entité et de ses maj si le mdp de vérification est valide
-        if ($user->validatePassword($mdp) === false){
+        if ($user->verifyPassword($mdp) === false){
             return;
         }
         try {
-            Repositories\Users::push($user);
+            (new \Queries\Users) ->update($user);
         } catch (\Exception $e) {
-            Error::getInternalError500();
-         }
-        \Helpers\DisplayManager::display(self::getInformations($req));
-
-        return;
-
+            Error::getInternalError500($req);
+            return;
+        }
+         \Helpers\DisplayManager::redirectToController(User, Informations );
     }
 
     //Changement de mdp
     public static function postMDP(\Entities\Request $req){
 
-        $post = $req->getPOST();
+        $post = $req->getAllPOST();
 
         //On recupère les données
         $user = $req->getUser();
 
         //On récupère les infos après avoir vérifier qu'elles existent
-        if (isset($post["ancienmdp"]) OR isset($post["nouveaumdp"]) OR isset($post["cnouveaumdp"])){
+        if (!isset($post["ancienmdp"]) OR !isset($post["nouveaumdp"]) OR !isset($post["cnouveaumdp"])){
             self::getInformations($req);
             return;
         }
 
+        //On récupère les données
         $ancienmdp = $post["ancienmdp"];
         $newmdp = $post['nouveaumdp'];
         $cnewmdp = $post["cnouveaumdp"];
 
-
         //Vérification de l'ancien mdp
-        if ($user->validatePassword($ancienmdp) === false) {
-            Error::getInternalError500();
+        if ($user->verifyPassword($ancienmdp) === false) {
+            DisplayManager::display(user, informations );
             return;
         }
 
         if ($ancienmdp === $newmdp){
+            DisplayManager::display(user, informations );
             return;
         }
 
         if ($newmdp !== $cnewmdp){
+            DisplayManager::display(user, informations );
             return;
         }
 
-        $user ->setPassword($newmdp);
+        $user ->setPasswordClear($newmdp);
 
         // Insertion de l'entité et de ses maj
         try {
-            Repositories\Users::push($user);
+            (new \Queries\Users) -> update($user);
         } catch (\Exception $e) {
             Error::getInternalError500($req);
             return;
         }
 
-        \Helpers\DisplayManager::display(self::getInformations($req));
+        DisplayManager:: display("majmdpreussie");
 
-    }
-
-    public static function getConnectionPage(\Entities\Request $req): void
-    {
-        DisplayManager::display("connexion",array());
-    }
-
-    public static function getSubscriptionPage(\Entities\Request $req): void
-    {
-        DisplayManager::display("inscription", array());
     }
 
     /**
@@ -361,5 +343,15 @@ class User
 
         // Return to session list
         self::getSessionList($req);
+    }
+
+    //Déconnexion
+    public static function getDeconnexion (\Entities\Request $req){
+
+        //On détruit la session
+        session_destroy();
+
+        //On redirige vers la page de connexion
+        DisplayManager::redirectToController(user, connectionpage);
     }
 }
