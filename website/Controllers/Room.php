@@ -2,7 +2,7 @@
 
 namespace Controllers;
 
-use Repositories;
+use Queries;
 use Entities;
 
 /**
@@ -57,7 +57,7 @@ class Room
      * @param Entities\Request $req
      * @throws \Exception
      */
-    public function getRooms(\Entities\Request $req): void
+    public function getRooms(\Entities\Room $req): void
     {
         // Si la requête n'est pas associée à une propriété, retourner une erreur
         $property_id = $req->getPropertyID();

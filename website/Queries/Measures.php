@@ -7,6 +7,7 @@
  */
 
 namespace Queries;
+use Entities\Measure;
 
 /**
  * Class Measures
@@ -55,6 +56,18 @@ class Measures extends Query
     public function filterByMeasureTypeID(string $operator, int $measure_type_id): self
     {
         return $this->filterByColumn("type_id", $operator, $measure_type_id);
+    }
+
+
+    /**
+     * @param string $operator
+     * @param int $sensor_id
+     * @return Measure
+     */
+
+    public function filterBySensorID(string $operator, int $sensor_id):self
+    {
+        return $this->filterByColumn( "sensor_id", $operator, $sensor_id);
     }
 
     /* OTHERS */
