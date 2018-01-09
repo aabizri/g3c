@@ -25,11 +25,13 @@ class Error
     }
 
     public static function getInternalError500(\Entities\Request $req, \Throwable $t = null) {
+
         http_response_code(500);
         echo "Erreur Interne, veuillez nous excuser pour la gène occasionée";
         if ($req->getInDebug() && $t !== null) {
-            echo "<br/> <strong> Informations de débuggage : </strong><br/>";
+            echo "<br/> <strong> Informations de débuggage : </strong><br/><pre>";
             echo $t;
+            echo "</pre";
         }
     }
 }

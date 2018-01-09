@@ -173,7 +173,7 @@ class User extends Entity
     /**
      * @return string
      */
-    public function getPasswordHashed(): string
+    public function getPassword(): string
     {
         return $this->password_hashed;
     }
@@ -182,7 +182,7 @@ class User extends Entity
      * @param string $hashed
      * @return bool
      */
-    public function setPasswordHashed(string $hashed): bool
+    public function setPassword(string $hashed): bool
     {
         $this->password_hashed = $hashed;
         return true;
@@ -253,10 +253,10 @@ class User extends Entity
      *
      * @return bool false if invalid
      */
-    public function setPassword(string $clear): bool
+    public function setPasswordClear(string $clear): bool
     {
         // Calculer le hash associé au mot de passe via BCRYPT, le salt étant généré automatiquement
-        return $this->setPasswordHashed(password_hash($clear, PASSWORD_BCRYPT));
+        return $this->setPassword(password_hash($clear, PASSWORD_BCRYPT));
     }
 
     /**

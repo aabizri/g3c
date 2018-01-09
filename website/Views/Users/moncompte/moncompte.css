@@ -48,8 +48,8 @@ body {
 #identificationutilisateur
 {
 	position: relative;
-	top: -26.5%;
-	left:25%;
+	top: -250px;
+	left:20%;
     font-size: large;
 }
 
@@ -57,7 +57,7 @@ body {
 {
 	display: flex;
 	position: relative;
-	top:15%;
+	top:200px;
 	left:16%;
 }
 
@@ -109,4 +109,50 @@ body {
 	position: relative;
 	left:44%;
 	border-radius:1%;
+}
+
+#validercreationutilisateur
+{
+	position: relative;
+	left:43%;
+	border-radius: 1px ;
+}
+
+#modifmdp
+{
+	border:1px solid #955252;
+	background-color: rgb(217,196,177);
+	width: 30%;
+	border-radius: 20px;
+	padding: 0px 10px;
+    text-align: left;
+    position: relative;
+    left: 16%;
+    margin-top: 200px;
+}
+
+#modifmdp input
+{
+    border-radius: 5px;
+}
+
+#titremodifmdp
+{
+	position: relative;
+    text-align: center
+}
+
+#validermodifmdp
+{
+    position: relative;
+    left:43%;
+    border-radius: 1px ;
+}
+
+#droit
+{
+    position: absolute;
+    right: 20px;
+    width: 200px;
+    border-radius: 5px;
 }

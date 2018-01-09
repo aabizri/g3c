@@ -28,7 +28,7 @@ class SessionSaveHandler implements \SessionHandlerInterface
         // Retrieve session
         $sess = null;
         try {
-            $sess = \Repositories\Sessions::retrieve($session_id);
+            $sess = (new \Queries\Sessions)->retrieve($session_id);
         } catch (\Throwable $t) {
             return false;
         }
@@ -43,7 +43,7 @@ class SessionSaveHandler implements \SessionHandlerInterface
 
         // Push it
         try {
-            \Repositories\Sessions::push($sess);
+            (new \Queries\Sessions)->update($sess);
         } catch (\Throwable $t) {
             return false;
         }
@@ -67,11 +67,10 @@ class SessionSaveHandler implements \SessionHandlerInterface
     public function read($session_id): string
     {
         //echo "lecture de la session ".$session_id."<br/>";
-
         $sess = null;
         // Retrieve session
         try {
-            $sess = \Repositories\Sessions::retrieve($session_id);
+            $sess = (new \Queries\Sessions)->retrieve($session_id);
         } catch (\Throwable $t) {
             return "";
         }
@@ -98,7 +97,7 @@ class SessionSaveHandler implements \SessionHandlerInterface
         $sess = null;
         // Retrieve session
         try {
-            $sess = \Repositories\Sessions::retrieve($session_id);
+            $sess = (new \Queries\Sessions)->retrieve($session_id);
         } catch (\Throwable $t) {
             echo $t;
             return false;
@@ -127,7 +126,7 @@ class SessionSaveHandler implements \SessionHandlerInterface
 
             // Insert in DB
             try {
-                \Repositories\Sessions::insert($sess);
+                (new \Queries\Sessions)->insert($sess);
             } catch (\Throwable $t) {
                 echo $t;
                 return false;
@@ -142,7 +141,7 @@ class SessionSaveHandler implements \SessionHandlerInterface
 
             // Push it
             try {
-                \Repositories\Sessions::push($sess);
+                (new \Queries\Sessions)->update($sess);
             } catch (\Throwable $t) {
                 echo $t;
                 return false;

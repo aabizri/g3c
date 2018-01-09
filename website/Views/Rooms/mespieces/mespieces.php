@@ -9,13 +9,17 @@
 
             <h2 id="nompagepieces">Gestion de mes pièces</h2>
 
-          <form method="post" action="php pour redirection" id="choixsalle">
+          <form method="post" action="index.php?c=Room&a=Rooms" id="choixsalle">
             <select name="Choix de la salle">
-                <option value="" >Salon</option>
-                <option value="">Salle de bain</option>
-                <option value="">Cuisine</option>
-                <option value="">Chambre 1</option>
-                <option value="">Chambre 2</option>
+                <?php
+                    if (empty($data["rooms"])) {
+                        die ("No rooms indicated");
+                    }
+                    $rooms = $data["rooms"];
+                    foreach ($rooms as $room) {
+                        echo "<option value=".$room->getID()."\">".$room->getName()."/>";
+                    }
+                ?>
             </select>
 
               <input type="submit" value="Valider" title="Valider pour accéder à la salle" />
