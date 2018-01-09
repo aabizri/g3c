@@ -27,11 +27,11 @@
         <h4 id="titremodifierinfos">Modifier mes informations</h4>
         <form method="post" id="formulairemodif" action="http://localhost/g3c/website/index.php?c=User&a=MAJInformations&debug=true" name="modifierinfos" onsubmit="return validateEmail()">
             <p>
-                <label>Nouvel email :</label><input type="text" id="formdroit" name="email"/><br>
+                <label>Nouvel email :</label><input type="email" id="formdroit" name="email"/><br>
             </p>
 
             <p>
-                <label>Confirmer nouvel email : </label><input type="text" id="formdroit" name="newemail"/><br>
+                <label>Confirmer nouvel email : </label><input type="email" id="formdroit" name="newemail"/><br>
             </p>
 
             <p>

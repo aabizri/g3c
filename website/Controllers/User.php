@@ -3,8 +3,6 @@
 namespace Controllers;
 
 use Helpers\DisplayManager;
-use MongoDB\Driver\Query;
-use Repositories;
 use Entities;
 
 /**
