@@ -17,13 +17,13 @@ class Sessions extends Query
 {
     /* COMMON CONSTANTS */
     private const table = "sessions";
-    private const columns = ["id" => "",
-                             "user_id" => "",
-                             "value" => "",
-                             "started" => "timestamp",
-                             "expiry" => "timestamp",
-                             "canceled" => "",
-                             "last_updated" => "timestamp"];
+    private const columns = ["id" => ["id"],
+                             "user_id" => [],
+                             "value" => [],
+                             "started" => ["timestamp"],
+                             "expiry" => ["timestamp"],
+                             "canceled" => [],
+                             "last_updated" => ["timestamp"]];
     private const entity_class_name = "\Entities\Session";
 
     /**

@@ -64,7 +64,7 @@
                                       </tr>';}
 
                             }
-                        
+
                         else {
                             echo 'Pas de périphériques dans la propriété';
                         }
@@ -94,4 +94,3 @@
                     </form>
                 </div>
             </div>
-

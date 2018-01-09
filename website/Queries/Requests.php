@@ -17,23 +17,23 @@ class Requests extends Query
 {
     /* COMMON CONSTANTS */
     private const table = "requests";
-    private const columns = ["id" => "",
-                             "ip" => "",
-                             "user_agent_txt" => "",
-                             "user_agent_hash" => "",
-                             "session_id" => "",
-                             "controller" => "",
-                             "method" => "",
-                             "action" => "",
-                             "in_debug" => "",
-                             "started_processing" => "timestamp",
-                             "duration" => "int",
-                             "user_id" => "",
-                             "property_id" => "",
-                             "referer" => "",
-                             "request_uri" => "",
-                             "request_length" => "",
-                             "response_length" => ""];
+    private const columns = ["id" => ["id", "gen-on-insert"],
+                             "ip" => [],
+                             "user_agent_txt" => [],
+                             "user_agent_hash" => [],
+                             "session_id" => [],
+                             "controller" => [],
+                             "method" => [],
+                             "action" => [],
+                             "in_debug" => [],
+                             "started_processing" => ["timestamp"],
+                             "duration" => [],
+                             "user_id" => [],
+                             "property_id" => [],
+                             "referer" => [],
+                             "request_uri" => [],
+                             "request_length" => [],
+                             "response_length" => []];
     private const entity_class_name = "\Entities\Request";
 
     /**
