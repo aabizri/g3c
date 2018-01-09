@@ -8,24 +8,77 @@
 
 namespace Entities;
 
+
+/**
+ * Class Request
+ * @package Entities
+ */
 class Request extends Entity
 {
     /* PROPERTIES */
 
     // DB Stored
+
+    /**
+     * @var string
+     */
     private $id;
+
+    /**
+     * @var string
+     */
     private $ip = "";
+
+    /**
+     * @var string
+     */
     private $user_agent_txt = "";
+
+    /**
+     * @var string
+     */
     private $user_agent_hash = "";
+
+    /**
+     * @var string
+     */
     private $session_id;
+
+    /**
+     * @var string
+     */
     private $controller = "";
+
+    /**
+     * @var string
+     */
     private $action = "";
+
+    /**
+     * @var float
+     */
     private $started = 0; // Seconds since epoch
-    private $duration = 0; // In microseconds  (INT)
+
+    /**
+     * @var int
+     */
+    private $duration = 0; // In microseconds
 
     // Local
+
+    /**
+     * @var string
+     */
     private $method = "";
+
+    /**
+     * @var array
+     */
     private $get = [];
+
+    /**
+     * @var array
+     */
     private $post = [];
 
     /**
@@ -70,13 +123,27 @@ class Request extends Entity
      */
     private $property = null;
 
+    /**
+     * @var bool
+     */
     private $in_debug = false;
 
+    /**
+     * @var string
+     */
     private $request_uri = "";
 
+    /**
+     * @var string
+     */
     private $referer = "";
 
     /* CONSTRUCTOR */
+
+    /**
+     * Request constructor.
+     * @param bool $autosave
+     */
     public function __construct(bool $autosave = false)
     {
         $this->saveAtShutdown();
@@ -160,33 +227,54 @@ class Request extends Entity
         return true;
     }
 
-    public function getSessionID(): string
+    /**
+     * @return string|null
+     */
+    public function getSessionID(): ?string
     {
         return $this->session_id;
     }
 
-    public function setSessionID(string $session_id): bool
+    /**
+     * @param string $session_id
+     * @return bool
+     */
+    public function setSessionID(?string $session_id): bool
     {
         $this->session_id = $session_id;
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function getController(): string
     {
         return $this->controller;
     }
 
+    /**
+     * @param string $controller
+     * @return bool
+     */
     public function setController(string $controller): bool
     {
         $this->controller = $controller;
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function getAction(): string
     {
         return $this->action;
     }
 
+    /**
+     * @param string $action
+     * @return bool
+     */
     public function setAction(string $action): bool
     {
         $this->action = $action;
@@ -196,7 +284,7 @@ class Request extends Entity
     /**
      * @return float
      */
-    public function getStarted(): float
+    public function getStartedProcessing(): float
     {
         return $this->started;
     }
@@ -205,7 +293,7 @@ class Request extends Entity
      * @param float $started
      * @return bool
      */
-    public function setStarted(float $started): bool
+    public function setStartedProcessing(float $started): bool
     {
         $this->started = $started;
         return true;
@@ -229,11 +317,18 @@ class Request extends Entity
         return true;
     }
 
+    /**
+     * @return string
+     */
     public function getMethod(): string
     {
         return $this->method;
     }
 
+    /**
+     * @param string $method
+     * @return bool
+     */
     public function setMethod(string $method): bool
     {
         if (!in_array($method, ["GET","POST","HEAD","PUT","PATCH","DELETE","CONNECT","OPTIONS","TRACE","PATCH"])) {
@@ -243,30 +338,113 @@ class Request extends Entity
         return true;
     }
 
-    public function getGET(): array
+    /**
+     * @return array
+     */
+    public function getAllGET(): array
     {
         return $this->get;
     }
 
-    public function setGET(array $get): bool {
+    /**
+     * @param array $get
+     * @return bool
+     */
+    public function setAllGET(array $get): bool
+    {
         $this->get = $get;
         return true;
     }
 
-    public function getPOST(): array
+    /**
+     * Return the value associated with the given key in the GET array
+     *
+     * @return string|null, or null if not found
+     */
+    public function getGET(string $key): ?string
+    {
+        if (!isset($this->get[$key])) {
+            return null;
+        }
+        return $this->get[$key];
+    }
+
+    /**
+     * Sets the value of a GET variable given the key and value
+     *
+     * @param string $key
+     * @param string|null $value
+     * @return bool
+     */
+    public function setGET(string $key, ?string $value): bool
+    {
+        if ($value === null && isset($this->get[$key])) {
+            unset($this->get[$key]);
+            return true;
+        }
+        $this->get[$key] = $value;
+        return true;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllPOST(): array
     {
         return $this->post;
     }
 
-    public function setPOST(array $post): bool {
+    /**
+     * @param array $post
+     * @return bool
+     */
+    public function setAllPOST(array $post): bool
+    {
         $this->post = $post;
         return true;
     }
 
+    /**
+     * Return the value associated with the given key in the POST array
+     *
+     * @return string|array|null, null if not found
+     */
+    public function getPOST(string $key)
+    {
+        if (!isset($this->post[$key])) {
+            return null;
+        }
+        return $this->post[$key];
+    }
+
+    /**
+     * Sets the value of a POST variable given the key and value
+     *
+     * @param string $key
+     * @param string|array|null $value
+     * @return bool
+     */
+    public function setPOST(string $key, $value): bool
+    {
+        if ($value === null && isset($this->post[$key])) {
+            unset($this->post[$key]);
+            return true;
+        }
+        $this->post[$key] = $value;
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
     public function getInDebug(): bool {
         return $this->in_debug;
     }
 
+    /**
+     * @param bool $is
+     * @return bool
+     */
     public function setInDebug(bool $is): bool {
         $this->in_debug = $is;
         return true;
@@ -342,7 +520,7 @@ class Request extends Entity
         }
 
         if ($this->user === null) {
-            $this->user = \Repositories\Users::retrieve($this->user_id);
+            $this->user = (new \Queries\Users)->retrieve($this->user_id);
         }
 
         return $this->user;
@@ -397,7 +575,7 @@ class Request extends Entity
         }
 
         if ($this->property === null) {
-            $this->property = \Repositories\Properties::retrieve($this->property_id);
+            $this->property = (new \Queries\Properties)->retrieve($this->property_id);
         }
 
         return $this->property;
@@ -476,7 +654,7 @@ class Request extends Entity
         if ($finished_at === null) {
             $finished_at = microtime(true);
         }
-        $in_seconds = (float)$finished_at - $this->getStarted();
+        $in_seconds = (float)$finished_at - $this->getStartedProcessing();
         $in_microseconds = (int)($in_seconds * (10 ** 6));
         return $this->setDuration($in_microseconds);
     }
@@ -500,6 +678,10 @@ class Request extends Entity
         return true;
     }
 
+    /**
+     * @param null|string $session_id
+     * @return bool
+     */
     public function setSession(?string $session_id = null): bool
     {
         if (empty($session_id)) {
@@ -509,15 +691,20 @@ class Request extends Entity
         return $ok;
     }
 
+    /**
+     * @param array|null $get
+     * @param array|null $post
+     * @return bool
+     */
     public function setParams(array $get = null, array $post = null): bool {
         if ($get === null) {
             $get = $_GET;
         }
-        $this->setGET($get);
+        $this->setAllGET($get);
         if ($post === null) {
             $post = $_POST;
         }
-        $this->setPOST($post);
+        $this->setAllPOST($post);
         return true;
     }
 
@@ -562,7 +749,7 @@ class Request extends Entity
 
         // Set request time
         $time = (float) $info["REQUEST_TIME_FLOAT"];
-        $ok = $this->setStarted($time);
+        $ok = $this->setStartedProcessing($time);
         if (!$ok) {
             return false;
         }
@@ -648,7 +835,7 @@ class Request extends Entity
         session_write_close();
 
         // Now insert
-        \Repositories\Requests::insert($this);
+        (new \Queries\Requests)->save($this);
     }
 
     /**
@@ -663,6 +850,9 @@ class Request extends Entity
         register_shutdown_function($func, true);
     }
 
+    /**
+     * Autosets the values from the superglobals $_SERVER, $GET, $POST and the controllers from the GET.
+     */
     public function autoSet() {
         $this->setInfo();
         $this->setParams();

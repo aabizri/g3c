@@ -4,22 +4,55 @@ namespace Entities;
 
 /**
  * User est la classe entité pour les utilisateurs
- *
- * @package livewell
- * @author Alexandre A. Bizri <alexandre@bizri.fr>
+ * @package Entities
  */
 class User extends Entity
 {
     /* PROPERTIES */
 
+    /**
+     * @var int
+     */
     private $id;
+
+    /**
+     * @var string
+     */
     private $display;
+
+    /**
+     * @var string
+     */
     private $nick;
+
+    /**
+     * @var string (YYYY-MM-DD)
+     */
     private $birth_date;
+
+    /**
+     * @var float
+     */
     private $creation_date;
+
+    /**
+     * @var string
+     */
     private $email;
+
+    /**
+     * @var string
+     */
     private $password_hashed; // Password hashed & salted with BCrypt
+
+    /**
+     * @var string
+     */
     private $phone;
+
+    /**
+     * @var float
+     */
     private $last_updated;
 
     /* GETTERS AND SETTERS */
@@ -140,7 +173,7 @@ class User extends Entity
     /**
      * @return string
      */
-    public function getPasswordHashed(): string
+    public function getPassword(): string
     {
         return $this->password_hashed;
     }
@@ -149,7 +182,7 @@ class User extends Entity
      * @param string $hashed
      * @return bool
      */
-    public function setPasswordHashed(string $hashed): bool
+    public function setPassword(string $hashed): bool
     {
         $this->password_hashed = $hashed;
         return true;
@@ -220,10 +253,10 @@ class User extends Entity
      *
      * @return bool false if invalid
      */
-    public function setPassword(string $clear): bool
+    public function setPasswordClear(string $clear): bool
     {
         // Calculer le hash associé au mot de passe via BCRYPT, le salt étant généré automatiquement
-        return $this->setPasswordHashed(password_hash($clear, PASSWORD_BCRYPT));
+        return $this->setPassword(password_hash($clear, PASSWORD_BCRYPT));
     }
 
     /**
@@ -233,7 +266,7 @@ class User extends Entity
      *
      * @return bool
      */
-    public function validatePassword(string $clear): bool
+    public function verifyPassword(string $clear): bool
     {
         // Validate the password
         $ok = password_verify($clear, $this->password_hashed);

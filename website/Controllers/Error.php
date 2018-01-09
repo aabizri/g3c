@@ -29,8 +29,9 @@ class Error
         http_response_code(500);
         echo "Erreur Interne, veuillez nous excuser pour la gène occasionée";
         if ($req->getInDebug() && $t !== null) {
-            echo "<br/> <strong> Informations de débuggage : </strong><br/>";
-            throw $t;
+            echo "<br/> <strong> Informations de débuggage : </strong><br/><pre>";
+            echo $t;
+            echo "</pre";
         }
     }
 }

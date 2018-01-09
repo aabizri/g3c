@@ -6,19 +6,30 @@
  * Time: 6:17 PM
  */
 
-namespace Repositories\Exceptions;
+namespace Exceptions;
 
 
 class SetFailedException extends \Exception
 {
+    /**
+     * @var \Entities\Entity
+     */
     public $entity;
+
+    /**
+     * @var string
+     */
     public $setter;
+
+    /**
+     * @var mixed
+     */
     public $datum;
 
-    public function __construct(string $entity, string $setter, $datum)
+    public function __construct(\Entities\Entity $entity, string $setter, $datum)
     {
         // Message
-        $msg = sprintf("Setting on entity \"%s\" with setter \"%s\" with the following datum \"%s\" failed", $entity, $setter, $datum);
+        $msg = sprintf("Setting on entity \"%s\" with setter \"%s\" with the following datum [type: \"%s\"] : \"%s\" failed", get_class($entity), $setter, gettype($datum), $datum);
 
         // Construct parent
         parent::__construct($msg);

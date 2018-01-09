@@ -8,7 +8,11 @@
 
 namespace Entities;
 
-
+/**
+ * Class Measure
+ * @package Entities
+ * @todo actuator & sensor getters and setters
+ */
 class Measure extends Entity
 {
     /* PROPERTIES */
@@ -22,6 +26,11 @@ class Measure extends Entity
      * @var int
      */
     private $type_id;
+
+    /**
+     * @var MeasureType
+     */
+    private $type;
 
     /**
      * @var string date_time
@@ -79,6 +88,29 @@ class Measure extends Entity
     public function setTypeID(string $type_id): bool
     {
         $this->type_id = $type_id;
+        return true;
+    }
+
+    /**
+     * @return MeasureType
+     * @throws \Exception
+     */
+    public function getType(): MeasureType
+    {
+        if ($this->type === null) {
+            $this->type = (new \Queries\MeasureTypes)->retrieve($this->type_id);
+        }
+        return $this->type;
+    }
+
+    /**
+     * @param MeasureType $mt
+     * @return bool
+     */
+    public function setType(MeasureType $mt): bool
+    {
+        $this->type = $mt;
+        $this->type_id = $mt->getID();
         return true;
     }
 
