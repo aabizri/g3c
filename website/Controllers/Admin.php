@@ -78,7 +78,7 @@ class Admin
                 echo $output;
                 break;
             default:
-                \Helpers\DisplayManager::display("users", $users);
+                \Helpers\DisplayManager::display("users");
         }
 
         // Return
@@ -100,6 +100,9 @@ class Admin
 
         // Retrieve the user
         $queried_user = (new \Queries\Users)->retrieve($queried_user_id);
+
+        // Call the view
+        \Helpers\DisplayManager::display("user", ["user" => $queried_user]);
     }
 
     /**
@@ -107,7 +110,6 @@ class Admin
      * @param \Entities\Request $req
      */
     public function postUserInfo(\Entities\Request $req): void {
-
     }
 
     /**
@@ -121,9 +123,67 @@ class Admin
     /**
      * GET root/admin/properties
      * @param \Entities\Request $req
+     * @throws \Exception
      */
-    public function getPropertyList(\Entities\Request $req): void {
+    public function getProperties(\Entities\Request $req): void
+    {
+        // TODO: Check authorisation for viewer
 
+        // Retrieve values necessary
+        $count = $req->getGET("count") ?? 20;
+        $offset = $req->getGET("offset") ?? 0;
+        $order_by_column = $req->getGET("order_by_column") ?? "creation_date";
+        $order_by_direction = $req->getGET("order_by_direction");
+        if ($order_by_direction !== "ASC" && $order_by_direction !== "DESC") {
+            $order_by_direction = "DESC";
+        }
+
+        // Retrieve the values
+        $users = (new \Queries\Properties)
+            ->orderBy($order_by_column, $order_by_direction === "ASC")
+            ->limit($count)
+            ->offset($offset)
+            ->find();
+
+        // Return view
+        switch ($req->getGET("v")) {
+            case "json":
+                // Properties array to be encoded
+                $tbe_properties = [];
+
+                // For each property, transform it into a a minimal object
+                foreach ($users as $user) {
+                    $tbe_properties[] = (object)[
+                        "id" => $user->getID(),
+                        "name" => $user->getName(),
+                        "address" => $user->getAddress(),
+                        "creation_date" => $user->getCreationDate(),
+                    ];
+                }
+
+                // Pagination
+                $tbe_pagination = (object)[
+                    "total" => (new \Queries\Users)->select()->count(),
+                ];
+
+                // Complete object
+                $tbe = (object)[
+                    "pagination" => $tbe_pagination,
+                    "properties" => $tbe_properties,
+                ];
+
+                // Encode output
+                $output = json_encode($tbe);
+
+                // Output it & break
+                echo $output;
+                break;
+            default:
+                \Helpers\DisplayManager::display("properties");
+        }
+
+        // Return
+        return;
     }
 
     /**
