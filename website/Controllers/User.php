@@ -56,6 +56,7 @@ class User
         $display = $post["name"] . " " . $_POST["surname"];
         $phone = $post["phone"];
 
+
         if (($email_conf != $email) || ($password_clear != $password_clear_conf)){
             http_response_code(400);
             echo "La confirmation n'est pas valide !";
