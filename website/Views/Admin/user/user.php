@@ -71,23 +71,26 @@
                 return false;
             }
 
-            // Remove the event listeners to prevent any interference
-            detachEvents(element);
-
             // Retrieve the value
             let inputValue = element.value;
 
             // Get the parent
             let cell = element.parentNode;
 
+            // Push the new data value
+            let ok = pushModify(cell.parentNode.id, inputValue);
+            if (ok === false) {
+                return false;
+            }
+
+            // Remove the event listeners to prevent any interference
+            detachEvents(element);
+
             // Remove input from cell
             cell.removeChild(element);
 
             // Set the text to the input value
             cell.innerText = inputValue;
-
-            // Push the new data value
-            pushModify(cell.parentNode.id, inputValue);
 
             // Set the H3 to the input value if this is the nick
             if (cell.parentNode.id === "display") {
@@ -160,10 +163,10 @@
             };
 
             // Push
-            fetch(window.location.href, fetchOptions).then(function (response) {
+            return fetch(window.location.href, fetchOptions).then(function (response) {
                 return response;
-            }).then(function (myBlob) {
-                console.log(myBlob);
+            }).then(function (response) {
+                return (response.status === 200);
             });
         }
 
