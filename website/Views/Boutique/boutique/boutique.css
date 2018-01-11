@@ -70,7 +70,7 @@ body {
 
 
 
-#accessoire {
+#bouton2 {
 	border-radius:12px 0 12px 0;
 	background-color: rgb(217,196,177);
 	font-family: Verdana, sans-serif;
@@ -81,7 +81,7 @@ body {
 
 }
 
-#Periphériques {
+#bouton1 {
 	border-radius:12px 0 12px 0;
 	background-color: rgb(217,196,177);
 	font-family: Verdana, sans-serif;
@@ -133,9 +133,12 @@ body {
 
 #peripheriques{
 	top:160px;
+
 }
 #accessoires{
+    margin-top: 100px;
 	top:180px;
+    margin-bottom: 180px;
 }
 
 footer {
@@ -183,4 +186,16 @@ footer {
 	left: 550px;
 	bottom: 0px;
 	font-size: 60%;
+}
+
+
+.productname {
+
+    text-decoration: underline;
+
+}
+
+.product-peripheral > img {
+
+
 }

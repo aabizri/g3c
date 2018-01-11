@@ -49,11 +49,12 @@ class Product
 
     public static function getProductList(\Entities\Request $req): void
     {
-        $products_list = (new \Queries\Products)->find();
-        var_dump($products_list);
+        $products_list_peripheral = (new \Queries\Products)->filterByColumn('category', '=', 'peripheral', 'AND')->find();
+        $products_list_accessory = (new \Queries\Products)->filterByColumn('category', '=', 'accessory', 'AND')->find();
 
         // Publish data
-        $data["products"] = $products_list;
+        $data["products_peripherals"] = $products_list_peripheral;
+        $data["products_accessory"] = $products_list_accessory;
 
         // Publish view
         DisplayManager::display("boutique", $data);
