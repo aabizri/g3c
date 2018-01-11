@@ -41,7 +41,14 @@ class QuestionAnswer
             echo "Erreur" . $e;
         }
 
-        \Helpers\DisplayManager::redirectToController("faq", "QuestionsPage");
+        \Helpers\DisplayManager::display("faq");
+    }
+
+    public static function GetFAQ(\Entities\Request $req) : void
+    {
+
+        $post= $req->getAllPOST();
+
     }
 
 
