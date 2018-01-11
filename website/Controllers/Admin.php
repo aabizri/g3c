@@ -15,7 +15,8 @@ class Admin
      * GET root/admin
      * @param \Entities\Request $req
      */
-    public function getAdminDashboard(\Entities\Request $req): void {
+    public static function getAdminDashboard(\Entities\Request $req): void
+    {
 
     }
 
@@ -24,7 +25,7 @@ class Admin
      * @param \Entities\Request $req
      * @throws \Exception
      */
-    public function getUsers(\Entities\Request $req): void
+    public static function getUsers(\Entities\Request $req): void
     {
         // TODO: Check authorisation for viewer
 
@@ -90,7 +91,7 @@ class Admin
      * @param \Entities\Request $req
      * @throws \Exception
      */
-    public function getUser(\Entities\Request $req): void
+    public static function getUser(\Entities\Request $req): void
     {
         // Retrieve the user ID
         $queried_user_id = $req->getGET("uid");
@@ -158,7 +159,7 @@ class Admin
      * POST root/admin/users/{ID}
      * @param \Entities\Request $req
      */
-    public function postUser(\Entities\Request $req): void
+    public static function postUser(\Entities\Request $req): void
     {
     }
 
@@ -166,7 +167,8 @@ class Admin
      * POST root/admin/users/new
      * @param \Entities\Request $req
      */
-    public function postCreateUser(\Entities\Request $req): void {
+    public static function postCreateUser(\Entities\Request $req): void
+    {
 
     }
 
@@ -175,7 +177,7 @@ class Admin
      * @param \Entities\Request $req
      * @throws \Exception
      */
-    public function getProperties(\Entities\Request $req): void
+    public static function getProperties(\Entities\Request $req): void
     {
         // TODO: Check authorisation for viewer
 
@@ -240,7 +242,8 @@ class Admin
      * GET root/admin/properties/{ID}
      * @param \Entities\Request $req
      */
-    public function getProperty(\Entities\Request $req): void {
+    public static function getProperty(\Entities\Request $req): void
+    {
 
     }
 
@@ -248,7 +251,8 @@ class Admin
      * POST root/admin/properties/{ID}
      * @param \Entities\Request $req
      */
-    public function postProperty(\Entities\Request $req): void {
+    public static function postProperty(\Entities\Request $req): void
+    {
 
     }
 
@@ -256,7 +260,8 @@ class Admin
      * POST root/admin/properties/new
      * @param \Entities\Request $req
      */
-    public function postCreateProperty(\Entities\Request $req): void {
+    public static function postCreateProperty(\Entities\Request $req): void
+    {
 
     }
 
@@ -264,7 +269,8 @@ class Admin
      * GET root/admin/peripherals
      * @param \Entities\Request $req
      */
-    public function getPeripheralList(\Entities\Request $req): void {
+    public static function getPeripheralList(\Entities\Request $req): void
+    {
 
     }
 
@@ -272,7 +278,8 @@ class Admin
      * GET root/admin/shop/products
      * @param \Entities\Request $req
      */
-    public function getProductList(\Entities\Request $req): void {
+    public static function getProductList(\Entities\Request $req): void
+    {
 
     }
 
