@@ -1,11 +1,7 @@
-<?php
-$queried_user_metadata = $data["queried_user_metadata"];
-$queried_user_data = $data["queried_user_data"];
-?>
 <main>
     <h1>Console d'administration</h1>
     <h2>Vue de l'utilisateur</h2>
-    <h3><?= $queried_user_data["display"] ?></h3>
+    <h3></h3>
 
     <!-- TAbleau de données -->
     <table>
@@ -16,32 +12,16 @@ $queried_user_data = $data["queried_user_data"];
         </tr>
         </thead>
         <tbody>
-        <?php
-        foreach ($queried_user_data as $datum_index => $datum_value) {
-            // La ligne
-            $row_id = 'row_' . $datum_index;
-            echo '<tr id="' . $row_id . '">' . "\n";
-
-            // L'index (intitulé)
-            $index_class = 'index';
-            echo '<td class="' . $index_class . '">' . "\n";
-            echo $queried_user_metadata[$datum_index];
-            echo '</td>';
-
-            // La valeur
-            $value_class = 'value';
-            echo '<td class="' . $value_class . '">' . "\n";
-            echo $datum_value;
-            echo '</td>' . "\n";
-
-            echo '</tr>' . "\n";
-        }
-        ?>
         </tbody>
     </table>
 
     <script>
         function startModify() {
+            // If immutable, do not modify
+            if (data[this.parentNode.id].type === "immutable") {
+                return false;
+            }
+
             // Store previous value
             let previousValue = this.innerText;
 
@@ -54,6 +34,7 @@ $queried_user_data = $data["queried_user_data"];
             // Add an input
             let input = document.createElement("input");
             input.value = previousValue;
+            input.type = data[this.parentNode.id].type;
 
             // Append it
             this.appendChild(input);
@@ -62,10 +43,10 @@ $queried_user_data = $data["queried_user_data"];
             input.select();
 
             // Add event handlers
-            attachEvents(input, previousValue);
+            attachEventsToInput(input, previousValue);
         }
 
-        function attachEvents(input, previousValue) {
+        function attachEventsToInput(input, previousValue) {
             input.onkeypress = function () {
                 if (event.key == "Enter") {
                     return commitModify(this);
@@ -85,6 +66,11 @@ $queried_user_data = $data["queried_user_data"];
 
         // Commit modification
         function commitModify(element) {
+            // Check that the value is valid
+            if (element.checkValidity() === false) {
+                return false;
+            }
+
             // Remove the event listeners to prevent any interference
             detachEvents(element);
 
@@ -99,6 +85,14 @@ $queried_user_data = $data["queried_user_data"];
 
             // Set the text to the input value
             cell.innerText = inputValue;
+
+            // Push the new data value
+            pushModify(cell.parentNode.id, inputValue);
+
+            // Set the H3 to the input value if this is the nick
+            if (cell.parentNode.id === "display") {
+                document.getElementsByTagName("h3")[0].innerHTML = inputValue;
+            }
 
             // Attach startModify onclick
             cell.onclick = startModify;
@@ -122,11 +116,60 @@ $queried_user_data = $data["queried_user_data"];
             cell.onclick = startModify;
         }
 
-        let rows = document.getElementsByTagName("tbody")[0].children;
-        for (let i = 0; i < rows.length; i++) {
-            let row = rows[i];
-            let valueCell = row.children[1];
-            valueCell.onclick = startModify;
+        // Updates the table given json data
+        function updateTable(data) {
+            let tbody = document.getElementsByTagName("tbody")[0];
+
+            // For each element in the table, create a row and add it to the tbody
+            for (index in data) {
+                // Create row
+                row = document.createElement("tr");
+                row.setAttribute("id", index);
+
+                // Title
+                titleCell = document.createElement("td");
+                titleCell.setAttribute("class", "title");
+                titleCell.innerText = data[index].title;
+                row.appendChild(titleCell);
+
+                // Value
+                valueCell = document.createElement("td");
+                valueCell.setAttribute("class", "value");
+                valueCell.addEventListener("click", startModify);
+                valueCell.innerText = data[index].value;
+                row.appendChild(valueCell);
+
+                // Append the row to the table
+                tbody.appendChild(row);
+            }
         }
+
+        // Push
+        function pushModify(key, value) {
+            console.log("PUSHING (NOT)");
+            console.log(key, value);
+
+            // Create form
+            let form = new FormData;
+            form.set(key, value);
+
+            // Fetch options
+            let fetchOptions = {
+                method: "POST",
+                body: form,
+            };
+
+            // Push
+            fetch(window.location.href, fetchOptions).then(function (response) {
+                return response;
+            }).then(function (myBlob) {
+                console.log(myBlob);
+            });
+        }
+
+        // Data populated in PHP, but set via JS
+        let data = <?=$data["json"]?>;
+        updateTable(data);
+        document.getElementsByTagName("h3")[0].innerHTML = data["display"].value;
     </script>
 </main>

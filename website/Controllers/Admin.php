@@ -101,36 +101,54 @@ class Admin
         // Retrieve the user
         $queried_user = (new \Queries\Users)->retrieve($queried_user_id);
 
-        // Retrieve the metadata
-        $queried_user_metadata = [
-            "id" => "ID",
-            "display" => "Display Name",
-            "nick" => "Nickname",
-            "email" => "E-Mail",
-            "phone" => "Phone",
-            "birth_date" => "Birth Date",
-            "creation_date" => "Creation Date",
-            "last_updated" => "Last Update Date",
+        // Data to be encoded
+        $tbe = (object)[
+            "id" => (object)[
+                "title" => "ID",
+                "value" => $queried_user->getID(),
+                "type" => "immutable"],
+            "display" => (object)[
+                "title" => "Display Name",
+                "value" => $queried_user->getDisplay(),
+                "type" => "text"],
+            "nick" => (object)[
+                "title" => "Nickname",
+                "value" => $queried_user->getNick(),
+                "type" => "text"],
+            "email" => (object)[
+                "title" => "E-Mail",
+                "value" => $queried_user->getEmail(),
+                "type" => "email"],
+            "phone" => (object)[
+                "title" => "Phone",
+                "value" => $queried_user->getPhone(),
+                "type" => "text"],
+            "birth_date" => (object)[
+                "title" => "Birth Date",
+                "value" => $queried_user->getBirthDate(),
+                "type" => "date"],
+            "creation_date" => (object)[
+                "title" => "Creation Date",
+                "value" => $queried_user->getCreationDate(),
+                "type" => "immutable"],
+            "last_updated" => (object)[
+                "title" => "Last Updated",
+                "value" => $queried_user->getLastUpdated(),
+                "type" => "immutable"],
         ];
 
-        // Retrieve the data
-        $queried_user_data = $queried_user->getMultiple(array_keys($queried_user_metadata));
+        // Create the JSON
+        $output = json_encode($tbe);
 
         // Call the view
         switch ($req->getGET("v")) {
             case "json":
-                $tbe = (object)[
-                    "metadata" => $queried_user_metadata,
-                    "data" => $queried_user_data,
-                ];
-
-                // Encode
-                $output = json_encode($tbe);
+                echo $output;
                 break;
             default:
                 $data_for_php_view = [
-                    "queried_user_metadata" => $queried_user_metadata,
-                    "queried_user_data" => $queried_user_data];
+                    "json" => $output,
+                ];
                 \Helpers\DisplayManager::display("user", $data_for_php_view);
         }
 
@@ -140,7 +158,8 @@ class Admin
      * POST root/admin/users/{ID}
      * @param \Entities\Request $req
      */
-    public function postUserInfo(\Entities\Request $req): void {
+    public function postUser(\Entities\Request $req): void
+    {
     }
 
     /**
