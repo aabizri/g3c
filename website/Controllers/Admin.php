@@ -101,8 +101,39 @@ class Admin
         // Retrieve the user
         $queried_user = (new \Queries\Users)->retrieve($queried_user_id);
 
+        // Retrieve the metadata
+        $queried_user_metadata = [
+            "id" => "ID",
+            "display" => "Display Name",
+            "nick" => "Nickname",
+            "email" => "E-Mail",
+            "phone" => "Phone",
+            "birth_date" => "Birth Date",
+            "creation_date" => "Creation Date",
+            "last_updated" => "Last Update Date",
+        ];
+
+        // Retrieve the data
+        $queried_user_data = $queried_user->getMultiple(array_keys($queried_user_metadata));
+
         // Call the view
-        \Helpers\DisplayManager::display("user", ["user" => $queried_user]);
+        switch ($req->getGET("v")) {
+            case "json":
+                $tbe = (object)[
+                    "metadata" => $queried_user_metadata,
+                    "data" => $queried_user_data,
+                ];
+
+                // Encode
+                $output = json_encode($tbe);
+                break;
+            default:
+                $data_for_php_view = [
+                    "queried_user_metadata" => $queried_user_metadata,
+                    "queried_user_data" => $queried_user_data];
+                \Helpers\DisplayManager::display("user", $data_for_php_view);
+        }
+
     }
 
     /**
