@@ -28,6 +28,8 @@ class DisplayManager
         "mesperipheriques"=> "Peripherals",
         "mysessions" => "Users",
         "majmdpreussie" => "Users",
+        "cgu" => "CGU",
+        "modificationcgu" => "CGU",
     ];
 
     private static function subroot(): string {

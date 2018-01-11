@@ -521,6 +521,19 @@ CREATE TABLE `sensors` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `cgu`
+--
+
+CREATE TABLE `cgu` (
+  `id` int(11) NOT NULL,
+  `text` text DEFAULT NULL ,
+  `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+
+--
 -- Structure de la table `sessions`
 --
 
