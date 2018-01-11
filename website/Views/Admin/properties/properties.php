@@ -6,7 +6,7 @@
 
     <h1>Console d'administration</h1>
     <h2>Liste des propriétés</h2>
-    &
+
     <div>
         <label for="count-input">Nombre de propriétés à afficher</label>
         <select id="count-input" name="cars" onclick="formSubmit()">
