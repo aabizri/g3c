@@ -3,7 +3,6 @@
     <br/>
     <br/>
 
-
     <h1>Console d'administration</h1>
     <h2>Liste des utilisateurs</h2>
 
@@ -54,7 +53,7 @@
                 let row = document.createElement("tr");
 
                 // Attributes
-                row.setAttribute("onclick", "window.location.href = \"index.html?c=Admin&a=User&uid=" + value.id + "\"");
+                row.setAttribute("onclick", "window.location.href = \"index.php?c=Admin&a=User&uid=" + value.id + "\"");
                 row.setAttribute("title", "Obtenir plus d'informations sur l'utilisateur \"" + value.nick + "\"");
 
                 // Deal with them
