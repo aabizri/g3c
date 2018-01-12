@@ -8,7 +8,7 @@
 
             <h2 id="nompagepieces">Gestion de mes pièces</h2>
 
-          <form method="post" action="index.php?c=Room&a=getRooms" id="choixsalle">
+          <form method="post" action="index.php?c=Room&a=Rooms" id="choixsalle">
             <select name="Choix de la salle">
                 <?php
                     if (empty($data["rooms"])) {

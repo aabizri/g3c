@@ -7,8 +7,6 @@
  */
 namespace Queries;
 
-require_once("../Helpers/autoloader.php");
-
 /**
  * Class Rooms
  * @package Queries
@@ -17,11 +15,11 @@ class Rooms extends Query
 {
     /* COMMON CONSTANTS */
     private const table = "rooms";
-    private const columns = ["id" => "",
-                             "property_id" => "",
-                             "name" => "",
-                             "creation_date" => "",
-                             "last_updated" => "timestamp"];
+    private const columns = ["id" => ["id", "gen-on-insert"],
+                             "property_id" => [],
+                             "name" => [],
+                             "creation_date" => ["timestamp"],
+                             "last_updated" => ["timestamp"]];
     private const entity_class_name = "\Entities\Room";
 
     /**
