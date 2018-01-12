@@ -15,6 +15,27 @@ class Property
      * Create a property
      * @param Entities\Request $req
      */
+
+    public static function postJoin(\Entities\Request $req): void
+    {
+        // Récupere le post
+        $post = $req->getAllPOST();
+
+        // Check if the data exists
+        $required = ["address", "name"];
+        foreach ($required as $key) {
+            if (empty($post[$key])) {
+                echo "Missing key: " . $key;
+                return;
+            }
+        }
+
+        // Create the entit
+        // Include la page de confirmation
+        \Helpers\DisplayManager::redirectToController("Property", "Dashboard");
+    }
+
+
     public function postCreate(\Entities\Request $req): void
     {
         // Check if the data exists
@@ -42,6 +63,8 @@ class Property
             echo "Error inserting property" . $e;
         }
     }
+
+
 }
 
 
