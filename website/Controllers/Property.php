@@ -70,6 +70,11 @@ class Property
         \Helpers\DisplayManager::display("mesproprietes");
     }
 
+    public static function getNewProperty(\Entities\Request $req): void
+    {
+        \Helpers\DisplayManager::display("nouvellepropriete");
+    }
+
 }
 
 

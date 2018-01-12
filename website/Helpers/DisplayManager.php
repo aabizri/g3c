@@ -28,6 +28,7 @@ class DisplayManager
         "mesperipheriques"=> "Peripherals",
         "mysessions" => "Users",
         "mesproprietes" => "Properties",
+        "nouvellepropriete" => "Properties",
     ];
 
     private static function subroot(): string {
