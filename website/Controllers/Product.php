@@ -57,6 +57,6 @@ class Product
         $data["products_accessory"] = $products_list_accessory;
 
         // Publish view
-        DisplayManager::display("boutique", $data);
+        DisplayManager::display("products", $data);
     }
 }
