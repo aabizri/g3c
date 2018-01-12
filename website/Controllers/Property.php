@@ -65,6 +65,11 @@ class Property
     }
 
 
+    public static function getMyProperties(\Entities\Request $req): void
+    {
+        \Helpers\DisplayManager::display("mesproprietes");
+    }
+
 }
 
 
