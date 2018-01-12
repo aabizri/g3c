@@ -3,8 +3,8 @@
        <h2 id="titre">Conditions générales d'utilisation</h2>
        <p>
            <?php
-            $cgu = $data["cgu"];
-            echo $cgu->getText()
+               $cgu = $data["cgu"];
+               echo $cgu->getText()
            ?>
        </p>
    </div>

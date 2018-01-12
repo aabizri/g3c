@@ -26,7 +26,12 @@ class CGU
 
     public static function getModificateCGUPage(\Entities\Request $req){
 
-        DisplayManager::display("modificationcgu");
+        //On récupère les cgu
+        $cgu = (new \Queries\CGU) ->orderBy("id", true) -> findOne();
+
+        $data["cgu"] = $cgu;
+
+        DisplayManager::display("modificationcgu" , $data);
     }
 
     public static function postModificateCGU (\Entities\Request $req){
