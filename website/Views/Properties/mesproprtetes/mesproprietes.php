@@ -21,7 +21,7 @@
         //echo "<li><button type="button" id=$property><img scr="" height="100px" width="100px" ".$property."/></button></li>";
         ?>
 
-        <li id="ajouter"><button type="button" id="ajout" <!--onclick="<?//=\Helpers\DisplayManager::absolutifyURL("index.php?c=Properties&a=");?>"--><img
+        <li id="ajouter"><button type="button" id="ajout" onclick="window.location.href = <?=\Helpers\DisplayManager::absolutifyURL("index.php?c=Propertiy&a=");?>"<img
                         src="plus.png"
                         alt="Ajouter une proptiété"
                         height="100px"
