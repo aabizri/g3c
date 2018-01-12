@@ -28,8 +28,8 @@
                         echo '<tr>
                               <td>'. $u->getNick() .'</td>
                               <td>
-                                  <form action="index.php?c=Property&a=DeleteUserFromProperty&pid=1" method="post" >
-                                      <input type="hidden"  name="nickname" value="'. $u->getNick() .'" />
+                                  <form action="index.php?c=Property&a=DeleteUserFromProperty&pid=1&debug=true" method="post" >
+                                      <input type="hidden"  name="user_id" value="'. $u->getID() .'" />    
                                       <input type="submit" value="Supprimer"/>
                                   </form>
                               </td>
@@ -42,7 +42,7 @@
 
     <div id="creerutilisateur">
         <h4 id="titrecreerutilisateur">Ajouter un utilisateur à la propriété</h4>
-        <form method="post" action="index.php?c=Property&a=NewPropertyUser&pid=1">
+        <form method="post" action="index.php?c=Property&a=NewPropertyUser&pid=1&debug=true">
             <p>
                 <label>Login</label>: <input id="formdroit" type="text" name="nickname"/>
             </p><br>
