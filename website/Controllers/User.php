@@ -239,17 +239,17 @@ class User
 
         //Vérification de l'ancien mdp
         if ($user->verifyPassword($ancienmdp) === false) {
-            DisplayManager::display(user, informations );
+            \Helpers\DisplayManager::redirectToController(User, Informations );
             return;
         }
 
         if ($ancienmdp === $newmdp){
-            DisplayManager::display(user, informations );
+            \Helpers\DisplayManager::redirectToController(User, Informations );
             return;
         }
 
         if ($newmdp !== $cnewmdp){
-            DisplayManager::display(user, informations );
+            \Helpers\DisplayManager::redirectToController(User, Informations );
             return;
         }
 
