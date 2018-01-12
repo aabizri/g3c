@@ -8,15 +8,21 @@
 
             <h2 id="nompagepieces">Gestion de mes pièces</h2>
 
-          <form method="post" action="index.php?c=Room&a=Rooms" id="choixsalle">
-            <select name="Choix de la salle">
+
+
+          <?php
+          if (!empty($data["rooms"])):
+          ?>
+
+          <form method="get" action="index.php" id="choixsalle">
+              <input type="hidden" name="c" value="Room"/>
+              <input type="hidden" name="a" value="LastMeasure"/>
+
+            <select name="room">
                 <?php
-                    if (empty($data["rooms"])) {
-                        die ("No rooms indicated");
-                    }
                     $rooms = $data["rooms"];
                     foreach ($rooms as $room) {
-                        echo "<option value=".$room->getID()."\">".$room->getName()."/>";
+                        echo "<option value=".$room->getID()."\>".$room->getName();
                     }
                 ?>
             </select>
@@ -25,29 +31,10 @@
 
           </form>
 
-            <div id="vueinformation">
-            <h3>Informations sur la pièce</h3>
-                <div id="informationspiece">
-                    <p id="temperature"><strong>Température</strong><br><br>20°C</p>
-                    <p id="humidite"><strong>Humidité</strong><br><br>20%</p>
-                    <p id="luminosite"><strong>Lumisosité</strong><br><br>70%</p>
-                    <p id="qualiteair"><strong>Qualité de l'air</strong><br><br>Bonne</p>
-                    <p id="presence"><strong>Présence</strong><br><br>1</p>
-                </div>
-            </div>
+              <?php
+          endif
+          ?>
 
-            <div id="action">
-            <h3>Actions</h3>
-                <form action="">
-                <div id="actionspieces">
-                    <p>Température voulue(°C)<br><br><input type="number" class="action" name="temperaturevoulue" /><br><br><input type="submit" value="Valider" id="valider" /></p>
-                    <p>Luminosité voulue(%)<br><br><input type="number"class="action" name="luminositevoulue"/><br><br><input type="submit" value="Valider" id="valider"/></p>
-                    <p>Ouvrir/Fermer volets<br><br><input type="button" class="action" value="Ouvrir" onclick="Fermer"/><br>
-                        <input type="button" class="action" value="Fermer" onclick="Fermer" >
-                    </p>
-                </div>
-                </form>
-            </div>
 
             <div id="ajouterpieces">
                 <h3>Ajouter une pièce</h3>

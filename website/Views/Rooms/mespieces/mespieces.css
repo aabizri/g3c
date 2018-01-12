@@ -34,45 +34,8 @@ body {
     width: 100%;
 }
 
+
 /*Mes pièces*/
-
-#nompagepieces
-{
-	position: relative;
-	top: 80px;
-	left:20%;
-}
-
-#informationspiece
-{
-	display: flex;
-    position: relative;
-    justify-content: center;
-	font-size: 15px;
-}
-
-#temperature, #luminosite, #humidite, #qualiteair, #presence
-{
-    width: 15%;
-    padding-bottom: 20px;
-	margin: 10px;
-	border: 1px solid #955252 ;
-	background-color: rgb(217,196,177);
-	border-radius: 5px;;
-}
-
-
-#vueinformation
-{
-	position: relative;
-	left:23%;
-	top: 160px;
-	border: 1px solid #955252;
-	border-radius: 5px;
-	width:70%;
-	background-color: rgb(217,196,177);
-	text-align: center;
-}
 
 #choixsalle
 {
@@ -81,72 +44,30 @@ body {
 	left:20%;
 }
 
-#choixsalle input,#choixsalle select
-{
-    border-radius:1px;
-    font-size: medium;
+#choixsalle input,#choixsalle select {
+	border-radius: 1px;
+	font-size: medium;
 }
 
-#action
+#nompagepieces
 {
 	position: relative;
-	left: 23%;
-	top: 200px;
-	border: 1px solid #955252;
-	border-radius: 5px;
-	width: 70%;
-	background-color: rgb(217,196,177);
-	text-align: center;
+	top: 80px;
+	left:20%;
 }
 
-#actionspieces
-{
-	display: flex;
-    justify-content: center;
-	padding: 10px 40px;
-}
-
-#actionspieces p
-{
-    width: 25%;
-    padding-top: 10px;
-    padding-bottom: 50px;
-    margin: 10px;
-    border: 1px solid #955252 ;
-	background-color: rgb(217,196,177);
-    border-radius: 5px;
-}
-
-#actionspieces input
-{
-    margin-bottom: 5px;
-}
-
-.action{
-    height: 50%;
-    width: 40%;
-    font-size: large;
-    text-align: center;
-    border-radius:5px;
-}
-
-#valider
-{
-    height: 20px;
-    border-radius: 3px;
-}
 
 #ajouterpieces
 {
 	position: relative;
-	left: 23%;
-	top: 250px;
+	left: 20%;
+	top: 150px;
 	border: 1px solid #955252;
 	border-radius: 5px;
 	width: 70%;
 	background-color: rgb(217,196,177);
 	text-align: center;
-    margin-bottom: 100px;
+    margin-bottom: 80px;
 }
 
 #champsajouterpiece

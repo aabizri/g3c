@@ -7,6 +7,7 @@
  */
 
 namespace Queries;
+use Entities\Entity;
 use Entities\Measure;
 
 /**
@@ -65,38 +66,23 @@ class Measures extends Query
      * @return Measure
      */
 
-    public function filterBySensorID(string $operator, int $sensor_id):self
+    public function filterBySensor(string $operator, \Entities\Sensor $sensor):self
     {
-        return $this->filterByColumn( "sensor_id", $operator, $sensor_id);
+        return $this->filterByEntity( "sensor_id", $operator, $sensor);
     }
 
     /**
-     * @param \Entities\Measure $req
+     * @param \Entities\Measure $sensor
      * @return array of room
      * @throw \Exception
      */
 
 
-    public function GetLastMeasure(\Entities\Measure $req): void
+    public function filterLastMeasureBySensor(string $operator, \Entities\Sensor $sensor): self
 
     {
-        // Si la requête n'est pas associée à un capteur, retourner une erreur
-        $sensor_id = $req -> getSensorID();
-        if (empty($sensor_id)) {
-            http_response_code(403);
-            echo "Requête concernant une propriété mais non associée à une propriété, erreur";
-            return;
-        }
-
-        //Récuperer la dernière mesure
-
-        $last= (new \Queries\Measures)
-            ->filterBySensorID("=",$sensor_id)
-            ->orderBy("date_time",false)
-            ->limit(1)
-            ->findOne();
-
-        \Helpers\DisplayManager::display("mespieces", ["last" => $last]);
+        return $this  -> filterBySensor($operator, $sensor)
+                      ->orderBy("date_time",false);
     }
 
     /**

@@ -58,7 +58,7 @@ class Room
      * @throws \Exception
      * @return array of rooms
      */
-    public function getRooms(\Entities\Room $req): void
+    public function getRooms(\Entities\Request $req): void
     {
         // Si la requête n'est pas associée à une propriété, retourner une erreur
         $property_id = $req->getPropertyID();
@@ -74,5 +74,79 @@ class Room
             ->find();
 
         \Helpers\DisplayManager::display("mespieces", ["rooms" => $rooms]);
+    }
+
+    /**
+     * Récupère la liste des dernières mesures des capteurs d'une pièce
+     * @param Entities\Request $req
+     * @throws \Exception
+     * @return array of last measure
+     */
+
+    public function getLastMeasure(\Entities\Request $req): void
+    {
+        //On récupère l'id de la pièce
+        $rid = $req
+            ->getGET("room");
+
+
+        if(empty($rid))
+        {
+            // Si la requête n'est pas associée à une pièce, retourner une erreur
+            http_response_code(400);
+            echo "Paramètre d'ID de pièce absent";
+            return;
+        }
+
+
+        $room_sensors=[];
+        $peripherals=[];
+        $last_measures=[];
+
+        //On récupère tout les périphériques d'une pièce.
+        $peripherals=(new \Queries\Peripherals)
+            ->filterByRoomID('=', $rid)
+            ->find();
+
+
+        /**
+         *   Pour chaque péripérique on récupère son UUID,
+         *   qui permet de lister les capteurs liés et les ajouter à la liste des capteur de la pièce
+         * */
+        foreach ($peripherals as $peripheral)
+        {
+            // Récupère la liste des capteurs associés au péiphérique
+            $room_sensors_for_peripheral=(new \Queries\Sensors)
+                ->filterbyPeripheral('=',$peripheral)
+                ->find();
+
+            // Si cette liste est vide, sauter au prochain
+            if (count($room_sensors_for_peripheral) === 0) {
+                continue;
+            }
+
+            // Sinon, push les valeurs
+            array_push($room_sensors,...$room_sensors_for_peripheral);
+        }
+
+        /**
+         * Pour chacun des capteurs on récupère la dernière mesure sous forme d'entité
+         */
+        foreach ($room_sensors as $sensor)
+        {
+            $last_measure_for_sensor=(new \Queries\Measures)
+                ->filterLastMeasureBySensor('=',$sensor)
+                ->findOne();
+            $last_measures[$sensor->getID()] = $last_measure_for_sensor;
+        }
+
+        $count=[];
+        $data["last_measures"] = $last_measures;
+        $pid = (new \Queries\Rooms)->retrieve($rid)->getPropertyID();
+        $data["rooms"] = (new \Queries\Rooms)->filterByPropertyID("=",$pid)->find();
+        $data["count"]= $count;
+
+        \Helpers\DisplayManager::display("mapiece",$data);
+
     }
 }
