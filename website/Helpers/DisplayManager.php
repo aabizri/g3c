@@ -28,7 +28,7 @@ class DisplayManager
         "mesperipheriques"=> "Peripherals",
         "mysessions" => "Users",
         "majmdpreussie" => "Users",
-        "mesfiltres" => "Filtres",
+        "mesfiltres" => "Filters",
     ];
 
     private static function subroot(): string {
