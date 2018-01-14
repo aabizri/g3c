@@ -8,6 +8,25 @@
         <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
     </ul>
 
-    
+    <div id="selectionsalle">
+        <h2>Choix de la salle</h2>
+        <form id="sallepropriété">
+            <?php
+            foreach ($data["salles"] as $salle)
+                echo ""
+            ?>
+        </form>
+    </div>
+
+    <div id="filtres">
+    <?php
+        foreach ($data["measure_type"] as $measure_type){
+            echo '<h2>'.$measure_type->getName().' voulue</h2>
+                  <form method="post" action="">
+                    <input type="number" />
+                  </form>';
+        }
+    ?>
+    </div>
 
 </main>

@@ -36,5 +36,13 @@ class Filters extends Query
         parent::__construct(self::table, self::columns, self::entity_class_name);
     }
 
-
+    /**
+     * @param \Entities\Sensor $sensor
+     * @return bool
+     * @throws \Exception
+     */
+    public function save(\Entities\Sensor $sensor): bool
+    {
+        return parent::saveEntity($sensor);
+    }
 }

@@ -25,7 +25,7 @@ class Filter extends Entity
     /**
      * @return mixed
      */
-    public function getId()
+    public function getID() : int
     {
         return $this->id;
     }
@@ -33,7 +33,7 @@ class Filter extends Entity
     /**
      * @param mixed $id
      */
-    public function setId($id): bool
+    public function setID($id): bool
     {
         $this->id = $id;
         return true;
@@ -42,7 +42,7 @@ class Filter extends Entity
     /**
      * @return mixed
      */
-    public function getPropertyId()
+    public function getPropertyID() : int
     {
         return $this->property_id;
     }
@@ -50,7 +50,7 @@ class Filter extends Entity
     /**
      * @param mixed $property_id
      */
-    public function setPropertyId($property_id): bool
+    public function setPropertyID($property_id): bool
     {
         $this->property_id = $property_id;
         return true;
@@ -59,7 +59,7 @@ class Filter extends Entity
     /**
      * @return mixed
      */
-    public function getSensorId()
+    public function getSensorID() : int
     {
         return $this->sensor_id;
     }
@@ -67,7 +67,7 @@ class Filter extends Entity
     /**
      * @param mixed $sensor_id
      */
-    public function setSensorId($sensor_id): bool
+    public function setSensorID($sensor_id): bool
     {
         $this->sensor_id = $sensor_id;
         return true;
@@ -76,7 +76,7 @@ class Filter extends Entity
     /**
      * @return mixed
      */
-    public function getActuatorId()
+    public function getActuatorID() : int
     {
         return $this->actuator_id;
     }
@@ -84,7 +84,7 @@ class Filter extends Entity
     /**
      * @param mixed $actuator_id
      */
-    public function setActuatorId($actuator_id): bool
+    public function setActuatorID($actuator_id): bool
     {
         $this->actuator_id = $actuator_id;
         return true;
@@ -93,7 +93,7 @@ class Filter extends Entity
     /**
      * @return mixed
      */
-    public function getName()
+    public function getName() : ?string
     {
         return $this->name;
     }
@@ -110,7 +110,7 @@ class Filter extends Entity
     /**
      * @return mixed
      */
-    public function getOperator()
+    public function getOperator() : ?string
     {
         return $this->operator;
     }
@@ -127,7 +127,7 @@ class Filter extends Entity
     /**
      * @return mixed
      */
-    public function getThreshold()
+    public function getThreshold() : int
     {
         return $this->threshold;
     }
@@ -144,7 +144,7 @@ class Filter extends Entity
     /**
      * @return mixed
      */
-    public function getActuatorParams()
+    public function getActuatorParams() : ?string
     {
         return $this->actuator_params;
     }
@@ -161,7 +161,7 @@ class Filter extends Entity
     /**
      * @return mixed
      */
-    public function getCreationDate()
+    public function getCreationDate() : float
     {
         return $this->creation_date;
     }
@@ -178,7 +178,7 @@ class Filter extends Entity
     /**
      * @return mixed
      */
-    public function getLastUpdated()
+    public function getLastUpdated() : float
     {
         return $this->last_updated;
     }

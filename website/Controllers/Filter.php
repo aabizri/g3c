@@ -25,52 +25,43 @@ class Filter
 
         //On recupère les peripherals liés à la propriété
         $property_room_peripherals = (new \Queries\Peripherals)
-                -> filterByRoomID("=", $room_id)
-                -> filterByPropertyID("=", $property_id)
-                -> find();
-        var_dump($property_room_peripherals);
-        return;
+            -> filterByRoomID("=", $room_id)
+            -> find();
 
         //On recupère l'UUID de chaque peripherique
         $peripherals_UUID = [];
         foreach ($property_room_peripherals as $prp) {
-            $peripherals_UUID = $prp -> getUUID();
+            $peripherals_UUID[] = $prp -> getUUID();
         }
 
         //Grace a l'UUID, on recupère tous les capteurs de la salle
         $sensors = [];
         foreach ($peripherals_UUID as $pUUID) {
-            (new \Queries\Sensors)
-                -> filterByUUID($pUUID)
+            $sensor = (new \Queries\Sensors)
+                -> filterByPeripheralUUID("=", $pUUID)
                 -> find();
+            foreach ($sensor as $s) {
+                $sensors[] = $s;
+            }
         }
 
         //Grace aux entités capteurs, on recupère l'id des types de mesures de chaque capteur
         $measures_type_id = [];
-        foreach ($sensors as $s){
-            $s -> getMeasureTypeID();
-            $measures_type_id[]= $s;
+        foreach ($sensors as $sens) {
+            $measures_type_id[] = $sens->getMeasureTypeID();
         }
 
-        //On recupère les id des measure
-        $measures_id = [];
-        foreach ($sensors as $s){
-            $s -> getMeasureID();
-            $measures_id[] = $s;
-        }
-
-        //Enfin on recupère l'entité measure_type et l'entité measure
+        //Enfin on recupère l'entité measure_type
         $measures_type = [];
-        $measure = [];
         foreach ($measures_type_id as $mtid) {
-            $measures_type[] = (new \Queries\MeasureTypes)-> retrieve($mtid);
-        }
-        foreach ($measures_id as $mid){
-            $measure[] = (new \Queries\Measures) -> retrieve($mid);
+            $measure = (new \Queries\MeasureTypes)-> retrieve($mtid);
+            $measures_type[] = $measure;
         }
 
         //On prepare le peuplement de la view
         $data["measure_type"] = $measures_type;
+
+        //On affiche toutes les salles diponibles
 
         //On envoie les données vers la page
         DisplayManager::display("mesfiltres", $data);
@@ -86,6 +77,24 @@ class Filter
         //TODO qu'est ce qu'un opérateur ? < > = ?
         $threshold = $post["threshold"];
         $last_measure = $post["last_measure"];
+
+        if ($last_measure < $threshold){
+            $operator = ">";
+        }
+        else if ($last_measure > $threshold){
+            $operator = "<";
+        }
+        $operator = "=";
+
+        $f = (new \Entities\Filter);
+        $f -> setPropertyID();
+        $f -> setSensorID();
+        $f -> setActuatorID();
+        $f -> setName();
+        $f -> setOperator();
+        $f -> setThreshold();
+        //$f -> setActuatorParams() C'est quoi?
+        (new \Queries\Filters) -> save($f);
 
     }
 }
