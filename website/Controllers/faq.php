@@ -12,9 +12,15 @@ class QuestionAnswer
 
     public static function getFAQ (\Entities\Request $req):void
     {
-        $req = (new \Queries\faq) ->retrieve(id);
+        $faq = (new \Queries\faq) ->orderBy("id", true) -> retrieve($id);
 
-        
+        $data["faq"] = $faq;
+
+        DisplayManager::display("faq", $data);
+    }
+
+
+
 
 
 
