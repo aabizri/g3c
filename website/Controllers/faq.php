@@ -9,47 +9,19 @@ use Entities;
 class QuestionAnswer
 {
 
-    //ajouter une question et une réponse
 
-    public static function postAddQuestionAnswer(\Entities\Request $req): void
+    public static function getFAQ (\Entities\Request $req):void
     {
-
-        $post = $req->getAllPOST();
-
-        // Check if the data exists
-        $required = ["id", "question", "answer", "creation_date"];
-        foreach ($required as $key) {
-            if (empty($post[$key])) {
-                echo "Missing key: " . $key;
-                return;
-            }
+        // Si la requête n'est pas associée à une question, retourner une erreur
+        $id = $req->getID();
+        if (empty($id)) {
+            echo "Requête concernant une propriété mais non associée à une propriété, erreur";
+            return;
         }
 
-        /*Assigne les valeurs*/
-        $question = $post["question"];
-        $answer= $post["answer"];
+        //mettre le retrieve pour affichage question/reponse
 
-        /*Créer l'entité*/
-        $q = new Entities\QuestionAnswer();
-        $q->setQuestion($question);
-        $q->setAnswer($answer);
-
-        /*Insérer l'entité dans la bdd*/
-        try {
-            Repositories\QuestionAnswer::insert($q);
-        } catch (\Exception $e) {
-            echo "Erreur" . $e;
-        }
-
-        \Helpers\DisplayManager::display("faq");
-    }
-
-    public static function GetFAQ(\Entities\Request $req) : void
-    {
-
-        $post= $req->getAllPOST();
-
-    }
+        \Helpers\DisplayManager::display("mespieces");
 
 
 
