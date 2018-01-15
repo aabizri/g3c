@@ -239,7 +239,7 @@ abstract class Query
         $entity = new $this->entity_class_name;
         $success = $this->populateEntity($entity,$lines);
         if ($success === false) {
-            throw new \Exception("failed while populating entity of type".gettype($entity));
+            throw new \Exception("failed while populating entity of type ". (gettype($entity) === "object" ? get_class($entity) : gettype($entity)));
         }
 
         // Return the entity
