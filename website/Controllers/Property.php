@@ -75,6 +75,28 @@ class Property
         \Helpers\DisplayManager::display("nouvellepropriete");
     }
 
+    public static function postNew(\Entities\Request $req): void
+    {
+        // Récupere le post
+        $post = $req->getAllPOST();
+
+        // Check if the data exists
+        $required = ["address", "name"];
+        foreach ($required as $key) {
+            if (empty($post[$key])) {
+                echo "Missing key: " . $key;
+                return;
+            }
+        }
+
+
+
+
+        // Create the entity
+        // Include la page de confirmation
+        \Helpers\DisplayManager::redirectToController("Property", "Dashboard");
+    }
+
 }
 
 
