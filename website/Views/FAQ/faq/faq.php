@@ -4,7 +4,7 @@
         <p>
             <?php
             $faq = $data["faq"];
-            echo $faq->getID();
+            echo $faq->getQuestion();
             ?>
         </p>
     </div>
