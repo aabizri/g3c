@@ -18,6 +18,9 @@
     <!-- Actions -->
     <div id="actions_block">
         <ul id="actions_list">
+            <li><a id="show_roles_action">Afficher les propriétés associées</a></li>
+            <li><a id="show_sessions_action">Afficher les sessions associées</a></li>
+            <li><a id="show_requests_action">Afficher les requêtes associées</a></li>
             <li><a id="reset_password_action" onclick="resetPassword()">Réinitialiser le mot de passe de
                     l'utilisateur</a></li>
             <li><a id="delete_action" onclick="deleteUser()">Supprimer l'utilisateur du système</a></li>
