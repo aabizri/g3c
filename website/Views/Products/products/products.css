@@ -1,50 +1,3 @@
-header {
-	color: white;
-	font-family: Verdana, sans-serif;
-	background-color: #955252;
-	position : fixed;
-	top: 0px;
-	right: 0px;
-	left: 0px;
-	height: 60px;
-	z-index: 1000;
-}
-
-#logo {
-	font-family: Verdana, sans-serif;
-	position: relative;
-	top: 5px;
-	left: 20px;
-}
-
-
-#livewell { 
-	color: white;
-	font-family: American Typewriter, serif;
-	font-style: oblique;
-	font-size: 30px;
-	position: absolute;
-	top: -11px;
-	left: 70px;
-}
-
-#catchphrase {
-	font-family: Verdana, sans-serif;
-	color: white;
-	position: absolute;
-	left:520px;
-	top: 8px;
-
-}
-
-#namepage {
-	font-family: Verdana, sans-serif;
-	color: white;
-	position: absolute;
-	right: 90px;
-	top: 5px;
-}
-
 body {
 	position : relative;
 	height: 1250px;
@@ -139,53 +92,6 @@ body {
     margin-top: 100px;
 	top:180px;
     margin-bottom: 180px;
-}
-
-footer {
-	background-color: rgb(217,196,177);
-	font-family: Verdana, sans-serif;
-	color: #955252;
-	position : absolute;
-	width: 101.3%;
-	bottom: -7px;
-	height: 80px;
-	left: -9px;
-}
-
-#SAV {
-	position : absolute;
-	bottom : 10px;
-	left : 20px;
-	margin: 1px;
-	font-size: 90%;
-}
-
-
-#social {
-	position : absolute;
-	bottom : 35px;
-	right : 25px;
-}
-
-#Fb
-{
-	position: absolute;
-	right: 30px;
-	bottom: 0px;
-}
-
-#Twitter
-{
-	position: absolute;
-	right: 90px;
-	bottom: 0px;
-}
-
-#rights{
-	position: absolute;
-	left: 550px;
-	bottom: 0px;
-	font-size: 60%;
 }
 
 
