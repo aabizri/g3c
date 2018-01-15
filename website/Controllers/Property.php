@@ -80,19 +80,25 @@ class Property
         // Récupere le post
         $post = $req->getAllPOST();
 
-        // Check if the data exists
-        $required = ["address", "name"];
-        foreach ($required as $key) {
-            if (empty($post[$key])) {
-                echo "Missing key: " . $key;
-                return;
-            }
+        // Extraire les données
+        $name = $req->getPOST("name");
+        if (empty($name)) return;
+        $address = $req->getPOST("address");
+        if (empty($address)) return;
+
+        // Create the entity
+        $p = new Entities\Property();
+        $p->setName($name);
+        $p->setAddress($address);
+
+        // Insert it
+        try {
+            (new \Queries\Properties)->save($p);
+        } catch (\Throwable $t) {
+            return;
         }
 
 
-
-
-        // Create the entity
         // Include la page de confirmation
         \Helpers\DisplayManager::redirectToController("Property", "Dashboard");
     }
