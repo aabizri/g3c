@@ -12,9 +12,9 @@ namespace Controllers;
 use Helpers\DisplayManager;
 use Entities\Peripheral;
 
-class Filter
+class Consigne
 {
-    public static function getFiltersPage(\Entities\Request $req) {
+    public static function getConsignesPage(\Entities\Request $req) {
 
         $property_id = $req -> getPropertyID();
 
@@ -25,17 +25,16 @@ class Filter
         $data["property_rooms"] = $property_rooms;
 
         //On envoie les données vers la page
-        DisplayManager::display("mesfiltres", $data);
+        DisplayManager::display("consignes", $data);
     }
 
-    public static function getRoomFiltersPage(\Entities\Request $req){
+    public static function postRoomConsignesPage(\Entities\Request $req){
 
         //On recupère l'id de la propriété
         $property_id = $req -> getPropertyID();
 
         //On recupère l'id de salle à laquelle l'utilisateur veut accéder
         $room_id = $req->getPOST("room_id");
-        $room_id = 2;
 
         //On recupère les peripherals liés à la propriété
         $property_room_peripherals = (new \Queries\Peripherals)
@@ -72,11 +71,18 @@ class Filter
             $measures_type[] = $measure;
         }
 
+        //Rooms
+            //On affiche toutes les salles diponibles de la propriété
+            $property_rooms = (new \Queries\Rooms) -> filterByPropertyID("=", $property_id) -> find();
+
+            //On peuple la vue
+            $data["property_rooms"] = $property_rooms;
+
         //On prepare le peuplement de la view
         $data["measure_type"] = $measures_type;
 
         //On affiche
-        DisplayManager::display("mesfiltres", $data);
+        DisplayManager::display("roomconsignes", $data);
     }
 
     public static function postCreateFilter(\Entities\Request $req){

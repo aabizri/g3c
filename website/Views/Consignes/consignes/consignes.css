@@ -1,0 +1,54 @@
+/*Menu*/
+
+#Menu  {
+	position: fixed;
+	list-style: none;
+	left:-49px;
+	top: 20px;
+}
+
+#Menu input
+{
+	background-color: #d9c4b19b;
+	font-family: Verdana, sans-serif;
+	color: #955252;
+	width: 160px;
+	height: 95px;
+	font-size:14px;
+	margin: -25px 0px;
+	cursor: pointer;
+}
+
+#textemenu
+{
+	position: relative;
+	margin: 10px;
+}
+
+#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres, #Mesparametres, #Boutique
+{
+	position: relative;
+	margin: 50px 10px;
+}
+
+/*Body*/
+
+body {
+	position : relative;
+	height: 720px;
+	background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
+	background-size: cover;
+	background-position: center;
+	font-family: Verdana;
+	overflow-x: hidden;
+}
+
+#selectionsalle{
+	position: relative;
+	top: 70px;
+	left: 15%;
+}
+
+#selectionsalle input {
+	border-radius: 5px;
+}

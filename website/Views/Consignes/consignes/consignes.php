@@ -11,7 +11,7 @@
 
     <div id="selectionsalle">
         <h2>Choix de la salle</h2>
-        <form id="sallepropriété" action="index.php?c=filter&a=roomfilterspage&pid=1&debug=true" method="post">
+        <form id="sallepropriété" action="index.php?c=Consigne&a=roomConsignespage&pid=1&debug=true" method="post">
             <select name="room_id">
                 <?php
                 foreach ($data["property_rooms"] as $pr){
