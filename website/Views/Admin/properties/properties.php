@@ -38,6 +38,8 @@
     <p>Il y a <span id="displayed-count">?</span> résultats affichés sur <span id="total-count">?</span> résultats en
         tout</p>
 
+    <!-- Actions -->
+    <p id="create_property_paragraph"><a id="create_property_link" href="index.php?c=Admin&a=CreateProperty">Créer une nouvelle propriété</a></p>
 
     <script>
 
