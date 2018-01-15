@@ -493,7 +493,7 @@ abstract class Query
      */
     private function populateEntity(\Entities\Entity $entity, array $results): bool
     {
-        return $entity->setMultiple($results);
+        return $entity->setMultiple($results, true);
     }
 
     /** QUERY BUILDING STUFF */
