@@ -3,7 +3,7 @@
     <h2>Vue de l'utilisateur</h2>
     <h3></h3>
 
-    <!-- TAbleau de données -->
+    <!-- Tableau de données de l'utilisateur -->
     <table>
         <thead>
         <tr>
@@ -15,7 +15,25 @@
         </tbody>
     </table>
 
+    <!-- Actions -->
+    <div id="actions_block">
+        <ul id="actions_list">
+            <li><a id="reset_password_action" onclick="resetPassword()">Réinitialiser le mot de passe de
+                    l'utilisateur</a></li>
+            <li><a id="delete_action" onclick="deleteUser()">Supprimer l'utilisateur du système</a></li>
+        </ul>
+    </div>
+
     <script>
+
+        function resetPassword() {
+            return confirm("Cela enverra un mail de réinitialisation à " + data["nick"].value + " <" + data["email"].value + ">\nÊtes vous sûr ?");
+        }
+
+        function deleteUser() {
+            return confirm("CELA SUPPRIMERA DEFINITIVEMENT L'UTILISATEUR " + data["nick"].value + "\nÊTES VOUS SÛR DE CONTINUER ?");
+        }
+
         function startModify() {
             // If immutable, do not modify
             if (data[this.parentNode.id].type === "immutable") {
@@ -149,12 +167,11 @@
 
         // Push
         function pushModify(key, value) {
-            console.log("PUSHING (NOT)");
             console.log(key, value);
 
             // Create form
             let form = new FormData;
-            form.set(key, value);
+            form.set("new_" + key, value);
 
             // Fetch options
             let fetchOptions = {

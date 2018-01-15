@@ -60,3 +60,8 @@ tr:hover > td {
     cursor: pointer;
     font-weight: bold;
 }
+
+#delete_action {
+    color: red;
+    text-blink: 1;
+}
