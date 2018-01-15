@@ -158,9 +158,47 @@ class Admin
     /**
      * POST root/admin/users/{ID}
      * @param \Entities\Request $req
+     * @throws \Exception
      */
     public static function postUser(\Entities\Request $req): void
     {
+        // TODO: Check authorisation for viewer
+
+        // Retrieve the user ID
+        $queried_user_id = $req->getGET("uid");
+        if (empty($queried_user_id)) {
+            http_response_code(400);
+            throw new \Exception("EMPTY UID");
+        }
+
+        // Retrieve the user
+        $queried_user = (new \Queries\Users)->retrieve($queried_user_id);
+
+        // Retrieve POST data (key => value)
+        $order = [
+            "display" => $req->getPOST("new_display"),
+            "nick" => $req->getPOST("new_nick"),
+            "email" => $req->getPOST("new_email"),
+            "phone" => $req->getPOST("new_phone"),
+            "birth_date" => $req->getPOST("new_birth_date"),
+        ];
+
+        // Validate them all
+        foreach ($order as $title => $pair) {
+            if (empty($pair)) {
+                unset($order[$title]);
+                continue;
+            }
+            // VALIDATE
+        }
+
+        // Set them all
+        $queried_user->setMultiple($order);
+
+        // Push it
+        (new \Queries\Users)
+            ->onColumns(...array_keys($order))
+            ->update($queried_user);
     }
 
     /**
