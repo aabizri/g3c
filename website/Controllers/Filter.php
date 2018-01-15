@@ -16,10 +16,24 @@ class Filter
 {
     public static function getFiltersPage(\Entities\Request $req) {
 
+        $property_id = $req -> getPropertyID();
+
+        //On affiche toutes les salles diponibles de la propriété
+        $property_rooms = (new \Queries\Rooms) -> filterByPropertyID("=", $property_id) -> find();
+
+        //On peuple la vue
+        $data["property_rooms"] = $property_rooms;
+
+        //On envoie les données vers la page
+        DisplayManager::display("mesfiltres", $data);
+    }
+
+    public static function getRoomFiltersPage(\Entities\Request $req){
+
         //On recupère l'id de la propriété
         $property_id = $req -> getPropertyID();
 
-        //On recupère l'id de salle à laquelle l'utilisateur veut accéder TODO: Liste déroulante des salles qui renvoie un room_id
+        //On recupère l'id de salle à laquelle l'utilisateur veut accéder
         $room_id = $req->getPOST("room_id");
         $room_id = 2;
 
@@ -61,9 +75,7 @@ class Filter
         //On prepare le peuplement de la view
         $data["measure_type"] = $measures_type;
 
-        //On affiche toutes les salles diponibles
-
-        //On envoie les données vers la page
+        //On affiche
         DisplayManager::display("mesfiltres", $data);
     }
 

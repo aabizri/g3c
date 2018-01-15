@@ -35,10 +35,20 @@
 
 body {
 	position : relative;
-	height: 1060px;
+	height: 720px;
 	background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
 	background-size: cover;
 	background-position: center;
 	font-family: Verdana;
 	overflow-x: hidden;
+}
+
+#selectionsalle{
+	position: relative;
+	top: 70px;
+	left: 15%;
+}
+
+#selectionsalle input {
+	border-radius: 5px;
 }

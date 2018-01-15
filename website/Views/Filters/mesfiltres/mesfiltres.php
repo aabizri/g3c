@@ -11,10 +11,14 @@
     <div id="selectionsalle">
         <h2>Choix de la salle</h2>
         <form id="sallepropriété">
-            <?php
-            foreach ($data["salles"] as $salle)
-                echo ""
-            ?>
+            <select name="room_id">
+                <?php
+                foreach ($data["property_rooms"] as $pr){
+                    echo "<option value='".$pr->getID()."'>".$pr->getName() ."</option>";
+                }
+                ?>
+            </select>
+            <input type="submit" value="Valider">
         </form>
     </div>
 
@@ -24,6 +28,7 @@
             echo '<h2>'.$measure_type->getName().' voulue</h2>
                   <form method="post" action="">
                     <input type="number" />
+                    <input type="submit"/>
                   </form>';
         }
     ?>
