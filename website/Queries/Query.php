@@ -207,7 +207,7 @@ abstract class Query
     /**
      * Retrieves a single entity
      */
-    public function retrieve($id)
+    public function retrieve($id): ?\Entities\Entity
     {
         $this->filterByColumn("id", "=", $id);
         return $this->findOne();
