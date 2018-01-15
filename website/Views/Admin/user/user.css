@@ -65,3 +65,19 @@ tr:hover > td {
     color: red;
     text-blink: 1;
 }
+
+/* Pour la validation d'entrées, colore en rouge une "aura" tant que ce n'est pas validé, vert sinon */
+input:invalid {
+    color: red;
+    box-shadow: 0 0 20px 0 red;
+}
+
+input:valid {
+    color: green;
+    box-shadow: 0 0 20px 0 green;
+}
+
+/* Ainsi, l'input ne prendra pas 100% de l'espace */
+input {
+    width: 80%;
+}
