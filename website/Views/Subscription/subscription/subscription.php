@@ -31,18 +31,25 @@
         <tr>
             <td>Date de fin d'abonnement</td>
             <td><?php
-                $subscription = $data["subscription"];
-                echo $subscription -> getEndDate();
+                echo $subscription -> getExpiryDate();
                 ?>
             </td>
         </tr>
         <tr>
             <td>Etat de l'abonnement</td>
-            <td>TOMATR</td>
+            <td><?php
+                if ($subscription -> getExpiryDate() < (new \DateTime)->format("Y-m-d")) {
+                    echo "Abonnement invalide";
+                }
+                else
+                    echo "Abonnement valide";
+                ?></td>
         </tr>
         <tr>
             <td>Date d'achat de l'abonnement</td>
-            <td>TOMATR</td>
+            <td><?php
+                echo $subscription->getLastUpdated();
+                ?></td>
         </tr>
         </tbody>
     </table>
