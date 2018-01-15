@@ -37,6 +37,8 @@
     <p>Il y a <span id="displayed-count">?</span> résultats affichés sur <span id="total-count">?</span> résultats en
         tout</p>
 
+    <!-- Actions -->
+    <p id="create_user_paragraph"><a id="create_user_link" href="index.php?c=Admin&a=CreateUser">Créer un nouvel utilisateur</a></p>
 
     <script>
 
