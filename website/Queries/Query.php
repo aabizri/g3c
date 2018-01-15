@@ -735,7 +735,8 @@ abstract class Query
      * @return string
      * @throws \Exception if error
      */
-    private function toSQL(): string {
+    public function toSQL(): string
+    {
         // Get lexemes
         $lexemes = $this->toLexemes();
 
@@ -756,7 +757,7 @@ abstract class Query
      * @return \PDOStatement
      * @throws \Exception if fails to generate the SQL
      */
-    private function prepare(?string $sql = null): \PDOStatement
+    public function prepare(?string $sql = null): \PDOStatement
     {
         // Si on ne nous donne pas de SQL, on le génère nous-même
         if (empty($sql)) {
@@ -775,9 +776,10 @@ abstract class Query
      * @return \PDOStatement
      * @throws \Exception
      */
-    private function prepareAndExecute(array $data = null): \PDOStatement {
+    public function prepareAndExecute(?string $sql = null, array $data = null): \PDOStatement
+    {
         // Prepare statement
-        $stmt = $this->prepare();
+        $stmt = $this->prepare($sql);
 
         // Si on ne nous donne pas d'array, on utilise $this->data
         if (empty($data)) {
