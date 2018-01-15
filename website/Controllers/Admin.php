@@ -123,7 +123,7 @@ class Admin
             "phone" => (object)[
                 "title" => "Phone",
                 "value" => $queried_user->getPhone(),
-                "type" => "text"],
+                "type" => "tel"],
             "birth_date" => (object)[
                 "title" => "Birth Date",
                 "value" => $queried_user->getBirthDate(),
