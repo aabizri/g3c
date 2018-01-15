@@ -46,9 +46,12 @@
                 ?></td>
         </tr>
         <tr>
-            <td>Date d'achat de l'abonnement</td>
+            <td>Date de dernière mise à jour de l'abonnement</td>
             <td><?php
-                echo $subscription->getLastUpdated();
+                $timestamp = $subscription->getLastUpdated();
+                $pretty = (new \DateTime)->setTimestamp($timestamp)->format("Y-m-d");
+                echo $pretty;
+
                 ?></td>
         </tr>
         </tbody>
