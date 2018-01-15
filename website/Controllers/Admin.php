@@ -282,7 +282,53 @@ class Admin
      */
     public static function getProperty(\Entities\Request $req): void
     {
+        // Retrieve the user ID
+        $queried_property_id = $req->getGET("pid");
+        if (empty($queried_property_id)) {
+            throw new \Exception("EMPTY PID");
+        }
 
+        // Retrieve the property
+        $queried_property = (new \Queries\Properties)->retrieve($queried_property_id);
+
+        // Data to be encoded
+        $property_info = (object)[
+            "id" => (object)[
+                "title" => "ID",
+                "value" => $queried_property->getID(),
+                "type" => "immutable"],
+            "display" => (object)[
+                "title" => "Name",
+                "value" => $queried_property->getName(),
+                "type" => "text"],
+            "nick" => (object)[
+                "title" => "Address",
+                "value" => $queried_property->getAddress(),
+                "type" => "text"],
+            "creation_date" => (object)[
+                "title" => "Creation Date",
+                "value" => $queried_property->getCreationDate(),
+                "type" => "immutable"],
+            "last_updated" => (object)[
+                "title" => "Last Updated",
+                "value" => $queried_property->getLastUpdated(),
+                "type" => "immutable"],
+        ];
+
+        // Create the JSON
+        $output = json_encode($property_info);
+
+        // Call the view
+        switch ($req->getGET("v")) {
+            case "json":
+                echo $output;
+                break;
+            default:
+                $data_for_php_view = [
+                    "json" => $output,
+                ];
+                \Helpers\DisplayManager::display("property", $data_for_php_view);
+        }
     }
 
     /**
