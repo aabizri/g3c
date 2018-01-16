@@ -44,3 +44,15 @@ header {
     left: 1050px;
     top: -80px;
 }
+
+#deconnexion {
+    position: relative;
+    top: -117px;
+    left: 93%;
+}
+
+#deconnexion input
+{
+    border-radius: 5px;
+    cursor: pointer;
+}

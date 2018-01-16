@@ -29,6 +29,7 @@ class DisplayManager
         "mysessions" => "Users",
         "mesproprietes" => "Properties",
         "nouvellepropriete" => "Properties",
+        "majmdpreussie" => "Users",
     ];
 
     private static function subroot(): string {

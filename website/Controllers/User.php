@@ -3,7 +3,6 @@
 namespace Controllers;
 
 use Helpers\DisplayManager;
-use Repositories;
 use Entities;
 
 /**
@@ -92,7 +91,10 @@ class User
         }
 
         // Include la page de confirmation
-        \Helpers\DisplayManager::redirectToController("User", "ConnectionPage");
+        $data = [
+            "user" => $u,
+        ];
+        DisplayManager::display("connexion",$data);
     }
 
     /**
@@ -102,7 +104,7 @@ class User
     {
         // Si l'usager est déjà connecté, le rediriger vers la page d'accueil
         if ($req->getUserID() !== null) {
-            \Helpers\DisplayManager::redirectToController("User", "AccountPage");
+            \Helpers\DisplayManager::redirectToController("User", "Informations");
             return;
         }
 
@@ -143,7 +145,7 @@ class User
             return;
         }
 
-        \Helpers\DisplayManager::redirectToController("User", "AccountPage"); /* Redirection du navigateur */; // TODO: Le rediriger vers la page de sélection de propriété
+        \Helpers\DisplayManager::redirectToController("User", "Informations"); /* Redirection du navigateur */; // TODO: Le rediriger vers la page de sélection de propriété
     }
 
     public static function getConnectionPage(\Entities\Request $req): void
@@ -156,16 +158,113 @@ class User
         DisplayManager::display("inscription");
     }
 
-    public static function getAccountPage(\Entities\Request $req):void
+    public static function getInformations(\Entities\Request $req):void
     {
         $u = $req->getUser();
         if ($u === null) {
             http_response_code(403);
-            echo "Utilisateur non connecté, nous ne pouvons pas accéder à la page moncompte";
             return;
         }
 
-        DisplayManager::display("moncompte");
+        //On envoie vers la vue
+        $data["user"] = $u;
+
+        //Afficher
+        \Helpers\DisplayManager::display("moncompte", $data);
+    }
+
+    //Mettre à jour les infos
+
+    public static function postMAJInformations (\Entities\Request $req): void
+    {
+        $post= $req->getAllPOST();
+
+        //On récupère des données
+        $email = $post["email"];
+        $newemail = $post["newemail"];
+        $newphone = $post["nouveautel"];
+        $mdp = $post["mdp"];
+
+        //On récupère l'entité de l'utilisateur
+
+        //On récupère l'entité user depuis la page de connexion
+        $user = $req -> getUser();
+
+        //MAJ de l'email si besoin
+        if ((new \Queries\Users) -> filterByEmail("=", $email) -> findOne() != null)
+        {
+            DisplayManager::redirectToController(user , informations );
+            return;
+        }
+        if ($email === $newemail AND $email != null) {
+            $user->setEmail($email);
+        }
+
+        //MAJ du numero de tel
+        if ($newphone != null) {
+            $user->setPhone($newphone);
+        }
+
+        // Insertion de l'entité et de ses maj si le mdp de vérification est valide
+        if ($user->verifyPassword($mdp) === false){
+            return;
+        }
+        try {
+            (new \Queries\Users) ->update($user);
+        } catch (\Exception $e) {
+            Error::getInternalError500($req);
+            return;
+        }
+         \Helpers\DisplayManager::redirectToController(User, Informations );
+    }
+
+    //Changement de mdp
+    public static function postMDP(\Entities\Request $req){
+
+        $post = $req->getAllPOST();
+
+        //On recupère les données
+        $user = $req->getUser();
+
+        //On récupère les infos après avoir vérifier qu'elles existent
+        if (!isset($post["ancienmdp"]) OR !isset($post["nouveaumdp"]) OR !isset($post["cnouveaumdp"])){
+            self::getInformations($req);
+            return;
+        }
+
+        //On récupère les données
+        $ancienmdp = $post["ancienmdp"];
+        $newmdp = $post['nouveaumdp'];
+        $cnewmdp = $post["cnouveaumdp"];
+
+        //Vérification de l'ancien mdp
+        if ($user->verifyPassword($ancienmdp) === false) {
+            DisplayManager::display(user, informations );
+            return;
+        }
+
+        if ($ancienmdp === $newmdp){
+            DisplayManager::display(user, informations );
+            return;
+        }
+
+        if ($newmdp !== $cnewmdp){
+            DisplayManager::display(user, informations );
+            return;
+        }
+
+        $user ->setPasswordClear($newmdp);
+
+        // Insertion de l'entité et de ses maj
+        try {
+            (new \Queries\Users) -> update($user);
+        } catch (\Exception $e) {
+            Error::getInternalError500($req);
+            return;
+        }
+
+        DisplayManager:: display("majmdpreussie");
+
     }
 
     /**
@@ -242,5 +341,15 @@ class User
 
         // Return to session list
         self::getSessionList($req);
+    }
+
+    //Déconnexion
+    public static function postDeconnexion (\Entities\Request $req){
+
+        //On détruit la session
+        session_destroy();
+
+        //On redirige vers la page de connexion
+        DisplayManager::redirectToController(User, ConnectionPage);
     }
 }

@@ -58,7 +58,8 @@ class Property
 
         // Insert it
         try {
-            Repositories\Properties::insert($p);
+            (new \Queries\Properties)
+                ->save($p);
         } catch (\Exception $e) {
             echo "Error inserting property" . $e;
         }
