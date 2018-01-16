@@ -9,7 +9,7 @@
 
     <div id="selectionsalle">
         <h2>Choix de la salle</h2>
-        <form id="sallepropriété" action="index.php?c=filter&a=roomfilterspage&pid=1&debug=true" method="post">
+        <form id="sallepropriété" action="index.php?c=Consigne&a=RoomConsignesPage&pid=1" method="post">
             <select name="room_id">
                 <?php
                 foreach ($data["property_rooms"] as $pr){
@@ -21,17 +21,37 @@
         </form>
     </div>
 
-    <div id="champsfiltres">
-        <div id="filtres">
-            <div id="unfiltre">
+    <h3 id="salleactuelle">
+        <?php
+        echo $data["room_name"] -> getName() ;
+        ?>
+    </h3>
+
+    <div id="champsconsignes">
+        <div id="consignes">
+            <div id="uneconsigne">
             <?php
-            foreach ($data["measure_type"] as $measure_type){
-                echo '<div id="filter"><h4>'.$measure_type->getName().' voulue</h4>
-                      <form method="post" action="">
-                        <input name="threshold" id="threshold" type="number" /><br><br>
+             if($data["actuators"] === []){
+                 echo '<p>Aucune consigne possible dans cette salle</p>';
+             }
+
+             foreach ($data["actuators"] as $a){
+                 $measure_type = (new \Queries\MeasureTypes) -> retrieve($a -> getMeasureTypeID());
+                 $actuator_id = $a->getID();
+                 $last_value = (new Queries\Consignes)
+                     -> filterByColumn("actuator_id", "=", $actuator_id)
+                     -> orderBy("creation_date", false)
+                     -> findOne();
+
+                 echo '<div id="consign"><h4>'.$measure_type->getName().' voulue</h4>
+                       <p>Dernière consigne : '.$last_value -> getDestinationValue().'</p>
+                      <form method="post" action="index.php?c=Consigne&a=CreateConsigne">
+                        <input type="hidden" value="'.$last_value -> getDestinationValue().'" name="last_destination_value" />
+                        <input type="hidden" value="'.$a -> getID().'" name="actuator_id" />
+                        <input name="destination_value" id="destination_value" type="number" /><br><br>
                         <input type="submit"/>
                       </form></div>';
-            }
+             }
             ?>
             </div>
         </div>

@@ -11,6 +11,7 @@ namespace Controllers;
 
 use Helpers\DisplayManager;
 use Entities\Peripheral;
+use Queries;
 
 class Consigne
 {
@@ -35,6 +36,7 @@ class Consigne
 
         //On recupère l'id de salle à laquelle l'utilisateur veut accéder
         $room_id = $req->getPOST("room_id");
+        $data["room_name"] = (new Queries\Rooms) -> retrieve($room_id);
 
         //On recupère les peripherals liés à la propriété
         $property_room_peripherals = (new \Queries\Peripherals)
@@ -47,72 +49,53 @@ class Consigne
             $peripherals_UUID[] = $prp -> getUUID();
         }
 
-        //Grace a l'UUID, on recupère tous les capteurs de la salle
-        $sensors = [];
+        //Grace a l'UUID, on recupère tous les actionneurs de la salle
+        $actuators = [];
         foreach ($peripherals_UUID as $pUUID) {
-            $sensor = (new \Queries\Sensors)
+            $actuator = (new \Queries\Actuators)
                 -> filterByPeripheralUUID("=", $pUUID)
                 -> find();
-            foreach ($sensor as $s) {
-                $sensors[] = $s;
+            foreach ($actuator as $a) {
+                $actuators[] = $a;
             }
         }
 
-        //Grace aux entités capteurs, on recupère l'id des types de mesures de chaque capteur
-        $measures_type_id = [];
-        foreach ($sensors as $sens) {
-            $measures_type_id[] = $sens->getMeasureTypeID();
-        }
+        //On envoie l'entité actionneur dans la vue
+        $data["actuators"] = $actuators;
 
-        //Enfin on recupère l'entité measure_type
-        $measures_type = [];
-        foreach ($measures_type_id as $mtid) {
-            $measure = (new \Queries\MeasureTypes)-> retrieve($mtid);
-            $measures_type[] = $measure;
-        }
-
-        //Rooms
+        //Rooms pour changer de salle
             //On affiche toutes les salles diponibles de la propriété
             $property_rooms = (new \Queries\Rooms) -> filterByPropertyID("=", $property_id) -> find();
 
             //On peuple la vue
             $data["property_rooms"] = $property_rooms;
 
-        //On prepare le peuplement de la view
-        $data["measure_type"] = $measures_type;
-
         //On affiche
         DisplayManager::display("roomconsignes", $data);
     }
 
-    public static function postCreateFilter(\Entities\Request $req){
+    public static function postCreateConsigne(\Entities\Request $req){
 
         //On recupère les données
         $post = $req -> getAllPOST();
-        $property_id = $req ->getPropertyID();
-        $sensor_id = $post["sensor_id"];
-        //TODO opérateur grace à une boucle if qui compare la valeur initiale et la valeur demandée
-        //TODO qu'est ce qu'un opérateur ? < > = ?
-        $threshold = $post["threshold"];
-        $last_measure = $post["last_measure"];
-
-        if ($last_measure < $threshold){
-            $operator = ">";
+        $destination_value = $post["destination_value"];
+        $actuator_id = $post["actuator_id"];
+        $last_destination_value = $post["last_destination_value"];
+        if ($destination_value === $last_destination_value){
+            $active = 0;
         }
-        else if ($last_measure > $threshold){
-            $operator = "<";
+        else {
+            $active = 1;
         }
-        $operator = "=";
 
-        $f = (new \Entities\Filter);
-        $f -> setPropertyID();
-        $f -> setSensorID();
-        $f -> setActuatorID();
-        $f -> setName();
-        $f -> setOperator();
-        $f -> setThreshold();
-        //$f -> setActuatorParams() C'est quoi?
-        (new \Queries\Filters) -> save($f);
+        $c = new \Entities\Consigne();
+        $c -> setDestinationValue($destination_value);
+        $c -> setActuatorID($actuator_id);
+        $c -> setActive($active);
+
+        (new \Queries\Consignes)-> save($c);
+
+        DisplayManager::redirectToController("Consigne", "ConsignesPage&pid=1");
 
     }
 }

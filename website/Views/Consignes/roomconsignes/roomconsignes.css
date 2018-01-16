@@ -43,34 +43,36 @@ body {
     overflow-x: hidden;
 }
 
-#filtres {
+#consignes {
     position: relative;
 }
 
-#unfiltre {
+#uneconsigne {
     display: flex;
     text-align: center;
     border-radius: 5px;
 }
 
-#filter {
+#consign {
     background-color: #d9c4b19b;
     padding: 5px;
     border-radius: 5px;
+    width: 17%;
 }
 
-#filter input{
+#consign input{
     text-align: center;
 }
 
-#unfiltre div{
+#uneconsigne div{
     margin: 10px;
 }
 
-#threshold {
+#destination_value {
     height: 60px;
     width: 100px;
     border-radius: 5px;
+    font-size: larger;
 }
 
 #selectionsalle{
@@ -83,10 +85,16 @@ body {
     border-radius: 5px;
 }
 
-#champsfiltres {
+#champsconsignes {
     position: relative;
     top: 100px;
     left: 15%;
     width: 80%;
     height: 480px;
+}
+
+#salleactuelle{
+    position: relative;
+    left: 15%;
+    top: 100px;
 }
