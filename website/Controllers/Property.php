@@ -34,8 +34,11 @@ class Property
     //Afficher les utilisateurs d'une propriété
     public static function getPropertyPage(\Entities\Request $req): void {
 
-        //On récupère l'id de la propriété
+        //On récupère les données
         $property_id = $req->getPropertyID();
+
+        //On récupère les infos de la propriété
+        $property = (new \Queries\Properties) -> retrieve($property_id);
 
         //Grace à l'id de la propriété, on récupère tous les ids des roles avec le même id de propriété
         $property_users_list = (new \Queries\Roles) -> filterByPropertyID("=", $property_id) -> find();
@@ -59,6 +62,7 @@ class Property
         }
 
         $data["users_list"] = $users_list;
+        $data["property"] = $property;
 
         //Afficher dans la vue
         \Helpers\DisplayManager::display("mapropriete", $data);
@@ -121,7 +125,7 @@ class Property
     }
 
     //Envoyer les users de la propriete en JSON
-    public static function getPropertyUsers(\Entities\Request $req){
+    /*public static function getPropertyUsers(\Entities\Request $req){
 
         //On récupère l'id de la propriété
         $property_id = $req->getPropertyID();
@@ -161,5 +165,5 @@ class Property
         }
 
         return json_encode($users_DisplayId_list);
-        }
+        }*/
 }

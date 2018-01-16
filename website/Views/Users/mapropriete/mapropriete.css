@@ -48,13 +48,14 @@ body {
 {
     position: relative;
     left: 9%;
-    top: 200px;
-    width: 36.5%;
+    top: -125px;
+    width: 33%;
     border:1px solid #955252;
     border-radius: 20px;
     padding: 10px;
     background-color: rgb(217,196,177);
     height: 150px;
+    text-align: center;
 }
 
 #titrecreerutilisateur
@@ -66,7 +67,6 @@ body {
 #validercreationutilisateur
 {
     position: relative;
-    left:43%;
     border-radius: 1px ;
 }
 
@@ -79,6 +79,8 @@ body {
     border-radius: 20px;
     padding: 0px 10px;
     top: 100px;
+    padding-bottom: 30px;
+    margin-bottom: 60px;
 }
 
 #titrelisteutilisateurs
@@ -99,4 +101,26 @@ body {
     right: -200px;
     top: -17px;
     border-radius: 1px;
+}
+
+#propertyusers{
+    border: 1px solid #000000;
+    width: 70%;
+    text-align: center;
+}
+
+#propertyusers td, th {
+    border: thin solid #000000;
+}
+
+#property{
+    position: relative;
+    left: 16%;
+    top: 60px;
+    width: 31%;
+    border-radius: 20px;
+    border: 1px solid #955252;
+    text-align: center;
+    padding-bottom: 10px;
+    background-color: rgb(217,196,177);
 }

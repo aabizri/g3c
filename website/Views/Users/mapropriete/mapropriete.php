@@ -8,11 +8,22 @@
     <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
 </ul>
 
+<h2>Ma propriété</h2>
+
+<div id="property">
+    <h4>Informations sur ma propriété</h4>
+    <?php
+    $property = $data["property"];
+    echo "<p><strong>Nom de la propriété : </strong></p>".$property -> getName();
+    echo "<p><strong>Addresse de la propriété : </strong></p>".$property -> getAddress();
+    ?>
+</div>
+
 <div id="creervoirutilisateur">
 
     <div id="voirutilisateurs">
         <h4 id="titrelisteutilisateurs">Liste des utilisateurs</h4>
-        <table align="center">
+        <table id="propertyusers" align="center">
         <?php
                 //Créer un tableau qui s'indente en fonction du nombre d'utilisateurs
                 $Nbrdonnees = count($data["users_list"]);
@@ -45,7 +56,7 @@
         <form method="post" action="index.php?c=Property&a=NewPropertyUser&pid=1&debug=true">
             <p>
                 <label>Login</label>: <input id="formdroit" type="text" name="nickname"/>
-            </p><br>
+            </p>
             <input id="validercreationutilisateur" type="submit" value="Valider" title="Vous créez un nouvel utilisateur"/>
         </form>
     </div>
