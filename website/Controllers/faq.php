@@ -6,13 +6,14 @@ use Helpers\DisplayManager;
 use Repositories;
 use Entities;
 
-class QuestionAnswer
+class FAQ
 {
 
 
     public static function getFAQ (\Entities\Request $req):void
     {
-        $faq = (new \Queries\faq) -> orderBy("id", true) -> find();
+        $question = (new \Queries\faq) -> orderBy("question", true) -> find();
+        $answer = (new \Queries)
 
         $data["faq"] = $faq;
 

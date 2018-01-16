@@ -2,7 +2,7 @@
 
 namespace Entities;
 
-class QuestionAnswer extends Entity {
+class FAQ extends Entity {
 
     private $id; //int
     private $question; //varchar
@@ -11,6 +11,10 @@ class QuestionAnswer extends Entity {
     private $last_updated;
 
     // getters & setters
+
+    /**
+     * @return int
+     */
 
     public function getID(): int
     {
@@ -27,13 +31,17 @@ class QuestionAnswer extends Entity {
         return true;
     }
 
+    /**
+     * @return string
+     */
+
     public function getQuestion(): string
     {
         return $this->question;
     }
 
     /**
-     * @param string $name
+     * @param string $question
      * @return bool
      */
     public function setQuestion(string $question): bool
@@ -42,13 +50,17 @@ class QuestionAnswer extends Entity {
         return true;
     }
 
+    /**
+     * @return string
+     */
+
     public function getAnswer(): string
     {
         return $this->answer;
     }
 
     /**
-     * @param string $name
+     * @param string $answer
      * @return bool
      */
     public function setAnswer(string $answer): bool
