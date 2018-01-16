@@ -20,8 +20,8 @@ class Properties extends Query
     private const columns = ["id" => ["id", "gen-on-insert"],
                              "name" => [],
                              "address" => [],
-                             "creation_date" => ["timestamp"],
-                             "last_updated" => ["timestamp"]];
+                             /*"creation_date" => ["timestamp"],
+                             "last_updated" => ["timestamp"]*/];
     private const entity_class_name = "\Entities\Property";
 
     /**
