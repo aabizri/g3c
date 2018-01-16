@@ -32,30 +32,24 @@ if (!empty($data["rooms"])):
 <div id="vueinformation">
     <h3>Informations sur la pièce</h3>
     <div id="informationspiece">
-        <p id="temperature"><strong>Température</strong><br><br>
-            <?php
-                        $last_measures = $data["last_measures"];
-                        foreach ($last_measures as $measure)
-                        { echo $measure->getValue()."<br>";}
 
-            ?>
-        </p>
-        <p id="humidite"><strong>Humidité</strong><br><br>20%</p>
-        <p id="luminosite"><strong>Lumisosité</strong><br><br>70%</p>
-        <p id="qualiteair"><strong>Qualité de l'air</strong><br><br>Bonne</p>
-        <p id="presence"><strong>Présence</strong><br><br>1</p>
+
+
+
+        <?php
+                $last_measures = $data["last_measures"];
+
+                foreach ($last_measures as $measure)
+                {
+                    echo "<p id=\"temperature\"><strong>";
+                    $measure_type=(new \Queries\MeasureTypes)-> retrieve($measure -> getTypeID());
+                    echo $measure_type->getName()."</strong><br><br>"
+                    .$measure->getValue()."<br></p>";
+                }
+
+        ?>
+
+
+
     </div>
-</div>
-
-<div id="action">
-    <h3>Actions</h3>
-    <form action="">
-        <div id="actionspieces">
-            <p>Température voulue(°C)<br><br><input type="number" class="action" name="temperaturevoulue" /><br><br><input type="submit" value="Valider" id="valider" /></p>
-            <p>Luminosité voulue(%)<br><br><input type="number"class="action" name="luminositevoulue"/><br><br><input type="submit" value="Valider" id="valider"/></p>
-            <p>Ouvrir/Fermer volets<br><br><input type="button" class="action" value="Ouvrir" onclick="Fermer"/><br>
-                <input type="button" class="action" value="Fermer" onclick="Fermer" >
-            </p>
-        </div>
-    </form>
 </div>

@@ -129,6 +129,8 @@ class Room
             array_push($room_sensors,...$room_sensors_for_peripheral);
         }
 
+
+
         /**
          * Pour chacun des capteurs on récupère la dernière mesure sous forme d'entité
          */
@@ -138,9 +140,13 @@ class Room
                 ->filterLastMeasureBySensor('=',$sensor)
                 ->findOne();
             $last_measures[$sensor->getID()] = $last_measure_for_sensor;
+
+
+
         }
 
         $count=[];
+
         $data["last_measures"] = $last_measures;
         $pid = (new \Queries\Rooms)->retrieve($rid)->getPropertyID();
         $data["rooms"] = (new \Queries\Rooms)->filterByPropertyID("=",$pid)->find();
