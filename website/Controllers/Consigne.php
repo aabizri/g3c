@@ -36,7 +36,16 @@ class Consigne
 
         //On recupère l'id de salle à laquelle l'utilisateur veut accéder
         $room_id = $req->getPOST("room_id");
-        $data["room_name"] = (new Queries\Rooms) -> retrieve($room_id);
+        if ($room_id === null){
+            Error::getInternalError500();
+            return;
+        }
+        $room = (new Queries\Rooms) -> retrieve($room_id);
+        $data["room_name"] = $room;
+        if ($room -> getPropertyID() !== $property_id){
+            Error::getInternalError500();
+            return;
+        }
 
         //On recupère les peripherals liés à la propriété
         $property_room_peripherals = (new \Queries\Peripherals)
@@ -78,14 +87,29 @@ class Consigne
 
         //On recupère les données
         $post = $req -> getAllPOST();
+        $property_id = $req->getPropertyID();
         $destination_value = $post["destination_value"];
         $actuator_id = $post["actuator_id"];
         $last_destination_value = $post["last_destination_value"];
+        if ($last_destination_value === null OR $actuator_id === null OR $destination_value === null){
+            //Faire une page pour afficher l'erreur
+            Error::getInternalError500();
+            return;
+        }
         if ($destination_value === $last_destination_value){
             $active = 0;
         }
         else {
             $active = 1;
+        }
+
+        //On vérifie que l'actionneur appartient bien à la propriété
+        $actuator = (new \Queries\Actuators) -> retrieve($actuator_id);
+        $peripheral_uuid = $actuator -> getPeripheralUuid();
+        $peripheral = (new \Queries\Peripherals) -> filterByUUID("=", $peripheral_uuid) -> findOne();
+        if ( $peripheral->getPropertyID() !== $property_id){
+            Error::getInternalError500();
+            return;
         }
 
         $c = new \Entities\Consigne();

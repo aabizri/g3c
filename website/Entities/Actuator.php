@@ -20,7 +20,7 @@ class Actuator extends Entity
     /**
      * @return mixed
      */
-    public function getId()
+    public function getID() : ?int
     {
         return $this->id;
     }
@@ -28,7 +28,7 @@ class Actuator extends Entity
     /**
      * @param mixed $id
      */
-    public function setId(int $id): ?int
+    public function setID(int $id) : bool
     {
         $this->id = $id;
         return true;
@@ -37,7 +37,7 @@ class Actuator extends Entity
     /**
      * @return mixed
      */
-    public function getMeasureTypeId()
+    public function getMeasureTypeID() : ?int
     {
         return $this->measure_type_id;
     }
@@ -45,7 +45,7 @@ class Actuator extends Entity
     /**
      * @param mixed $measure_type_id
      */
-    public function setMeasureTypeId( int $measure_type_id): ?int
+    public function setMeasureTypeID( int $measure_type_id): bool
     {
         $this->measure_type_id = $measure_type_id;
         return true;
@@ -54,7 +54,7 @@ class Actuator extends Entity
     /**
      * @return mixed
      */
-    public function getLastActionStarted()
+    public function getLastActionStarted() : ?float
     {
         return $this->last_action_started;
     }
@@ -62,7 +62,7 @@ class Actuator extends Entity
     /**
      * @param mixed $last_action_started
      */
-    public function setLastActionStarted( float $last_action_started): ?float
+    public function setLastActionStarted( float $last_action_started): bool
     {
         $this->last_action_started = $last_action_started;
         return true;
@@ -71,7 +71,7 @@ class Actuator extends Entity
     /**
      * @return mixed
      */
-    public function getPeripheralUuid()
+    public function getPeripheralUuid() : string
     {
         return $this->peripheral_uuid;
     }
@@ -79,7 +79,7 @@ class Actuator extends Entity
     /**
      * @param mixed $peripheral_uuid
      */
-    public function setPeripheralUuid( string $peripheral_uuid): ?string
+    public function setPeripheralUuid( string $peripheral_uuid): bool
     {
         $this->peripheral_uuid = $peripheral_uuid;
         return true;
@@ -88,7 +88,7 @@ class Actuator extends Entity
     /**
      * @return mixed
      */
-    public function getLastUpdated()
+    public function getLastUpdated() : float
     {
         return $this->last_updated;
     }
@@ -96,11 +96,10 @@ class Actuator extends Entity
     /**
      * @param mixed $last_updated
      */
-    public function setLastUpdated( float $last_updated): ?float
+    public function setLastUpdated( float $last_updated): bool
     {
         $this->last_updated = $last_updated;
         return true;
     }
-
 
 }

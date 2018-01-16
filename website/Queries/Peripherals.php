@@ -80,6 +80,16 @@ class Peripherals extends Query
         return $this->filterByColumn("room_id", $operator, $room_id);
     }
 
+    /**
+     * @param string $operator
+     * @param int $room_id
+     * @return Peripherals
+     */
+    public function filterByUUID(string $operator, int $room_id): self
+    {
+        return $this->filterByColumn("uuid", $operator, $room_id);
+    }
+
     /* OTHERS */
 
     /**

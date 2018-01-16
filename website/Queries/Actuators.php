@@ -17,9 +17,9 @@ class Actuators extends Query
     private const table = "actuators";
     private const columns = ["id" => ["id", "gen-on-insert"],
         "measure_type_id" => [],
-        "last_action_started" => [],
+        "last_action_started" => ["timestamp"],
         "peripheral_uuid" => [],
-        "last_updated" => []];
+        "last_updated" => ["timestamp"]];
     private const entity_class_name = "\Entities\Actuator";
 
     /**
