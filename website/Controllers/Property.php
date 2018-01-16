@@ -68,6 +68,17 @@ class Property
 
     public static function getMyProperties(\Entities\Request $req): void
     {
+        // Récupère l'ID de l'utilisatreur
+        $u = $req->getUser();
+        if ($u === null) {
+            http_response_code(403);
+            return;
+        }
+        // Récupère tous les rôles associés à l'utilisateur
+        
+        // Pour chaque rôle, tu récupère la propriété associé, et tu l'ajoute à une liste
+        $data["properties"] = $properties;
+
         \Helpers\DisplayManager::display("mesproprietes");
     }
 
@@ -102,6 +113,8 @@ class Property
         // Include la page de confirmation
         \Helpers\DisplayManager::redirectToController("Property", "MyProperties");
     }
+
+
 
 
 }
