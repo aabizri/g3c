@@ -41,8 +41,8 @@ class Property
         // Check if the data exists
         $required = ["name", "address"];
         foreach ($required as $key) {
-            if (empty($req->getPOST($key))){
-                echo "Missing key: ".$key;
+            if (empty($req->getPOST($key))) {
+                echo "Missing key: " . $key;
                 return;
             }
         }
@@ -77,8 +77,6 @@ class Property
 
     public static function postNew(\Entities\Request $req): void
     {
-        // Récupere le post
-        $post = $req->getAllPOST();
 
         // Extraire les données
         $name = $req->getPOST("name");
@@ -95,14 +93,14 @@ class Property
         try {
             (new \Queries\Properties)->save($p);
         } catch (\Throwable $t) {
+            Error::getInternalError500($req,$t);
             return;
         }
 
 
         // Include la page de confirmation
-        \Helpers\DisplayManager::redirectToController("Property", "Dashboard");
+        \Helpers\DisplayManager::redirectToController("Property", "MyProperties");
     }
 
+
 }
-
-
