@@ -45,7 +45,7 @@
 
                  echo '<div id="consign"><h4>'.$measure_type->getName().' voulue</h4>
                        <p>Dernière consigne : '.$last_value -> getDestinationValue().'</p>
-                      <form method="post" action="index.php?c=Consigne&a=CreateConsigne">
+                      <form method="post" action="index.php?c=Consigne&a=CreateConsigne&pid=1&debug=true">
                         <input type="hidden" value="'.$last_value -> getDestinationValue().'" name="last_destination_value" />
                         <input type="hidden" value="'.$a -> getID().'" name="actuator_id" />
                         <input name="destination_value" id="destination_value" type="number" /><br><br>

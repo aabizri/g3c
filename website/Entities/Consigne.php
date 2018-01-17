@@ -21,7 +21,7 @@ class Consigne extends Entity
     /**
      * @return mixed
      */
-    public function getID() : int
+    public function getID() : ?int
     {
         return $this->id;
     }
@@ -29,7 +29,7 @@ class Consigne extends Entity
     /**
      * @param mixed $id
      */
-    public function setID( int $id): bool
+    public function setID( int $id): ?bool
     {
         $this->id = $id;
         return true;
@@ -38,7 +38,7 @@ class Consigne extends Entity
     /**
      * @return mixed
      */
-    public function getActuatorID() : int
+    public function getActuatorID() : ?int
     {
         return $this->actuator_id;
     }
@@ -46,7 +46,7 @@ class Consigne extends Entity
     /**
      * @param mixed $actuator_id
      */
-    public function setActuatorID( int $actuator_id): bool
+    public function setActuatorID( int $actuator_id): ?bool
     {
         $this->actuator_id = $actuator_id;
         return true;
@@ -55,7 +55,7 @@ class Consigne extends Entity
     /**
      * @return mixed
      */
-    public function getDestinationValue() : int
+    public function getDestinationValue() : ?int
     {
         return $this->destination_value;
     }
@@ -63,7 +63,7 @@ class Consigne extends Entity
     /**
      * @param mixed $destination_value
      */
-    public function setDestinationValue( float $destination_value): bool
+    public function setDestinationValue( float $destination_value): ?bool
     {
         $this->destination_value = $destination_value;
         return true;
@@ -72,7 +72,7 @@ class Consigne extends Entity
     /**
      * @return mixed
      */
-    public function getActive() : int
+    public function getActive() : ?int
     {
         return $this->active;
     }
@@ -89,7 +89,7 @@ class Consigne extends Entity
     /**
      * @return mixed
      */
-    public function getCreationDate() : float
+    public function getCreationDate() : ?float
     {
         return $this->creation_date;
     }
@@ -106,7 +106,7 @@ class Consigne extends Entity
     /**
      * @return mixed
      */
-    public function getLastUpdated() : float
+    public function getLastUpdated() : ?float
     {
         return $this->last_updated;
     }
@@ -119,6 +119,4 @@ class Consigne extends Entity
         $this->last_updated = $last_updated;
         return true;
     }
-
-
 }

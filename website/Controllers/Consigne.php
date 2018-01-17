@@ -106,7 +106,7 @@ class Consigne
         //On vérifie que l'actionneur appartient bien à la propriété
         $actuator = (new \Queries\Actuators) -> retrieve($actuator_id);
         $peripheral_uuid = $actuator -> getPeripheralUuid();
-        $peripheral = (new \Queries\Peripherals) -> filterByUUID("=", $peripheral_uuid) -> findOne();
+        $peripheral = (new \Queries\Peripherals) -> filterByColumn("uuid", "=", $peripheral_uuid) -> findOne();
         if ( $peripheral->getPropertyID() !== $property_id){
             Error::getInternalError500();
             return;
