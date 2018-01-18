@@ -9,43 +9,10 @@
 namespace Controllers;
 
 use Helpers\DisplayManager;
-use Repositories;
 use Entities;
 
 class Product
 {
-    public function postNewProduct(\Entities\Request $req): void
-    {
-        // Si la requête n'est pas associée à un produit, retourner une erreur
-        $id = $req->getID();
-        if (empty($id)) {
-            echo "Requête concernant un produit mais non associée à un produit, erreur";
-            return;
-        }
-
-        /*Vérifier que les données existent*/
-        if (empty($req->getPOST("name"))) {
-            echo "Il manque le nom";
-            return;
-        }
-
-        /*Assigne les valeurs*/
-        $name = $req->getPOST("name");
-
-        /*Créer l'entité*/
-        $p = new Entities\Product();
-        $p->setName($name);
-
-        /*Insérer l'entité dans la bdd*/
-        try {
-            Repositories\Products::insert($p);
-        } catch (\Exception $e) {
-            echo "Erreur" . $e;
-        }
-
-        \Helpers\DisplayManager::redirectToController("Products", "ProductsPage");
-    }
-
 
     public static function getProductList(\Entities\Request $req): void
     {

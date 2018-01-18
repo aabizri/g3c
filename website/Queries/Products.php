@@ -13,7 +13,7 @@ class Products extends Query
 {
     /* COMMON CONSTANTS */
     private const table = "products";
-    private const columns = ["id" => "",
+    private const columns = ["id" => ["id","gen-on-insert"],
         "name" => "",
         "description" => "",
         "category" => "",
@@ -35,12 +35,12 @@ class Products extends Query
     /* OTHERS */
 
     /**
-     * @param \Entities\Property $property
+     * @param \Entities\Product $product
      * @return bool
      * @throws \Exception
      */
-    public function save(\Entities\Property $property): bool
+    public function save(\Entities\Product $product): bool
     {
-        return parent::saveEntity($property);
+        return parent::saveEntity($product);
     }
 }

@@ -1,4 +1,4 @@
-body {
+main {
 	position : relative;
 	height: 1250px;
 	background-image: url(fondsite.jpg);
@@ -98,10 +98,5 @@ body {
 .productname {
 
     text-decoration: underline;
-
-}
-
-.product-peripheral > img {
-
 
 }

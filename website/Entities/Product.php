@@ -19,19 +19,19 @@ class Product extends Entity
     private $id;
 
     /**
-     * @var string|null
+     * @var string
      */
-    private $name = null;
-
-    /**
-     * @var string|null
-     */
-    private $description = null;
+    private $name;
 
     /**
      * @var string
      */
-    private $category = null;
+    private $description;
+
+    /**
+     * @var string
+     */
+    private $category;
 
     /**
      * @var int
@@ -87,15 +87,15 @@ class Product extends Entity
     }
 
     /**
-     * @return null|string
+     * @return string
      */
-    public function getDescription()
+    public function getDescription() : string
     {
         return $this->description;
     }
 
     /**
-     * @param null|string $description
+     * @param string $description
      * @return bool
      */
     public function setDescription(string $description) : bool
@@ -131,10 +131,10 @@ class Product extends Entity
     }
 
     /**
-     * @param string $prix
+     * @param int $prix
      * @return bool
      */
-    public function setPrix(string $prix) : bool
+    public function setPrix(int $prix) : bool
     {
         $this->prix = $prix;
         return true;
@@ -153,7 +153,7 @@ class Product extends Entity
      * @param string $quantité
      * @return bool
      */
-    public function setQuantity(string $quantity) : bool
+    public function setQuantity(int $quantity) : bool
     {
         $this->quantité = $quantity;
         return true;
