@@ -158,7 +158,7 @@ class Role extends Entity
     /**
      * @return float
      */
-    public function getCreationDate(): float
+    public function getCreationDate(): ?float
     {
         return $this->creation_date;
     }
@@ -176,7 +176,7 @@ class Role extends Entity
     /**
      * @return string
      */
-    public function getLastUpdated(): float
+    public function getLastUpdated(): ?float
     {
         return $this->last_updated;
     }
