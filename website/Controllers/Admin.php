@@ -55,9 +55,9 @@ class Admin
                 foreach ($users as $user) {
                     $tbe_users[] = (object)[
                         "id" => $user->getID(),
-                        "nick" => $user->getNick(),
-                        "email" => $user->getEmail(),
-                        "name" => $user->getDisplay(),
+                        "nick" => htmlspecialchars($user->getNick()),
+                        "email" => htmlspecialchars($user->getEmail()),
+                        "name" => htmlspecialchars($user->getDisplay()),
                     ];
                 }
 
@@ -110,31 +110,31 @@ class Admin
                 "type" => "immutable"],
             "display" => (object)[
                 "title" => "Display Name",
-                "value" => $queried_user->getDisplay(),
+                "value" => htmlspecialchars($queried_user->getDisplay()),
                 "type" => "text"],
             "nick" => (object)[
                 "title" => "Nickname",
-                "value" => $queried_user->getNick(),
+                "value" => htmlspecialchars($queried_user->getNick()),
                 "type" => "text"],
             "email" => (object)[
                 "title" => "E-Mail",
-                "value" => $queried_user->getEmail(),
+                "value" => htmlspecialchars($queried_user->getEmail()),
                 "type" => "email"],
             "phone" => (object)[
                 "title" => "Phone",
-                "value" => $queried_user->getPhone(),
+                "value" => htmlspecialchars($queried_user->getPhone()),
                 "type" => "tel"],
             "birth_date" => (object)[
                 "title" => "Birth Date",
-                "value" => $queried_user->getBirthDate(),
+                "value" => htmlspecialchars($queried_user->getBirthDate()),
                 "type" => "date"],
             "creation_date" => (object)[
                 "title" => "Creation Date",
-                "value" => $queried_user->getCreationDate(),
+                "value" => (new \DateTime)->setTimestamp($queried_user->getCreationDate())->format("Y-m-d"),
                 "type" => "immutable"],
             "last_updated" => (object)[
                 "title" => "Last Updated",
-                "value" => $queried_user->getLastUpdated(),
+                "value" => (new \DateTime)->setTimestamp($queried_user->getLastUpdated())->format("Y-m-d"),
                 "type" => "immutable"],
         ];
 
@@ -282,9 +282,9 @@ class Admin
                 foreach ($users as $user) {
                     $tbe_properties[] = (object)[
                         "id" => $user->getID(),
-                        "name" => $user->getName(),
-                        "address" => $user->getAddress(),
-                        "creation_date" => $user->getCreationDate(),
+                        "name" => htmlspecialchars($user->getName()),
+                        "address" => htmlspecialchars($user->getAddress()),
+                        "creation_date" => htmlspecialchars($user->getCreationDate()),
                     ];
                 }
 
