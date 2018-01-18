@@ -32,6 +32,17 @@ class FAQ extends Query
         parent::__construct(self::table, self::columns, self::entity_class_name);
     }
 
+    /**
+     * @param string $operator
+     * @param \Entities\faq $question
+     * @return FAQ
+     */
+
+    public function filterByQuestion (string $operator, \Entities\faq $question): self
+    {
+        return $this->filterByEntity("id", $operator, $question);
+    }
+
     /* OTHERS */
 
     /**

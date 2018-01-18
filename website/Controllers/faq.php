@@ -12,22 +12,13 @@ class FAQ
 
     public static function getFAQ (\Entities\Request $req):void
     {
-        $question = (new \Queries\faq) -> orderBy("question", true) -> find();
-        $answer = (new \Queries)
+        //Récupère les questions sous forme d'array
+        $questions_list = (new \Queries\faq) ->filterByQuestion("=",$id) -> find();
 
-        $data["faq"] = $faq;
+        $data["questions_list"] = $questions_list;
 
         DisplayManager::display("faq", $data);
     }
-
-
-
-
-
-
-
-
-
 
 
 
