@@ -80,15 +80,29 @@ class Peripherals extends Query
         return $this->filterByColumn("room_id", $operator, $room_id);
     }
 
+    /**
+     * @param string $operator
+     * @param int $uuid
+     * @return Peripherals
+     */
+    public function filterByUUID(string $operator, $uuid): self
+    {
+        return $this->filterByColumn("uuid", $operator, $uuid);
+    }
+
     /* OTHERS */
 
     /**
-     * @param \Entities\Peripherals $peripheral
+     * @param \Entities\Peripheral $peripheral
      * @return bool
      * @throws \Exception
      */
-    public function save(\Entities\Peripherals $peripheral): bool
+    public function save(\Entities\Peripheral $peripheral): bool
     {
+        $columns = array_keys(self::columns);
+        unset($columns[array_search("id", $columns)]);
+        unset($columns[array_search("last_updated", $columns)]);
+        $this->onColumns(...$columns);
         return parent::saveEntity($peripheral);
     }
 }

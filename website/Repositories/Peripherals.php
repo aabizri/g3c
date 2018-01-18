@@ -101,4 +101,5 @@ class Peripherals extends Repository
             throw new MultiSetFailedException($p,$data);
         }
     }
+
 }
