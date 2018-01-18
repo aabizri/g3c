@@ -148,14 +148,20 @@ class Room
 
         }
 
+        $room_entity=(new Queries\Rooms)
+            ->retrieve($rid);
+
+
         $count=[];
 
         $data["last_measures"] = $last_measures;
         $pid = (new \Queries\Rooms)->retrieve($rid)->getPropertyID();
         $data["rooms"] = (new \Queries\Rooms)->filterByPropertyID("=",$pid)->find();
-        $data["count"]= $count;
+        $data["room_entity"]= $room_entity;
 
         \Helpers\DisplayManager::display("mapiece",$data);
 
     }
+
+
 }

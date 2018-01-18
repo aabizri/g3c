@@ -53,10 +53,16 @@ body {
     font-size: 15px;
 }
 
+#nomdelapièce
+{
+    position: relative;
+    left: 20%;
+    top:80px;
+}
+
+
 .temperature
 {
-
-
     padding-bottom: 20px;
     margin: 10px;
     border: 1px solid #955252 ;
