@@ -284,7 +284,7 @@ class Admin
                         "id" => $user->getID(),
                         "name" => htmlspecialchars($user->getName()),
                         "address" => htmlspecialchars($user->getAddress()),
-                        "creation_date" => htmlspecialchars($user->getCreationDate()),
+                        "creation_date" => (new \DateTime)->setTimestamp($user->getCreationDate())->format("Y-m-d"),
                     ];
                 }
 
