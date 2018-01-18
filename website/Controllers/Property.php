@@ -16,26 +16,21 @@ use Repositories\Repository;
 class Property
 {
 
-    /**
-     * Create a property
-     * @param Entities\Request $req
-     */
-    /*public function postCreate(\Entities\Request $req): void
-    {
-        // Check if the data exists
-        $required = ["name", "address"];
-        foreach ($required as $key) {
-            if (empty($req->getPOST($key))) {
-                echo "Missing key: " . $key;
-            }
-        }
-    }*/
-
     //Afficher les utilisateurs d'une propriété
     public static function getPropertyPage(\Entities\Request $req): void {
 
         //On récupère les données
         $property_id = $req->getPropertyID();
+        $user_id = $req -> getUserID();
+
+        //Sécurité TODO Marchera quand on récupérera l'user id en get
+        /*$role = (new \Queries\Roles)
+            -> filterByColumn("property_id", "=", $property_id, "AND" )
+            -> filterByColumn("user_id", "=", $user_id, "AND")
+            -> findOne();
+        if ($role === null){
+            return;
+        }*/
 
         //On récupère les infos de la propriété
         $property = (new \Queries\Properties) -> retrieve($property_id);
@@ -61,6 +56,7 @@ class Property
             $users_list[] = $user;
         }
 
+        //On prépare les données à être envoyer vers la vue
         $data["users_list"] = $users_list;
         $data["property"] = $property;
 
@@ -71,32 +67,32 @@ class Property
     //Ajouter un utilisateur à une propriété
     public static function postNewPropertyUser( \Entities\Request $req){
 
+        //On recupère la donnée et on vérifie qu'elle existe bien
         $nickname = $req->getPOST('nickname');
+        if ($nickname === null){
+            DisplayManager::redirectToController("Property", "PropertyPage" );
+            return;
+        }
 
         //On récupère l'id de la propriété
         $property_id = $req->getPropertyID();
-        $property_id = 1 ;
 
         //On récupère le user_id du nickname
+        //Si on ne trouve rien, c'est que le nickname n'existe pas
         $user = (new \Queries\Users) -> filterByNick("=", $nickname) ->findOne();
-
-        //Récupère de l'user id
-        $user_id = $user->getID();
-
-        //On vérifie que le nickname n'est pas deja lié à cet propriété
-
-        if ((new \Queries\Roles) -> filterByUserID("=", $user_id) ->findOne()){
-               return;
+        if ($user === null){
+            DisplayManager::redirectToController("Property", "PropertyPage");
+            return;
         }
 
-        // Assign values
-        /*$name = $req->getPOST("name");
-        $address = $req->getPOST("address");
+        //Récupère l'user id
+        $user_id = $user->getID();
 
-        // Create the entity
-        $p = new Entities\Property();
-        $p->setName($name);
-        $p->setAddress($address);*/
+        //On vérifie que le nickname n'est pas deja lié à cette propriété
+        if ((new \Queries\Roles) -> filterByUserID("=", $user_id) ->findOne()){
+            DisplayManager::redirectToController("Property", "PropertyPage");
+            return;
+        }
 
         //S'il n'est pas lié à la propriété, on le rajoute
         $r = new \Entities\Role;
@@ -104,8 +100,10 @@ class Property
         $r->setPropertyID($property_id);
 
 
+        //On insère le role dans la bdd
         (new \Queries\Roles)->save($r);
-        self::getPropertyPage($req);
+
+        DisplayManager::redirectToController("Property", "PropertyPage");
     }
 
 
@@ -114,16 +112,29 @@ class Property
 
         //On récupère les données
         $user_id = $req->getPOST('user_id');
+        $property_id = $req -> getPropertyID();
 
-        //On récupère ensuite le ou les entité(s) role de ce nickname grace à l'user_id
-        $nick_roleId = (new \Queries\Roles) ->filterByUserID("=", $user_id) -> find();
+        //On vérifie qu'il appartient bien à la propriété
+        //TODO il faut l'user id en get
+        /*$role = (new \Queries\Roles)
+                -> filterByColumn("property_id", "=", $property_id, "AND" )
+                -> filterByColumn("user_id", "=", $user_id, "AND")
+                -> findOne();
+        if($role === null){
+            return;
+        }*/
 
-        //On sépare l'utilisateur de la propriété
-        (new \Queries\Roles) -> delete($nick_roleId[0]);
+        //On supprime l'utilisateur de la propriété
+        (new \Queries\Roles)
+            -> filterByColumn("property_id", "=", $property_id, "AND" )
+            -> filterByColumn("user_id", "=", $user_id, "AND")
+            -> delete();
 
+        //On affiche la page avec l'utilisateur supprimé
         self::getPropertyPage($req);
     }
 
+    //JAVASCRIPT?
     //Envoyer les users de la propriete en JSON
     /*public static function getPropertyUsers(\Entities\Request $req){
 

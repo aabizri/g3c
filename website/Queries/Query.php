@@ -505,6 +505,59 @@ abstract class Query
         return true;
     }
 
+    /** DELETE */
+
+
+
+
+
+
+
+    // Returns the number of elements deleted
+
+
+
+    public function delete(): int
+
+
+
+    {
+
+
+
+        // Set operation
+
+
+
+        $this->operation = "DELETE";
+
+
+
+
+
+
+
+        // Prepare & execute
+
+
+
+        $stmt = $this->prepareAndExecute();
+
+
+
+
+
+
+        // Return row count
+
+
+
+        return $stmt->rowCount();
+
+
+    }
+
+
     /**
      * @param \Entities\Entity[] ...$entities
      * @return bool
@@ -750,9 +803,19 @@ abstract class Query
      *
      * @return array
      */
-    private function toLexemesDelete(): array {}
+    private function toLexemesDelete(): array
 
-    /**
+
+
+ {
+
+
+
+    // Base Lexemes
+        $lexemes = ["DELETE", "FROM", $this->table, "WHERE", $this->where->toSQL()];
+        return $lexemes;
+    }
+/**
      * Processes the current instructions and transform them to lexemes
      *
      * @return array

@@ -124,3 +124,10 @@ body {
     padding-bottom: 10px;
     background-color: rgb(217,196,177);
 }
+
+#titrepage
+{
+    position: relative;
+    left: 20%;
+    top: 60px;
+}

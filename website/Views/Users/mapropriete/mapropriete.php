@@ -8,7 +8,7 @@
     <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
 </ul>
 
-<h2>Ma propriété</h2>
+<h2 id="titrepage">Ma propriété</h2>
 
 <div id="property">
     <h4>Informations sur ma propriété</h4>
@@ -24,7 +24,7 @@
     <div id="voirutilisateurs">
         <h4 id="titrelisteutilisateurs">Liste des utilisateurs</h4>
         <table id="propertyusers" align="center">
-        <?php
+                <?php
                 //Créer un tableau qui s'indente en fonction du nombre d'utilisateurs
                 $Nbrdonnees = count($data["users_list"]);
                 if ($Nbrdonnees != 0){
@@ -39,7 +39,7 @@
                         echo '<tr>
                               <td>'. $u->getNick() .'</td>
                               <td>
-                                  <form action="index.php?c=Property&a=DeleteUserFromProperty&pid=1&debug=true" method="post" >
+                                  <form action="index.php?c=Property&a=DeleteUserFromProperty" method="post" >
                                       <input type="hidden"  name="user_id" value="'. $u->getID() .'" />    
                                       <input type="submit" value="Supprimer"/>
                                   </form>
@@ -53,7 +53,7 @@
 
     <div id="creerutilisateur">
         <h4 id="titrecreerutilisateur">Ajouter un utilisateur à la propriété</h4>
-        <form method="post" action="index.php?c=Property&a=NewPropertyUser&pid=1&debug=true">
+        <form method="post" action="index.php?c=Property&a=NewPropertyUser">
             <p>
                 <label>Login</label>: <input id="formdroit" type="text" name="nickname"/>
             </p>
