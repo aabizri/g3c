@@ -220,6 +220,13 @@ class Admin
             "birth_date" => $req->getPOST("birth_date"),
         ];
 
+        // Check for presence
+        foreach ($order as $key => $value) {
+            if (empty($value)) {
+                throw new \Exception("Valeur " . $key . "absente");
+            }
+        }
+
         // Create the user
         $u = (new \Entities\User);
         $u->setMultiple($order);
