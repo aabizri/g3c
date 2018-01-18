@@ -80,5 +80,61 @@ body {
 
 #validerajoutpiece
 {
-	padding: 20px 40px;
+	border-radius: 5px;
+}
+
+
+
+#nombrepc
+{
+	position: relative;
+	left: 20%;
+	top: 60px;
+}
+
+#titrepiece
+{
+	position: relative;
+	left: 20%;
+	top: 80px;
+}
+
+
+#listepiece
+{
+	position: relative;
+	text-align: center ;
+	width: 70%;
+	left: 20%;
+	top: 90px;
+	border: 1px solid #955252;
+	border-radius: 20px;
+	background-color: rgb(217,196,177);
+}
+
+#tablepieces
+{
+	margin-bottom: 20px;
+	margin-left: 2%;
+	margin-right: 2%;
+}
+
+#tablepieces td, #tablepieces th
+{
+	border: 1px solid black;
+	padding: 10px 15px;
+}
+
+table
+{
+	border-collapse: collapse;
+}
+
+
+
+
+.link
+{
+	color: #955252;
+	text-decoration: none;
 }

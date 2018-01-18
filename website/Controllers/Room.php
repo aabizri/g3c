@@ -19,12 +19,14 @@ class Room
      */
     public function postCreate(\Entities\Request $req): void
     {
-        // Si la requête n'est pas associée à une propriété, retourner une erreur
+        //Si la requête n'est pas associée à une propriété, retourner une erreur
+
         $property_id = $req->getPropertyID();
+        /**
         if (empty($property_id)) {
             echo "Requête concernant une propriété mais non associée à une propriété, erreur";
             return;
-        }
+        } **/
 
         // Assigne & vérifie que les données existent
         $name = $req->getPOST("name");
@@ -36,6 +38,7 @@ class Room
         // Créer l'entité
         $r = new Entities\Room();
         $ok = $r->setName($name);
+        $ok = $r->setPropertyID($property_id) ;
         if ($ok === false) {
             http_response_code(400);
             echo "Il y a une erreur dans le nom et/ou prénom";
@@ -49,7 +52,7 @@ class Room
             echo "Erreur" . $e;
         }
 
-        \Helpers\DisplayManager::redirectToController("Rooms", "Rooms");
+        \Helpers\DisplayManager::redirectToController("Room", "Rooms&pid=1");
     }
 
     /**

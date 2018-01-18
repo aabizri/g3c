@@ -14,43 +14,66 @@
           if (!empty($data["rooms"])):
           ?>
 
-          <form method="get" action="index.php" id="choixsalle">
-              <input type="hidden" name="c" value="Room"/>
-              <input type="hidden" name="a" value="LastMeasure"/>
 
-            <select name="room">
-                <?php
-                    $rooms = $data["rooms"];
-                    foreach ($rooms as $room) {
-                        echo "<option value=".$room->getID()."\>".$room->getName();
-                    }
-                ?>
-            </select>
+          <p id="nombrepc">Vous avez actuellement <?php echo count($data["rooms"])?> pièces.</p>
 
-              <input type="submit" value="Valider" title="Valider pour accéder à la salle" />
+          <div id="listepiece">
+              <h3 id="pieces"><strong>Pièces</strong><br></h3>
+              <div id="tablepieces">
+                  <table align="center">
 
-          </form>
+                      <?php
+                      //Créer un tableau qui s'indente en fonction du nombre de périphériques
+                      $Nbrdonnees = count($data["rooms"]);
+                      if ($Nbrdonnees != 0){
+                          //Ici nous faisons le tableau avec ses titres
+                          echo '<thead><tr>
+                                    <th>Nom de la pièce</th>
+                                    <th>Date de création</th>
+                                    <th>Dernière mise à jour</th>
+                                    <th>Gestion</th>
+                                    </tr></thead>';
 
-              <?php
-          endif
-          ?>
+                          //Ici nous ajoutons une ligne avec les infos
+                          foreach ($data["rooms"] as $r){
+
+                              //On met les date sous le bon format
+                              $du = date( "d/m/Y", $r->getLastUpdated()) . ' à ' . date( "H:i",$r->getLastUpdated() );
+                              $dc = date( "d/m/Y", $r->getCreationDate()) . ' à ' . date( "H:i",$r->getCreationDate() );
+                              //On récupère le nom pour des salles
+                              $name = $r->getName();
+
+
+
+                              echo '<tr><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" >
+                                        <td><a class="link"  href="index.php?c=Room&a=LastMeasure&room='.$r->getID().'">   
+                                        '.$name.'</a></td> 
+                                        <td>'. $du .'</td>
+                                        <td>'. $dc .'</td>
+                                        <td><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" ><input type="submit" value="Supprimer"/></form></td>
+                                      </tr>';}
+
+                      }
+
+                      else {
+                          echo 'Pas de pièces dans la propriété';
+                      }
+                      endif;
+                      ?>
+                  </table>
+              </div>
+          </div>
 
 
             <div id="ajouterpieces">
                 <h3>Ajouter une pièce</h3>
                 <div id="champsajouterpiece">
-                    <form name="Ajouter une pièce" action="php ajouter pièce">
-                        <label>Nom de la pièce : </label><input type="text" /><br><br>
-                        <label>Capteurs à ajouter : </label><br><br>
-                            <input type="checkbox" value="capteurtempérature"> Température
-                            <input type="checkbox" value="capteurpresence" > Présence
-                            <input type="checkbox" value="capteurpression"> Pression
-                            <input type="checkbox" value="capteurluminosite"> Luminosité
-                            <input type="checkbox" value="capteurqualiteair"> Qualité de l'air
-                            <input type="checkbox" value="capteurhumidite"> Humidité
+                    <form method="post" name="ajouterpieces"  action="index.php?c=Room&a=Create&pid=1&debug=true">
+                        <label>Nom de la pièce : </label><input type="text" name="name" /><br><br>
+
                         <br>
                         <br>
-                        <input type="submit" value="Valider" >
+                        <input type="submit" value="Valider" id="validerajoutpiece" >
                     </form>
                 </div>
             </div>
