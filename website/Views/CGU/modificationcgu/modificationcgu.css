@@ -17,3 +17,10 @@ body{
     height: 390px;
     resize: none;
 }
+
+#boutonvalider
+{
+    position: relative;
+    top: 20px;
+    border-radius: 1px;
+}

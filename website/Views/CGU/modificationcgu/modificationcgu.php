@@ -8,7 +8,7 @@
                 echo $cgu->getText()
                 ?>
             </textarea>
-            <input type="submit" value="Valider"/>
+            <input id="boutonvalider" type="submit" value="Mettre à jour"/>
         </form>
     </div>
 </main>

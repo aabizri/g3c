@@ -17,7 +17,7 @@ class CGU
     public static function getCGU( \Entities\Request $req){
 
         //On récupère les cgu
-        $cgu = (new \Queries\CGU) ->orderBy("id", true) -> findOne();
+        $cgu = (new \Queries\CGU) ->orderBy("id", false) -> findOne();
 
         $data["cgu"] = $cgu;
 
@@ -27,7 +27,7 @@ class CGU
     public static function getModificateCGUPage(\Entities\Request $req){
 
         //On récupère les cgu
-        $cgu = (new \Queries\CGU) ->orderBy("id", true) -> findOne();
+        $cgu = (new \Queries\CGU) ->orderBy("id", false) -> findOne();
 
         $data["cgu"] = $cgu;
 
@@ -43,6 +43,7 @@ class CGU
         //Insertion
         try {
             (new \Queries\CGU)->save($cgu);
+            DisplayManager::redirectToController("CGU" , "ModificateCGUPage");
         } catch (\Exception $e) {
             echo "Error: " . $e;
         }
