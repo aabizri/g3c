@@ -41,10 +41,10 @@ if (!empty($data["rooms"])):
 
                 foreach ($last_measures as $measure)
                 {
-                    echo "<p id=\"temperature\"><strong>";
+                    echo "<p class=\"temperature\"><strong>";
                     $measure_type=(new \Queries\MeasureTypes)-> retrieve($measure -> getTypeID());
                     echo $measure_type->getName()."</strong><br><br>"
-                    .$measure->getValue()."<br></p>";
+                        .$measure->getValue()."". $measure_type->getUnitSymbol()."<br></p>";
                 }
 
         ?>
@@ -52,4 +52,6 @@ if (!empty($data["rooms"])):
 
 
     </div>
+
+
 </div>
