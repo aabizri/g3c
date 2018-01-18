@@ -288,6 +288,9 @@ abstract class Query
      */
     public function count(): int
     {
+        // Mets l'opération à "SELECT"
+        $this->operation = "SELECT";
+
         // Set la fonction à être executée (un count)
         $this->manipulate_columns = ["COUNT(*)"];
 
@@ -739,6 +742,9 @@ abstract class Query
     {
         // Get lexemes
         $lexemes = $this->toLexemes();
+        if (empty($lexemes)) {
+            return "";
+        }
 
         // Now process
         $sql = "";
@@ -762,6 +768,9 @@ abstract class Query
         // Si on ne nous donne pas de SQL, on le génère nous-même
         if (empty($sql)) {
             $sql = $this->toSQL();
+        }
+        if (empty($sql)) {
+            throw new \Exception("Empty SQL query generated : \"" . $sql . "\"");
         }
 
         // Preparer
