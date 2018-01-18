@@ -160,9 +160,13 @@ class DisplayManager
      *
      * @param string $destination
      */
-    public static function redirectToController(string $category, string $action): void
+    public static function redirectToController(string $category, string $action, array $get_params = []): void
     {
-        self::redirectToPath("index.php?c=$category&a=$action");
+        $path = "index.php?c=$category&a=$action";
+        foreach ($get_params as $get_key => $get_value) {
+            $path .= "&" . urlencode($get_key) . "=" . urlencode($get_value);
+        }
+        self::redirectToPath($path);
     }
 
     /**
