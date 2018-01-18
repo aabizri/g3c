@@ -505,56 +505,18 @@ abstract class Query
         return true;
     }
 
+
     /** DELETE */
-
-
-
-
-
-
-
     // Returns the number of elements deleted
-
-
-
     public function delete(): int
-
-
-
     {
-
-
-
         // Set operation
-
-
-
         $this->operation = "DELETE";
 
-
-
-
-
-
-
         // Prepare & execute
-
-
-
         $stmt = $this->prepareAndExecute();
-
-
-
-
-
-
         // Return row count
-
-
-
         return $stmt->rowCount();
-
-
     }
 
 
