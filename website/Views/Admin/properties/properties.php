@@ -56,7 +56,7 @@
                 let row = document.createElement("tr");
 
                 // Attributes
-                row.setAttribute("onclick", "window.location.href = \"index.html?c=Admin&a=Property&queried_property_id=" + value.id + "\"");
+                row.setAttribute("onclick", "window.location.href = \"index.php?c=Admin&a=Property&queried_property_id=" + value.id + "\"");
                 row.setAttribute("title", "Obtenir plus d'informations sur la propriété \"" + value.name + "\"");
 
                 // Deal with them

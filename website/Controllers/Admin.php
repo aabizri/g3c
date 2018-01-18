@@ -204,10 +204,40 @@ class Admin
     /**
      * POST root/admin/users/new
      * @param \Entities\Request $req
+     * @throws \Exception
      */
     public static function postCreateUser(\Entities\Request $req): void
     {
+        // TODO: Check authorisation for viewer
 
+        // Retrieve POST data (key => value)
+        $order = [
+            "display" => $req->getPOST("display"),
+            "nick" => $req->getPOST("nick"),
+            "password" => $req->getPOST("password"),
+            "email" => $req->getPOST("email"),
+            "phone" => $req->getPOST("phone"),
+            "birth_date" => $req->getPOST("birth_date"),
+        ];
+
+        // Create the user
+        $u = (new \Entities\User);
+        $u->setMultiple($order);
+
+        // Insert it
+        (new \Queries\Users)
+            ->save($u);
+
+        // Redirect to User view
+        \Helpers\DisplayManager::redirectToController("Admin", "User", ["uid" => $u->getID()]);
+    }
+
+    public static function getCreateUser(\Entities\Request $req): void
+    {
+        // TODO: Check auhorisation for viewer
+
+        // Show the view
+        \Helpers\DisplayManager::display("createuser");
     }
 
     /**
@@ -279,11 +309,12 @@ class Admin
     /**
      * GET root/admin/properties/{ID}
      * @param \Entities\Request $req
+     * @throws \Exception
      */
     public static function getProperty(\Entities\Request $req): void
     {
         // Retrieve the user ID
-        $queried_property_id = $req->getGET("pid");
+        $queried_property_id = $req->getGET("queried_property_id");
         if (empty($queried_property_id)) {
             throw new \Exception("EMPTY PID");
         }
@@ -297,21 +328,21 @@ class Admin
                 "title" => "ID",
                 "value" => $queried_property->getID(),
                 "type" => "immutable"],
-            "display" => (object)[
+            "name" => (object)[
                 "title" => "Name",
-                "value" => $queried_property->getName(),
+                "value" => htmlspecialchars($queried_property->getName()),
                 "type" => "text"],
             "nick" => (object)[
                 "title" => "Address",
-                "value" => $queried_property->getAddress(),
+                "value" => htmlspecialchars($queried_property->getAddress()),
                 "type" => "text"],
             "creation_date" => (object)[
                 "title" => "Creation Date",
-                "value" => $queried_property->getCreationDate(),
+                "value" => (new \DateTime)->setTimestamp($queried_property->getCreationDate())->format("Y-m-d"),
                 "type" => "immutable"],
             "last_updated" => (object)[
                 "title" => "Last Updated",
-                "value" => $queried_property->getLastUpdated(),
+                "value" => (new \DateTime)->setTimestamp($queried_property->getLastUpdated())->format("Y-m-d"),
                 "type" => "immutable"],
         ];
 
