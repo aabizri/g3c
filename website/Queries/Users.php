@@ -20,11 +20,11 @@ class Users extends Query
                              "display" => [],
                              "nick" => [],
                              "birth_date" => [],
-                             "creation_date" => ["timestamp"],
+                             "creation_date" => ["gen-on-insert", "timestamp"],
                              "email" => [],
                              "password" => [],
                              "phone" => [],
-                             "last_updated" => ["timestamp"]];
+                             "last_updated" => ["gen-on-insert", "timestamp"]];
     private const entity_class_name = "\Entities\User";
 
     /**
@@ -69,11 +69,6 @@ class Users extends Query
      */
     public function save(\Entities\User $user): bool
     {
-        $columns = array_keys(self::columns);
-        unset($columns[array_search("id", $columns)]);
-        unset($columns[array_search("creation_date", $columns)]);
-        unset($columns[array_search("last_updated", $columns)]);
-        $this->onColumns(...$columns);
         return parent::saveEntity($user);
     }
 }

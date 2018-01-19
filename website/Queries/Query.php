@@ -376,6 +376,17 @@ abstract class Query
         // ID of the value as a where
         $this->filterByEntity("id", "=", $entity);
 
+        // Only update the ones that aren't gen-on-insert
+        foreach ($this->manipulate_columns as $column) {
+            $is_gen_on_insert = array_search("gen-on-insert", $this->table_columns[$column]) !== false;
+            if ($is_gen_on_insert) {
+                unset($this->manipulate_columns[array_search($column, $this->manipulate_columns)]);
+            }
+        }
+
+        // Rebase / Rekey
+        $this->manipulate_columns = array_values($this->manipulate_columns);
+
         // Values to be inserted
         $entity_values = $entity->getMultiple($this->manipulate_columns);
         foreach ($entity_values as $column_name => $value) {
@@ -406,6 +417,17 @@ abstract class Query
     {
         // Set the operation to insert
         $this->operation = "INSERT INTO";
+
+        // Only insert the ones that aren't gen-on-insert
+        foreach ($this->manipulate_columns as $column) {
+            $is_gen_on_insert = array_search("gen-on-insert", $this->table_columns[$column]) !== false;
+            if ($is_gen_on_insert) {
+                unset($this->manipulate_columns[array_search($column, $this->manipulate_columns)]);
+            }
+        }
+
+        // Rebase / Rekey
+        $this->manipulate_columns = array_values($this->manipulate_columns);
 
         // Retrieve the data
         $entity_values = $entity->getMultiple($this->manipulate_columns);
@@ -443,6 +465,17 @@ abstract class Query
         // Number of sets to be inserted
         $number = count($entities);
         $this->insert_count = $number;
+
+        // Only insert the ones that aren't gen-on-insert
+        foreach ($this->manipulate_columns as $column) {
+            $is_gen_on_insert = array_search("gen-on-insert", $this->table_columns[$column]) !== false;
+            if ($is_gen_on_insert) {
+                unset($this->manipulate_columns[array_search($column, $this->manipulate_columns)]);
+            }
+        }
+
+        // Rebase / Rekey
+        $this->manipulate_columns = array_values($this->manipulate_columns);
 
         // Iterate over all entities to be inserted
         foreach ($entities as $entity_index => $entity) {
@@ -810,6 +843,7 @@ abstract class Query
         if (empty($sql)) {
             $sql = $this->toSQL();
         }
+        var_dump($sql);
 
         // Preparer
         $statement = $this->db->prepare($sql, \Helpers\DB::$pdo_params);
