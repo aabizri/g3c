@@ -149,6 +149,7 @@ class Admin
             default:
                 $data_for_php_view = [
                     "json" => $output,
+                    "uid" => $queried_user_id,
                 ];
                 \Helpers\DisplayManager::display("user", $data_for_php_view);
         }
