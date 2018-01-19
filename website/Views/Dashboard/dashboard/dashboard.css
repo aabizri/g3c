@@ -43,7 +43,7 @@ body {
 	left:20%;
 }
 
-#informationspiece
+.informationspiece
 {
 	display: flex;
 	position: relative;
@@ -51,7 +51,7 @@ body {
 	font-size: 15px;
 }
 
-#temperature, #luminosite, #humidite, #qualiteair, #presence
+.temperature
 {
 	width: 15%;
 	padding-bottom: 20px;
@@ -62,7 +62,7 @@ body {
 }
 
 
-#vueinformation
+.vueinformation
 {
 	position: relative;
 	left:23%;
@@ -72,6 +72,15 @@ body {
 	width:70%;
 	background-color: rgb(217,196,177);
 	text-align: center;
+	margin: 10px;
+}
+
+.nomdelapièce
+{
+	position: relative;
+	text-align: center;
+	margin: 10px;
+
 }
 
 #choixsalle
