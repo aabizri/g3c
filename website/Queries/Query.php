@@ -146,19 +146,10 @@ abstract class Query
         // Récupère le compte si on a pu récuperer l'ID, sinon 0
         $count = 0;
         if ($id !== null) {
-            $count = $this
+            $class = get_class($this);
+            $count = (new $class)
                 ->filterByEntity($this->entity_id_column_name, "=", $entity)
                 ->count();
-        }
-
-        // On vérifie si la valeur pour cette couronne est générée par la BDD (gen-on-insert)
-        $id_column_value_generated_on_insert =
-            array_search("gen-on-insert", $this->table_columns[$this->entity_id_column_name]) !== false;
-
-        // Si l'ID est générée par la BDD ou si va faire un update, on ne push pas la valeur
-        if ($id_column_value_generated_on_insert || $count === 1) {
-            unset($this->manipulate_columns[array_search($this->entity_id_column_name, $this->manipulate_columns)]);
-            $this->manipulate_columns = array_values($this->manipulate_columns); // Re-key
         }
 
         // Selon si l'entité existe déjà, on peut soit faire un INSERT soit un UPDATE
@@ -392,6 +383,10 @@ abstract class Query
         // ID of the value as a where
         $this->filterByEntity("id", "=", $entity);
 
+        // On ne push pas la valeur de l'ID, inutile
+        unset($this->manipulate_columns[array_search($this->entity_id_column_name, $this->manipulate_columns)]);
+        $this->manipulate_columns = array_values($this->manipulate_columns); // Re-key
+
         // Values to be inserted
         $entity_values = $entity->getMultiple($this->manipulate_columns);
         foreach ($entity_values as $column_name => $value) {
@@ -422,6 +417,16 @@ abstract class Query
     {
         // Set the operation to insert
         $this->operation = "INSERT INTO";
+
+        // On vérifie si la valeur pour cette colonne est générée par la BDD (gen-on-insert)
+        $id_column_value_generated_on_insert =
+            array_search("gen-on-insert", $this->table_columns[$this->entity_id_column_name]) !== false;
+
+        // Si l'ID est générée par la BDD, on ne push pas la valeur
+        if ($id_column_value_generated_on_insert) {
+            unset($this->manipulate_columns[array_search($this->entity_id_column_name, $this->manipulate_columns)]);
+            $this->manipulate_columns = array_values($this->manipulate_columns); // Re-key
+        }
 
         // Retrieve the data
         $entity_values = $entity->getMultiple($this->manipulate_columns);
@@ -459,6 +464,16 @@ abstract class Query
         // Number of sets to be inserted
         $number = count($entities);
         $this->insert_count = $number;
+
+        // On vérifie si la valeur pour cette couronne est générée par la BDD (gen-on-insert)
+        $id_column_value_generated_on_insert =
+            array_search("gen-on-insert", $this->table_columns[$this->entity_id_column_name]) !== false;
+
+        // Si l'ID est générée par la BDD, on ne push pas la valeur
+        if ($id_column_value_generated_on_insert) {
+            unset($this->manipulate_columns[array_search($this->entity_id_column_name, $this->manipulate_columns)]);
+            $this->manipulate_columns = array_values($this->manipulate_columns); // Re-key
+        }
 
         // Iterate over all entities to be inserted
         foreach ($entities as $entity_index => $entity) {
@@ -705,7 +720,7 @@ abstract class Query
         $lexemes = ["UPDATE",$this->table];
 
         // if there are no manipulate_columns, throw an exception
-        if (empty($this->manipulate_columns)) {
+        if (count($this->manipulate_columns) === 0) {
             throw new \Exception("No columns to update");
         }
 
@@ -830,6 +845,8 @@ abstract class Query
             }
             $data = $this->data;
         }
+        var_dump($stmt);
+        var_dump($data);
 
         // Execute statement
         $stmt->execute($data);
