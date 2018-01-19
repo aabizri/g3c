@@ -151,16 +151,6 @@ abstract class Query
                 ->count();
         }
 
-        // On vérifie si la valeur pour cette couronne est générée par la BDD (gen-on-insert)
-        $id_column_value_generated_on_insert =
-            array_search("gen-on-insert", $this->table_columns[$this->entity_id_column_name]) !== false;
-
-        // Si l'ID est générée par la BDD ou si va faire un update, on ne push pas la valeur
-        if ($id_column_value_generated_on_insert || $count === 1) {
-            unset($this->manipulate_columns[array_search($this->entity_id_column_name, $this->manipulate_columns)]);
-            $this->manipulate_columns = array_values($this->manipulate_columns); // Re-key
-        }
-
         // Selon si l'entité existe déjà, on peut soit faire un INSERT soit un UPDATE
         switch ($count) {
             case 0:
@@ -376,6 +366,10 @@ abstract class Query
         // ID of the value as a where
         $this->filterByEntity("id", "=", $entity);
 
+        // On ne push pas la valeur de l'ID, inutile dans tous les cas
+        unset($this->manipulate_columns[array_search($this->entity_id_column_name, $this->manipulate_columns)]);
+        $this->manipulate_columns = array_values($this->manipulate_columns); // Re-key
+
         // Only update the ones that aren't gen-on-insert
         foreach ($this->manipulate_columns as $column) {
             $is_gen_on_insert = array_search("gen-on-insert", $this->table_columns[$column]) !== false;
@@ -418,7 +412,7 @@ abstract class Query
         // Set the operation to insert
         $this->operation = "INSERT INTO";
 
-        // Only insert the ones that aren't gen-on-insert
+        // Only insert the ones that aren't gen-on-insert (including ID)
         foreach ($this->manipulate_columns as $column) {
             $is_gen_on_insert = array_search("gen-on-insert", $this->table_columns[$column]) !== false;
             if ($is_gen_on_insert) {
@@ -466,7 +460,7 @@ abstract class Query
         $number = count($entities);
         $this->insert_count = $number;
 
-        // Only insert the ones that aren't gen-on-insert
+        // Only insert the ones that aren't gen-on-insert (including ID)
         foreach ($this->manipulate_columns as $column) {
             $is_gen_on_insert = array_search("gen-on-insert", $this->table_columns[$column]) !== false;
             if ($is_gen_on_insert) {
@@ -843,7 +837,6 @@ abstract class Query
         if (empty($sql)) {
             $sql = $this->toSQL();
         }
-        var_dump($sql);
 
         // Preparer
         $statement = $this->db->prepare($sql, \Helpers\DB::$pdo_params);
