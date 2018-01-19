@@ -51,8 +51,13 @@ body {
 	font-size: 15px;
 }
 
+.temperatureName
+{
+	font-size: x-small;
+}
 .temperature
 {
+	overflow: hidden;
 	width: 15%;
 	padding-bottom: 20px;
 	margin: 10px;

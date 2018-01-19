@@ -30,7 +30,7 @@
 
         foreach ($room_measures as $measure)
         {
-            echo "<p class=\"temperature\"><strong>";
+            echo "<p class=\"temperature\"><strong class='temperatureName'>";
             $measure_type = (new \Queries\MeasureTypes)->retrieve($measure->getTypeID());
             echo $measure_type->getName() . "</strong><br><br>"
                 . $measure->getValue() . "" . $measure_type->getUnitSymbol() . '<br></p>';
