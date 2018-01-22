@@ -31,6 +31,7 @@ class DisplayManager
         "properties" => "Admin",
         "user" => "Admin",
         "property" => "Admin",
+        "console" => "Admin",
     ];
 
     private static function subroot(): string {

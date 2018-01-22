@@ -15,9 +15,9 @@ class Admin
      * GET root/admin
      * @param \Entities\Request $req
      */
-    public static function getAdminDashboard(\Entities\Request $req): void
+    public static function getConsole(\Entities\Request $req): void
     {
-
+        \Helpers\DisplayManager::display("console");
     }
 
     /**
