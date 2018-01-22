@@ -249,6 +249,86 @@ class Admin
     }
 
     /**
+     * @param \Entities\Request $req
+     * @throws \Exception
+     */
+    public static function getUserProperties(\Entities\Request $req): void
+    {
+        // TODO: Check auhorisation for viewer
+
+        // Retrieve values necessary
+        $user_id = $req->getGET("queried_user_id");
+        if ($user_id === null) {
+            echo "Pas de queried_user_id donné";
+            return;
+        }
+        $count = $req->getGET("count") ?? 20;
+        $offset = $req->getGET("offset") ?? 0;
+        $order_by_column = $req->getGET("order_by_column") ?? "creation_date";
+        $order_by_direction = $req->getGET("order_by_direction");
+        if ($order_by_direction !== "ASC" && $order_by_direction !== "DESC") {
+            $order_by_direction = "DESC";
+        }
+
+        // Retrieve the roles
+        $roles = (new \Queries\Roles)
+            ->filterByUserID("=", $user_id)
+            ->orderBy($order_by_column, $order_by_direction === "ASC")
+            ->limit($count)
+            ->offset($offset)
+            ->find();
+
+        // Retrieve the associated properties
+        $properties = [];
+        foreach ($roles as $role) {
+            $properties[$role->getID()] = $role->getProperty();
+        }
+
+        // Properties array to be encoded
+        $tbe_properties = [];
+
+        // For each property, transform it into a minimal object
+        foreach ($roles as $role) {
+            $property = $properties[$role->getID()];
+            $tbe_properties[] = (object)[
+                "role_id" => $role->getID(),
+                "property_id" => $property->getID(),
+                "name" => htmlspecialchars($property->getName()),
+                "address" => htmlspecialchars($property->getAddress()),
+                "role_creation_date" => (new \DateTime)->setTimestamp($role->getCreationDate())->format("Y-m-d"),
+                "property_creation_date" => (new \DateTime)->setTimestamp($property->getCreationDate())->format("Y-m-d"),
+            ];
+        }
+
+        // Pagination
+        $tbe_pagination = (object)[
+            "total" => (new \Queries\Roles)->select()->filterByUserID("=", $user_id)->count(),
+        ];
+
+        // Complete object
+        $tbe = (object)[
+            "pagination" => $tbe_pagination,
+            "properties" => $tbe_properties,
+        ];
+
+        // Encode it !
+        $encoded = json_encode($tbe);
+
+        // If the only thing asked is the HTML view, then return it
+        switch ($req->getGET("v")) {
+            case "json":
+                echo $encoded;
+                return;
+            default:
+                $data_for_php_view = ["json" => $encoded,
+                                      "user_nick" => (new \Queries\Users)->retrieve($user_id)->getNick(),
+                ];
+                \Helpers\DisplayManager::display("user_properties", $data_for_php_view);
+        }
+
+    }
+
+    /**Properties
      * GET root/admin/properties
      * @param \Entities\Request $req
      * @throws \Exception
