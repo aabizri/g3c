@@ -10,6 +10,10 @@ namespace Controllers;
 
 use Helpers\DisplayManager;
 
+/**
+ * Class Store
+ * @package Controllers
+ */
 class Store
 {
     /**

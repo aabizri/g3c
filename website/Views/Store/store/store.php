@@ -17,14 +17,12 @@
             foreach ($data["products_peripherals"] as $product) {
                 echo '<div class="product-peripheral">';
                 echo '<span class="productname" id="productname">' . $product->getName() . '</span>' . ": ";
-                echo $product->getDescription().'<br><br>';
+                echo $product->getDescription() . '<br><br>';
                 echo '<img src="Ressources/Produits/' . $product->getID() . '.png" ><br>';
                 echo 'Son prix est de : ';
                 echo $product->getPrix() . "€. <br><br>";
                 echo '</div>';
             }
-
-
             ?>
         </div>
 
@@ -36,14 +34,12 @@
         foreach ($data["products_accessory"] as $product) {
             echo '<div class="product-accessory">';
             echo '<span class="productname" id="productname">' . $product->getName() . '</span>' . ": ";
-            echo $product->getDescription().'<br><br>';
+            echo $product->getDescription() . '<br><br>';
             echo '<img src="Ressources/Produits/' . $product->getID() . '.png" ><br>';
             echo 'Son prix est de : ';
             echo $product->getPrix() . "€. <br><br>";
             echo '</div>';
         }
-
-
         ?>
     </div>
 
