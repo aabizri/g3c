@@ -1,10 +1,10 @@
 <main>
 
     <div id="navigation"> <!--Boutons pour accéder aux différentes catégories-->
-        <a href="index.php?c=Product&a=ProductList#">
+        <a href="index.php?c=Store&a=Store#peripheriques">
             <button title="Voir les Périphériques" id="bouton1">Periphériques</button>
         </a>
-        <a href="index.php?c=Product&a=ProductList#accessoires">
+        <a href="index.php?c=Store&a=Store#accessoires">
             <button title="Voir les accessoires" id="bouton2">Accessoires</button>
         </a>
     </div>
@@ -22,7 +22,6 @@
                 echo 'Son prix est de : ';
                 echo $product->getPrix() . "€. <br><br>";
                 echo '</div>';
-
             }
 
 

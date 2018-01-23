@@ -9,12 +9,15 @@
 namespace Controllers;
 
 use Helpers\DisplayManager;
-use Entities;
 
-class Product
+class Store
 {
-
-    public static function getProductList(\Entities\Request $req): void
+    /**
+     * GET /root/store
+     * @param \Entities\Request $req
+     * @throws \Exception
+     */
+    public static function getStore(\Entities\Request $req): void
     {
         $products_list_peripheral = (new \Queries\Products)->filterByColumn('category', '=', 'peripheral', 'AND')->find();
         $products_list_accessory = (new \Queries\Products)->filterByColumn('category', '=', 'accessory', 'AND')->find();
@@ -24,6 +27,6 @@ class Product
         $data["products_accessory"] = $products_list_accessory;
 
         // Publish view
-        DisplayManager::display("products", $data);
+        DisplayManager::display("store", $data);
     }
 }
