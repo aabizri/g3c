@@ -18,7 +18,7 @@
                 //on récupère la question, puis sa réponse en vérifiant qu'il y en a bien une
                 $question = $p->getQuestion();
 
-                if ($p->getAnswer() !== null){
+                if (!empty($p->getAnswer())){
 
                     $answer = $p->getAnswer();
                 }
