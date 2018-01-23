@@ -39,6 +39,8 @@
         </ul>
     </div>
 
+    <div id="json_data" hidden><?= $data["json"] ?></div>
+
     <script>
 
         function resetPassword() {
@@ -203,7 +205,7 @@
         }
 
         // Data populated in PHP, but set via JS
-        let data = <?=$data["json"]?>;
+        let data = JSON.parse(document.getElementById("json_data").innerHTML);
         updateTable(data);
         document.getElementsByTagName("h3")[0].innerHTML = data["display"].value;
     </script>
