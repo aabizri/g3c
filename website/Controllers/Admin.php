@@ -453,10 +453,44 @@ class Admin
     /**
      * POST root/admin/properties/{ID}
      * @param \Entities\Request $req
+     * @throws \Exception
      */
     public static function postProperty(\Entities\Request $req): void
     {
+        // TODO: Check authorisation for viewer
 
+        // Retrieve the user ID
+        $queried_property_id = $req->getGET("pid");
+        if (empty($queried_property_id)) {
+            http_response_code(400);
+            throw new \Exception("Empty property ID");
+        }
+
+        // Retrieve the user
+        $queried_property = (new \Queries\Properties)->retrieve($queried_property_id);
+
+        // Retrieve POST data (key => value)
+        $order = [
+            "name" => $req->getPOST("new_name"),
+            "email" => $req->getPOST("new_email"),
+        ];
+
+        // Validate them all
+        foreach ($order as $title => $pair) {
+            if (empty($pair)) {
+                unset($order[$title]);
+                continue;
+            }
+            // VALIDATE
+        }
+
+        // Set them all
+        $queried_property->setMultiple($order);
+
+        // Push it
+        (new \Queries\Properties)
+            ->onColumns(...array_keys($order))
+            ->update($queried_property);
     }
 
     /**
@@ -486,5 +520,21 @@ class Admin
 
     }
 
+    /**
+     * GET root/admin/settings
+     * @param \Entities\Request $req
+     */
+    public static function getSettings(\Entities\Request $req): void
+    {
+        \Helpers\DisplayManager::display("settings");
+    }
 
+    /**
+     * POST root/admin/settings
+     * @param \Entities\Request $req
+     */
+    public static function postSettings(\Entities\Request $req): void
+    {
+        // Configure name, etc.
+    }
 }
