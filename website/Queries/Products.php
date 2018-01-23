@@ -14,11 +14,11 @@ class Products extends Query
     /* COMMON CONSTANTS */
     private const table = "products";
     private const columns = ["id" => ["id","gen-on-insert"],
-        "name" => "",
-        "description" => "",
-        "category" => "",
-        "prix" => "",
-        "quantity" => ""];
+                             "name" => [],
+                             "description" => [],
+                             "category" => [],
+                             "prix" => [],
+                             "quantity" => []];
     private const entity_class_name = "\Entities\Product";
 
     /**
