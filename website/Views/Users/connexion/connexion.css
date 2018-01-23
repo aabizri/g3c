@@ -30,7 +30,7 @@ body {
 	display: block;
 	position: relative;
 	text-align: center;
-	top: -120px;
+	top: -100px;
 	left:20%;
 }
 
@@ -42,4 +42,5 @@ body {
 	font-size: x-large;
 	top:120px;
 	text-align: center;
+	margin-bottom: 46px;
 }

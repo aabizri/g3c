@@ -64,8 +64,8 @@ body {
 {
     position: relative;
     text-align: center ;
-    width: 65%;
-    left:25%;
+    width: 70%;
+    left: 20%;
     top: 90px;
     border: 1px solid #955252;
     border-radius: 20px;
@@ -75,6 +75,8 @@ body {
 #tableperipheriques
 {
     margin-bottom: 20px;
+	margin-left: 2%;
+	margin-right: 2%;
 }
 
 #tableperipheriques td, #tableperipheriques th
@@ -99,7 +101,7 @@ table
 #ajouterperipherique
 {
 	position: relative;
-	left: 25%;
+	left: 22.5%;
 	top: 130px;
 	border: 1px solid #955252;
 	border-radius: 20px;

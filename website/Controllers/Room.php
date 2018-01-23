@@ -12,8 +12,12 @@ use Entities;
 
 class Room
 {
-    /*Ajouter une pièce*/
-    public function postNewRoom(\Entities\Request $req): void
+
+    /**
+     * Crée une nouvelle pièce : POST /properties/{property_id}/rooms/create
+     * @param Entities\Request $req
+     */
+    public function postCreate(\Entities\Request $req): void
     {
         // Si la requête n'est pas associée à une propriété, retourner une erreur
         $property_id = $req->getPropertyID();
@@ -45,9 +49,14 @@ class Room
             echo "Erreur" . $e;
         }
 
-        \Helpers\DisplayManager::redirectToController("Rooms", "RoomsPage");
+        \Helpers\DisplayManager::redirectToController("Rooms", "Rooms");
     }
 
+    /**
+     * Récupère la liste des pièces : GET /properties/{property_id}/rooms
+     * @param Entities\Request $req
+     * @throws \Exception
+     */
     public function getRooms(\Entities\Request $req): void
     {
         // Si la requête n'est pas associée à une propriété, retourner une erreur
@@ -59,13 +68,10 @@ class Room
         }
 
         //Récupérer liste des pièces
-        $rooms = [];
-        $room_ids = \Repositories\Rooms::findAllByPropertyID($property_id);
-        foreach ($room_ids as $rid) {
-            $room = \Repositories\Rooms::retrieve($rid);
-            $rooms[] = $room;
-        }
+        $rooms = (new \Queries\Rooms)
+            ->filterByPropertyID("=", $property_id)
+            ->find();
 
-        \Helpers\DisplayManager::display("mespieces", [$rooms]);
+        \Helpers\DisplayManager::display("mespieces", ["rooms" => $rooms]);
     }
 }
