@@ -125,7 +125,7 @@ class Product extends Entity
     /**
      * @return int
      */
-    public function getPrix(): int
+    public function getPrix(): ?int
     {
         return $this->prix;
     }
@@ -134,7 +134,7 @@ class Product extends Entity
      * @param int $prix
      * @return bool
      */
-    public function setPrix(int $prix) : bool
+    public function setPrix(?int $prix): bool
     {
         $this->prix = $prix;
         return true;
@@ -143,7 +143,7 @@ class Product extends Entity
     /**
      * @return int
      */
-    public function getQuantity(): int
+    public function getQuantity(): ?int
     {
         return $this->quantity;
     }
@@ -153,7 +153,7 @@ class Product extends Entity
      * @param string $quantité
      * @return bool
      */
-    public function setQuantity(int $quantity) : bool
+    public function setQuantity(?int $quantity): bool
     {
         $this->quantité = $quantity;
         return true;
