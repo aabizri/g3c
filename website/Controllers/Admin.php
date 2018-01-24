@@ -537,4 +537,125 @@ class Admin
     {
         // Configure name, etc.
     }
+
+    /**
+     * GET root/admin/faq
+     * @param \Entities\Request $req
+     */
+    public static function getFAQ(\Entities\Request $req): void
+    {
+        // Retrieve all question/answers
+        $frequently_asked_questions = (new \Queries\FrequentlyAskedQuestions)->find();
+
+        // Pass it
+        $data = ["frequently_asked_questions" => $frequently_asked_questions];
+
+        // Display
+        \Helpers\DisplayManager::display("faq", $data);
+    }
+
+    /**
+     * POST root/admin/faq
+     * @param \Entities\Request $req
+     */
+    public static function postCreateFAQ(\Entities\Request $req): void
+    {
+        // Retrieve data
+        $question = $req->getPOST("question");
+        if (empty($question)) Error::getInternalError500($req);
+        $answer = $req->getPOST("answer");
+        if (empty($answer)) Error::getInternalError500($req);
+        $priority = $req->getPOST("priority") ?? 0;
+
+        // Validate data
+        if (strlen($question) > 255) {
+            http_response_code(400);
+            echo "une question ne peut pas faire plus de 255 caractères";
+            return;
+        }
+        if (!is_numeric($priority)) {
+            http_response_code(400);
+            echo "une priorité doit être numérique";
+            return;
+        }
+
+        // Create new entity
+        $new_frequently_asked_question = new \Entities\FrequentlyAskedQuestion;
+
+        // Populate it
+        $setOrder = [
+            "question" => $question,
+            "answer" => $answer,
+            "priority" => (int)$priority,
+        ];
+
+        // Execute
+        $new_frequently_asked_question->setMultiple($setOrder);
+
+        // Done
+        return;
+    }
+
+    /**
+     * POST root/admin/faq/{ID} (should be PATCH but we don't have the time)
+     * @param \Entities\Request $req
+     */
+    public static function postFAQ(\Entities\Request $req): void
+    {
+        // Retrieve data
+        $frequently_asked_question_id = $req->getGET("faqid");
+        $question = $req->getPOST("question");
+        $answer = $req->getPOST("answer");
+        $priority = $req->getPOST("priority");
+
+        // Validate data
+        if ($frequently_asked_question_id === null) {
+            http_response_code(400);
+            echo "faqid non indiqué";
+            return;
+        }
+        if (!is_numeric($frequently_asked_question_id)) {
+            http_response_code(400);
+            echo "faqid n'est pas un nombre";
+            return;
+        }
+        if ($question !== null && strlen($question) > 255) {
+            http_response_code(400);
+            echo "une question ne peut pas faire plus de 255 caractères";
+            return;
+        }
+        if ($priority !== null && !is_numeric($priority)) {
+            http_response_code(400);
+            echo "une priorité doit être numérique";
+            return;
+        }
+
+        // Retrieve entity
+        $frequently_asked_question = (new \Queries\FAQ)->retrieve($frequently_asked_question_id);
+        if ($frequently_asked_question === null) {
+            http_response_code(400);
+            echo "il n'y a pas de faq pour cet id";
+            return;
+        }
+
+        // Set if specified
+        $setOrder = [
+            "question" => $question,
+            "answer" => $answer,
+            "priority" => $priority,
+        ];
+
+        // Delete null entries
+        foreach ($setOrder as $title => $pair) {
+            if (empty($pair)) unset($setOrder[$title]);
+        }
+
+        // Set them all
+        $frequently_asked_question->setMultiple($setOrder);
+
+        // Push it
+        (new \Queries\FAQ)
+            ->onColumns(...array_keys($setOrder))
+            ->update($frequently_asked_question);
+    }
 }
