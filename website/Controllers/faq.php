@@ -12,7 +12,7 @@ class FAQ
 
     public static function getFAQ (\Entities\Request $req):void
     {
-        $qa_query = new \Queries\faq;
+        $qa_query = new \Queries\FAQ;
         $qa_results = $qa_query->find();
 
         $data["qa_results"] = $qa_results;

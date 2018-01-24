@@ -6,14 +6,40 @@ body{
 {
     position: relative;
     top: 100px;
-    left: 20%;
-    border: 1px solid #955252;
+    left: 10%;
+
     width: 60%;
-    border-radius: 5px;
-    padding: 20px;
+
 }
 
 #titre{
     position: relative;
     left: 30%;
+}
+
+#questions
+{
+
+    font-size: 25px;
+    font-weight: bold;
+    color: #955252;
+}
+
+#titre
+{
+    left: 50%;
+    font-size : 40px;
+
+}
+
+#trait
+{
+    border-top: 1px solid #000;
+    width : 700px;
+}
+
+#reponses
+{
+
+    font-family : "Trebuchet MS", Arial, Helvetica, sans-serif;
 }

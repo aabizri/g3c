@@ -19,7 +19,7 @@ class FAQ extends Query
         "creation_date" => [],
         "last_updated" => ["timestamp"]];
 
-    private const entity_class_name = "\Entities\faq";
+    private const entity_class_name = "\Entities\FAQ";
 
     /**
      * faq constructor.
@@ -32,12 +32,6 @@ class FAQ extends Query
         parent::__construct(self::table, self::columns, self::entity_class_name);
     }
 
-    /**
-     * @param string $operator
-     * @param \Entities\faq $question
-     * @return FAQ
-     */
-
 
     /* OTHERS */
 
@@ -46,7 +40,7 @@ class FAQ extends Query
      * @return bool
      * @throws \Exception
      */
-    public function save(\Entities\faq $faq): bool
+    public function save(\Entities\FAQ $faq): bool
     {
         return parent::saveEntity($faq);
     }
