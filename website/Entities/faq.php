@@ -84,6 +84,13 @@ class FAQ extends Entity {
         return true;
     }
 
+    public function getCreationDate(): float
+    {
+        return $this->creation_date;
+
+    }
+
+
     /**
      * @return float
      */

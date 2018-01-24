@@ -17,9 +17,9 @@
 
                 <?php
                 echo '
-                        <div id="questions"><p>' . $question . '</p> </div>
+                        <div id="questions"><p>' . htmlspecialchars($question) . '</p> </div>
                         
-                     <div id="reponses"<p>' . $answer . '</p> </div>
+                     <div id="reponses"><p>' . htmlspecialchars($answer) . '</p> </div>
                      <div id="trait"></div>
                       ';
             }

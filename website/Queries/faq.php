@@ -16,7 +16,7 @@ class FAQ extends Query
     private const columns = ["id" => ["id", "gen-on-insert"],
         "question" => [],
         "answer" => [],
-        "creation_date" => [],
+        "creation_date" => ["timestamp"],
         "last_updated" => ["timestamp"]];
 
     private const entity_class_name = "\Entities\FAQ";
