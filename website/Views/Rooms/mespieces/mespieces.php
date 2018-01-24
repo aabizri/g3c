@@ -1,14 +1,14 @@
           <ul id="Menu">
               <li id="Moncompte"><a href="index.php?c=User&a=AccountPage"><input type="button" value="Mon compte" /></a></li>
               <li id="Mespieces"><a href="index.php?c=Room&a=RoomsPage"><input type="button" value="Mes pièces" /></a></li>
-              <li id="Mesperipheriques"> <a href="index.php?c=Peripheral&a=PeripheralsPage"><input type="button" value="Mes périphériques" /></a></li>
+              <li id="Mesperipheriques"><a href="index.php?c=Peripherals&a=List"><input type="button" value="Mes périphériques"/></a></li>
               <li id="Mesfiltres"><a href="Mesfiltres.html"><input type="button" value="Mes filtres" /></a></li>
               <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
           </ul>
 
             <h2 id="nompagepieces">Gestion de mes pièces</h2>
 
-          <form method="post" action="index.php?c=Room&a=Rooms" id="choixsalle">
+          <form method="post" action="index.php?c=Room&a=getRooms" id="choixsalle">
             <select name="Choix de la salle">
                 <?php
                     if (empty($data["rooms"])) {
