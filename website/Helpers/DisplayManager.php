@@ -27,6 +27,7 @@ class DisplayManager
         "mespieces" => "Rooms",
         "mesperipheriques"=> "Peripherals",
         "mysessions" => "Users",
+        "store" => "Store",
         "majmdpreussie" => "Users",
     ];
 
@@ -121,7 +122,7 @@ class DisplayManager
     public static function display(string $name, array $data = []): void {
         // Resolve components
         $components = self::resolveMultipleComponents(["head","header",$name,"footer"]);
-        
+
         // For each, extract the css & php
         $php = [];
         $css = [];
