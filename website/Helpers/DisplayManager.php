@@ -27,6 +27,7 @@ class DisplayManager
         "mespieces" => "Rooms",
         "mesperipheriques"=> "Peripherals",
         "mysessions" => "Users",
+        "faq" => "FAQ",
         "store" => "Store",
         "majmdpreussie" => "Users",
     ];
