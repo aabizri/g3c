@@ -4,7 +4,7 @@
 
         <?php
         //créer un tableau qui s'indente en fonction du nombre de questions
-        $Nbrdonnees = count($data["questions_list"]);
+        $Nbrdonnees = count($data["qa_results"]);
         if ($Nbrdonnees != 0) {
             //on fait le tableau d'un coté question et de l'autre sa réponse
 
@@ -13,15 +13,13 @@
                     <th> Réponses</th>
                     </tr></thread>';
                     
-            foreach ($data["questions_list"] as $p) {
+            foreach ($data["qa_results"] as $p) {
 
                 //on récupère la question, puis sa réponse en vérifiant qu'il y en a bien une
                 $question = $p->getQuestion();
 
-                if (!empty($p->getAnswer())){
+                $answer = $p->getAnswer();
 
-                    $answer = $p->getAnswer();
-                }
 
                 echo '<tr>
                         <td>'. $question . '</td>

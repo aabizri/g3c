@@ -3,7 +3,7 @@
 namespace Controllers;
 
 use Helpers\DisplayManager;
-use Repositories;
+use Queries;
 use Entities;
 
 class FAQ
@@ -12,10 +12,10 @@ class FAQ
 
     public static function getFAQ (\Entities\Request $req):void
     {
-        //Récupère les questions sous forme d'array
-        $questions_list = (new \Queries\faq) ->filterByQuestion("=",$id) -> find();
+        $qa_query = new \Queries\faq;
+        $qa_results = $qa_query->find();
 
-        $data["questions_list"] = $questions_list;
+        $data["qa_results"] = $qa_results;
 
         DisplayManager::display("faq", $data);
     }

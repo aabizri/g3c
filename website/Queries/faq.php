@@ -38,10 +38,6 @@ class FAQ extends Query
      * @return FAQ
      */
 
-    public function filterByQuestion (string $operator, \Entities\faq $question): self
-    {
-        return $this->filterByEntity("id", $operator, $question);
-    }
 
     /* OTHERS */
 
