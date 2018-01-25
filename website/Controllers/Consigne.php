@@ -15,16 +15,17 @@ use Queries;
 
 class Consigne
 {
-    public static function getConsignesPage(\Entities\Request $req) {
+    public static function getConsignesPage(\Entities\Request $req)
+    {
 
-        $property_id = $req -> getPropertyID();
+        $property_id = $req->getPropertyID();
         if ($property_id === null) {
-            Error::getInternalError500();
+            Error::getInternalError500($req);
             return;
         }
 
         //On affiche toutes les salles diponibles de la propriété
-        $property_rooms = (new \Queries\Rooms) -> filterByPropertyID("=", $property_id) -> find();
+        $property_rooms = (new \Queries\Rooms)->filterByPropertyID("=", $property_id)->find();
 
         //On peuple la vue
         $data["property_rooms"] = $property_rooms;
@@ -33,46 +34,46 @@ class Consigne
         DisplayManager::display("consignes", $data);
     }
 
-    public static function postRoomConsignesPage(\Entities\Request $req){
+    /**
+     * POST /properties/{PID}/rooms/orders
+     * @param \Entities\Request $req
+     * @throws \Exception
+     */
+    public static function postRoomConsignesPage(\Entities\Request $req)
+    {
 
         //On recupère l'id de la propriété
-        $property_id = $req -> getPropertyID();
+        $property_id = $req->getPropertyID();
 
         if ($property_id === null) {
-            Error::getInternalError500();
+            Error::getInternalError500($req);
             return;
         }
 
         //On recupère l'id de salle à laquelle l'utilisateur veut accéder
         $room_id = $req->getPOST("room_id");
-        if ($room_id === null){
-            Error::getInternalError500();
+        if ($room_id === null) {
+            Error::getInternalError500($req);
             return;
         }
-        $room = (new Queries\Rooms) -> retrieve($room_id);
+        $room = (new Queries\Rooms)->retrieve($room_id);
         $data["room_name"] = $room;
-        if ($room -> getPropertyID() !== $property_id){
-            Error::getInternalError500();
+        if ($room->getPropertyID() !== $property_id) {
+            Error::getInternalError500($req);
             return;
         }
 
         //On recupère les peripherals liés à la propriété
         $property_room_peripherals = (new \Queries\Peripherals)
-            -> filterByRoomID("=", $room_id)
-            -> find();
-
-        //On recupère l'UUID de chaque peripherique
-        $peripherals_UUID = [];
-        foreach ($property_room_peripherals as $prp) {
-            $peripherals_UUID[] = $prp -> getUUID();
-        }
+            ->filterByRoomID("=", $room_id)
+            ->find();
 
         //Grace a l'UUID, on recupère tous les actionneurs de la salle
         $actuators = [];
-        foreach ($peripherals_UUID as $pUUID) {
+        foreach ($property_room_peripherals as $peripheral) {
             $actuator = (new \Queries\Actuators)
-                -> filterByPeripheralUUID("=", $pUUID)
-                -> find();
+                ->filterByPeripheralUUID("=", $peripheral->getUUID())
+                ->find();
             foreach ($actuator as $a) {
                 $actuators[] = $a;
             }
@@ -82,20 +83,21 @@ class Consigne
         $data["actuators"] = $actuators;
 
         //Rooms pour changer de salle
-            //On affiche toutes les salles diponibles de la propriété
-            $property_rooms = (new \Queries\Rooms) -> filterByPropertyID("=", $property_id) -> find();
+        //On affiche toutes les salles diponibles de la propriété
+        $property_rooms = (new \Queries\Rooms)->filterByPropertyID("=", $property_id)->find();
 
-            //On peuple la vue
-            $data["property_rooms"] = $property_rooms;
+        //On peuple la vue
+        $data["property_rooms"] = $property_rooms;
 
         //On affiche
         DisplayManager::display("roomconsignes", $data);
     }
 
-    public static function postCreateConsigne(\Entities\Request $req){
+    public static function postCreateConsigne(\Entities\Request $req)
+    {
 
         //On recupère les données et faisons quelques verifications
-        $post = $req -> getAllPOST();
+        $post = $req->getAllPOST();
         $property_id = $req->getPropertyID();
 
         if ($property_id === null) {
@@ -106,33 +108,32 @@ class Consigne
         $destination_value = $post["destination_value"];
         $actuator_id = $post["actuator_id"];
         $last_destination_value = $post["last_destination_value"];
-        if ($last_destination_value === null OR $actuator_id === null OR $destination_value === null){
+        if ($last_destination_value === null OR $actuator_id === null OR $destination_value === null) {
             //Faire une page pour afficher l'erreur
             Error::getInternalError500();
             return;
         }
-        if ($destination_value === $last_destination_value){
+        if ($destination_value === $last_destination_value) {
             $active = 0;
-        }
-        else {
+        } else {
             $active = 1;
         }
 
         //On vérifie que l'actionneur appartient bien à la propriété
-        $actuator = (new \Queries\Actuators) -> retrieve($actuator_id);
-        $peripheral_uuid = $actuator -> getPeripheralUuid();
-        $peripheral = (new \Queries\Peripherals) -> filterByColumn("uuid", "=", $peripheral_uuid) -> findOne();
-        if ( $peripheral->getPropertyID() !== $property_id){
+        $actuator = (new \Queries\Actuators)->retrieve($actuator_id);
+        $peripheral_uuid = $actuator->getPeripheralUuid();
+        $peripheral = (new \Queries\Peripherals)->filterByColumn("uuid", "=", $peripheral_uuid)->findOne();
+        if ($peripheral->getPropertyID() !== $property_id) {
             Error::getInternalError500();
             return;
         }
 
         $c = new \Entities\Consigne();
-        $c -> setDestinationValue($destination_value);
-        $c -> setActuatorID($actuator_id);
-        $c -> setActive($active);
+        $c->setDestinationValue($destination_value);
+        $c->setActuatorID($actuator_id);
+        $c->setActive($active);
 
-        (new \Queries\Consignes)-> save($c);
+        (new \Queries\Consignes)->save($c);
 
         DisplayManager::redirectToController("Consigne", "ConsignesPage&pid=1");
 
