@@ -10,7 +10,7 @@ namespace Controllers;
 
 
 use Helpers\DisplayManager;
-use MongoDB\Driver\Query;
+use Queries;
 
 class CGU
 {
@@ -24,7 +24,7 @@ class CGU
         DisplayManager::display("cgu", $data);
     }
 
-    public static function getModificateCGUPage(\Entities\Request $req){
+    public static function getModifyCGUPage(\Entities\Request $req){
 
         //On récupère les cgu
         $cgu = (new \Queries\CGU) ->orderBy("id", false) -> findOne();
@@ -34,7 +34,10 @@ class CGU
         DisplayManager::display("modificationcgu" , $data);
     }
 
-    public static function postModificateCGU (\Entities\Request $req){
+    /**
+     * ADMIN
+
+    public static function postModifyCGU (\Entities\Request $req){
 
         //Récupérer les données
         $cgu = new \Entities\CGU();
@@ -49,4 +52,7 @@ class CGU
         }
 
     }
+
+     **/
+
 }
