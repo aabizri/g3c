@@ -9,7 +9,7 @@
 namespace Entities;
 
 use Helpers\UUID;
-use Repositories;
+
 
 class Sensor extends Entity
 {

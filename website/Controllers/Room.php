@@ -57,9 +57,8 @@ class Room
 
     /**
      * Récupère la liste des pièces : GET /properties/{property_id}/rooms
-     * @param Entities\Room $req
+     * @param Entities\Request $req
      * @throws \Exception
-     * @return array of rooms
      */
     public function getRooms(\Entities\Request $req): void
     {
@@ -83,7 +82,6 @@ class Room
      * Récupère la liste des dernières mesures des capteurs d'une pièce
      * @param Entities\Request $req
      * @throws \Exception
-     * @return array of last measure
      */
 
     public function getLastMeasure(\Entities\Request $req): void
