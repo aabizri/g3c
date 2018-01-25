@@ -1,6 +1,9 @@
 <main>
-    <form id="reinit" method="post" action=action="index.php?c=User&a=Truc">
-        <label>Pseudo ou courriel : </label><input type="text" name="login"/>
-        <input type="submit" value="valider"/>
-    </form>
+    <div id="reinit">
+        <p>Veuillez saisir l'adresse e-mail de votre compte :</p>
+        <form method="post" action="index.php?c=User&a=Reinitialisation">
+            <input type="text" name="email"/>
+            <input type="submit" value="valider"/>
+        </form>
+    </div>
 </main>
