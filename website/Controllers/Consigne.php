@@ -18,6 +18,10 @@ class Consigne
     public static function getConsignesPage(\Entities\Request $req) {
 
         $property_id = $req -> getPropertyID();
+        if ($property_id === null) {
+            Error::getInternalError500();
+            return;
+        }
 
         //On affiche toutes les salles diponibles de la propriété
         $property_rooms = (new \Queries\Rooms) -> filterByPropertyID("=", $property_id) -> find();
@@ -33,6 +37,11 @@ class Consigne
 
         //On recupère l'id de la propriété
         $property_id = $req -> getPropertyID();
+
+        if ($property_id === null) {
+            Error::getInternalError500();
+            return;
+        }
 
         //On recupère l'id de salle à laquelle l'utilisateur veut accéder
         $room_id = $req->getPOST("room_id");
@@ -85,9 +94,15 @@ class Consigne
 
     public static function postCreateConsigne(\Entities\Request $req){
 
-        //On recupère les données
+        //On recupère les données et faisons quelques verifications
         $post = $req -> getAllPOST();
         $property_id = $req->getPropertyID();
+
+        if ($property_id === null) {
+            Error::getInternalError500();
+            return;
+        }
+
         $destination_value = $post["destination_value"];
         $actuator_id = $post["actuator_id"];
         $last_destination_value = $post["last_destination_value"];

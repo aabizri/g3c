@@ -76,7 +76,7 @@ class Sensor extends Entity
     /**
      * @return string
      */
-    public function getLastUpdated(): ?string
+    public function getLastUpdated(): ?float
     {
         return $this->last_updated;
     }
@@ -85,7 +85,7 @@ class Sensor extends Entity
      * @param string $last_updated
      * @return bool
      */
-    public function setLastUpdated(string $last_updated): bool
+    public function setLastUpdated(float $last_updated): bool
     {
         $this->last_updated = $last_updated;
         return true;
