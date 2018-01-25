@@ -47,6 +47,7 @@ body {
 
 #inscription
 {
+	list-style:none;
 	position:relative;
 	display:block;
 }
