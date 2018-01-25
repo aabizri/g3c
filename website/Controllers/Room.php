@@ -49,7 +49,7 @@ class Room
             echo "Erreur" . $e;
         }
 
-        \Helpers\DisplayManager::redirectToController("Rooms", "Rooms");
+        \Helpers\DisplayManager::redirectToPath("properties/" . $property_id . "/rooms/" . $r->getID());
     }
 
     /**
@@ -72,6 +72,12 @@ class Room
             ->filterByPropertyID("=", $property_id)
             ->find();
 
-        \Helpers\DisplayManager::display("mespieces", ["rooms" => $rooms]);
+        // Données pour la vue PHP
+        $data_for_php_view = [
+            "rooms" => $rooms,
+            "pid" => $property_id,
+        ];
+
+        \Helpers\DisplayManager::display("mespieces", $data_for_php_view);
     }
 }

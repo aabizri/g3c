@@ -1,9 +1,10 @@
             <ul id="Menu">
-                <li id="Moncompte"><a href="index.php?c=User&a=Informations"><input type="button" value="Mon compte" /></a></li>
-                <li id="Mesperipheriques"><a href="index.php?c=Peripherals&a=List"><input type="button" value="Mes périphériques"/></a></li>
-              <li id="Mespieces"><a href="index.php?c=Room&a=RoomsPage"><input type="button" value="Mes pièces" /></a></li>
-              <li id="Mesfiltres"><a href="Mesfiltres.html"><input type="button" value="Mes filtres" /></a></li>
-              <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
+                <li id="Moncompte"><a href="account"><input type="button" value="Mon compte"/></a></li>
+                <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
+                                                                                                      value="Mes périphériques"/></a>
+                </li>
+                <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button"
+                                                                                         value="Mes pièces"/></a></li>
             </ul>
 
             <h2 id="titreperipherique">Liste des peripériques connectés</h2>
@@ -53,12 +54,12 @@
                                 }
 
 
-                                echo '<tr><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" >
+                                echo '<tr><form action="/properties/{PID}/peripherals/{PUUID}/remove&pid=1&debug=true" method="post" >
                                         <td>'. $peripheral_name .'</td> 
                                         <td>'. $room_name .'</td>
                                         <td>'. $date .'</td>
                                         <td><input type="hidden" name="peripheral_id" value="'. $p->getUUID() .'"/>'. $p->getUUID() .'</td>
-                                        <td><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" ><input type="submit" value="Supprimer"/></form></td>
+                                        <td><form action="/properties/{PID}/peripherals/{PUUID}/remove&pid=1&debug=true" method="post" ><input type="submit" value="Supprimer"/></form></td>
                                       </tr>';}
 
                             }

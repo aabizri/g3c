@@ -1,10 +1,9 @@
 <ul id="Menu">
-    <li id="Moncompte"><a href="index.php?c=User&a=AccountPage"><input type="button" value="Mon compte" /></a></li>
-    <li id="Mespieces"><a href="index.php?c=Room&a=RoomsPage"><input type="button" value="Mes pièces" /></a></li>
-    <li id="Mesperipheriques"><a href="index.php?c=Peripherals&a=List"><input type="button" value="Mes périphériques"/></a>
+    <li id="Moncompte"><a href="account"><input type="button" value="Mon compte"/></a></li>
+    <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a></li>
+    <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
+                                                                                          value="Mes périphériques"/></a>
     </li>
-    <li id="Mesfiltres"><a href="Mesfiltres.html"><input type="button" value="Mes filtres" /></a></li>
-    <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
 </ul>
 
 <h2 id="Tableaudebord">Tableau de bord</h2>

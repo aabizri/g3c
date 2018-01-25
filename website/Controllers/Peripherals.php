@@ -15,7 +15,7 @@ class Peripherals
 {
 
     /**
-     * Ajouter un périphérique : POST /property/{property_id}/peripherals/add
+     * Ajouter un périphérique : POST /properties/{property_id}/peripherals/add
      *
      * @param Entities\Request $req
      * @throws \Exception
@@ -75,11 +75,11 @@ class Peripherals
             return;
         }
 
-        DisplayManager::redirectToController("Peripherals", "List");
+        DisplayManager::redirectToPath("properties/" . $property_id . "/peripherals");
     }
 
     /**
-     * Récupérer la liste des périphériques : GET /property/{property_id}/peripherals
+     * Récupérer la liste des périphériques : GET /properties/{property_id}/peripherals
      *
      * @param Entities\Request $req
      * @throws \Exception
@@ -102,16 +102,19 @@ class Peripherals
         $property_room = (new \Queries\Rooms()) -> filterByPropertyID("=", $property_id) -> find();
 
         // Peupler la vue
-        $data["peripherals_list"] = $peripherals_list;
-        $data["property_room"] = $property_room;
+        $data_for_php_view = [
+            "pid" => $property_id,
+            "peripherals_list" => $peripherals_list,
+            "property_room" => $property_room,
+        ];
 
         //Afficher
-        \Helpers\DisplayManager::display("mesperipheriques",$data);
+        \Helpers\DisplayManager::display("mesperipheriques", $data_for_php_view);
 
     }
 
     /**
-     * Dis-associe un périphérique d'une entité : POST /property/{property_id}/peripherals/remove
+     * Dis-associe un périphérique d'une entité : POST /properties/{property_id}/peripherals/remove
      *
      * @param Entities\Request $req
      * @throws \Exception
@@ -144,6 +147,6 @@ class Peripherals
         (new \Queries\Peripherals) -> update($peripheral);
 
         //Affichage de la page peripherique mise a jour
-        \Helpers\DisplayManager::redirectToController("Peripherals", "List");
+        \Helpers\DisplayManager::redirectToPath("properties/" . $property_id . "peripherals");
     }
 }

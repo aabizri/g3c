@@ -9,7 +9,7 @@ use Entities;
  * Class Property
  * @package Controllers
  */
-class Property
+class Properties
 {
     /**
      * Create a property
