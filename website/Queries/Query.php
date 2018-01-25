@@ -220,7 +220,7 @@ abstract class Query
      */
     public function retrieve($id)
     {
-        $this->filterByColumn("id", "=", $id);
+        $this->filterByColumn($this->entity_id_column_name, "=", $id);
         return $this->findOne();
     }
 
@@ -364,7 +364,7 @@ abstract class Query
         $this->operation = "UPDATE";
 
         // ID of the value as a where
-        $this->filterByEntity("id", "=", $entity);
+        $this->filterByEntity($this->entity_id_column_name, "=", $entity);
 
         // On ne push pas la valeur de l'ID, inutile dans tous les cas
         unset($this->manipulate_columns[array_search($this->entity_id_column_name, $this->manipulate_columns)]);
