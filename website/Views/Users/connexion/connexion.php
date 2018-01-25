@@ -24,7 +24,10 @@
     <label>Mot de passe : </label><input type="password" name="password"/>
     <input type="submit" value="Connexion"/>
 </form>
-<p id="inscription">Vous n'êtes pas inscrit? Cliquez <a href="index.php?c=User&a=SubscriptionPage">ici</a></p>
+    <ul  id="inscription">
+        <li>Vous n'êtes pas inscrit? Cliquez <a href="index.php?c=User&a=SubscriptionPage">ici</a></li>
+        <li>Mot de passe oublié ? Cliquez <a href="index.php?c=User&a=ResetPassword">ici</a></li>
+    </ul>
 </div>
 <div id="domisep">
     <i><h2>Par DOMISEP</h2>
