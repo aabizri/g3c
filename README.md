@@ -9,6 +9,31 @@
 - Jérémy Berda
 - Alexandre Bizri
 
+## URL Valides et controlleurs associés
+| URL					   | Controlleur			| Paramètre GET |
+| ---------------------------------------- | ---------------------------------- | ------------- |
+| `^admin$`                                | \Controllers\Admin::Console	| |
+| `^admin/users$`                          | \Controllers\Admin::Users		| |
+| `^admin/user/([0-9]+)$`                  | \Controllers\Admin::User		| ["uid" => $1] |
+| `^admin/user/([0-9]+)/sessions$`         | \Controllers\Admin::UserSessions	| ["uid" => $1] |
+| `^admin/user/([0-9]+)/requests$`         | \Controllers\Admin::UserRequests	| ["uid" => $1] |
+| `^admin/user/([0-9]+)/properties$`       | \Controllers\Admin::UserProperties	| ["uid" => $1] |
+| `^admin/properties$`                     | \Controllers\Admin::Properties	| ["pid" => $1] |
+| `^admin/property/([0-9]+)$`              | \Controllers\Admin::Property	| ["pid" => $1] |
+| `^admin/property/([0-9]+)/users$`        | \Controllers\Admin::PropertyUsers	| ["pid" => $1] |
+| `^admin/property/([0-9]+)/peripherals$`  | \Controllers\Admin::PropertyPeripherals | ["pid" => $1] |
+| `^login$`                                | \Controllers\User::Login		| |
+| `^logout$`                               | \Controllers\User::Logout		| |
+| `^join$`                                 | \Controllers\User::Join		| |
+| `^account$`                              | \Controllers\User::Account		| |
+| `^account/subscription$`                 | \Controllers\Subscription::Status	| |
+| `^properties$`                           | \Controllers\Properties::Select	| |
+| `^properties/([0-9]+)$`                  | \Controllers\Properties::Dashboard | ["pid" => $1] |
+| `^properties/([0-9]+)/rooms$`            | \Controllers\Room::Rooms		| ["pid" => $1] |
+| `^properties/([0-9]+)/rooms/([0-9]+)$`   | \Controllers\Rooms::Room		| ["pid" => $1] |&rid=$2
+| `^properties/([0-9]+)/peripherals$`      | \Controllers\Peripherals::List	| ["pid" => $1] |
+| `^properties/([0-9]+)/parameters$`       | \Controllers\Property::Parameters	| ["pid" => $1] |
+
 ## Documentation interne
 
 ### Queries
