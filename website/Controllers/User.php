@@ -100,6 +100,27 @@ class User
     /**
      * Connexion
      */
+
+    public static function postReinitialisation(\Entities\Request $req)
+    {
+        // On récupère les données
+        $email = $req->getPOST('email');
+        $u = (new \Queries\Users)->filterByEmail("=", $email)->findOne();
+        // Si l'adresse mail n'existe pas on affiche la page d'erreur
+        if ($u === null)
+        {
+            http_response_code(400);
+            echo "Ce login n'existe pas";
+            return;
+
+        }
+
+        //Là faut envoyer un mail avec un mdr provisoire random au type
+        
+       \Helpers\DisplayManager::redirectToController("User", "MajMdpReussie");
+    }
+
+
     public static function postConnection(\Entities\Request $req): void
     {
         // Si l'usager est déjà connecté, le rediriger vers la page d'accueil
@@ -177,6 +198,12 @@ class User
     {
         DisplayManager::display("reset");
     }
+
+    public static function getMajMdpReussie(\Entities\Request $req): void
+    {
+        DisplayManager::display("majmdpreussie");
+    }
+
 
     //Mettre à jour les infos
 
