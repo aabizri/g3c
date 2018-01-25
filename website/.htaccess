@@ -8,7 +8,7 @@ RewriteRule   ^admin/users$                         index.php?c=Admin&a=Users&%{
 RewriteRule   ^admin/user/([0-9]+)$                 index.php?c=Admin&a=User&uid=$1&%{QUERY_STRING}
 RewriteRule   ^admin/user/([0-9]+)/sessions$        index.php?c=Admin&a=UserSessions&uid=$1&%{QUERY_STRING}
 RewriteRule   ^admin/user/([0-9]+)/requests$        index.php?c=Admin&a=UserRequests&uid=$1&%{QUERY_STRING}
-RewriteRule   ^admin/user/([0-9]+)/properties       index.php?c=Admin&a=UserProperties&uid=$1&%{QUERY_STRING}
+RewriteRule   ^admin/user/([0-9]+)/properties$      index.php?c=Admin&a=UserProperties&uid=$1&%{QUERY_STRING}
 
 ## Admin/Properties
 RewriteRule   ^admin/properties$                    index.php?c=Admin&a=Properties&pid=$1&%{QUERY_STRING}
