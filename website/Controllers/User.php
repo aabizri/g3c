@@ -173,6 +173,11 @@ class User
         \Helpers\DisplayManager::display("moncompte", $data);
     }
 
+    public static function getResetPassword(\Entities\Request $req): void
+    {
+        DisplayManager::display("reset");
+    }
+
     //Mettre à jour les infos
 
     public static function postMAJInformations (\Entities\Request $req): void
