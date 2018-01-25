@@ -53,13 +53,22 @@
                                     $peripheral_name = $p->getDisplayName();
                                 }
 
+                                if ($p->getStatus() === "Fonctionnel" ){
+                                    $status = "<img id='status' src='http://www.icone-png.com/png/29/29350.png' alt='Fonctionnel' title='Fonctionnel' />";
+                                }
+                                elseif ($p->getStatus() === "Non-fonctionnel"){
+                                    $status = "<img id='status' src='http://www.ic%C3%B4ne.com/images/icones/2/0/attention.png' alt='Non-fonctionnel' title='Non-fonctionnel' />";
+                                }
+                                else {
+                                    $status = "<img id='status' src='http://www.icone-png.com/png/16/16126.png' alt='Pas de capteurs liés' title='Pas de capteurs liés' />";
+                                }
 
                                 echo '<tr><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" >
                                         <td>'. $peripheral_name .'</td> 
                                         <td>'. $room_name .'</td>
                                         <td>'. $date .'</td>
                                         <td><input type="hidden" name="peripheral_id" value="'. $p->getUUID() .'"/>'. $p->getUUID() .'</td>
-                                        <td>'. $p -> getStatus() .'</td>
+                                        <td>'. $status .'</td>
                                         <td><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" ><input type="submit" value="Supprimer"/></form></td>
                                       </tr>';}
 

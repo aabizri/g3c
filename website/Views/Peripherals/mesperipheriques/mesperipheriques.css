@@ -124,3 +124,9 @@ table
 	left: 20px;
 	padding-bottom: 20px;
 }
+
+#status
+{
+	width: 30px;
+	height: 30px;
+}

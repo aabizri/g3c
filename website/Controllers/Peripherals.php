@@ -141,7 +141,7 @@ class Peripherals
                 $sensors_status[] = $status;
             }
 
-            if (array_search("Non-fonctionnel", $sensors_status) === 0) {
+            if (array_search("Non-fonctionnel", $sensors_status) !== false) {
                 $final_status = "Non-fonctionnel";
             }
             elseif (empty($sensors_status)){
