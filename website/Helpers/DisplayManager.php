@@ -14,7 +14,8 @@ namespace Helpers;
  */
 class DisplayManager
 {
-    private const views_directory = "Views";
+    private const VIEWS_DIR = "Views";
+    private const DEFAULT_SUBROOT = "/";
 
     public static $views_categories = [
         "dashboard" => "Dashboard",
@@ -31,20 +32,18 @@ class DisplayManager
         "majmdpreussie" => "Users",
     ];
 
+    /**
+     * @return string
+     * @throws \Exception
+     */
     private static function subroot(): string {
-        $path = __DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."config.ini";
-        $conf_file = parse_ini_file($path);
-        if ($conf_file == null) {
-            throw new \Exception("NO CONFIG FILE FFS");
-        }
-        if (!array_key_exists("subroot", $conf_file)) {
-            throw new \Exception("NO ARRAY MEMBER FFS");
-        }
-        return $conf_file["subroot"];
+        $subroot = (new \Helpers\Config)->getSubroot() ?? self::DEFAULT_SUBROOT;
+        return $subroot;
     }
 
     /**
      * @return string
+     * @throws \Exception
      */
     public static function websiteRootFS(string $dir = ""): string{
         return str_replace("/", DIRECTORY_SEPARATOR,$_SERVER["DOCUMENT_ROOT"].DIRECTORY_SEPARATOR.self::subroot().DIRECTORY_SEPARATOR.$dir);
@@ -52,6 +51,7 @@ class DisplayManager
 
     /**
      * @return string
+     * @throws \Exception
      */
     public static function websiteRootURL(string $dir = ""): string{
         return "/".str_replace("\\","/", self::subroot())."/".$dir;
@@ -60,6 +60,7 @@ class DisplayManager
     /**
      * @param string $path
      * @return string
+     * @throws \Exception
      */
     public static function absolutifyFS(string $path, string $origin = ""): string{
         return self::websiteRootFS($origin).$path;
@@ -68,6 +69,7 @@ class DisplayManager
     /**
      * @param string $path
      * @return string
+     * @throws \Exception
      */
     public static function absolutifyURL(string $path, string $origin = ""): string{
         return self::websiteRootURL($origin).$path;
@@ -86,7 +88,7 @@ class DisplayManager
         $category = self::$views_categories[$page_name];
 
         // Build the path
-        $base_path = self::views_directory."/".$category."/".$page_name."/".$page_name;
+        $base_path = self::VIEWS_DIR . "/" . $category . "/" . $page_name . "/" . $page_name;
         $res["php"] = str_replace("/",DIRECTORY_SEPARATOR,$base_path.".php");
         if (!file_exists(self::absolutifyFS($res["php"]))) {
             throw new \Exception("Page listed in internal repository but not found on disk : ".self::absolutifyFS($res["php"]));
@@ -178,6 +180,7 @@ class DisplayManager
      * Redirects to destination with 302 (temporary redirect)
      *
      * @param string $destination
+     * @throws \Exception
      */
     public static function redirectToPath(string $destination): void
     {

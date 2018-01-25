@@ -61,7 +61,7 @@ abstract class Query
     public function __construct(string $table, array $table_columns, string $entity_class_name)
     {
         // Open an instance
-        $this->db = \Helpers\DB::getInstance();
+        $this->db = \Helpers\DB::getPDO();
 
         // Note the table
         $this->table = $table;
