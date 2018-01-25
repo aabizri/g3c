@@ -32,7 +32,7 @@
             <div id="uneconsigne">
             <?php
              if($data["actuators"] === []){
-                 echo '<p>Aucune consigne possible dans cette salle</p>';
+                 echo '<p>Aucune consigne possible, il n\'y a pas de périphérique dans cette salle</p>';
              }
 
              foreach ($data["actuators"] as $a){
