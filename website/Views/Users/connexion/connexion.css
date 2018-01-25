@@ -44,3 +44,9 @@ body {
 	text-align: center;
 	margin-bottom: 46px;
 }
+
+#inscription
+{
+	position:relative;
+	display:block;
+}
