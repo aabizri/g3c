@@ -97,6 +97,63 @@ class Peripherals
         // Récupère les entités des périphériques sous forme de array
         $peripherals_list = (new \Queries\Peripherals) -> filterByPropertyID("=", $property_id) -> find();
 
+        //Envoyer le status des peripheriques
+        foreach ($peripherals_list as $peripheral){
+
+            //On trouve l'UUID de tous les peripheriques de la propriété
+            $uuid = $peripheral -> getUUID();
+
+            //Puis on cherche les sensors liés à ces périphériques
+            $sensor = (new \Queries\Sensors)
+                -> filterByColumn("peripheral_uuid", "=", $uuid, "AND")
+                -> find();
+
+            //On recupère leurs ID
+            $sensors_id = [];
+            foreach ($sensor as $s){
+                $sensors_id[] = $s -> getID();
+            }
+
+            //Ces ids nous permettent de trouver l'entité de la dernière mesure
+            $sensors_status = [];
+            foreach ($sensors_id as $sid){
+
+                $measure = (new \Queries\Measures) -> filterByColumn("sensor_id", "=", $sid, "AND")
+                    -> orderBy("date_time", false)
+                    -> findOne();
+
+                if (isset($measure)) {
+                    $date_time = $measure->getDateTime();
+                }
+                else{
+                    //Trouver une solution
+                }
+
+                $difference = time() - strtotime($date_time);
+
+                if ( $difference > 1800 ){
+                    $status = "Non-fonctionnel";
+                }
+                else{
+                    $status = "Fonctionnel";
+                }
+
+                $sensors_status[] = $status;
+            }
+
+            if (array_search("Non-fonctionnel", $sensors_status) === true){
+                $final_status = "Non-fonctionnel";
+            }
+            else {
+                $final_status = "Fonctionnel";
+            }
+
+            $peripheral -> setStatus($final_status);
+
+                (new \Queries\Peripherals) -> update($peripheral);
+
+
+        }
 
         //Trouver toutes les rooms id de la propriété
         $property_room = (new \Queries\Rooms()) -> filterByPropertyID("=", $property_id) -> find();

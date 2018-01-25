@@ -24,6 +24,7 @@
                                     <th>Localisation</th>
                                     <th>Dernière mise à jour</th>
                                     <th>UUID</th>
+                                    <th>Statut</th>
                                     <th>Gestion</th>
                                     </tr></thead>';
 
@@ -58,6 +59,7 @@
                                         <td>'. $room_name .'</td>
                                         <td>'. $date .'</td>
                                         <td><input type="hidden" name="peripheral_id" value="'. $p->getUUID() .'"/>'. $p->getUUID() .'</td>
+                                        <td>'. $p -> getStatus() .'</td>
                                         <td><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" ><input type="submit" value="Supprimer"/></form></td>
                                       </tr>';}
 

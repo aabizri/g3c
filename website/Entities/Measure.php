@@ -38,7 +38,7 @@ class Measure extends Entity
     private $date_time;
 
     /**
-     * @var double
+     * @var float
      */
     private $value;
 
@@ -133,7 +133,7 @@ class Measure extends Entity
     }
 
     /**
-     * @return double
+     * @return float
      */
     public function getValue(): float
     {
@@ -141,10 +141,10 @@ class Measure extends Entity
     }
 
     /**
-     * @param double $value
+     * @param float $value
      * @return bool
      */
-    public function setValue(double $value): bool
+    public function setValue(float $value): bool
     {
         $this->value = $value;
         return true;

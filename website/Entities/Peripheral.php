@@ -38,7 +38,7 @@ class Peripheral extends Entity
     /**
      * @var string
      */
-    private $public_key;
+    private $status;
 
     /**
      * @var int
@@ -171,18 +171,18 @@ class Peripheral extends Entity
     /**
      * @return string|null
      */
-    public function getPublicKey(): ?string
+    public function getStatus(): ?string
     {
-        return $this->public_key;
+        return $this->status;
     }
 
     /**
      * @param string|null $public_key
      * @return bool
      */
-    public function setPublicKey(?string $public_key): bool
+    public function setStatus(?string $status): bool
     {
-        $this->public_key = $public_key;
+        $this->status = $status;
         return true;
     }
 

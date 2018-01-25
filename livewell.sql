@@ -101,7 +101,7 @@ CREATE TABLE `measures` (
   `id` int(11) NOT NULL,
   `type_id` int(11) NOT NULL,
   `date_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `value` double NOT NULL,
+  `value` float NOT NULL,
   `sensor_id` int(11) DEFAULT NULL,
   `actuator_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -118,8 +118,8 @@ CREATE TABLE `measure_types` (
   `description` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Température en Celsius"',
   `unit_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Celsius"',
   `unit_symbol` varchar(6) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "°C"',
-  `min` double DEFAULT NULL COMMENT 'Valeur minimale (opt)',
-  `max` double DEFAULT NULL COMMENT 'Valeur maximale (opt)'
+  `min` float DEFAULT NULL COMMENT 'Valeur minimale (opt)',
+  `max` float DEFAULT NULL COMMENT 'Valeur maximale (opt)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --

@@ -21,7 +21,7 @@ class Peripherals extends Query
                              "display_name" => [],
                              "build_date" => [],
                              "add_date" => [],
-                             "public_key" => [],
+                             "status" => [],
                              "property_id" => [],
                              "room_id" => [],
                              "last_updated" => ["gen-on-insert", "timestamp"]];
