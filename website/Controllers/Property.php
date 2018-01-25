@@ -20,7 +20,11 @@ class Property
     public static function getPropertyPage(\Entities\Request $req): void {
 
         //On récupère les données
-        $property_id = $req->getPropertyID();
+        $property = $req->getProperty();
+        if ($property === null){
+            Error::getInternalError500($req);
+            return;
+        }
         $user_id = $req -> getUserID();
 
         //Sécurité TODO Marchera quand on récupérera l'user id en get
@@ -33,7 +37,7 @@ class Property
         }*/
 
         //On récupère les infos de la propriété
-        $property = (new \Queries\Properties) -> retrieve($property_id);
+        $property_id = $property -> getID();
 
         //Grace à l'id de la propriété, on récupère tous les ids des roles avec le même id de propriété
         $property_users_list = (new \Queries\Roles) -> filterByPropertyID("=", $property_id) -> find();
