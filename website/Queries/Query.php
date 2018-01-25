@@ -146,7 +146,8 @@ abstract class Query
         // Récupère le compte si on a pu récuperer l'ID, sinon 0
         $count = 0;
         if ($id !== null) {
-            $count = $this
+            $count_query = clone $this;
+            $count = $count_query
                 ->filterByEntity($this->entity_id_column_name, "=", $entity)
                 ->count();
         }

@@ -30,6 +30,8 @@ class DisplayManager
         "faq" => "FAQ",
         "store" => "Store",
         "majmdpreussie" => "Users",
+        "cgu" => "CGU",
+        "modificationcgu" => "CGU",
     ];
 
     private static function subroot(): string {
