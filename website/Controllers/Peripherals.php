@@ -141,8 +141,11 @@ class Peripherals
                 $sensors_status[] = $status;
             }
 
-            if (array_search("Non-fonctionnel", $sensors_status) === true){
+            if (array_search("Non-fonctionnel", $sensors_status) === 0) {
                 $final_status = "Non-fonctionnel";
+            }
+            elseif (empty($sensors_status)){
+                $final_status = "Pas de capteurs liés";
             }
             else {
                 $final_status = "Fonctionnel";
@@ -150,7 +153,12 @@ class Peripherals
 
             $peripheral -> setStatus($final_status);
 
-                (new \Queries\Peripherals) -> update($peripheral);
+            // Insert it
+            try {
+                (new \Queries\Peripherals)->update($peripheral);
+            } catch (\Exception $e) {
+                echo $e;
+            }
 
 
         }
