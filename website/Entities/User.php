@@ -260,7 +260,7 @@ class User extends Entity
      *
      * @param string $clear is the password
      *
-     *
+     * @return bool
      */
     public function verifyPassword(string $clear): bool
     {

@@ -650,18 +650,19 @@ class Request extends Entity
     /**
      * @param float $finished , default to now
      *
+     * @throws \Exception
      */
     public function setFinished(?float $finished_at = null): void
     {
         if ($this->started === 0) {
-            return false;
+            throw new \Exception("Start date has not been set, so we can't calculate elapsed time");
         }
         if ($finished_at === null) {
             $finished_at = microtime(true);
         }
         $in_seconds = (float)$finished_at - $this->getStartedProcessing();
         $in_microseconds = (int)($in_seconds * (10 ** 6));
-        return $this->setDuration($in_microseconds);
+        $this->setDuration($in_microseconds);
     }
 
     /**
@@ -671,16 +672,9 @@ class Request extends Entity
      */
     public function setUserAgent(string $ua): void
     {
-        if ($this->setUserAgentTxt($ua) == false) {
-            return false;
-        }
-
+        $this->setUserAgentTxt($ua);
         $hash = hash('sha256', $ua);
-        if ($this->setUserAgentHash($hash) == false) {
-            return false;
-        }
-
-
+        $this->setUserAgentHash($hash);
     }
 
     /**
@@ -692,8 +686,7 @@ class Request extends Entity
         if (empty($session_id)) {
             $session_id = session_id();
         }
-        $ok = $this->setSessionID($session_id);
-        return $ok;
+        $this->setSessionID($session_id);
     }
 
     /**
@@ -719,6 +712,7 @@ class Request extends Entity
      *
      * @param array $info defaults to $_SERVER
      *
+     * @throws \Exceptions\SetFailedException
      */
     public function setInfo(array $info = null): void
     {
@@ -731,56 +725,35 @@ class Request extends Entity
         $required = ["REQUEST_METHOD", "REMOTE_ADDR", "HTTP_USER_AGENT", "REQUEST_TIME_FLOAT", "REQUEST_URI"];
         foreach ($required as $key) {
             if (empty($info[$key])) {
-                return false;
+                throw new \Exception("Missing request info in given array");
             }
         }
 
         // Register method
-        $ok = $this->setMethod($info["REQUEST_METHOD"]);
-        if (!$ok) {
-            return false;
-        }
+        $this->setMethod($info["REQUEST_METHOD"]);
 
         // Register properties
-        $ok = $this->setIp($info["REMOTE_ADDR"]);
-        if (!$ok) {
-            return false;
-        }
+        $this->setIp($info["REMOTE_ADDR"]);
 
         // Set user agent
-        $ok = $this->setUserAgent($info["HTTP_USER_AGENT"]);
-        if (!$ok) {
-            return false;
-        }
+        $this->setUserAgent($info["HTTP_USER_AGENT"]);
 
         // Set request time
         $time = (float)$info["REQUEST_TIME_FLOAT"];
-        $ok = $this->setStartedProcessing($time);
-        if (!$ok) {
-            return false;
-        }
+        $this->setStartedProcessing($time);
 
         // Set referer
         if (!empty($info["HTTP_REFERR"])) {
-            $ok = $this->setReferer($info["HTTP_REFERER"]);
-            if (!$ok) {
-                return false;
-            }
+            $this->setReferer($info["HTTP_REFERER"]);
         }
 
         // Set request URI
-        $ok = $this->setRequestURI($info["REQUEST_URI"]);
-        if (!$ok) {
-            return false;
-        }
+        $this->setRequestURI($info["REQUEST_URI"]);
 
         // Set Request Length if present
         if (!empty($info["CONTENT_LENGTH"])) {
             $request_length = (int)$info["CONTENT_LENGTH"];
-            $ok = $this->setRequestLength($request_length);
-            if (!$ok) {
-                return false;
-            }
+            $this->setRequestLength($request_length);
         }
 
 

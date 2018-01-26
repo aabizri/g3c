@@ -249,10 +249,7 @@ abstract class Query
 
         // Populate
         $entity = new $this->entity_class_name;
-        $success = $this->populateEntity($entity,$lines);
-        if ($success === false) {
-            throw new \Exception("failed while populating entity of type".gettype($entity));
-        }
+        $this->populateEntity($entity, $lines);
 
         // Return the entity
         return $entity;
@@ -283,10 +280,7 @@ abstract class Query
         $entities = [];
         foreach ($lines as $line) {
             $entity = new $this->entity_class_name;
-            $success = $this->populateEntity($entity, $line);
-            if ($success === false) {
-                throw new \Exception("failed while populating entity of type" . gettype($entity));
-            }
+            $this->populateEntity($entity, $line);
             $entities[] = $entity;
         }
 
@@ -557,12 +551,15 @@ abstract class Query
      * @param \Entities\Entity $entity
      * @param array $results
      *
-     * @return bool true on success, false on failure
      * @throws \Exception
      */
-    private function populateEntity(\Entities\Entity $entity, array $results): bool
+    private function populateEntity(\Entities\Entity $entity, array $results)
     {
-        return $entity->setMultiple($results);
+        try {
+            $entity->setMultiple($results);
+        } catch (\Throwable $t) {
+            throw new \Exception(sprintf("%s failed while populating entity of class %s", __METHOD__, get_class($entity)), 0, $t);
+        }
     }
 
     /** QUERY BUILDING STUFF */
