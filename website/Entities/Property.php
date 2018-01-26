@@ -53,12 +53,12 @@ class Property extends Entity
 
     /**
      * @param int $id
-     * @return bool
+     *
      */
-    public function setID(int $id): bool
+    public function setID(int $id): void
     {
         $this->id = $id;
-        return true;
+
     }
 
     /**
@@ -71,12 +71,12 @@ class Property extends Entity
 
     /**
      * @param string $name
-     * @return bool
+     *
      */
-    public function setName(string $name): bool
+    public function setName(string $name): void
     {
         $this->name = $name;
-        return true;
+
     }
 
     /**
@@ -89,12 +89,12 @@ class Property extends Entity
 
     /**
      * @param string $address
-     * @return bool
+     *
      */
-    public function setAddress(string $address): bool
+    public function setAddress(string $address): void
     {
         $this->address = $address;
-        return true;
+
     }
 
     /**
@@ -107,12 +107,12 @@ class Property extends Entity
 
     /**
      * @param flaot $creation_date
-     * @return bool
+     *
      */
-    public function setCreationDate(float $creation_date): bool
+    public function setCreationDate(float $creation_date): void
     {
         $this->creation_date = $creation_date;
-        return true;
+
     }
 
     /**
@@ -125,12 +125,12 @@ class Property extends Entity
 
     /**
      * @param float $last_updated
-     * @return bool
+     *
      */
-    public function setLastUpdated(float $last_updated): bool
+    public function setLastUpdated(float $last_updated): void
     {
         $this->last_updated = $last_updated;
-        return true;
+
     }
 }
 

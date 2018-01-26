@@ -9,62 +9,72 @@
 namespace Entities;
 
 
+/**
+ * Class CGU
+ * @package Entities
+ */
 class CGU extends Entity
 {
+    /**
+     * @var int
+     */
     private $id;
+
+    /**
+     * @var string
+     */
     private $text;
+
+    /**
+     * @var float
+     */
     private $last_updated;
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getID() : ?int
+    public function getID(): int
     {
         return $this->id;
     }
 
     /**
-     * @param mixed $id
+     * @param int $id
      */
-    public function setID(int $id) : bool
+    public function setID(int $id): void
     {
         $this->id = $id;
-        return true;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getText() : ?string
+    public function getText(): string
     {
         return $this->text;
     }
 
     /**
-     * @param mixed $text
+     * @param string $text
      */
-    public function setText(string $text) : bool
+    public function setText(string $text): void
     {
         $this->text = $text;
-        return true;
     }
 
     /**
-     * @return mixed
+     * @return float
      */
-    public function getLastUpdated() : ?float
+    public function getLastUpdated(): float
     {
         return $this->last_updated;
     }
 
     /**
-     * @param mixed $last_updated
+     * @param float $last_updated
      */
-    public function setLastUpdated(float $last_updated) : bool
+    public function setLastUpdated(float $last_updated): void
     {
         $this->last_updated = $last_updated;
-        return true;
     }
-
-
 }

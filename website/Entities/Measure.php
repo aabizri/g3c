@@ -65,12 +65,12 @@ class Measure extends Entity
 
     /**
      * @param int $id
-     * @return bool
+     *
      */
-    public function setID(int $id): bool
+    public function setID(int $id): void
     {
         $this->id = $id;
-        return true;
+
     }
 
     /**
@@ -83,12 +83,12 @@ class Measure extends Entity
 
     /**
      * @param string $type_id
-     * @return bool
+     *
      */
-    public function setTypeID(string $type_id): bool
+    public function setTypeID(string $type_id): void
     {
         $this->type_id = $type_id;
-        return true;
+
     }
 
     /**
@@ -105,13 +105,13 @@ class Measure extends Entity
 
     /**
      * @param MeasureType $mt
-     * @return bool
+     *
      */
-    public function setType(MeasureType $mt): bool
+    public function setType(MeasureType $mt): void
     {
         $this->type = $mt;
         $this->type_id = $mt->getID();
-        return true;
+
     }
 
     /**
@@ -124,12 +124,12 @@ class Measure extends Entity
 
     /**
      * @param string $date_time
-     * @return bool
+     *
      */
-    public function setDateTime(string $date_time): bool
+    public function setDateTime(string $date_time): void
     {
         $this->date_time = $date_time;
-        return true;
+
     }
 
     /**
@@ -142,12 +142,12 @@ class Measure extends Entity
 
     /**
      * @param double $value
-     * @return bool
+     *
      */
-    public function setValue(double $value): bool
+    public function setValue(double $value): void
     {
         $this->value = $value;
-        return true;
+
     }
 
     /**
@@ -160,12 +160,12 @@ class Measure extends Entity
 
     /**
      * @param int $actuator_id
-     * @return bool
+     *
      */
-    public function setActuatorID(int $actuator_id): bool
+    public function setActuatorID(int $actuator_id): void
     {
         $this->actuator_id = $actuator_id;
-        return true;
+
     }
 
     /**
@@ -178,11 +178,11 @@ class Measure extends Entity
 
     /**
      * @param int $sensor_id
-     * @return bool
+     *
      */
-    public function setSensorID(int $sensor_id): bool
+    public function setSensorID(int $sensor_id): void
     {
         $this->sensor_id = $sensor_id;
-        return true;
+
     }
 }

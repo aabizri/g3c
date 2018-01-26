@@ -69,12 +69,12 @@ class Session extends Entity
 
     /**
      * @param string $id
-     * @return bool
+     *
      */
-    public function setID(string $id): bool
+    public function setID(string $id): void
     {
         $this->id = $id;
-        return true;
+
     }
 
     /**
@@ -87,9 +87,9 @@ class Session extends Entity
 
     /**
      * @param int $user_id
-     * @return bool
+     *
      */
-    public function setUserID(?int $user_id): bool
+    public function setUserID(?int $user_id): void
     {
         if ($this->user !== null) {
             if ($user_id !== $this->user->getID()) {
@@ -97,7 +97,7 @@ class Session extends Entity
             }
         }
         $this->user_id = $user_id;
-        return true;
+
     }
 
     /**
@@ -117,9 +117,9 @@ class Session extends Entity
 
     /**
      * @param User|null $u
-     * @return bool
+     *
      */
-    public function setUser(?User $u): bool
+    public function setUser(?User $u): void
     {
         $this->user = $u;
         if ($u === null) {
@@ -127,7 +127,7 @@ class Session extends Entity
         } else {
             $this->user_id = $u->getID();
         }
-        return true;
+
     }
 
     /**
@@ -140,12 +140,12 @@ class Session extends Entity
 
     /**
      * @param float $started
-     * @return bool
+     *
      */
-    public function setStarted(float $started): bool
+    public function setStarted(float $started): void
     {
         $this->started = $started;
-        return true;
+
     }
 
     /**
@@ -158,12 +158,12 @@ class Session extends Entity
 
     /**
      * @param float $expiry
-     * @return bool
+     *
      */
-    public function setExpiry(float $expiry): bool
+    public function setExpiry(float $expiry): void
     {
         $this->expiry = $expiry;
-        return true;
+
     }
 
     /**
@@ -176,12 +176,12 @@ class Session extends Entity
 
     /**
      * @param bool $canceled
-     * @return bool
+     *
      */
-    public function setCanceled(bool $canceled): bool
+    public function setCanceled(bool $canceled): void
     {
         $this->canceled = $canceled;
-        return true;
+
     }
 
     /**
@@ -194,12 +194,12 @@ class Session extends Entity
 
     /**
      * @param string $value
-     * @return bool
+     *
      */
-    public function setValue(string $value): bool
+    public function setValue(string $value): void
     {
         $this->value = $value;
-        return true;
+
     }
 
     /**
@@ -212,12 +212,12 @@ class Session extends Entity
 
     /**
      * @param float $last_updated
-     * @return bool
+     *
      */
-    public function setLastUpdated(?float $last_updated): bool
+    public function setLastUpdated(?float $last_updated): void
     {
         $this->last_updated = $last_updated;
-        return true;
+
     }
 
     /* BUSINESS LOGIC */

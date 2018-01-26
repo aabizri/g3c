@@ -52,19 +52,19 @@ class Subscription extends Entity
     /**
      * @return int
      */
-    public function getID()
+    public function getID(): int
     {
         return $this->id;
     }
 
     /**
      * @param int $id
-     * @return bool
+     *
      */
-    public function setID(int $id): bool
+    public function setID(int $id): void
     {
         $this->id = $id;
-        return true;
+
     }
 
     /**
@@ -77,12 +77,12 @@ class Subscription extends Entity
 
     /**
      * @param int $property_id
-     * @return bool
+     *
      */
-    public function setPropertyID(int $property_id): bool
+    public function setPropertyID(int $property_id): void
     {
         $this->property_id = $property_id;
-        return true;
+
     }
 
     /**
@@ -95,12 +95,12 @@ class Subscription extends Entity
 
     /**
      * @param string $start_date
-     * @return bool
+     *
      */
-    public function setStartDate(string $start_date): bool
+    public function setStartDate(string $start_date): void
     {
         $this->start_date = $start_date;
-        return true;
+
     }
 
     /**
@@ -113,12 +113,12 @@ class Subscription extends Entity
 
     /**
      * @param string $expiry_date
-     * @return bool
+     *
      */
-    public function setExpiryDate(string $expiry_date): bool
+    public function setExpiryDate(string $expiry_date): void
     {
         $this->expiry_date = $expiry_date;
-        return true;
+
     }
 
     /**
@@ -131,12 +131,12 @@ class Subscription extends Entity
 
     /**
      * @param int $command_id
-     * @return bool
+     *
      */
-    public function setCommandID(?int $command_id): bool
+    public function setCommandID(?int $command_id): void
     {
         $this->command_id = $command_id;
-        return true;
+
     }
 
     /**
@@ -149,11 +149,9 @@ class Subscription extends Entity
 
     /**
      * @param float $last_updated
-     * @return bool
      */
-    public function setLastUpdated(float $last_updated)
+    public function setLastUpdated(float $last_updated): void
     {
         $this->last_updated = $last_updated;
-        return true;
     }
 }

@@ -2,7 +2,8 @@
 
 namespace Entities;
 
-class FAQ extends Entity {
+class FAQ extends Entity
+{
 
     private $id; //int
     private $question; //varchar
@@ -23,12 +24,10 @@ class FAQ extends Entity {
 
     /**
      * @param int $id
-     * @return bool
      */
-    public function setID(int $id): bool
+    public function setID(int $id): void
     {
         $this->id = $id;
-        return true;
     }
 
     /**
@@ -42,12 +41,10 @@ class FAQ extends Entity {
 
     /**
      * @param string $question
-     * @return bool
      */
-    public function setQuestion(string $question): bool
+    public function setQuestion(string $question): void
     {
         $this->question = $question;
-        return true;
     }
 
     /**
@@ -61,27 +58,24 @@ class FAQ extends Entity {
 
     /**
      * @param string $answer
-     * @return bool
      */
-    public function setAnswer(string $answer): bool
+    public function setAnswer(string $answer): void
     {
         $this->answer = $answer;
-        return true;
     }
 
     /**
      * @param float $creation_date
-     * @return bool
+     * @throws \Exceptions\SetFailedException
      */
-    public function setCreationDate(float $creation_date): bool
+    public function setCreationDate(float $creation_date): void
     {
         // Verifier que $creation_date est inférieure à la date actuelle
         if ($creation_date > microtime(true)) {
-            return false;
+            throw new \Exceptions\SetFailedException($this, __FUNCTION__, $creation_date, "creation date is newer than current time");
         }
 
         $this->creation_date = $creation_date;
-        return true;
     }
 
     public function getCreationDate(): float
@@ -89,7 +83,6 @@ class FAQ extends Entity {
         return $this->creation_date;
 
     }
-
 
     /**
      * @return float
@@ -101,11 +94,9 @@ class FAQ extends Entity {
 
     /**
      * @param float $last_updated
-     * @return bool
      */
-    public function setLastUpdated(float $last_updated): bool
+    public function setLastUpdated(float $last_updated): void
     {
         $this->last_updated = $last_updated;
-        return true;
     }
 }

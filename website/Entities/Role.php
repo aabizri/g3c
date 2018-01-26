@@ -57,12 +57,12 @@ class Role extends Entity
 
     /**
      * @param int $id
-     * @return bool
+     *
      */
-    public function setID(int $id): bool
+    public function setID(int $id): void
     {
         $this->id = $id;
-        return true;
+
     }
 
     /**
@@ -75,9 +75,9 @@ class Role extends Entity
 
     /**
      * @param int
-     * @return bool
+     *
      */
-    public function setUserID(int $user_id): bool
+    public function setUserID(int $user_id): void
     {
         if ($this->user !== null) {
             if ($user_id !== $this->user->getID()) {
@@ -85,7 +85,7 @@ class Role extends Entity
             }
         }
         $this->user_id = $user_id;
-        return true;
+
     }
 
     /**
@@ -102,9 +102,9 @@ class Role extends Entity
 
     /**
      * @param User $u
-     * @return bool
+     *
      */
-    public function setUser(User $u): bool
+    public function setUser(User $u): void
     {
         $this->user = $u;
         $this->user_id = $u->getID();
@@ -120,9 +120,9 @@ class Role extends Entity
 
     /**
      * @param int
-     * @return bool
+     *
      */
-    public function setPropertyID(int $property_id): bool
+    public function setPropertyID(int $property_id): void
     {
         if ($this->property !== null) {
             if ($property_id !== $this->property->getID()) {
@@ -130,7 +130,7 @@ class Role extends Entity
             }
         }
         $this->property_id = $property_id;
-        return true;
+
     }
 
     /**
@@ -146,13 +146,13 @@ class Role extends Entity
 
     /**
      * @param Property $p
-     * @return bool
+     *
      */
-    public function setProperty(Property $p): bool
+    public function setProperty(Property $p): void
     {
         $this->property = $p;
         $this->property_id = $p->getID();
-        return true;
+
     }
 
     /**
@@ -165,12 +165,12 @@ class Role extends Entity
 
     /**
      * @param float
-     * @return bool
+     *
      */
-    public function setCreationDate(float $creation_date): bool
+    public function setCreationDate(float $creation_date): void
     {
         $this->creation_date = $creation_date;
-        return true;
+
     }
 
     /**
@@ -183,12 +183,12 @@ class Role extends Entity
 
     /**
      * @param string
-     * @return bool
+     *
      */
-    public function setLastUpdated(float $last_update): bool
+    public function setLastUpdated(float $last_update): void
     {
         $this->last_updated = $last_update;
-        return true;
+
     }
 
     /* BUSINESS LOGIC */

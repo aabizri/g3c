@@ -67,12 +67,12 @@ class User extends Entity
 
     /**
      * @param string $id
-     * @return bool
+     *
      */
-    public function setID(string $id): bool
+    public function setID(string $id): void
     {
         $this->id = $id;
-        return true;
+
     }
 
     /**
@@ -85,12 +85,12 @@ class User extends Entity
 
     /**
      * @param string $display
-     * @return bool
+     *
      */
-    public function setDisplay(string $display): bool
+    public function setDisplay(string $display): void
     {
         $this->display = $display;
-        return true;
+
     }
 
     /**
@@ -103,12 +103,12 @@ class User extends Entity
 
     /**
      * @param string $nick
-     * @return bool
+     *
      */
-    public function setNick(string $nick): bool
+    public function setNick(string $nick): void
     {
         $this->nick = $nick;
-        return true;
+
     }
 
     /**
@@ -122,9 +122,9 @@ class User extends Entity
     /**
      * @param string $birth_date
      *
-     * @return bool false if invalid
+     * @throws \Exceptions\SetFailedException
      */
-    public function setBirthDate(?string $birth_date): bool
+    public function setBirthDate(?string $birth_date): void
     {
         // Si null, alors unset la valeur
         if (empty($birth_date)) {
@@ -133,11 +133,11 @@ class User extends Entity
 
         // Verifier que $birth_date est inférieur à la date actuelle
         if (strtotime($birth_date) > time()) {
-            return false;
+            throw new \Exceptions\SetFailedException($this, __FUNCTION__, $birth_date, "birth date sooner than current time");
         }
 
         $this->birth_date = $birth_date;
-        return true;
+
     }
 
     /**
@@ -150,24 +150,23 @@ class User extends Entity
 
     /**
      * @param string $email
-     *
-     * @return bool false if invalid
+     * @throws \Exceptions\SetFailedException
      */
-    public function setEmail(string $email): bool
+    public function setEmail(string $email): void
     {
         // Set mail
         if ($email == "") {
             unset($this->email);
-            return true;
+            return;
         }
 
         // Verifier que le courriel est correct
         if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-            return false; // Email invalid
+            throw new \Exceptions\SetFailedException($this, __FUNCTION__, $email, "Courriel incorrect selon filter_var");
         }
 
         $this->email = $email;
-        return true;
+
     }
 
     /**
@@ -180,12 +179,12 @@ class User extends Entity
 
     /** Set the hashed password
      * @param string $hashed
-     * @return bool
+     *
      */
-    public function setPassword(string $hashed): bool
+    public function setPassword(string $hashed): void
     {
         $this->password_hashed = $hashed;
-        return true;
+
     }
 
     /**
@@ -198,13 +197,11 @@ class User extends Entity
 
     /**
      * @param string $phone
-     *
-     * @return bool false if invalid
      */
-    public function setPhone(string $phone): bool
+    public function setPhone(string $phone): void
     {
         $this->phone = $phone;
-        return true;
+
     }
 
     /**
@@ -217,13 +214,11 @@ class User extends Entity
 
     /**
      * @param float $creation_date
-     *
-     * @return bool false if invalid
      */
-    public function setCreationDate(float $creation_date): bool
+    public function setCreationDate(float $creation_date): void
     {
         $this->creation_date = $creation_date;
-        return true;
+
     }
 
     /**
@@ -236,12 +231,12 @@ class User extends Entity
 
     /**
      * @param float $last_updated
-     * @return bool
+     *
      */
-    public function setLastUpdated(float $last_updated): bool
+    public function setLastUpdated(float $last_updated): void
     {
         $this->last_updated = $last_updated;
-        return true;
+
     }
 
     /* BUSINESS LOGIC */
@@ -251,12 +246,12 @@ class User extends Entity
      *
      * @param string $clear is the password
      *
-     * @return bool false if invalid
+     *
      */
-    public function setPasswordClear(string $clear): bool
+    public function setPasswordClear(string $clear): void
     {
         // Calculer le hash associé au mot de passe via BCRYPT, le salt étant généré automatiquement
-        return $this->setPassword(password_hash($clear, PASSWORD_BCRYPT));
+        $this->setPassword(password_hash($clear, PASSWORD_BCRYPT));
     }
 
     /**
@@ -264,7 +259,7 @@ class User extends Entity
      *
      * @param string $clear is the password
      *
-     * @return bool
+     *
      */
     public function verifyPassword(string $clear): bool
     {

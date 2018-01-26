@@ -24,7 +24,8 @@ abstract class Entity
      * @return array
      * @throws \Exception if invalid property name given
      */
-    public function getMultiple(array $order): array {
+    public function getMultiple(array $order): array
+    {
         // Results associative array
         $results = [];
 
@@ -35,7 +36,7 @@ abstract class Entity
 
             // Check if it exists
             if (!method_exists($this, $getter_name)) {
-                throw new UnknownGetterException($this,$getter_name);
+                throw new UnknownGetterException($this, $getter_name);
             }
 
             // Apply it
@@ -49,10 +50,9 @@ abstract class Entity
     /**
      * @param array $order property_name => data
      *
-     * @return bool
      * @throws \Exception
      */
-    public function setMultiple(array $order): bool
+    public function setMultiple(array $order): void
     {
         // Loop over properties to get the mapping
         foreach ($order as $property_name => $data) {
@@ -69,7 +69,7 @@ abstract class Entity
                 $reflection_method = new \ReflectionMethod($this, $setter_name);
             } catch (\ReflectionException $re) {
                 throw new \Exception(
-                    sprintf("Erreur lors de la récupération de l'objet de réflection de la méthode %s::%s", static::class, $setter_name),
+                    sprintf("Erreur lors de la récupération de l'objet de réflection de la méthode %s::%s", get_class($this), $setter_name),
                     0,
                     $re);
             }
@@ -79,7 +79,7 @@ abstract class Entity
 
             // S'il n'y a pas exactement 1 paramètre, erreur
             if (count($reflection_parameters) !== 1) {
-                throw new \Exception(sprintf("Erreur: nombre de paramètres différent de 1 pour la méthode %s::%s", static::class, $setter_name));
+                throw new \Exception(sprintf("Erreur: nombre de paramètres différent de 1 pour la méthode %s::%s", get_class($this), $setter_name));
             }
 
             // Récuperer le paramètre
@@ -88,7 +88,7 @@ abstract class Entity
             // Récuperer le type du paramètre
             $reflection_parameter_type = $reflection_parameter->getType();
             if ($reflection_parameter_type === null) {
-                throw new \Exception(sprintf("Erreur: pas de type spécifié pour le paramètre de la méthode %s::%s", static::class, $setter_name));
+                throw new \Exception(sprintf("Erreur: pas de type spécifié pour le paramètre de la méthode %s::%s", get_class($this), $setter_name));
             }
 
             // Switcher dessus pour convertir les données si nécéssaire
@@ -107,9 +107,6 @@ abstract class Entity
                 throw new SetFailedException($this, $setter_name, $data);
             }
         }
-
-        // Return true
-        return true;
     }
 
     abstract public function getID();
@@ -120,7 +117,8 @@ abstract class Entity
  * @param string $snake_case
  * @return string
  */
-function snakeCaseToPascalCase(string $snake_case): string {
+function snakeCaseToPascalCase(string $snake_case): string
+{
     return str_replace('_', '', ucwords($snake_case, '_'));
 }
 
@@ -129,7 +127,8 @@ function snakeCaseToPascalCase(string $snake_case): string {
  * @param string $prefix
  * @return string
  */
-function propertyNameToMethodName(string $property_name, string $prefix): string {
+function propertyNameToMethodName(string $property_name, string $prefix): string
+{
     // Apply prefix and get the pascal case
     $method_name = $prefix . snakeCaseToPascalCase($property_name);
 

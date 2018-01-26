@@ -58,12 +58,12 @@ class Room extends Entity
 
     /**
      * @param int $id
-     * @return bool
+     *
      */
-    public function setID(int $id): bool
+    public function setID(int $id): void
     {
         $this->id = $id;
-        return true;
+
     }
 
     /**
@@ -76,9 +76,9 @@ class Room extends Entity
 
     /**
      * @param int $property_id
-     * @return bool
+     *
      */
-    public function setPropertyID(int $property_id): bool
+    public function setPropertyID(int $property_id): void
     {
         if ($this->property !== null) {
             if ($property_id !== $this->property->getID()) {
@@ -86,7 +86,7 @@ class Room extends Entity
             }
         }
         $this->property_id = $property_id;
-        return true;
+
     }
 
     /**
@@ -102,13 +102,13 @@ class Room extends Entity
 
     /**
      * @param Property $p
-     * @return bool
+     *
      */
-    public function setProperty(Property $p): bool
+    public function setProperty(Property $p): void
     {
         $this->property = $p;
         $this->property_id = $p->getID();
-        return true;
+
     }
 
     /**
@@ -121,12 +121,12 @@ class Room extends Entity
 
     /**
      * @param string $name
-     * @return bool
+     *
      */
-    public function setName(string $name): bool
+    public function setName(string $name): void
     {
         $this->name = $name;
-        return true;
+
     }
 
     /**
@@ -139,17 +139,17 @@ class Room extends Entity
 
     /**
      * @param float $creation_date
-     * @return bool
+     *
      */
-    public function setCreationDate(float $creation_date): bool
+    public function setCreationDate(float $creation_date): void
     {
         // Verifier que $creation_date est inférieure à la date actuelle
         if ($creation_date > microtime(true)) {
-            return false;
+            throw new \Exceptions\SetFailedException($this, __FUNCTION__, $creation_date, "creation_date sooner than right now");
         }
 
         $this->creation_date = $creation_date;
-        return true;
+
     }
 
     /**
@@ -162,24 +162,10 @@ class Room extends Entity
 
     /**
      * @param float $last_updated
-     * @return bool
+     *
      */
-    public function setLastUpdated(float $last_updated): bool
+    public function setLastUpdated(float $last_updated): void
     {
         $this->last_updated = $last_updated;
-        return true;
-    }
-
-    /* BUSINESS LOGIC */
-
-    /**
-     * @param int $property_id
-     * @return bool
-     */
-    public function attachToProperty(int $property_id): bool
-    {
-        // Check if it exists
-        // Use setPropertyId
-        return false;
     }
 }

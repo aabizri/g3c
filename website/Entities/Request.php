@@ -163,12 +163,12 @@ class Request extends Entity
 
     /**
      * @param string $id
-     * @return bool
+     *
      */
-    public function setID(string $id): bool
+    public function setID(string $id): void
     {
         $this->id = $id;
-        return true;
+
     }
 
     /**
@@ -181,17 +181,16 @@ class Request extends Entity
 
     /**
      * @param string $ip
-     * @return bool
+     *
      */
-    public function setIp(string $ip): bool
+    public function setIp(string $ip): void
     {
         if (filter_var($ip, FILTER_VALIDATE_IP) == false) {
-            echo "error in validating IP";
-            return false;
+            throw new \Exceptions\SetFailedException($this, __FUNCTION__, $ip, "invalid IP address");
         }
 
         $this->ip = $ip;
-        return true;
+
     }
 
     /**
@@ -205,10 +204,10 @@ class Request extends Entity
     /**
      * @param mixed $user_agent_txt
      */
-    public function setUserAgentTxt(string $user_agent_txt): bool
+    public function setUserAgentTxt(string $user_agent_txt): void
     {
         $this->user_agent_txt = $user_agent_txt;
-        return true;
+
     }
 
     /**
@@ -221,12 +220,12 @@ class Request extends Entity
 
     /**
      * @param string $user_agent_hash
-     * @return bool
+     *
      */
-    public function setUserAgentHash(string $user_agent_hash): bool
+    public function setUserAgentHash(string $user_agent_hash): void
     {
         $this->user_agent_hash = $user_agent_hash;
-        return true;
+
     }
 
     /**
@@ -239,12 +238,12 @@ class Request extends Entity
 
     /**
      * @param string $session_id
-     * @return bool
+     *
      */
-    public function setSessionID(?string $session_id): bool
+    public function setSessionID(?string $session_id): void
     {
         $this->session_id = $session_id;
-        return true;
+
     }
 
     /**
@@ -257,12 +256,12 @@ class Request extends Entity
 
     /**
      * @param string $controller
-     * @return bool
+     *
      */
-    public function setController(string $controller): bool
+    public function setController(string $controller): void
     {
         $this->controller = $controller;
-        return true;
+
     }
 
     /**
@@ -275,12 +274,12 @@ class Request extends Entity
 
     /**
      * @param string $action
-     * @return bool
+     *
      */
-    public function setAction(string $action): bool
+    public function setAction(string $action): void
     {
         $this->action = $action;
-        return true;
+
     }
 
     /**
@@ -293,12 +292,12 @@ class Request extends Entity
 
     /**
      * @param float $started
-     * @return bool
+     *
      */
-    public function setStartedProcessing(float $started): bool
+    public function setStartedProcessing(float $started): void
     {
         $this->started = $started;
-        return true;
+
     }
 
     /**
@@ -311,12 +310,12 @@ class Request extends Entity
 
     /**
      * @param float $duration
-     * @return bool
+     *
      */
-    public function setDuration(float $duration): bool
+    public function setDuration(float $duration): void
     {
         $this->duration = $duration;
-        return true;
+
     }
 
     /**
@@ -329,15 +328,15 @@ class Request extends Entity
 
     /**
      * @param string $method
-     * @return bool
+     *
      */
-    public function setMethod(string $method): bool
+    public function setMethod(string $method): void
     {
-        if (!in_array($method, ["GET","POST","HEAD","PUT","PATCH","DELETE","CONNECT","OPTIONS","TRACE","PATCH"])) {
-            return false;
+        if (!in_array($method, ["GET", "POST", "HEAD", "PUT", "PATCH", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"])) {
+            throw new \Exceptions\SetFailedException($this, __FUNCTION__, $method, "HTTP method unknown");
         }
         $this->method = $method;
-        return true;
+
     }
 
     /**
@@ -350,12 +349,12 @@ class Request extends Entity
 
     /**
      * @param array $get
-     * @return bool
+     *
      */
-    public function setAllGET(array $get): bool
+    public function setAllGET(array $get): void
     {
         $this->get = $get;
-        return true;
+
     }
 
     /**
@@ -376,16 +375,16 @@ class Request extends Entity
      *
      * @param string $key
      * @param string|null $value
-     * @return bool
+     *
      */
-    public function setGET(string $key, ?string $value): bool
+    public function setGET(string $key, ?string $value): void
     {
         if ($value === null && isset($this->get[$key])) {
             unset($this->get[$key]);
-            return true;
+
         }
         $this->get[$key] = $value;
-        return true;
+
     }
 
     /**
@@ -398,12 +397,12 @@ class Request extends Entity
 
     /**
      * @param array $post
-     * @return bool
+     *
      */
-    public function setAllPOST(array $post): bool
+    public function setAllPOST(array $post): void
     {
         $this->post = $post;
-        return true;
+
     }
 
     /**
@@ -424,32 +423,34 @@ class Request extends Entity
      *
      * @param string $key
      * @param string|array|null $value
-     * @return bool
+     *
      */
-    public function setPOST(string $key, $value): bool
+    public function setPOST(string $key, $value): void
     {
         if ($value === null && isset($this->post[$key])) {
             unset($this->post[$key]);
-            return true;
+
         }
         $this->post[$key] = $value;
-        return true;
+
     }
 
     /**
      * @return bool
      */
-    public function getInDebug(): bool {
+    public function getInDebug(): bool
+    {
         return $this->in_debug;
     }
 
     /**
      * @param bool $is
-     * @return bool
+     *
      */
-    public function setInDebug(bool $is): bool {
+    public function setInDebug(bool $is): void
+    {
         $this->in_debug = $is;
-        return true;
+
     }
 
     /**
@@ -462,12 +463,12 @@ class Request extends Entity
 
     /**
      * @param int $request_length
-     * @return bool
+     *
      */
-    public function setRequestLength(int $request_length): bool
+    public function setRequestLength(int $request_length): void
     {
         $this->request_length = $request_length;
-        return true;
+
     }
 
     /**
@@ -480,12 +481,12 @@ class Request extends Entity
 
     /**
      * @param int $response_length
-     * @return bool
+     *
      */
-    public function setResponseLength(int $response_length): bool
+    public function setResponseLength(int $response_length): void
     {
         $this->response_length = $response_length;
-        return true;
+
     }
 
     /**
@@ -498,9 +499,9 @@ class Request extends Entity
 
     /**
      * @param int|null $user_id
-     * @return bool
+     *
      */
-    public function setUserID(?int $user_id): bool
+    public function setUserID(?int $user_id): void
     {
         if ($this->user !== null) {
             if ($user_id !== $this->user->getID()) {
@@ -508,7 +509,7 @@ class Request extends Entity
             }
         }
         $this->user_id = $user_id;
-        return true;
+
     }
 
     /**
@@ -530,9 +531,9 @@ class Request extends Entity
 
     /**
      * @param User|null $u
-     * @return bool
+     *
      */
-    public function setUser(?User $u): bool
+    public function setUser(?User $u): void
     {
         $this->user = $u;
         if ($u === null) {
@@ -540,7 +541,7 @@ class Request extends Entity
         } else {
             $this->user_id = $u->getID();
         }
-        return true;
+
     }
 
     /**
@@ -553,9 +554,9 @@ class Request extends Entity
 
     /**
      * @param int|null $property_id
-     * @return bool
+     *
      */
-    public function setPropertyID(?int $property_id): bool
+    public function setPropertyID(?int $property_id): void
     {
         if ($this->property !== null) {
             if ($property_id !== $this->property->getID()) {
@@ -563,7 +564,7 @@ class Request extends Entity
             }
         }
         $this->property_id = $property_id;
-        return true;
+
     }
 
     /**
@@ -585,9 +586,9 @@ class Request extends Entity
 
     /**
      * @param Property|null $p
-     * @return bool
+     *
      */
-    public function setProperty(?Property $p): bool
+    public function setProperty(?Property $p): void
     {
         $this->property = $p;
         if ($p === null) {
@@ -595,7 +596,7 @@ class Request extends Entity
         } else {
             $this->property_id = $p->getID();
         }
-        return true;
+
     }
 
     /**
@@ -608,12 +609,12 @@ class Request extends Entity
 
     /**
      * @param string $request_uri
-     * @return bool
+     *
      */
-    public function setRequestURI(string $request_uri): bool
+    public function setRequestURI(string $request_uri): void
     {
         $this->request_uri = $request_uri;
-        return true;
+
     }
 
     /**
@@ -626,12 +627,12 @@ class Request extends Entity
 
     /**
      * @param string $referer
-     * @return bool
+     *
      */
-    public function setReferer(string $referer): bool
+    public function setReferer(string $referer): void
     {
         $this->referer = $referer;
-        return true;
+
     }
 
     /* BUSINESS LOGIC */
@@ -646,9 +647,9 @@ class Request extends Entity
 
     /**
      * @param float $finished , default to now
-     * @return bool
+     *
      */
-    public function setFinished(?float $finished_at = null): bool
+    public function setFinished(?float $finished_at = null): void
     {
         if ($this->started === 0) {
             return false;
@@ -664,9 +665,9 @@ class Request extends Entity
     /**
      * setUserAgent permet d'enregistrer les informations du navigateur
      * @param string $ua
-     * @return bool
+     *
      */
-    public function setUserAgent(string $ua): bool
+    public function setUserAgent(string $ua): void
     {
         if ($this->setUserAgentTxt($ua) == false) {
             return false;
@@ -677,14 +678,14 @@ class Request extends Entity
             return false;
         }
 
-        return true;
+
     }
 
     /**
      * @param null|string $session_id
-     * @return bool
+     *
      */
-    public function setSession(?string $session_id = null): bool
+    public function setSession(?string $session_id = null): void
     {
         if (empty($session_id)) {
             $session_id = session_id();
@@ -696,9 +697,10 @@ class Request extends Entity
     /**
      * @param array|null $get
      * @param array|null $post
-     * @return bool
+     *
      */
-    public function setParams(array $get = null, array $post = null): bool {
+    public function setParams(array $get = null, array $post = null): void
+    {
         if ($get === null) {
             $get = $_GET;
         }
@@ -707,16 +709,16 @@ class Request extends Entity
             $post = $_POST;
         }
         $this->setAllPOST($post);
-        return true;
+
     }
 
     /**
      * Set server info (Method, IP, User Agent, Request Time, and Request Length in case of POST)
      *
      * @param array $info defaults to $_SERVER
-     * @return bool
+     *
      */
-    public function setInfo(array $info = null): bool
+    public function setInfo(array $info = null): void
     {
         // Set $info as $_SERVER if not indicated beforehand
         if ($info == null) {
@@ -750,7 +752,7 @@ class Request extends Entity
         }
 
         // Set request time
-        $time = (float) $info["REQUEST_TIME_FLOAT"];
+        $time = (float)$info["REQUEST_TIME_FLOAT"];
         $ok = $this->setStartedProcessing($time);
         if (!$ok) {
             return false;
@@ -779,7 +781,7 @@ class Request extends Entity
             }
         }
 
-        return true;
+
     }
 
     /**
@@ -855,7 +857,8 @@ class Request extends Entity
     /**
      * Autosets the values from the superglobals $_SERVER, $GET, $POST and the controllers from the GET.
      */
-    public function autoSet() {
+    public function autoSet()
+    {
         $this->setInfo();
         $this->setParams();
         $this->extractRoutingInfo();

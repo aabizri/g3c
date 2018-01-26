@@ -44,9 +44,6 @@ class Product extends Entity
     private $quantity;
 
 
-
-
-
     /* GETTERS AND SETTERS */
 
     /**
@@ -60,12 +57,12 @@ class Product extends Entity
 
     /**
      * @param string $id
-     * @return bool
+     *
      */
-    public function setID(string $id): bool
+    public function setID(string $id): void
     {
         $this->id = $id;
-        return true;
+
     }
 
     /**
@@ -78,30 +75,30 @@ class Product extends Entity
 
     /**
      * @param string $name
-     * @return bool
+     *
      */
-    public function setName(string $name): bool
+    public function setName(string $name): void
     {
         $this->name = $name;
-        return true;
+
     }
 
     /**
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return $this->description;
     }
 
     /**
      * @param string $description
-     * @return bool
+     *
      */
-    public function setDescription(string $description) : bool
+    public function setDescription(string $description): void
     {
         $this->description = $description;
-        return true;
+
     }
 
     /**
@@ -114,12 +111,12 @@ class Product extends Entity
 
     /**
      * @param string $category
-     * @return bool
+     *
      */
-    public function setCategory(string $category) : bool
+    public function setCategory(string $category): void
     {
         $this->category = $category;
-        return true;
+
     }
 
     /**
@@ -132,12 +129,12 @@ class Product extends Entity
 
     /**
      * @param int $prix
-     * @return bool
+     *
      */
-    public function setPrix(?int $prix): bool
+    public function setPrix(?int $prix): void
     {
         $this->prix = $prix;
-        return true;
+
     }
 
     /**
@@ -151,12 +148,12 @@ class Product extends Entity
     /**
      * @param $quantité
      * @param string $quantité
-     * @return bool
+     *
      */
-    public function setQuantity(?int $quantity): bool
+    public function setQuantity(?int $quantity): void
     {
         $this->quantité = $quantity;
-        return true;
+
     }
 
 

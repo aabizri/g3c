@@ -44,12 +44,12 @@ class Permission extends Entity
 
     /**
      * @param int $id
-     * @return bool
+     *
      */
-    public function setID(int $id): bool
+    public function setID(int $id): void
     {
         $this->id = $id;
-        return true;
+
     }
 
     /**
@@ -62,12 +62,12 @@ class Permission extends Entity
 
     /**
      * @param string $name
-     * @return bool
+     *
      */
-    public function setName(string $name): bool
+    public function setName(string $name): void
     {
         $this->name = $name;
-        return true;
+
     }
 
     /**
@@ -80,11 +80,11 @@ class Permission extends Entity
 
     /**
      * @param string $description
-     * @return bool
+     *
      */
-    public function setDescription(string $description): bool
+    public function setDescription(string $description): void
     {
         $this->description = $description;
-        return true;
+
     }
 }

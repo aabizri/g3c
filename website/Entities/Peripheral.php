@@ -93,16 +93,16 @@ class Peripheral extends Entity
 
     /**
      * @param string $uuid
-     * @return bool
+     *
      */
-    public function setUUID(string $uuid): bool
+    public function setUUID(string $uuid): void
     {
         if (UUID::is_valid($uuid) == false) {
-            return false;
+            throw new \Exceptions\SetFailedException($this, __FUNCTION__, $uuid, "invalid UUID !");
         }
 
         $this->uuid = $uuid;
-        return true;
+
     }
 
 
@@ -116,12 +116,12 @@ class Peripheral extends Entity
 
     /**
      * @param string|null $display_name
-     * @return bool
+     *
      */
-    public function setDisplayName(?string $display_name): bool
+    public function setDisplayName(?string $display_name): void
     {
         $this->display_name = $display_name;
-        return true;
+
     }
 
     /**
@@ -134,16 +134,16 @@ class Peripheral extends Entity
 
     /**
      * @param string|null $build_date
-     * @return bool
+     *
      */
-    public function setBuildDate(?string $build_date): bool
+    public function setBuildDate(?string $build_date): void
     {
         // Verifier que $creation_date est inférieure à la date actuelle
         if (strtotime($build_date) > time()) {
-            return false;
+            throw new \Exceptions\SetFailedException($this, __FUNCTION__, $build_date, "build date sooner than right now");
         }
         $this->build_date = $build_date;
-        return true;
+
     }
 
     /**
@@ -156,16 +156,16 @@ class Peripheral extends Entity
 
     /**
      * @param string|null $add_date
-     * @return bool
+     *
      */
-    public function setAddDate(?string $add_date): bool
+    public function setAddDate(?string $add_date): void
     {
         // Verifier que $add_date est inférieure à la date actuelle
         if (strtotime($add_date) > time()) {
-            return false;
+            throw new \Exceptions\SetFailedException($this, __FUNCTION__, $add_date, "add date sooner than right now");
         }
         $this->add_date = $add_date;
-        return true;
+
     }
 
     /**
@@ -178,12 +178,12 @@ class Peripheral extends Entity
 
     /**
      * @param string|null $public_key
-     * @return bool
+     *
      */
-    public function setPublicKey(?string $public_key): bool
+    public function setPublicKey(?string $public_key): void
     {
         $this->public_key = $public_key;
-        return true;
+
     }
 
     /**
@@ -196,12 +196,12 @@ class Peripheral extends Entity
 
     /**
      * @param int|null $property_id
-     * @return bool
+     *
      */
-    public function setPropertyID(?int $property_id): bool
+    public function setPropertyID(?int $property_id): void
     {
         $this->property_id = $property_id;
-        return true;
+
     }
 
     /**
@@ -220,9 +220,9 @@ class Peripheral extends Entity
 
     /**
      * @param Property|null $p
-     * @return bool
+     *
      */
-    public function setProperty(?Property $p): bool
+    public function setProperty(?Property $p): void
     {
         $this->property = $p;
         if ($p === null) {
@@ -230,7 +230,7 @@ class Peripheral extends Entity
         } else {
             $this->property_id = $p->getID();
         }
-        return true;
+
     }
 
     /**
@@ -243,12 +243,12 @@ class Peripheral extends Entity
 
     /**
      * @param int|null $room_id
-     * @return bool
+     *
      */
-    public function setRoomID(?int $room_id): bool
+    public function setRoomID(?int $room_id): void
     {
         $this->room_id = $room_id;
-        return true;
+
     }
 
     /**
@@ -268,9 +268,9 @@ class Peripheral extends Entity
 
     /**
      * @param Room|null $r
-     * @return bool
+     *
      */
-    public function setRoom(?Room $r): bool
+    public function setRoom(?Room $r): void
     {
         $this->room = $r;
         if ($r === null) {
@@ -278,7 +278,7 @@ class Peripheral extends Entity
         } else {
             $this->room_id = $r->getID();
         }
-        return true;
+
     }
 
     /**
@@ -291,12 +291,12 @@ class Peripheral extends Entity
 
     /**
      * @param float $last_updated
-     * @return bool
+     *
      */
-    public function setLastUpdated(float $last_updated): bool
+    public function setLastUpdated(float $last_updated): void
     {
         $this->last_updated = $last_updated;
-        return true;
+
     }
 
     /* BUSINESS LOGIC */
