@@ -162,12 +162,20 @@ class User extends Entity
         }
 
         // Verifier que le courriel est correct
-        if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-            throw new \Exceptions\SetFailedException($this, __FUNCTION__, $email, "Courriel incorrect selon filter_var");
+        if (!self::validateEmail($email)) {
+            throw new \Exceptions\SetFailedException($this, __FUNCTION__, $email);
         }
 
         $this->email = $email;
+    }
 
+    /**
+     * @param string $email
+     * @return bool
+     */
+    public static function validateEmail(string $email): bool
+    {
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 
     /**

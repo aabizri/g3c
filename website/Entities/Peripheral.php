@@ -98,14 +98,21 @@ class Peripheral extends Entity
      */
     public function setUUID(string $uuid): void
     {
-        if (UUID::is_valid($uuid) == false) {
+        if (!self::validateUUID($uuid)) {
             throw new \Exceptions\SetFailedException($this, __FUNCTION__, $uuid, "invalid UUID !");
         }
 
         $this->uuid = $uuid;
-
     }
 
+    /**
+     * @param string $uuid
+     * @return bool
+     */
+    public static function validateUUID(string $uuid): bool
+    {
+        return UUID::is_valid($uuid);
+    }
 
     /**
      * @return string|null
