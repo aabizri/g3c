@@ -94,6 +94,7 @@ class Peripheral extends Entity
     /**
      * @param string $uuid
      *
+     * @throws \Exceptions\SetFailedException
      */
     public function setUUID(string $uuid): void
     {
@@ -135,6 +136,7 @@ class Peripheral extends Entity
     /**
      * @param string|null $build_date
      *
+     * @throws \Exceptions\SetFailedException
      */
     public function setBuildDate(?string $build_date): void
     {
@@ -157,6 +159,7 @@ class Peripheral extends Entity
     /**
      * @param string|null $add_date
      *
+     * @throws \Exceptions\SetFailedException
      */
     public function setAddDate(?string $add_date): void
     {
@@ -206,6 +209,7 @@ class Peripheral extends Entity
 
     /**
      * @return Property|null
+     * @throws \Exception
      */
     public function getProperty(): ?Property
     {

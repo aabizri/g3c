@@ -140,6 +140,7 @@ class Room extends Entity
     /**
      * @param float $creation_date
      *
+     * @throws \Exceptions\SetFailedException
      */
     public function setCreationDate(float $creation_date): void
     {

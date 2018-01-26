@@ -182,6 +182,7 @@ class Request extends Entity
     /**
      * @param string $ip
      *
+     * @throws \Exceptions\SetFailedException
      */
     public function setIp(string $ip): void
     {
@@ -329,6 +330,7 @@ class Request extends Entity
     /**
      * @param string $method
      *
+     * @throws \Exceptions\SetFailedException
      */
     public function setMethod(string $method): void
     {
@@ -381,7 +383,7 @@ class Request extends Entity
     {
         if ($value === null && isset($this->get[$key])) {
             unset($this->get[$key]);
-
+            return;
         }
         $this->get[$key] = $value;
 
@@ -429,7 +431,7 @@ class Request extends Entity
     {
         if ($value === null && isset($this->post[$key])) {
             unset($this->post[$key]);
-
+            return;
         }
         $this->post[$key] = $value;
 

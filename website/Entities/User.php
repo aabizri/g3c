@@ -129,6 +129,7 @@ class User extends Entity
         // Si null, alors unset la valeur
         if (empty($birth_date)) {
             unset($this->birth_date);
+            return;
         }
 
         // Verifier que $birth_date est inférieur à la date actuelle
