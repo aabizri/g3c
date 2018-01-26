@@ -54,10 +54,10 @@
                                 }
 
                                 if ($p->getStatus() === "Fonctionnel" ){
-                                    $status = "<img id='status' src='http://www.icone-png.com/png/29/29350.png' alt='Fonctionnel' title='Fonctionnel' />";
+                                    $status = "<img id='status' src='http://t5.rbxcdn.com/78a4211079921cd8604d573ea33f48c3' alt='Fonctionnel' title='Fonctionnel' />";
                                 }
                                 elseif ($p->getStatus() === "Non-fonctionnel"){
-                                    $status = "<img id='status' src='http://www.ic%C3%B4ne.com/images/icones/2/0/attention.png' alt='Non-fonctionnel' title='Non-fonctionnel' />";
+                                    $status = "<img id='status' src='https://www.spreadshirt.fr/image-server/v1/mp/designs/16377489,width=178,height=178/croix-cercle-icone-3006.png' alt='Non-fonctionnel' title='Non-fonctionnel' />";
                                 }
                                 else {
                                     $status = "<img id='status' src='http://www.icone-png.com/png/16/16126.png' alt='Pas de capteurs liés' title='Pas de capteurs liés' />";
