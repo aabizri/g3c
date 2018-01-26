@@ -2,15 +2,46 @@
 
 namespace Entities;
 
-class FAQ extends Entity {
+/**
+ * Class FrequentlyAskedQuestion
+ * @package Entities
+ */
+class FrequentlyAskedQuestion extends Entity
+{
 
-    private $id; //int
-    private $question; //varchar
-    private $answer; //text
+    /* PROPERTIES */
+
+    /**
+     * @var int
+     */
+    private $id;
+
+    /**
+     * @var string
+     */
+    private $question;
+
+    /**
+     * @var string
+     */
+    private $answer;
+
+    /**
+     * @var int
+     */
+    private $priority;
+
+    /**
+     * @var float
+     */
     private $creation_date;
+
+    /**
+     * @var float
+     */
     private $last_updated;
 
-    // getters & setters
+    /* GETTERS AND SETTERS */
 
     /**
      * @return int
@@ -70,6 +101,34 @@ class FAQ extends Entity {
     }
 
     /**
+     * @return int
+     */
+
+    public function getPriority(): int
+    {
+        return $this->priority;
+    }
+
+    /**
+     * @param int $priority
+     * @return bool
+     */
+    public function setPriority(int $priority): bool
+    {
+        $this->priority = $priority;
+        return true;
+    }
+
+    /**
+     * @return float
+     */
+    public function getCreationDate(): float
+    {
+        return $this->creation_date;
+
+    }
+
+    /**
      * @param float $creation_date
      * @return bool
      */
@@ -83,13 +142,6 @@ class FAQ extends Entity {
         $this->creation_date = $creation_date;
         return true;
     }
-
-    public function getCreationDate(): float
-    {
-        return $this->creation_date;
-
-    }
-
 
     /**
      * @return float
