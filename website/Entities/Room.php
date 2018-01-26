@@ -139,18 +139,24 @@ class Room extends Entity
 
     /**
      * @param float $creation_date
-     *
      * @throws \Exceptions\SetFailedException
      */
     public function setCreationDate(float $creation_date): void
     {
         // Verifier que $creation_date est inférieure à la date actuelle
-        if ($creation_date > microtime(true)) {
-            throw new \Exceptions\SetFailedException($this, __FUNCTION__, $creation_date, "creation_date sooner than right now");
+        if (!self::validateCreationDate($creation_date)) {
+            throw new \Exceptions\SetFailedException($this, __FUNCTION__, $creation_date);
         }
-
         $this->creation_date = $creation_date;
+    }
 
+    /**
+     * @param float $creation_date
+     * @return bool
+     */
+    public static function validateCreationDate(float $creation_date): bool
+    {
+        return parent::validateMicroTimeHasPassed($creation_date);
     }
 
     /**
@@ -163,10 +169,20 @@ class Room extends Entity
 
     /**
      * @param float $last_updated
-     *
+     * @throws \Exceptions\SetFailedException
      */
     public function setLastUpdated(float $last_updated): void
     {
+        if (!self::validateLastUpdated($last_updated)) throw new \Exceptions\SetFailedException($this, __FUNCTION__, $last_updated);
         $this->last_updated = $last_updated;
+    }
+
+    /**
+     * @param float $last_updated
+     * @return bool
+     */
+    public static function validateLastUpdated(float $last_updated): bool
+    {
+        return parent::validateMicroTimeHasPassed($last_updated);
     }
 }

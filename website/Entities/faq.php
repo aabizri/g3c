@@ -64,6 +64,12 @@ class FAQ extends Entity
         $this->answer = $answer;
     }
 
+    public function getCreationDate(): float
+    {
+        return $this->creation_date;
+
+    }
+
     /**
      * @param float $creation_date
      * @throws \Exceptions\SetFailedException
@@ -71,17 +77,19 @@ class FAQ extends Entity
     public function setCreationDate(float $creation_date): void
     {
         // Verifier que $creation_date est inférieure à la date actuelle
-        if ($creation_date > microtime(true)) {
-            throw new \Exceptions\SetFailedException($this, __FUNCTION__, $creation_date, "creation date is newer than current time");
+        if (!self::validateCreationDate($creation_date)) {
+            throw new \Exceptions\SetFailedException($this, __FUNCTION__, $creation_date);
         }
-
         $this->creation_date = $creation_date;
     }
 
-    public function getCreationDate(): float
+    /**
+     * @param float $creation_date
+     * @return bool
+     */
+    public static function validateCreationDate(float $creation_date): bool
     {
-        return $this->creation_date;
-
+        return parent::validateMicroTimeHasPassed($creation_date);
     }
 
     /**
@@ -94,9 +102,20 @@ class FAQ extends Entity
 
     /**
      * @param float $last_updated
+     * @throws \Exceptions\SetFailedException
      */
     public function setLastUpdated(float $last_updated): void
     {
+        if (!self::validateLastUpdated($last_updated)) throw new \Exceptions\SetFailedException($this, __FUNCTION__, $last_updated);
         $this->last_updated = $last_updated;
+    }
+
+    /**
+     * @param float $last_updated
+     * @return bool
+     */
+    public static function validateLastUpdated(float $last_updated): bool
+    {
+        return parent::validateMicroTimeHasPassed($last_updated);
     }
 }

@@ -109,7 +109,10 @@ abstract class Entity
         }
     }
 
-    abstract public function getID();
+    protected static function validateMicroTimeHasPassed(float $should_have_passed): bool
+    {
+        return $should_have_passed < microtime(true);
+    }
 }
 
 

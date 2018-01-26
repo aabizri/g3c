@@ -72,9 +72,20 @@ class CGU extends Entity
 
     /**
      * @param float $last_updated
+     * @throws \Exceptions\SetFailedException
      */
     public function setLastUpdated(float $last_updated): void
     {
+        if (!self::validateLastUpdated($last_updated)) throw new \Exceptions\SetFailedException($this, __FUNCTION__, $last_updated);
         $this->last_updated = $last_updated;
+    }
+
+    /**
+     * @param float $last_updated
+     * @return bool
+     */
+    public static function validateLastUpdated(float $last_updated): bool
+    {
+        return parent::validateMicroTimeHasPassed($last_updated);
     }
 }
