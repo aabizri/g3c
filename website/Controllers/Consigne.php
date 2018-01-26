@@ -20,7 +20,8 @@ class Consigne
 
         $property_id = $req->getPropertyID();
         if ($property_id === null) {
-            Error::getInternalError500($req);
+            http_response_code(400);
+            echo "Pas de property_id donné";;
             return;
         }
 
@@ -46,20 +47,23 @@ class Consigne
         $property_id = $req->getPropertyID();
 
         if ($property_id === null) {
-            Error::getInternalError500($req);
+            http_response_code(400);
+            echo "Pas de property_id donné";
             return;
         }
 
         //On recupère l'id de salle à laquelle l'utilisateur veut accéder
         $room_id = $req->getPOST("room_id");
         if ($room_id === null) {
-            Error::getInternalError500($req);
+            http_response_code(400);
+            echo "Pas de room_id donné";
             return;
         }
         $room = (new Queries\Rooms)->retrieve($room_id);
         $data["room_name"] = $room;
         if ($room->getPropertyID() !== $property_id) {
-            Error::getInternalError500($req);
+            http_response_code(400);
+            echo "La propriété associé à la pièce n'est pas la propriété indiquée";
             return;
         }
 
@@ -101,7 +105,8 @@ class Consigne
         $property_id = $req->getPropertyID();
 
         if ($property_id === null) {
-            Error::getInternalError500();
+            http_response_code(400);
+            echo "Pas de property_id donné";
             return;
         }
 
@@ -110,7 +115,8 @@ class Consigne
         $last_destination_value = $post["last_destination_value"];
         if ($last_destination_value === null OR $actuator_id === null OR $destination_value === null) {
             //Faire une page pour afficher l'erreur
-            Error::getInternalError500();
+            http_response_code(400);
+            echo "Une des valeurs (last_destination_value, actuator_id ou destination_value est null";
             return;
         }
         if ($destination_value === $last_destination_value) {
