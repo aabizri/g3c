@@ -195,9 +195,10 @@ class Role extends Entity
 
     /**
      * @return \Entities\Permission[] the permissions given to the role
+     * @throws \Exception
      */
     public function retrievePermissions(): array
     {
-        return \Repositories\Permissions::findAllByRole($this->getID());
+        return (new \Queries\Permissions())->filterByRoleViaPivot($this->getID())->find();
     }
 }
