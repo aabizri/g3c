@@ -24,7 +24,7 @@ class Peripherals extends Query
                              "public_key" => [],
                              "property_id" => [],
                              "room_id" => [],
-                             "last_updated" => ["timestamp"]];
+                             "last_updated" => ["gen-on-insert", "timestamp"]];
     private const entity_class_name = "\Entities\Peripheral";
 
     /**
@@ -82,10 +82,10 @@ class Peripherals extends Query
 
     /**
      * @param string $operator
-     * @param int $room_id
+     * @param int $uuid
      * @return Peripherals
      */
-    public function filterByUUID(string $operator, int $uuid): self
+    public function filterByUUID(string $operator, $uuid): self
     {
         return $this->filterByColumn("uuid", $operator, $uuid);
     }
@@ -93,11 +93,11 @@ class Peripherals extends Query
     /* OTHERS */
 
     /**
-     * @param \Entities\Peripherals $peripheral
+     * @param \Entities\Peripheral $peripheral
      * @return bool
      * @throws \Exception
      */
-    public function save(\Entities\Peripherals $peripheral): bool
+    public function save(\Entities\Peripheral $peripheral): bool
     {
         return parent::saveEntity($peripheral);
     }

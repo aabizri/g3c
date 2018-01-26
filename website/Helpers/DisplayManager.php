@@ -27,7 +27,11 @@ class DisplayManager
         "mespieces" => "Rooms",
         "mesperipheriques"=> "Peripherals",
         "mysessions" => "Users",
+        "faq" => "FAQ",
+        "store" => "Store",
         "majmdpreussie" => "Users",
+        "cgu" => "CGU",
+        "modificationcgu" => "CGU",
         "consignes" => "Consignes",
         "roomconsignes" => "Consignes",
     ];
@@ -95,6 +99,9 @@ class DisplayManager
         if (file_exists(self::absolutifyFS($base_path.".css"))) {
             $res["css"] = $base_path.".css";
         }
+        if (file_exists(self::absolutifyFS($base_path . ".js"))) {
+            $res["js"] = $base_path . ".js";
+        }
 
         return $res;
     }
@@ -120,16 +127,23 @@ class DisplayManager
     public static function display(string $name, array $data = []): void {
         // Resolve components
         $components = self::resolveMultipleComponents(["head","header",$name,"footer"]);
-        
+
         // For each, extract the css & php
-        $php = array();
-        $css = array();
+        $php = [];
+        $css = [];
+        $js = [];
         foreach ($components as $comp) {
             $php[] = $comp["php"];
             if (!empty($comp["css"])) {
                 $css[] = self::absolutifyURL($comp["css"]);
             }
+            if (!empty($comp["js"])) {
+                $js[] = self::absolutifyURL($comp["js"]);
+            }
         }
+
+        // Add JS
+        $js[] = "https://www.google.com/recaptcha/api.js";
 
         // Meta tags
         $meta = [

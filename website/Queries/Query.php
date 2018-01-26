@@ -146,19 +146,10 @@ abstract class Query
         // Récupère le compte si on a pu récuperer l'ID, sinon 0
         $count = 0;
         if ($id !== null) {
-            $count = (clone $this)
+            $count_query = clone $this;
+            $count = $count_query
                 ->filterByEntity($this->entity_id_column_name, "=", $entity)
                 ->count();
-        }
-
-        // On vérifie si la valeur pour cette couronne est générée par la BDD (gen-on-insert)
-        $id_column_value_generated_on_insert =
-            array_search("gen-on-insert", $this->table_columns[$this->entity_id_column_name]) !== false;
-
-        // Si l'ID est générée par la BDD ou si va faire un update, on ne push pas la valeur
-        if ($id_column_value_generated_on_insert || $count === 1) {
-            unset($this->manipulate_columns[array_search($this->entity_id_column_name, $this->manipulate_columns)]);
-            $this->manipulate_columns = array_values($this->manipulate_columns); // Re-key
         }
 
         // Selon si l'entité existe déjà, on peut soit faire un INSERT soit un UPDATE
@@ -207,22 +198,6 @@ abstract class Query
     /* ON SELECT */
 
     /**
-     * Sets the operation to SELECT
-     *
-     * If it is already set to something else, throws an exception
-     *
-     * @return $this
-     */
-    public function select()
-    {
-        // Set operation to select
-        $this->operation = "SELECT";
-
-        // Return
-        return $this;
-    }
-
-    /**
      * Puts a limit on the number of results returned from the query.
      *
      * Only for SELECTs, sets SELECT if not already set
@@ -232,7 +207,7 @@ abstract class Query
      */
     public function limit(int $limit) {
         // Set operation to select
-        $this->select();
+        $this->operation = "SELECT";
 
         // Set the limit value
         $this->limit_value = $limit;
@@ -246,7 +221,7 @@ abstract class Query
      */
     public function retrieve($id)
     {
-        $this->filterByColumn("id", "=", $id);
+        $this->filterByColumn($this->entity_id_column_name, "=", $id);
         return $this->findOne();
     }
 
@@ -256,7 +231,7 @@ abstract class Query
      */
     public function findOne() {
         // This is a select
-        $this->select();
+        $this->operation = "SELECT";
 
         // Set the limit to one
         $this->limit(1);
@@ -291,7 +266,7 @@ abstract class Query
      */
     public function find(): array {
         // This is a select
-        $this->select();
+        $this->operation = "SELECT";
 
         // Prepare the statement
         $stmt = $this->prepareAndExecute();
@@ -327,7 +302,7 @@ abstract class Query
     {
         // Set la fonction à être executée (un count)
         $this->manipulate_columns = ["COUNT(*)"];
-        $this->select();
+        $this->operation = "SELECT";
 
         // Prepare the statement
         $stmt = $this->prepareAndExecute();
@@ -354,7 +329,7 @@ abstract class Query
     public function orderBy(string $key, bool $asc = true)
     {
         // Sets the operation to SELCT
-        $this->select();
+        $this->operation = "SELECT";
 
         // Sets the orderby directive
         $this->orderby[$key] = $asc ? "ASC" : "DESC";
@@ -370,7 +345,7 @@ abstract class Query
     public function offset(int $offset)
     {
         // Sets the operation to SELCT
-        $this->select();
+        $this->operation = "SELECT";
 
         // Sets the offset
         $this->offset = $offset;
@@ -390,7 +365,22 @@ abstract class Query
         $this->operation = "UPDATE";
 
         // ID of the value as a where
-        $this->filterByEntity("id", "=", $entity);
+        $this->filterByEntity($this->entity_id_column_name, "=", $entity);
+
+        // On ne push pas la valeur de l'ID, inutile dans tous les cas
+        unset($this->manipulate_columns[array_search($this->entity_id_column_name, $this->manipulate_columns)]);
+        $this->manipulate_columns = array_values($this->manipulate_columns); // Re-key
+
+        // Only update the ones that aren't gen-on-insert
+        foreach ($this->manipulate_columns as $column) {
+            $is_gen_on_insert = array_search("gen-on-insert", $this->table_columns[$column]) !== false;
+            if ($is_gen_on_insert) {
+                unset($this->manipulate_columns[array_search($column, $this->manipulate_columns)]);
+            }
+        }
+
+        // Rebase / Rekey
+        $this->manipulate_columns = array_values($this->manipulate_columns);
 
         // Values to be inserted
         $entity_values = $entity->getMultiple($this->manipulate_columns);
@@ -422,6 +412,17 @@ abstract class Query
     {
         // Set the operation to insert
         $this->operation = "INSERT INTO";
+
+        // Only insert the ones that aren't gen-on-insert (including ID)
+        foreach ($this->manipulate_columns as $column) {
+            $is_gen_on_insert = array_search("gen-on-insert", $this->table_columns[$column]) !== false;
+            if ($is_gen_on_insert) {
+                unset($this->manipulate_columns[array_search($column, $this->manipulate_columns)]);
+            }
+        }
+
+        // Rebase / Rekey
+        $this->manipulate_columns = array_values($this->manipulate_columns);
 
         // Retrieve the data
         $entity_values = $entity->getMultiple($this->manipulate_columns);
@@ -459,6 +460,17 @@ abstract class Query
         // Number of sets to be inserted
         $number = count($entities);
         $this->insert_count = $number;
+
+        // Only insert the ones that aren't gen-on-insert (including ID)
+        foreach ($this->manipulate_columns as $column) {
+            $is_gen_on_insert = array_search("gen-on-insert", $this->table_columns[$column]) !== false;
+            if ($is_gen_on_insert) {
+                unset($this->manipulate_columns[array_search($column, $this->manipulate_columns)]);
+            }
+        }
+
+        // Rebase / Rekey
+        $this->manipulate_columns = array_values($this->manipulate_columns);
 
         // Iterate over all entities to be inserted
         foreach ($entities as $entity_index => $entity) {
@@ -520,6 +532,21 @@ abstract class Query
             default:
                 return $this->insertMultipleAtOnce($entities);
         }
+    }
+
+    /** DELETE */
+
+    // Returns the number of elements deleted
+    public function delete(): int
+    {
+        // Set operation
+        $this->operation = "DELETE";
+
+        // Prepare & execute
+        $stmt = $this->prepareAndExecute();
+
+        // Return row count
+        return $stmt->rowCount();
     }
 
     /** ENTITY MAPPING STUFF */
@@ -750,7 +777,12 @@ abstract class Query
      *
      * @return array
      */
-    private function toLexemesDelete(): array {}
+    private function toLexemesDelete(): array
+    {
+        // Base Lexemes
+        $lexemes = ["DELETE", "FROM", $this->table, "WHERE", $this->where->toSQL()];
+        return $lexemes;
+    }
 
     /**
      * Processes the current instructions and transform them to lexemes

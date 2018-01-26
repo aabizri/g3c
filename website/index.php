@@ -10,7 +10,10 @@ require_once(__DIR__ . "/Helpers/autoloader.php");
 /* Méta-traitement de la requête */
 
 // Création de la requête
-$req = new \Entities\Request(true);
+$req = new \Entities\Request();
+
+// Auto-enregistrement à la fin
+$req->saveAtShutdown();
 
 // Auto-population des données
 $req->autoSet();

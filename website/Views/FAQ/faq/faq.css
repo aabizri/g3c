@@ -1,0 +1,45 @@
+body{
+    overflow-x: hidden;
+}
+
+#faq
+{
+    position: relative;
+    top: 100px;
+    left: 10%;
+
+    width: 60%;
+
+}
+
+#titre{
+    position: relative;
+    left: 30%;
+}
+
+#questions
+{
+
+    font-size: 25px;
+    font-weight: bold;
+    color: #955252;
+}
+
+#titre
+{
+    left: 50%;
+    font-size : 40px;
+
+}
+
+#trait
+{
+    border-top: 1px solid #000;
+    width : 700px;
+}
+
+#reponses
+{
+
+    font-family : "Trebuchet MS", Arial, Helvetica, sans-serif;
+}
