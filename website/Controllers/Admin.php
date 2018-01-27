@@ -506,7 +506,7 @@ class Admin
      * GET root/admin/peripherals
      * @param \Entities\Request $req
      */
-    public static function getPeripheralList(\Entities\Request $req): void
+    public static function getPeripherals(\Entities\Request $req): void
     {
 
     }
@@ -515,7 +515,7 @@ class Admin
      * GET root/admin/shop/products
      * @param \Entities\Request $req
      */
-    public static function getProductList(\Entities\Request $req): void
+    public static function getProducts(\Entities\Request $req): void
     {
 
     }
