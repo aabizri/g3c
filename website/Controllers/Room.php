@@ -9,7 +9,6 @@ use Entities;
  * Class Rooms
  * @package Controllers
  */
-
 class Room
 {
 
@@ -22,28 +21,25 @@ class Room
         //Si la requête n'est pas associée à une propriété, retourner une erreur
 
         $property_id = $req->getPropertyID();
-        /**
+
         if (empty($property_id)) {
+            http_response_code(400);
             echo "Requête concernant une propriété mais non associée à une propriété, erreur";
             return;
-        } **/
+        }
 
         // Assigne & vérifie que les données existent
         $name = $req->getPOST("name");
         if (empty($name)) {
+            http_response_code(400);
             echo "Il manque le nom";
             return;
         }
 
         // Créer l'entité
         $r = new Entities\Room();
-        $ok = $r->setName($name);
-        $ok = $r->setPropertyID($property_id) ;
-        if ($ok === false) {
-            http_response_code(400);
-            echo "Il y a une erreur dans le nom et/ou prénom";
-            return;
-        }
+        $r->setName($name);
+        $r->setPropertyID($property_id);
 
         // Insérer l'entité dans la bdd
         try {
@@ -57,9 +53,8 @@ class Room
 
     /**
      * Récupère la liste des pièces : GET /properties/{property_id}/rooms
-     * @param Entities\Room $req
+     * @param Entities\Request $req
      * @throws \Exception
-     * @return array of rooms
      */
     public function getRooms(\Entities\Request $req): void
     {
@@ -83,18 +78,15 @@ class Room
      * Récupère la liste des dernières mesures des capteurs d'une pièce
      * @param Entities\Request $req
      * @throws \Exception
-     * @return array of last measure
      */
-
-    public function getLastMeasure(\Entities\Request $req): void
+    public function getRoom(\Entities\Request $req): void
     {
         //On récupère l'id de la pièce
         $rid = $req
             ->getGET("room");
 
 
-        if(empty($rid))
-        {
+        if (empty($rid)) {
             // Si la requête n'est pas associée à une pièce, retourner une erreur
             http_response_code(400);
             echo "Paramètre d'ID de pièce absent";
@@ -102,12 +94,11 @@ class Room
         }
 
 
-        $room_sensors=[];
-        $peripherals=[];
-        $last_measures=[];
+        $room_sensors = [];
+        $last_measures = [];
 
         //On récupère tout les périphériques d'une pièce.
-        $peripherals=(new \Queries\Peripherals)
+        $peripherals = (new \Queries\Peripherals)
             ->filterByRoomID('=', $rid)
             ->find();
 
@@ -116,11 +107,10 @@ class Room
          *   Pour chaque péripérique on récupère son UUID,
          *   qui permet de lister les capteurs liés et les ajouter à la liste des capteur de la pièce
          * */
-        foreach ($peripherals as $peripheral)
-        {
+        foreach ($peripherals as $peripheral) {
             // Récupère la liste des capteurs associés au péiphérique
-            $room_sensors_for_peripheral=(new \Queries\Sensors)
-                ->filterbyPeripheral('=',$peripheral)
+            $room_sensors_for_peripheral = (new \Queries\Sensors)
+                ->filterbyPeripheral('=', $peripheral)
                 ->find();
 
             // Si cette liste est vide, sauter au prochain
@@ -129,37 +119,31 @@ class Room
             }
 
             // Sinon, push les valeurs
-            array_push($room_sensors,...$room_sensors_for_peripheral);
+            array_push($room_sensors, ...$room_sensors_for_peripheral);
         }
-
 
 
         /**
          * Pour chacun des capteurs on récupère la dernière mesure sous forme d'entité
          */
-        foreach ($room_sensors as $sensor)
-        {
-            $last_measure_for_sensor=(new \Queries\Measures)
-                ->filterLastMeasureBySensor('=',$sensor)
+        foreach ($room_sensors as $sensor) {
+            $last_measure_for_sensor = (new \Queries\Measures)
+                ->filterLastMeasureBySensor('=', $sensor)
                 ->findOne();
             $last_measures[$sensor->getID()] = $last_measure_for_sensor;
 
 
-
         }
 
-        $room_entity=(new Queries\Rooms)
+        $room_entity = (new Queries\Rooms)
             ->retrieve($rid);
-
-
-        $count=[];
 
         $data["last_measures"] = $last_measures;
         $pid = (new \Queries\Rooms)->retrieve($rid)->getPropertyID();
-        $data["rooms"] = (new \Queries\Rooms)->filterByPropertyID("=",$pid)->find();
-        $data["room_entity"]= $room_entity;
+        $data["rooms"] = (new \Queries\Rooms)->filterByPropertyID("=", $pid)->find();
+        $data["room_entity"] = $room_entity;
 
-        \Helpers\DisplayManager::display("mapiece",$data);
+        \Helpers\DisplayManager::display("mapiece", $data);
 
     }
 

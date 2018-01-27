@@ -23,7 +23,7 @@ class Sessions extends Query
                              "started" => ["timestamp"],
                              "expiry" => ["timestamp"],
                              "canceled" => [],
-                             "last_updated" => ["timestamp"]];
+                             "last_updated" => ["gen-on-insert", "timestamp"]];
     private const entity_class_name = "\Entities\Session";
 
     /**

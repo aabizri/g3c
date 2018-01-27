@@ -1,10 +1,8 @@
             <ul id="Menu">
               <li id="Moncompte"><a href="index.php?c=User&a=Informations"><input type="button" value="Mon compte" /></a></li>
-              <li id="Mespieces"><a href="index.php?c=Room&a=RoomsPage"><input type="button" value="Mes pièces" /></a></li>
-                <li id="Mesperipheriques"><a href="index.php?c=Peripherals&a=List"><input type="button"
-                                                                                          value="Mes périphériques"/></a>
-                </li>
-              <li id="Mesfiltres"><a href="Mesfiltres.html"><input type="button" value="Mes filtres" /></a></li>
+              <li id="Mespieces"><a href="index.php?c=Room&a=Rooms"><input type="button" value="Mes pièces" /></a></li>
+              <li id="Mesperipheriques"> <a href="index.php?c=Peripheral&a=List"><input type="button" value="Mes périphériques" /></a></li>
+              <li id="Mesconsignes"><a href="index.php?c=Consigne&a=ConsignesPage"><input type="button" value="Mes Consignes" /></a></li>
               <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
             </ul>
 
@@ -64,7 +62,7 @@
                                       </tr>';}
 
                             }
-                        
+
                         else {
                             echo 'Pas de périphériques dans la propriété';
                         }
@@ -94,4 +92,3 @@
                     </form>
                 </div>
             </div>
-

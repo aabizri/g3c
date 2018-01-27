@@ -18,8 +18,8 @@ class Rooms extends Query
     private const columns = ["id" => ["id", "gen-on-insert"],
                              "property_id" => [],
                              "name" => [],
-                             "creation_date" => ["timestamp"],
-                             "last_updated" => ["timestamp"]];
+                             "creation_date" => ["gen-on-insert", "timestamp"],
+                             "last_updated" => ["gen-on-insert", "timestamp"]];
     private const entity_class_name = "\Entities\Room";
 
     /**
@@ -88,7 +88,10 @@ class Rooms extends Query
         var_dump($room);
 
         // Find query
-        $res = (new Rooms)->select()->filterByProperty("=", $property)->findOne();
+        $res = (new Rooms)->filterByProperty("=", $property)->findOne();
         var_dump($res);
+
+        // Remove
+        (new Rooms)->filterByEntity("id", "=", $room)->delete();
     }
 }

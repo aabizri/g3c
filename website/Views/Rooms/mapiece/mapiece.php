@@ -14,7 +14,7 @@ if (!empty($data["rooms"])):
 
 <form method="get" action="index.php" id="choixsalle">
     <input type="hidden" name="c" value="Room"/>
-    <input type="hidden" name="a" value="LastMeasure"/>
+    <input type="hidden" name="a" value="Room"/>
     <select name="room">
         <?php
         $rooms = $data["rooms"];
