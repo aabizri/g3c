@@ -1,5 +1,6 @@
     <footer>
-        <p id="SAV">Contacter le service client <a href="SAV">ici</a><br/><a href="index.php?c=FAQ&a=FAQ">FAQ</a><br><a href="Mentions légales">Mentions légales</a></p>
+        <p id="SAV">Contacter le service client <a href="SAV">ici</a><br/><a href="faq">FAQ</a><br><a
+                    href="Mentions légales">Mentions légales</a></p>
         <p class="Renseignements" id="Reseauxsociaux">Réseaux sociaux</p>
         <a href="https://www.facebook.com/"><img id="Fb" src="Fb.png"></a>
         <a href="https://www.twitter.com/"><img id="Twitter" src="Twitter.png"></a>

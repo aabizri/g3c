@@ -2,14 +2,14 @@
 
 namespace Controllers;
 
-use Queries;
 use Entities;
 
 /**
  * Class Rooms
  * @package Controllers
- */
-class Room
+ */use Queries;
+
+class Rooms
 {
 
     /**
@@ -48,7 +48,9 @@ class Room
             echo "Erreur" . $e;
         }
 
-        \Helpers\DisplayManager::redirectToController("Room", "Rooms&pid=1");
+        http_response_code(303); // HTTP Created
+        header("Location: " . \Helpers\DisplayManager::absolutifyURL("properties/" . $property_id . "/rooms/" . $r->getID()));
+        //\Helpers\DisplayManager::redirectToPath("properties/" . $property_id . "/rooms/" . $r->getID());
     }
 
     /**
@@ -71,7 +73,13 @@ class Room
             ->filterByPropertyID("=", $property_id)
             ->find();
 
-        \Helpers\DisplayManager::display("mespieces", ["rooms" => $rooms]);
+        // Données pour la vue PHP
+        $data_for_php_view = [
+            "rooms" => $rooms,
+            "pid" => $property_id,
+        ];
+
+        \Helpers\DisplayManager::display("mespieces", $data_for_php_view);
     }
 
     /**
@@ -83,13 +91,24 @@ class Room
     {
         //On récupère l'id de la pièce
         $rid = $req
-            ->getGET("room");
-
-
+            ->getGET("rid");
         if (empty($rid)) {
             // Si la requête n'est pas associée à une pièce, retourner une erreur
             http_response_code(400);
             echo "Paramètre d'ID de pièce absent";
+            return;
+        }
+
+        // On vérifie si elle existe / on la récupère
+        $room = (new \Queries\Rooms)->retrieve($rid);
+        if ($room === null) {
+            http_response_code(400);
+            echo "Cette pièce n'existe pas";
+            return;
+        }
+        if ($room->getPropertyID() !== $req->getPropertyID()) {
+            http_response_code(400);
+            echo "Cette pièce n'est pas associée à la même propriété que celle actuelle";
             return;
         }
 
@@ -135,13 +154,12 @@ class Room
 
         }
 
-        $room_entity = (new Queries\Rooms)
-            ->retrieve($rid);
 
         $data["last_measures"] = $last_measures;
         $pid = (new \Queries\Rooms)->retrieve($rid)->getPropertyID();
         $data["rooms"] = (new \Queries\Rooms)->filterByPropertyID("=", $pid)->find();
-        $data["room_entity"] = $room_entity;
+        $data["room_entity"] = $room;
+        $data["pid"] = $req->getPropertyID();
 
         \Helpers\DisplayManager::display("mapiece", $data);
 
