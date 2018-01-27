@@ -1,93 +1,110 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Bryan
- * Date: 13/01/2018
- * Time: 15:53
+ * User: Dinesh
+ * Date: 11/01/2018
+ * Time: 08:58
  */
 
 namespace Entities;
 
+use Helpers\UUID;
+
 
 class Sensor extends Entity
 {
-    /*SENSORS */
 
+    /* SENSOR */
+
+    /**
+     * @var int
+     */
     private $id;
-    private $measure_type_id;
-    private $peripheral_uuid;
-    private $last_updated;
 
-    /** SETTERS AND GETTERS **/
+    /**
+     * @var int
+     */
+    private $measure_type_id;
+
+
+    /**
+     * @var string
+     */
+    private $peripheral_uuid;
+
+    /**
+     * @var string
+     */
+    private $last_updated;
 
     /**
      * @return int
      */
-    public function getID(): ?int
+    public function getID(): int
     {
         return $this->id;
     }
 
     /**
      * @param int $id
-     * @return bool
      */
-    public function setID(int $id):bool
+    public function setID(int $id)
     {
         $this->id = $id;
         return true;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getMeasureTypeID() : ?int
+    public function getMeasureTypeID(): int
     {
         return $this->measure_type_id;
     }
 
     /**
-     * @param mixed $measure_type_id
+     * @param int $measure_type_id
      */
-    public function setMeasureTypeID(int $measure_type_id): bool
+    public function setMeasureTypeID(int $measure_type_id)
     {
         $this->measure_type_id = $measure_type_id;
         return true;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getPeripheralUUID(): ?string
+    public function getPeripheralUUID(): string
     {
         return $this->peripheral_uuid;
     }
 
     /**
-     * @param mixed $peripheral_uuid
+     * @param string $peripheral_uuid
      */
-    public function setPeripheralUUID(string $peripheral_uuid): bool
+    public function setPeripheralUUID(string $peripheral_uuid)
     {
         $this->peripheral_uuid = $peripheral_uuid;
         return true;
     }
 
-
     /**
      * @return string
      */
-    public function getLastUpdated(): ?float
+    public function getLastUpdated(): string
     {
         return $this->last_updated;
     }
 
     /**
      * @param string $last_updated
-     * @return bool
      */
-    public function setLastUpdated(float $last_updated): bool
+    public function setLastUpdated(string $last_updated)
     {
         $this->last_updated = $last_updated;
         return true;
     }
+
+
+
 }

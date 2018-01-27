@@ -29,6 +29,7 @@ class DisplayManager
         "mysessions" => "Users",
         "faq" => "FAQ",
         "store" => "Store",
+        "mapiece" => "Rooms",
         "majmdpreussie" => "Users",
         "cgu" => "CGU",
         "modificationcgu" => "CGU",
