@@ -1,19 +1,12 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: Bryan
- * Date: 27/12/2017
- * Time: 17:19
- */
-
 namespace Controllers;
 
-
-use Helpers\DisplayManager;
-use Repositories\Repository;
-
-class Property
+/**
+ * Class Property
+ * @package Controllers
+ */
+class Properties
 {
 
     //Afficher les utilisateurs d'une propriété
@@ -127,6 +120,6 @@ class Property
         }
 
         //On affiche la page avec l'utilisateur supprimé
-        DisplayManager::redirectToController("Property", "Property");
+        DisplayManager::redirectToPath("properties/" . $property_id);
     }
 }

@@ -61,14 +61,10 @@ class Handler
         // S'il est connecté, il est redirigé vers la page de selection de propriété
         if (empty($category) && empty($action)) {
             if ($req->getUserID() === null) {
-                $category = "User";
-                $action = "ConnectionPage";
+                DisplayManager::redirectToPath("login");
             } else {
-                $category = "User"; // = "Property";
-                $action = "AccountPage"; // = "Select";
+                DisplayManager::redirectToPath("account");
             }
-            // Redirection
-            DisplayManager::redirectToController($category, $action);
         } else if (empty($category) XOR empty($action)) {
             \Controllers\Error::getControllerNotFound404($req);
             return;

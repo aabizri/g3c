@@ -8,6 +8,7 @@ body {
 	font-family: Verdana;
 	overflow-x: hidden;
     font-size: medium;
+	height: 900px;
 }
 
 #Menu  {
@@ -29,7 +30,7 @@ body {
 	cursor: pointer;
 }
 
-#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres,#Mapropriete, #Mesparametres
+#Moncompte, #Mespieces, #Mesperipheriques, #Mesconsignes,#Mapropriete, #Mesparametres
 {
 	position: relative;
 	margin: 80px 10px;

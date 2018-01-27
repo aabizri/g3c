@@ -23,29 +23,21 @@
                 echo '<meta name="' . $name . '" content="' . $meta["name"] . '">\n';
             }
         }
-    ?>
-
-    <?php // Function for including CSS or JS
-        function include_linked(array $arr, string $statement) {
-            foreach ($arr as $url) {
-                if (!is_string($url)) {
-                    continue;
-                }
-                echo $statement . $url . "'/>\n";
-            }
-        }
 
         // CSS
         if (empty($css)) {
             echo "Error: no \$css !";
         } else {
-            include_linked($css,  "<link rel='stylesheet' href='");
+            foreach ($css as $to_be_linked) {
+                echo '<link rel="stylesheet" href="' . $to_be_linked . '"/>';
+            }
         }
 
         // JS
         if (!empty($js)) {
-            include_linked($js,  "<script src='");
+            foreach ($js as $to_be_linked) {
+                echo '<script src="' . $to_be_linked . '"></script>';
+            }
         }
     ?>
-    <script src='https://www.google.com/recaptcha/api.js'></script>
 </head>

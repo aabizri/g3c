@@ -8,6 +8,7 @@
 
 namespace Entities;
 
+use Queries;
 /**
  * Class Room
  * @package Entities
@@ -51,7 +52,7 @@ class Room extends Entity
     /**
      * @return int
      */
-    public function getID(): int
+    public function getID(): ?int
     {
         return $this->id;
     }
@@ -69,7 +70,7 @@ class Room extends Entity
     /**
      * @return int
      */
-    public function getPropertyID(): int
+    public function getPropertyID(): ?int
     {
         return $this->property_id;
     }
@@ -92,7 +93,7 @@ class Room extends Entity
     /**
      * @return Property
      */
-    public function getProperty(): Property
+    public function getProperty(): ?Property
     {
         if ($this->property === null) {
             $this->property = (new \Queries\Properties)->retrieve($this->property_id);
@@ -132,7 +133,7 @@ class Room extends Entity
     /**
      * @return float
      */
-    public function getCreationDate(): float
+    public function getCreationDate(): ?float
     {
         return $this->creation_date;
     }
@@ -155,7 +156,7 @@ class Room extends Entity
     /**
      * @return float
      */
-    public function getLastUpdated(): float
+    public function getLastUpdated(): ?float
     {
         return $this->last_updated;
     }

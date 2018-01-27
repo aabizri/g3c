@@ -146,7 +146,9 @@ class Request extends Entity
      */
     public function __construct(bool $autosave = false)
     {
-        $this->saveAtShutdown();
+        if ($autosave) {
+            $this->saveAtShutdown();
+        }
     }
 
     /* GETTERS AND SETTERS */
@@ -810,7 +812,7 @@ class Request extends Entity
         unset($this->get["pid"]);
 
         // Debug flag
-        $in_debug = false;
+        $in_debug = (new \Helpers\Config)->getDebugMode() ?? false;
         if (!empty($this->get["debug"])) {
             $in_debug = true;
         }
@@ -835,7 +837,7 @@ class Request extends Entity
         session_write_close();
 
         // Now insert
-        (new \Queries\Requests)->save($this);
+        (new \Queries\Requests)->insert($this);
     }
 
     /**
