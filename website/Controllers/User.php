@@ -11,6 +11,12 @@ use Entities;
  */
 class User
 {
+
+    public static function getJoin(\Entities\Request $req): void
+    {
+        DisplayManager::display("inscription");
+    }
+
     /**
      * join subscribes a user
      * @throws \Exception
@@ -56,6 +62,7 @@ class User
         $display = $post["name"] . " " . $_POST["surname"];
         $phone = $post["phone"];
 
+
         if (($email_conf != $email) || ($password_clear != $password_clear_conf)){
             http_response_code(400);
             echo "La confirmation n'est pas valide !";
@@ -100,11 +107,11 @@ class User
     /**
      * Connexion
      */
-    public static function postConnection(\Entities\Request $req): void
+    public static function postLogin(\Entities\Request $req): void
     {
         // Si l'usager est déjà connecté, le rediriger vers la page d'accueil
         if ($req->getUserID() !== null) {
-            \Helpers\DisplayManager::redirectToController("User", "Informations");
+            \Helpers\DisplayManager::redirectToPath("properties");
             return;
         }
 
@@ -145,20 +152,15 @@ class User
             return;
         }
 
-        \Helpers\DisplayManager::redirectToController("User", "Informations"); /* Redirection du navigateur */; // TODO: Le rediriger vers la page de sélection de propriété
+        \Helpers\DisplayManager::redirectToPath("properties");
     }
 
-    public static function getConnectionPage(\Entities\Request $req): void
+    public static function getLogin(\Entities\Request $req): void
     {
         DisplayManager::display("connexion");
     }
 
-    public static function getSubscriptionPage(\Entities\Request $req): void
-    {
-        DisplayManager::display("inscription");
-    }
-
-    public static function getInformations(\Entities\Request $req):void
+    public static function getAccount(\Entities\Request $req): void
     {
         $u = $req->getUser();
         if ($u === null) {
@@ -174,8 +176,7 @@ class User
     }
 
     //Mettre à jour les infos
-
-    public static function postMAJInformations (\Entities\Request $req): void
+    public static function postAccount(\Entities\Request $req): void
     {
         $post= $req->getAllPOST();
 
@@ -187,13 +188,13 @@ class User
 
         //On récupère l'entité de l'utilisateur
 
-        //On récupère l'entité user depuis la page de connexion
+        //On récupère l'entité user depui(s la page de connexion
         $user = $req -> getUser();
 
         //MAJ de l'email si besoin
         if ((new \Queries\Users) -> filterByEmail("=", $email) -> findOne() != null)
         {
-            DisplayManager::redirectToController(user , informations );
+            DisplayManager::redirectToPath("account");
             return;
         }
         if ($email === $newemail AND $email != null) {
@@ -215,11 +216,12 @@ class User
             Error::getInternalError500($req);
             return;
         }
-         \Helpers\DisplayManager::redirectToController(User, Informations );
+        \Helpers\DisplayManager::redirectToPath("account");
     }
 
     //Changement de mdp
-    public static function postMDP(\Entities\Request $req){
+    public static function postAccountPassword(\Entities\Request $req)
+    {
 
         $post = $req->getAllPOST();
 
@@ -228,7 +230,7 @@ class User
 
         //On récupère les infos après avoir vérifier qu'elles existent
         if (!isset($post["ancienmdp"]) OR !isset($post["nouveaumdp"]) OR !isset($post["cnouveaumdp"])){
-            self::getInformations($req);
+            self::getAccount($req);
             return;
         }
 
@@ -239,17 +241,17 @@ class User
 
         //Vérification de l'ancien mdp
         if ($user->verifyPassword($ancienmdp) === false) {
-            DisplayManager::display(user, informations );
+            \Helpers\DisplayManager::redirectToPath("account");
             return;
         }
 
         if ($ancienmdp === $newmdp){
-            DisplayManager::display(user, informations );
+            \Helpers\DisplayManager::redirectToPath("account");
             return;
         }
 
         if ($newmdp !== $cnewmdp){
-            DisplayManager::display(user, informations );
+            \Helpers\DisplayManager::redirectToPath("account");
             return;
         }
 
@@ -271,7 +273,7 @@ class User
      * @param Entities\Request $req
      * @throws \Exception
      */
-    public static function getSessionList(\Entities\Request $req): void
+    public static function getSessions(\Entities\Request $req): void
     {
         $user = $req->getUser();
         if ($user === null) {
@@ -305,7 +307,7 @@ class User
         DisplayManager::display("mysessions", $data);
     }
 
-    public static function postSessionCancel(\Entities\Request $req): void
+    public static function postSessionsCancel(\Entities\Request $req): void
     {
         $user_id = $req->getUserID();
         if ($user_id === null) {
@@ -344,12 +346,13 @@ class User
     }
 
     //Déconnexion
-    public static function postDeconnexion (\Entities\Request $req){
+    public static function postLogout(\Entities\Request $req)
+    {
 
         //On détruit la session
         session_destroy();
 
         //On redirige vers la page de connexion
-        DisplayManager::redirectToController(User, ConnectionPage);
+        DisplayManager::redirectToPath("login");
     }
 }

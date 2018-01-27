@@ -167,7 +167,7 @@ class Role extends Entity
      * @param float
      * @return bool
      */
-    public function setCreationDate(float $creation_date): bool
+    public function setCreationDate(?float $creation_date): bool
     {
         $this->creation_date = $creation_date;
         return true;
@@ -185,7 +185,7 @@ class Role extends Entity
      * @param string
      * @return bool
      */
-    public function setLastUpdated(float $last_update): bool
+    public function setLastUpdated(?float $last_update): bool
     {
         $this->last_updated = $last_update;
         return true;
@@ -195,9 +195,10 @@ class Role extends Entity
 
     /**
      * @return \Entities\Permission[] the permissions given to the role
+     * @throws \Exception
      */
     public function retrievePermissions(): array
     {
-        return \Repositories\Permissions::findAllByRole($this->getID());
+        return (new \Queries\Permissions())->filterByRoleViaPivot($this->getID())->find();
     }
 }

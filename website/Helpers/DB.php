@@ -12,14 +12,13 @@ use PDO;
 class DB
 {
     /* CONSTANTES DE CONNEXION A LA BDD */
-
-    private const HOST = "localhost";
-    private const DBNAME = "livewell";
-    private const USERNAME = "root";
-    private const PASSWORD = "";
+    private const DEFAULT_HOST = "localhost";
+    private const DEFAULT_DB = "livewell";
+    private const DEFAULT_USERNAME = "root";
+    private const DEFAULt_PASSWORD = "";
 
     // Paramètres de configuration
-    public static $pdo_params = array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY);
+    public static $pdo_params = [PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY];
 
     /* VARIABLE STOQUANT LA CONNEXION a LA BDD*/
     private static $instance = null;
@@ -38,16 +37,42 @@ class DB
     /* METHODE */
 
     /**
+     * @param Config|null $config
+     * @throws \Exception
+     */
+    private static function setupPDO(\Helpers\Config $config = null): void
+    {
+        // Create the config struct if necessary
+        if ($config === null) {
+            $config = new \Helpers\Config;
+        }
+
+        // Get the values from the config struct
+        $host = $config->getDBHost() ?? self::DEFAULT_HOST;
+        $name = $config->getDBName() ?? self::DEFAULT_DB;
+        $username = $config->getDBUsername() ?? self::DEFAULT_USERNAME;
+        $password = $config->getDBPassword() ?? self::DEFAULt_PASSWORD;
+
+        // Build the DSN
+        $dsn = 'mysql:host=' . $host . ';dbname=' . $name . ';charset=UTF8';
+
+        // Prepare the options (activate PDO exception behaviour)
+        $pdo_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
+
+        // Create the PDO instance
+        self::$instance = new PDO($dsn, $username, $password, $pdo_options);
+    }
+
+    /**
      * Récupère l'instance de connexion à la BDD, l'instanciant si besoin
      *
      * @return PDO
+     * @throws \Exception
      */
-    public static function getInstance(): PDO
+    public static function getPDO(\Helpers\Config $config = null): PDO
     {
         if (!isset(self::$instance)) {
-            $pdo_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;
-            $dsn = 'mysql:host=' . self::HOST . ';dbname=' . self::DBNAME;
-            self::$instance = new PDO($dsn, self::USERNAME, self::PASSWORD, $pdo_options);
+            self::setupPDO();
         }
         return self::$instance;
     }

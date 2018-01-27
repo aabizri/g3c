@@ -73,7 +73,7 @@ header {
 	cursor: pointer;
 }
 
-#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres, #Mesparametres
+#Moncompte, #Mespieces, #Mesperipheriques, #Mesconsignes, #Mesparametres, #Mapropriete
 {
 	position: relative;
 	margin: 50px 10px;
