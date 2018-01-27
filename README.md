@@ -32,7 +32,9 @@
 | `^properties/([0-9]+)/rooms$`            | \Controllers\Room::Rooms		| ["pid" => $1] |
 | `^properties/([0-9]+)/rooms/([0-9]+)$`   | \Controllers\Rooms::Room		| ["pid" => $1] |&rid=$2
 | `^properties/([0-9]+)/peripherals$`      | \Controllers\Peripherals::List	| ["pid" => $1] |
+| `^properties/([0-9]+)/peripherals/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/remove` | \Controllers\Peripherals::Create | ["pid" => $1, "puuid" => $2] |
 | `^properties/([0-9]+)/parameters$`       | \Controllers\Property::Parameters	| ["pid" => $1] |
+| `^properties/([0-9]+)/consignes$`        | \Controllers\Property::Consignes	| ["pid" => $1] |
 
 ## Documentation interne
 
