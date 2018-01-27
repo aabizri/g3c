@@ -46,7 +46,7 @@ class Consigne
         //On recupère l'id de la propriété
         $property_id = $req->getPropertyID();
 
-        if ($property_id === null) {
+        if (empty($property_id)) {
             http_response_code(400);
             echo "Pas de property_id donné";
             return;
@@ -54,13 +54,18 @@ class Consigne
 
         //On recupère l'id de salle à laquelle l'utilisateur veut accéder
         $room_id = $req->getPOST("room_id");
-        if ($room_id === null) {
+        if (empty($room_id)) {
             http_response_code(400);
             echo "Pas de room_id donné";
             return;
         }
         $room = (new Queries\Rooms)->retrieve($room_id);
-        $data["room_name"] = $room;
+        if ($room === null) {
+            http_response_code(500);
+            echo "Erreur en récupérant la pièce";
+            return;
+        }
+        $data["room"] = $room;
         if ($room->getPropertyID() !== $property_id) {
             http_response_code(400);
             echo "La propriété associé à la pièce n'est pas la propriété indiquée";

@@ -9,50 +9,92 @@
 namespace Entities;
 
 
+/**
+ * Class Actuator
+ * @package Entities
+ */
 class Actuator extends Entity
 {
+    /**
+     * @var int
+     */
     private $id;
+    /**
+     * @var int
+     */
     private $measure_type_id;
+    /**
+     * @var \Entities\MeasureType|null
+     */
+    private $measure_type;
+    /**
+     * @var float|null
+     */
     private $last_action_started;
+    /**
+     * @var string
+     */
     private $peripheral_uuid;
+    /**
+     * @var float
+     */
     private $last_updated;
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getID() : ?int
+    public function getID(): int
     {
         return $this->id;
     }
 
     /**
-     * @param mixed $id
+     * @param int $id
      */
-    public function setID(int $id) : bool
+    public function setID(int $id)
     {
         $this->id = $id;
-        return true;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getMeasureTypeID() : ?int
+    public function getMeasureTypeID(): int
     {
         return $this->measure_type_id;
     }
 
     /**
-     * @param mixed $measure_type_id
+     * @param int $type_id
      */
-    public function setMeasureTypeID( int $measure_type_id): bool
+    public function setMeasureTypeID(int $type_id)
     {
-        $this->measure_type_id = $measure_type_id;
-        return true;
+        $this->measure_type_id = $type_id;
     }
 
     /**
-     * @return mixed
+     * @return MeasureType
+     * @throws \Exception
+     */
+    public function getMeasureType(): MeasureType
+    {
+        if ($this->measure_type === null) {
+            $this->measure_type = (new \Queries\MeasureTypes)->retrieve($this->measure_type_id);
+        }
+        return $this->measure_type;
+    }
+
+    /**
+     * @param MeasureType $mt
+     */
+    public function setMeasureType(MeasureType $mt)
+    {
+        $this->measure_type = $mt;
+        $this->measure_type_id = $mt->getID();
+    }
+
+    /**
+     * @return float
      */
     public function getLastActionStarted() : ?float
     {
@@ -60,12 +102,11 @@ class Actuator extends Entity
     }
 
     /**
-     * @param mixed $last_action_started
+     * @param float $last_action_started
      */
-    public function setLastActionStarted( float $last_action_started): bool
+    public function setLastActionStarted(?float $last_action_started)
     {
         $this->last_action_started = $last_action_started;
-        return true;
     }
 
     /**
