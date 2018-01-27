@@ -32,6 +32,8 @@ class DisplayManager
         "majmdpreussie" => "Users",
         "cgu" => "CGU",
         "modificationcgu" => "CGU",
+        "sensorstats" => "Rooms",
+        "selectsensorstats" => "Rooms",
     ];
 
     private static function subroot(): string {
