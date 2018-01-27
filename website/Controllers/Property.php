@@ -17,7 +17,8 @@ class Property
 {
 
     //Afficher les utilisateurs d'une propriété
-    public static function getPropertyPage(\Entities\Request $req): void {
+    public static function getProperty(\Entities\Request $req): void
+    {
 
         //On récupère les données
         $property = $req->getProperty();
@@ -25,43 +26,29 @@ class Property
             Error::getInternalError500($req);
             return;
         }
-        $user_id = $req -> getUserID();
-
-        //Sécurité TODO Marchera quand on récupérera l'user id en get
-        /*$role = (new \Queries\Roles)
-            -> filterByColumn("property_id", "=", $property_id, "AND" )
-            -> filterByColumn("user_id", "=", $user_id, "AND")
-            -> findOne();
-        if ($role === null){
-            return;
-        }*/
 
         //On récupère les infos de la propriété
         $property_id = $property -> getID();
 
         //Grace à l'id de la propriété, on récupère tous les ids des roles avec le même id de propriété
-        $property_users_list = (new \Queries\Roles) -> filterByPropertyID("=", $property_id) -> find();
-        if ($property_users_list===null){
-            echo "il n'y a pas d'utilisateurs";
+        $property_roles = (new \Queries\Roles)->filterByPropertyID("=", $property_id)->find();
+        if ($property_roles === null) {
+            http_response_code(500);
+            echo "il n'y a pas d'utilisateurs: anormal";
             return;
         }
 
-        //Depuis ces entités on récupère les id des utilisateurs
-        $users_id_list =[];
-        foreach ($property_users_list as $user_entity){
-            $user_id = $user_entity->getUserID();
-            $users_id_list[] = $user_id;
-        }
 
         //Enfin grace aux ids des utilisateurs, on peut récupérer leurs entités (entre autre pour faire apparaitre le nickname)
-        $users_list=[];
-        foreach ($users_id_list as $uid){
-            $user = (new \Queries\Users) ->retrieve($uid);
-            $users_list[] = $user;
+        $users_query = new \Queries\Users;
+        foreach ($property_roles as $property_role) {
+            $user_id = $property_role->getUserID();
+            $users_query->filterByColumn("id", "=", $user_id, "OR");
         }
+        $users = $users_query->find();
 
         //On prépare les données à être envoyer vers la vue
-        $data["users_list"] = $users_list;
+        $data["users_list"] = $users;
         $data["property"] = $property;
 
         //Afficher dans la vue
@@ -135,7 +122,7 @@ class Property
             -> delete();
 
         //On affiche la page avec l'utilisateur supprimé
-        self::getPropertyPage($req);
+        self::getProperty($req);
     }
 
     //JAVASCRIPT?
