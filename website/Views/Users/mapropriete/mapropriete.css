@@ -8,6 +8,7 @@ body {
     font-family: Verdana;
     overflow-x: hidden;
     font-size: medium;
+    overflow-y: hidden;
 }
 
 #Menu  {
@@ -29,7 +30,7 @@ body {
     cursor: pointer;
 }
 
-#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres, #Mesparametres, #Mapropriete
+#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres, #Mesparametres, #Mapropriete, #Mesconsignes
 {
     position: relative;
     margin: 50px 10px;
@@ -80,7 +81,7 @@ body {
     padding: 0px 10px;
     top: 100px;
     padding-bottom: 30px;
-    margin-bottom: 60px;
+    margin-bottom: 279px;
 }
 
 #titrelisteutilisateurs
