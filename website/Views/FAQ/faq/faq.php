@@ -3,27 +3,27 @@
 
         <h2 id="titre">Foire Aux Questions</h2>
 
-                <?php
+        <?php
 
-            foreach ($data["qa_results"] as $p) {
+        foreach ($data["qa_results"] as $p) {
 
-                //on récupère la question, puis sa réponse
-                $question = $p->getQuestion();
+            //on récupère la question, puis sa réponse
+            $question = $p->getQuestion();
 
-                $answer = $p->getAnswer();
+            $answer = $p->getAnswer();
 
-                ?>
+            ?>
 
 
-                <?php
-                echo '
+            <?php
+            echo '
                         <div id="questions"><p>' . htmlspecialchars($question) . '</p> </div>
                         
                      <div id="reponses"><p>' . htmlspecialchars($answer) . '</p> </div>
                      <div id="trait"></div>
                       ';
-            }
-                 ?>
+        }
+        ?>
 
 
     </div>

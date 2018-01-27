@@ -65,7 +65,7 @@ class Handler
                 $action = "ConnectionPage";
             } else {
                 $category = "User"; // = "Property";
-                $action = "AccountPage"; // = "Select";
+                $action = "Informations"; // = "Select";
             }
             // Redirection
             DisplayManager::redirectToController($category, $action);

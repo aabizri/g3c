@@ -19,7 +19,7 @@ class Measures extends Query
     private const columns = ["id" => ["id", "gen-on-insert"],
                              "type_id" => [],
                              "date_time" => [],
-                             "value" => ["double"],
+                             "value" => ["float"],
                              "sensor_id" => [],
                              "actuator_id" => []];
     private const entity_class_name = "\Entities\Measure";
