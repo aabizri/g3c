@@ -54,7 +54,7 @@ class DB
         $password = $config->getDBPassword() ?? self::DEFAULt_PASSWORD;
 
         // Build the DSN
-        $dsn = 'mysql:host=' . $host . ';dbname=' . $name;
+        $dsn = 'mysql:host=' . $host . ';dbname=' . $name . ';charset=UTF8';
 
         // Prepare the options (activate PDO exception behaviour)
         $pdo_options[PDO::ATTR_ERRMODE] = PDO::ERRMODE_EXCEPTION;

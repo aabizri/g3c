@@ -28,8 +28,14 @@ class DisplayManager
         "mespieces" => "Rooms",
         "mesperipheriques"=> "Peripherals",
         "mysessions" => "Users",
+        "faq" => "FAQ",
         "store" => "Store",
+        "mapiece" => "Rooms",
         "majmdpreussie" => "Users",
+        "cgu" => "CGU",
+        "modificationcgu" => "CGU",
+        "consignes" => "Consignes",
+        "roomconsignes" => "Consignes",
     ];
 
     /**
@@ -164,16 +170,6 @@ class DisplayManager
         foreach ($php as $toinc) {
             include($toinc);
         }
-    }
-
-    /**
-     * Redirects to destination with 302 (temporary redirect)
-     *
-     * @param string $destination
-     */
-    public static function redirectToController(string $category, string $action): void
-    {
-        self::redirectToPath("index.php?c=$category&a=$action");
     }
 
     /**

@@ -78,11 +78,6 @@ class Peripheral extends Entity
 
     /* GETTERS AND SETTERS */
 
-    public function getID(): string
-    {
-        return $this->getUUID();
-    }
-
     /**
      * @return string
      */
