@@ -76,7 +76,7 @@ abstract class Query
         $this->manipulate_columns = array_keys($table_columns);
 
         // Validate the entity class name
-        if (!is_subclass_of($entity_class_name,"\Entities\Entity")) {
+        if (!is_subclass_of($entity_class_name, "\Entities\Entity")) {
             throw new \Exception("entity class not a child of \Entities\Entity");
         }
         $this->entity_class_name = $entity_class_name;
@@ -212,7 +212,8 @@ abstract class Query
      * @param int $limit
      * @return $this
      */
-    public function limit(int $limit) {
+    public function limit(int $limit)
+    {
         // Set operation to select
         $this->operation = "SELECT";
 
@@ -236,7 +237,8 @@ abstract class Query
      * Finds a single element and returns it
      * @throws \Exception
      */
-    public function findOne() {
+    public function findOne()
+    {
         // This is a select
         $this->operation = "SELECT";
 
@@ -256,9 +258,9 @@ abstract class Query
 
         // Populate
         $entity = new $this->entity_class_name;
-        $success = $this->populateEntity($entity,$lines);
+        $success = $this->populateEntity($entity, $lines);
         if ($success === false) {
-            throw new \Exception("failed while populating entity of type".gettype($entity));
+            throw new \Exception("failed while populating entity of type" . gettype($entity));
         }
 
         // Return the entity
@@ -271,7 +273,8 @@ abstract class Query
      * @return array
      * @throws \Exception
      */
-    public function find(): array {
+    public function find(): array
+    {
         // This is a select
         $this->operation = "SELECT";
 
@@ -461,12 +464,24 @@ abstract class Query
      * @return bool
      * @throws \Exception
      */
-    private function insertMultipleAtOnce(array $entities): bool {
+    private function insertMultipleAtOnce(array $entities): bool
+    {
         $this->operation = "INSERT INTO";
 
         // Number of sets to be inserted
         $number = count($entities);
         $this->insert_count = $number;
+
+        // Only insert the ones that aren't gen-on-insert (including ID)
+        foreach ($this->manipulate_columns as $column) {
+            $is_gen_on_insert = array_search("gen-on-insert", $this->table_columns[$column]) !== false;
+            if ($is_gen_on_insert) {
+                unset($this->manipulate_columns[array_search($column, $this->manipulate_columns)]);
+            }
+        }
+
+        // Rebase / Rekey
+        $this->manipulate_columns = array_values($this->manipulate_columns);
 
         // Iterate over all entities to be inserted
         foreach ($entities as $entity_index => $entity) {
@@ -481,7 +496,7 @@ abstract class Query
         $stmt = $this->prepare();
 
         // Lock the table in order to stop a race condition
-        $this->db->query("LOCK TABLES ".$this->table." WRITE");
+        $this->db->query("LOCK TABLES " . $this->table . " WRITE");
 
         // Execute
         if (!is_array($this->data)) {
@@ -530,6 +545,21 @@ abstract class Query
         }
     }
 
+    /* DELETE */
+
+    // Returns the number of elements deleted
+    public function delete(): int
+    {
+        // Set operation
+        $this->operation = "DELETE";
+
+        // Prepare & execute
+        $stmt = $this->prepareAndExecute();
+
+        // Return row count
+        return $stmt->rowCount();
+    }
+
     /** ENTITY MAPPING STUFF */
 
     /**
@@ -554,7 +584,8 @@ abstract class Query
      * @return array
      * @throws \Exception if no columns were specifief to be retrieved
      */
-    private function toLexemesSelect(): array {
+    private function toLexemesSelect(): array
+    {
         // Lexemes
         $lexemes = ["SELECT"];
 
@@ -583,7 +614,7 @@ abstract class Query
             }
 
             // If we're not finished, insert a comma
-            if ($index !== count($this->manipulate_columns)-1){
+            if ($index !== count($this->manipulate_columns) - 1) {
                 $lexemes[] = ",";
             }
         }
@@ -605,7 +636,7 @@ abstract class Query
                 $lexemes[] = $key;
                 $lexemes[] = $order;
                 $keys = array_keys($this->orderby);
-                if ($key !== end($keys)){
+                if ($key !== end($keys)) {
                     $lexemes[] = ",";
                 }
             }
@@ -614,7 +645,7 @@ abstract class Query
         // Now the limit clause
         if (!empty($this->limit_value)) {
             $lexemes[] = "LIMIT";
-            $lexemes[] = (string) $this->limit_value;
+            $lexemes[] = (string)$this->limit_value;
         }
 
         // Now the offset clause (ALWAYS JUST AFTER LIMIT)
@@ -634,7 +665,8 @@ abstract class Query
      * @return array
      * @throws \Exception
      */
-    private function toLexemesInsertInto(): array {
+    private function toLexemesInsertInto(): array
+    {
         // Lexemes
         $lexemes = ["INSERT INTO", $this->table];
 
@@ -647,7 +679,7 @@ abstract class Query
         $lexemes[] = "(";
         foreach ($this->manipulate_columns as $index => $column) {
             $lexemes[] = $column;
-            if ($index !== count($this->manipulate_columns)-1){
+            if ($index !== count($this->manipulate_columns) - 1) {
                 $lexemes[] = ",";
             }
         }
@@ -693,7 +725,7 @@ abstract class Query
             $lexemes[] = ")";
 
             // If this isn't the last set to insert, add a coma
-            if ($entity_index !== $insert_count-1){
+            if ($entity_index !== $insert_count - 1) {
                 $lexemes[] = ",";
             }
         }
@@ -708,9 +740,10 @@ abstract class Query
      * @return array
      * @throws \Exception
      */
-    private function toLexemesUpdate(): array {
+    private function toLexemesUpdate(): array
+    {
         // Lexemes
-        $lexemes = ["UPDATE",$this->table];
+        $lexemes = ["UPDATE", $this->table];
 
         // if there are no manipulate_columns, throw an exception
         if (empty($this->manipulate_columns)) {
@@ -739,7 +772,7 @@ abstract class Query
             }
 
             // If not the last,
-            if ($index !== count($this->manipulate_columns)-1){
+            if ($index !== count($this->manipulate_columns) - 1) {
                 $lexemes[] = ",";
             }
         }
@@ -760,6 +793,9 @@ abstract class Query
      */
     private function toLexemesDelete(): array
     {
+        // Base Lexemes
+        $lexemes = ["DELETE", "FROM", $this->table, "WHERE", $this->where->toSQL()];
+        return $lexemes;
     }
 
     /**
@@ -768,7 +804,8 @@ abstract class Query
      * @return array
      * @throws \Exception if error
      */
-    private function toLexemes(): array {
+    private function toLexemes(): array
+    {
         switch ($this->operation) {
             case "SELECT":
                 return $this->toLexemesSelect();
@@ -789,7 +826,8 @@ abstract class Query
      * @return string
      * @throws \Exception if error
      */
-    private function toSQL(): string {
+    private function toSQL(): string
+    {
         // Get lexemes
         $lexemes = $this->toLexemes();
 
@@ -829,7 +867,8 @@ abstract class Query
      * @return \PDOStatement
      * @throws \Exception
      */
-    private function prepareAndExecute(array $data = null): \PDOStatement {
+    private function prepareAndExecute(array $data = null): \PDOStatement
+    {
         // Prepare statement
         $stmt = $this->prepare();
 
