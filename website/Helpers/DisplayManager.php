@@ -34,6 +34,8 @@ class DisplayManager
         "modificationcgu" => "CGU",
         "sensorstats" => "Rooms",
         "selectsensorstats" => "Rooms",
+        "consignes" => "Consignes",
+        "roomconsignes" => "Consignes",
     ];
 
     private static function subroot(): string {

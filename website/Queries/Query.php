@@ -185,11 +185,18 @@ abstract class Query
      * @param string $key
      * @param \Entities\Entity $entity
      * @return $this
+     * @throws \Exception
      */
     public function filterByEntity(string $key, string $operator, \Entities\Entity $entity)
     {
         // Extract the IDs
-        $id = $entity->getID();
+        if (method_exists($entity, "getID")) {
+            $id = $entity->getID();
+        } else if (method_exists($entity, "getUUID")) {
+            $id = $entity->getUUID();
+        } else {
+            throw new \Exception("Couldn't extract ID either from getID or getUUID: " . get_class($entity));
+        }
 
         // Call filterBy
         return $this->filterByColumn($key, $operator, $id);
@@ -461,17 +468,6 @@ abstract class Query
         $number = count($entities);
         $this->insert_count = $number;
 
-        // Only insert the ones that aren't gen-on-insert (including ID)
-        foreach ($this->manipulate_columns as $column) {
-            $is_gen_on_insert = array_search("gen-on-insert", $this->table_columns[$column]) !== false;
-            if ($is_gen_on_insert) {
-                unset($this->manipulate_columns[array_search($column, $this->manipulate_columns)]);
-            }
-        }
-
-        // Rebase / Rekey
-        $this->manipulate_columns = array_values($this->manipulate_columns);
-
         // Iterate over all entities to be inserted
         foreach ($entities as $entity_index => $entity) {
             // Retrieve the data
@@ -532,21 +528,6 @@ abstract class Query
             default:
                 return $this->insertMultipleAtOnce($entities);
         }
-    }
-
-    /** DELETE */
-
-    // Returns the number of elements deleted
-    public function delete(): int
-    {
-        // Set operation
-        $this->operation = "DELETE";
-
-        // Prepare & execute
-        $stmt = $this->prepareAndExecute();
-
-        // Return row count
-        return $stmt->rowCount();
     }
 
     /** ENTITY MAPPING STUFF */
@@ -779,9 +760,6 @@ abstract class Query
      */
     private function toLexemesDelete(): array
     {
-        // Base Lexemes
-        $lexemes = ["DELETE", "FROM", $this->table, "WHERE", $this->where->toSQL()];
-        return $lexemes;
     }
 
     /**
