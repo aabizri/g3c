@@ -38,13 +38,8 @@ class Room
 
         // Créer l'entité
         $r = new Entities\Room();
-        $ok = $r->setName($name);
-        $ok = $r->setPropertyID($property_id);
-        if ($ok === false) {
-            http_response_code(400);
-            echo "Il y a une erreur dans le nom et/ou prénom";
-            return;
-        }
+        $r->setName($name);
+        $r->setPropertyID($property_id);
 
         // Insérer l'entité dans la bdd
         try {
