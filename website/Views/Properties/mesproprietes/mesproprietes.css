@@ -19,6 +19,7 @@ button {
 }
 
 ul {
+    list-style: none;
     text-align:center;
     position:relative;
     top:100px;
