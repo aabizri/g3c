@@ -15,7 +15,7 @@ class Peripherals
 {
 
     /**
-     * Ajouter un périphérique : POST /property/{property_id}/peripherals/add
+     * Ajouter un périphérique : POST /properties/{property_id}/peripherals/add
      *
      * @param Entities\Request $req
      * @throws \Exception
@@ -75,11 +75,11 @@ class Peripherals
             return;
         }
 
-        DisplayManager::redirectToController("Peripherals", "List");
+        DisplayManager::redirectToPath("properties/" . $property_id . "/peripherals");
     }
 
     /**
-     * Récupérer la liste des périphériques : GET /property/{property_id}/peripherals
+     * Récupérer la liste des périphériques : GET /properties/{property_id}/peripherals
      *
      * @param Entities\Request $req
      * @throws \Exception
@@ -102,16 +102,19 @@ class Peripherals
         $property_room = (new \Queries\Rooms()) -> filterByPropertyID("=", $property_id) -> find();
 
         // Peupler la vue
-        $data["peripherals_list"] = $peripherals_list;
-        $data["property_room"] = $property_room;
+        $data_for_php_view = [
+            "pid" => $property_id,
+            "peripherals_list" => $peripherals_list,
+            "property_room" => $property_room,
+        ];
 
         //Afficher
-        \Helpers\DisplayManager::display("mesperipheriques",$data);
+        \Helpers\DisplayManager::display("mesperipheriques", $data_for_php_view);
 
     }
 
     /**
-     * Dis-associe un périphérique d'une entité : POST /property/{property_id}/peripherals/remove
+     * Dis-associe un périphérique d'une entité : POST /properties/{property_id}/peripherals/remove
      *
      * @param Entities\Request $req
      * @throws \Exception
@@ -120,12 +123,30 @@ class Peripherals
     {
         // Propriété transmise (ID)
         $property_id = $req->getPropertyID();
+        if (!is_numeric($property_id)) {
+            http_response_code(400);
+            echo "ID non numérique :" . $property_id;
+            return;
+        }
+        $property_id = (int)$property_id;
 
         // Périphérique à supprimer
-        $uuid = $req->getPOST("peripheral_id");
+        $uuid = $req->getGET("peripheral_id");
+        if (empty($uuid)) {
+            http_response_code(400);
+            echo "ne peut pas supprimer un périphérique non indiqué";
+            return;
+        }
 
         // Récupérer le périphérique
         $peripheral = (new \Queries\Peripherals) ->filterByUUID("=", $uuid) ->findOne();
+
+        // Vérifier que le périphérique existe
+        if (empty($peripheral)) {
+            http_response_code(400);
+            echo "Ce périphérique n'existe pas";
+            return;
+        }
 
         // Vérifier que le périphérique est associé à la propriété
         if ($peripheral->getPropertyID() !== $property_id) {
@@ -144,6 +165,6 @@ class Peripherals
         (new \Queries\Peripherals) -> update($peripheral);
 
         //Affichage de la page peripherique mise a jour
-        \Helpers\DisplayManager::redirectToController("Peripherals", "List");
+        \Helpers\DisplayManager::redirectToPath("properties/" . $property_id . "/peripherals");
     }
 }

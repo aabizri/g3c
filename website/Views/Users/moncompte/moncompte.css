@@ -30,10 +30,10 @@ body {
 	cursor: pointer;
 }
 
-#Moncompte, #Mespieces, #Mesperipheriques, #Mesconsignes, #Mesparametres
+#Moncompte, #Mespieces, #Mesperipheriques, #Mesconsignes,#Mapropriete, #Mesparametres
 {
 	position: relative;
-	margin: 50px 10px;
+	margin: 80px 10px;
 	width: 100%;
 }
 
