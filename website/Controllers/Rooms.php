@@ -48,7 +48,9 @@ class Rooms
             echo "Erreur" . $e;
         }
 
-        \Helpers\DisplayManager::redirectToPath("properties/" . $property_id . "/rooms/" . $r->getID());
+        http_response_code(303); // HTTP Created
+        header("Location: " . \Helpers\DisplayManager::absolutifyURL("properties/" . $property_id . "/rooms/" . $r->getID()));
+        //\Helpers\DisplayManager::redirectToPath("properties/" . $property_id . "/rooms/" . $r->getID());
     }
 
     /**
