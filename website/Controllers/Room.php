@@ -83,8 +83,7 @@ class Room
      * @param Entities\Request $req
      * @throws \Exception
      */
-
-    public function getLastMeasure(\Entities\Request $req): void
+    public function getRoom(\Entities\Request $req): void
     {
         //On récupère l'id de la pièce
         $rid = $req
@@ -101,7 +100,6 @@ class Room
 
 
         $room_sensors=[];
-        $peripherals=[];
         $last_measures=[];
 
         //On récupère tout les périphériques d'une pièce.

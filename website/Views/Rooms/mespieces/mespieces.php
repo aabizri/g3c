@@ -46,7 +46,7 @@
 
 
                               echo '<tr><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" >
-                                        <td><a class="link"  href="index.php?c=Room&a=LastMeasure&room='.$r->getID().'">   
+                                        <td><a class="link"  href="index.php?c=Room&a=Room&room=' . $r->getID() . '">   
                                         '.$name.'</a></td> 
                                         <td>'. $du .'</td>
                                         <td>'. $dc .'</td>
