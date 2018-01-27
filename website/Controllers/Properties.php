@@ -58,7 +58,7 @@ class Properties
         //On recupère la donnée et on vérifie qu'elle existe bien
         $nickname = $req->getPOST('nickname');
         if ($nickname === null) {
-            DisplayManager::redirectToPath("properties/" . $property_id);
+            \Helpers\DisplayManager::redirectToPath("properties/" . $property_id);
             return;
         }
 
@@ -66,7 +66,7 @@ class Properties
         //Si on ne trouve rien, c'est que le nickname n'existe pas
         $user = (new \Queries\Users)->filterByNick("=", $nickname)->findOne();
         if ($user === null) {
-            DisplayManager::redirectToPath("properties/" . $property_id);
+            \Helpers\DisplayManager::redirectToPath("properties/" . $property_id);
             return;
         }
 
@@ -75,7 +75,7 @@ class Properties
 
         //On vérifie que le nickname n'est pas deja lié à cette propriété
         if ((new \Queries\Roles)->filterByUserID("=", $user_id)->findOne()) {
-            DisplayManager::redirectToPath("properties/" . $property_id);
+            \Helpers\DisplayManager::redirectToPath("properties/" . $property_id);
             return;
         }
 
@@ -87,12 +87,12 @@ class Properties
         //On insère le role dans la bdd
         (new \Queries\Roles)->save($r);
 
-        DisplayManager::redirectToPath("properties/" . $property_id);
+        \Helpers\DisplayManager::redirectToPath("properties/" . $property_id);
     }
 
 
     //Supprimer un utilisateur de la propriété
-    public static function postDeleteUserFromProperty(\Entities\Request $req)
+    public static function postRemoveUser(\Entities\Request $req)
     {
         //On récupère les données
         $to_delete_user_id = $req->getPOST('user_id');
@@ -120,6 +120,6 @@ class Properties
         }
 
         //On affiche la page avec l'utilisateur supprimé
-        DisplayManager::redirectToPath("properties/" . $property_id);
+        \Helpers\DisplayManager::redirectToPath("properties/" . $property_id);
     }
 }

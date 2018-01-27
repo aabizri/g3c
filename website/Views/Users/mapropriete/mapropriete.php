@@ -1,15 +1,17 @@
-<html>
+<main>
 <ul id="Menu">
-    <li id="Moncompte"><a href="index.php?c=User&a=AccountPage"><input type="button" value="Mon compte"/></a></li>
-    <li id="Mapropriete"><a href="http://localhost/g3c/website/index.php?c=Property&a=PropertyPage"><input type="button"
-                                                                                                           value="Ma propriété"/></a>
+    <li id="Moncompte"><a href="account"><input type="button" value="Mon compte"/></a></li>
+    <li id="Mapropriete"><a href="properties/<?= $data["property"]->getID() ?>"><input type="button"
+                                                                                       value="Ma propriété"/></a></li>
+    <li id="Mespieces"><a href="properties/<?= $data["property"]->getID() ?>/rooms"><input type="button"
+                                                                                           value="Mes pièces"/></a>
     </li>
-    <li id="Mespieces"><a href="index.php?c=Room&a=RoomsPage"><input type="button" value="Mes pièces"/></a></li>
-    <li id="Mesperipheriques"><a href="index.php?c=Peripheral&a=PeripheralsPage"><input type="button"
-                                                                                        value="Mes périphériques"/></a>
+    <li id="Mesperipheriques"><a href="properties/<?= $data["property"]->getID() ?>/peripherals"><input type="button"
+                                                                                                        value="Mes périphériques"/></a>
     </li>
-    <li id="Mesfiltres"><a href="Mesfiltres.html"><input type="button" value="Mes filtres"/></a></li>
-    <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres"/></a></li>
+    <li id="Mesconsignes"><a href="properties/<?= $data["property"]->getID() ?>/consignes"><input type="button"
+                                                                                                  value="Mes Consignes"/></a>
+    </li>
 </ul>
 
 <h2 id="titrepage">Ma propriété</h2>
@@ -43,7 +45,7 @@
                     echo '<tr>
                               <td>' . $u->getNick() . '</td>
                               <td>
-                                  <form action="index.php?c=Property&a=DeleteUserFromProperty&pid=' . $data["property"]->getID() . '" method="post" >
+                                  <form action="properties/' . $data["property"]->getID() . '/removeuser" method="post" >
                                       <input type="hidden"  name="user_id" value="' . $u->getID() . '" />    
                                       <input type="submit" value="Supprimer"/>
                                   </form>
@@ -58,7 +60,7 @@
 
     <div id="creerutilisateur">
         <h4 id="titrecreerutilisateur">Ajouter un utilisateur à la propriété</h4>
-        <form method="post" action="index.php?c=Property&a=AddUser&debug=true&&pid=<?= $data["property"]->getID() ?>">
+        <form method="post" action="properties/<?= $data["property"]->getID() ?>/adduser">
             <p>
                 <label>Login</label>: <input id="formdroit" type="text" name="nickname"/>
             </p>
@@ -67,4 +69,4 @@
         </form>
     </div>
 </div>
-</html>
+</main>
