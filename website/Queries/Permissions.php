@@ -20,8 +20,8 @@ class Permissions extends Query
     private const columns = ["id" => ["id", "gen-on-insert"],
                              "name" => [],
                              "description" => [],
-                             "creation_date" => ["timestamp"],
-                             "last_updated" => ["timestamp"]];
+                             "creation_date" => ["gen-on-insert", "timestamp"],
+                             "last_updated" => ["gen-on-insert", "timestamp"]];
     private const entity_class_name = "\Entities\Permission";
 
     /**

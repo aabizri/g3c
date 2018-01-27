@@ -2,10 +2,11 @@ footer {
     background-color: rgb(217,196,177);
     font-family: Verdana, sans-serif;
     color: #955252;
-    position :relative;
-    bottom:-180px;
+    position :absolute;
+    bottom:-7px;
     height: 80px;
     width: 101.5%;
+    z-index: -100;
     left: -7px;
 }
 

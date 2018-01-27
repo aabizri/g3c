@@ -1,14 +1,13 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Dinesh
- * Date: 11/01/2018
- * Time: 08:58
- */
+    /**
+     * Created by PhpStorm.
+     * User: Dinesh
+     * Date: 11/01/2018
+     * Time: 08:58
+     */
 
 namespace Queries;
-use Entities;
-use Entities\Sensor;
+    use Entities\Sensor;
 
 class Sensors extends Query
 {
@@ -73,7 +72,6 @@ class Sensors extends Query
 
     public function filterByPeripheralUUID(string $operator, string $peripheral_uuid): self
     {
-        return $this -> filterByColumn("peripheral_uuid", $operator, $peripheral_uuid
-        );
+        return $this -> filterByColumn("peripheral_uuid", $operator, $peripheral_uuid);
     }
 }

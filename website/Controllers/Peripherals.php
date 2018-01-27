@@ -22,7 +22,7 @@ class Peripherals
      */
     public function postAdd(\Entities\Request $req): void
     {
-        // On récupère l'id de ka propriété
+        // On récupère l'id de la propriété
         $property_id = $req->getPropertyID();
         if (empty($property_id)) {
             http_response_code(403);
@@ -141,7 +141,7 @@ class Peripherals
         $peripheral->setRoomID(null);
 
         // Push
-        (new \Queries\Peripherals) -> save($peripheral);
+        (new \Queries\Peripherals) -> update($peripheral);
 
         //Affichage de la page peripherique mise a jour
         \Helpers\DisplayManager::redirectToController("Peripherals", "List");
