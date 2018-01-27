@@ -24,6 +24,7 @@ class DisplayManager
         "connexion" => "Users",
         "inscription" => "Users",
         "moncompte" => "Users",
+        "mapiece" => "Rooms",
         "mespieces" => "Rooms",
         "mesperipheriques"=> "Peripherals",
         "mysessions" => "Users",
@@ -32,8 +33,8 @@ class DisplayManager
         "majmdpreussie" => "Users",
         "cgu" => "CGU",
         "modificationcgu" => "CGU",
-        "sensorstats" => "Rooms",
-        "selectsensorstats" => "Rooms",
+        "sensorstats" => "Sensor",
+        "selectsensorstats" => "Sensor",
         "consignes" => "Consignes",
         "roomconsignes" => "Consignes",
     ];
