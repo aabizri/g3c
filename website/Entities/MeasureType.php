@@ -43,12 +43,12 @@ class MeasureType extends Entity
     private $unit_symbol;
 
     /**
-     * @var double
+     * @var float
      */
     private $min;
 
     /**
-     * @var double
+     * @var float
      */
     private $max;
 
@@ -135,33 +135,33 @@ class MeasureType extends Entity
     }
 
     /**
-     * @return double
+     * @return float
      */
-    public function getMin(): double
+    public function getMin(): float
     {
         return $this->min;
     }
 
     /**
-     * @param double $min
+     * @param float $min
      */
-    public function setMin(double $min): void
+    public function setMin(float $min): void
     {
         $this->min = $min;
     }
 
     /**
-     * @return double
+     * @return float
      */
-    public function getMax(): double
+    public function getMax(): float
     {
         return $this->max;
     }
 
     /**
-     * @param double $max
+     * @param float $max
      */
-    public function setMax(double $max): void
+    public function setMax(float $max): void
     {
         $this->max = $max;
     }

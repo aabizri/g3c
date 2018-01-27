@@ -123,7 +123,7 @@ CREATE TABLE `measures` (
   `id` int(11) NOT NULL,
   `type_id` int(11) NOT NULL,
   `date_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `value` double NOT NULL,
+  `value` float NOT NULL,
   `sensor_id` int(11) DEFAULT NULL,
   `actuator_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -140,8 +140,8 @@ CREATE TABLE `measure_types` (
   `description` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Température en Celsius"',
   `unit_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Celsius"',
   `unit_symbol` varchar(6) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "°C"',
-  `min` double DEFAULT NULL COMMENT 'Valeur minimale (opt)',
-  `max` double DEFAULT NULL COMMENT 'Valeur maximale (opt)'
+  `min` float DEFAULT NULL COMMENT 'Valeur minimale (opt)',
+  `max` float DEFAULT NULL COMMENT 'Valeur maximale (opt)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -4382,3 +4382,19 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `consignes`
+--
+
+CREATE TABLE `consignes` (
+  `id` int(11) NOT NULL,
+  `actuator_id` int(11) NOT NULL,
+  `destination_value` float NOT NULL,
+  `active` bool DEFAULT NOT NULL,
+  `creation_date` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
