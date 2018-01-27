@@ -29,6 +29,8 @@ class DisplayManager
         "mesperipheriques"=> "Peripherals",
         "mapropriete"=> "Users",
         "mysessions" => "Users",
+        "mesproprietes" => "Properties",
+        "nouvellepropriete" => "Properties",
         "faq" => "FAQ",
         "store" => "Store",
         "mapiece" => "Rooms",
