@@ -47,8 +47,9 @@ class Handler
                 ->filterByColumn("property_id", "=", $req->getPropertyID(), "AND")
                 ->filterByColumn("user_id", "=", $req->getUserID(), "AND")
                 ->count();
-            if ($count !== 0) {
+            if ($count === 0) {
                 echo "L'utilisateur n'a pas de connexion à cette propriété, interdit !";
+                return;
             }
         }
 
