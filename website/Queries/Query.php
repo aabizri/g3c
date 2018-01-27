@@ -793,6 +793,9 @@ abstract class Query
      */
     private function toLexemesDelete(): array
     {
+        // Base Lexemes
+        $lexemes = ["DELETE", "FROM", $this->table, "WHERE", $this->where->toSQL()];
+        return $lexemes;
     }
 
     /**
