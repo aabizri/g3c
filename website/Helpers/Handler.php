@@ -49,7 +49,7 @@ class Handler
                 ->count();
             if ($count === 0) {
                 echo "L'utilisateur n'a pas de connexion à cette propriété, interdit !";
-                // TODO: A fixer (faire un return)
+                return;
             }
         }
 

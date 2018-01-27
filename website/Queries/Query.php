@@ -894,7 +894,7 @@ abstract class Query
      * @return \Entities\Entity|null , null if none found
      * @throws \Exception
      */
-    protected function fetchOne(\PDOStatement $stmt): \Entities\Entity
+    protected function fetchOne(\PDOStatement $stmt): ?\Entities\Entity
     {
         // Set Associative Fetch
         $stmt->setFetchMode(\PDO::FETCH_ASSOC);

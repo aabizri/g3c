@@ -27,6 +27,7 @@ class DisplayManager
         "moncompte" => "Users",
         "mespieces" => "Rooms",
         "mesperipheriques"=> "Peripherals",
+        "mapropriete"=> "Users",
         "mysessions" => "Users",
         "faq" => "FAQ",
         "store" => "Store",

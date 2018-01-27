@@ -1,15 +1,17 @@
 <main>
-    <ul id="Menu">
-        <li id="Moncompte"><a href="account"><input type="button" value="Mon compte"/></a></li>
-        <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
-        </li>
-        <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
-                                                                                              value="Mes périphériques"/></a>
-        </li>
-        <li id="Mesconsignes"><a href="properties/<?= $data["pid"] ?>/consignes"><input type="button"
-                                                                                        value="Mes Consignes"/></a></li>
-    </ul>
-<h2 id="nompagepieces">Gestion de mes pièces</h2>
+<ul id="Menu">
+    <li id="Moncompte"><a href="account"><input type="button" value="Mon compte"/></a></li>
+    <li id="Mapropriete"><a href="properties/<?= $data["pid"]?>"><input type="button" value="Ma propriété" /></a> </li>
+    <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
+    </li>
+    <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
+                                                                                          value="Mes périphériques"/></a>
+    </li>
+    <li id="Mesconsignes"><a href="properties/<?= $data["pid"] ?>/consignes"><input type="button"
+                                                                                    value="Mes Consignes"/></a></li>
+</ul>
+
+            <h2 id="nompagepieces">Gestion de mes pièces</h2>
 
 
 
@@ -84,3 +86,4 @@ if (!empty($data["rooms"])):
         </form>
     </div>
 </div>
+</main>
