@@ -2,8 +2,6 @@
 
 namespace Controllers;
 
-use MongoDB\Driver\Query;
-use Repositories;
 use Entities;
 
 /**
@@ -47,8 +45,7 @@ class Property
     {
 
         // Extraire les données
-        $UserID=$req -> getUserID();
-        $UserID=4;
+        $user_id = $req->getUserID();
         $name = $req->getPOST("name");
         if (empty($name)) return;
         $address = $req->getPOST("address");
@@ -71,7 +68,7 @@ class Property
 
         //Create role entity
         $r = new Entities\Role();
-        $r->setUserID($UserID);
+        $r->setUserID($user_id);
         $r->setPropertyID($property_id);
 
         // Insert it
