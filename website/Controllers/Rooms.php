@@ -8,7 +8,8 @@ use Entities;
  * Class Rooms
  * @package Controllers
  */use Queries;
-class Room
+
+class Rooms
 {
 
     /**
@@ -88,13 +89,24 @@ class Room
     {
         //On récupère l'id de la pièce
         $rid = $req
-            ->getGET("room");
-
-
+            ->getGET("rid");
         if (empty($rid)) {
             // Si la requête n'est pas associée à une pièce, retourner une erreur
             http_response_code(400);
             echo "Paramètre d'ID de pièce absent";
+            return;
+        }
+
+        // On vérifie si elle existe / on la récupère
+        $room = (new \Queries\Rooms)->retrieve($rid);
+        if ($room === null) {
+            http_response_code(400);
+            echo "Cette pièce n'existe pas";
+            return;
+        }
+        if ($room->getPropertyID() !== $req->getPropertyID()) {
+            http_response_code(400);
+            echo "Cette pièce n'est pas associée à la même propriété que celle actuelle";
             return;
         }
 
@@ -140,13 +152,12 @@ class Room
 
         }
 
-        $room_entity = (new Queries\Rooms)
-            ->retrieve($rid);
 
         $data["last_measures"] = $last_measures;
         $pid = (new \Queries\Rooms)->retrieve($rid)->getPropertyID();
         $data["rooms"] = (new \Queries\Rooms)->filterByPropertyID("=", $pid)->find();
-        $data["room_entity"] = $room_entity;
+        $data["room_entity"] = $room;
+        $data["pid"] = $req->getPropertyID();
 
         \Helpers\DisplayManager::display("mapiece", $data);
 

@@ -52,7 +52,7 @@
 
     <div id="modifmdp">
         <h4 id="titremodifmdp">Modifier mon mot de passe</h4>
-        <form method="post" action="http://localhost/g3c/website/index.php?c=User&a=MDP" name="modifiermdp" onsubmit=" return validateMdp()">
+        <form method="post" action="account/changepassword" name="modifiermdp" onsubmit=" return validateMdp()">
         <p>
             <label>Ancien mot de passe : </label><input type="password" id="droit" name="ancienmdp"/><br>
         </p>

@@ -28,10 +28,11 @@ RewriteRule   ^properties$                          index.php?c=Properties&a=Sel
 RewriteRule   ^properties/([0-9]+)$                 index.php?c=Properties&a=Dashboard&pid=$1&%{QUERY_STRING}
 
 ## Property rooms
-RewriteRule   ^properties/([0-9]+)/rooms$             index.php?c=Room&a=Rooms&pid=$1&%{QUERY_STRING}
+RewriteRule   ^properties/([0-9]+)/rooms$             index.php?c=Rooms&a=Rooms&pid=$1&%{QUERY_STRING}
 RewriteRule   ^properties/([0-9]+)/rooms/([0-9]+)$    index.php?c=Rooms&a=Room&pid=$1&rid=$2&%{QUERY_STRING}
 
 ## Property others
 RewriteRule   ^properties/([0-9]+)/peripherals$       index.php?c=Peripherals&a=List&pid=$1&%{QUERY_STRING}
+RewriteRule   ^properties/([0-9]+)/peripherals/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/remove$  index.php?c=Peripherals&a=Remove&pid=$1&peripheral_id=$2&%{QUERY_STRING}
 RewriteRule   ^properties/([0-9]+)/parameters$        index.php?c=Property&a=Parameters&pid=$1&%{QUERY_STRING}
-RewriteRule   ^properties/([0-9]+)/consignes$       index.php?c=Consignes&a=Consignes&%{QUERY_STRING}
+RewriteRule   ^properties/([0-9]+)/consignes$       index.php?c=Consignes&a=Consignes&pid=$1&%{QUERY_STRING}

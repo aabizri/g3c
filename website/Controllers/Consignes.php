@@ -13,14 +13,14 @@ use Helpers\DisplayManager;
 use Entities\Peripheral;
 use Queries;
 
-class Consigne
+class Consignes
 {
     /**
      * GET /properties/{PID}/orders
      * @param \Entities\Request $req
      * @throws \Exception
      */
-    public static function getConsignesPage(\Entities\Request $req)
+    public static function getConsignes(\Entities\Request $req)
     {
 
         $property_id = $req->getPropertyID();
@@ -35,6 +35,7 @@ class Consigne
 
         //On peuple la vue
         $data["property_rooms"] = $property_rooms;
+        $data["pid"] = $property_id;
 
         //On envoie les données vers la page
         DisplayManager::display("consignes", $data);
@@ -45,7 +46,7 @@ class Consigne
      * @param \Entities\Request $req
      * @throws \Exception
      */
-    public static function getRoomConsignesPage(\Entities\Request $req)
+    public static function getRoomConsignes(\Entities\Request $req)
     {
         //On recupère l'id de la propriété
         $property_id = $req->getPropertyID();
@@ -100,12 +101,13 @@ class Consigne
 
         //On peuple la vue
         $data["property_rooms"] = $property_rooms;
+        $data["pid"] = $property_id;
 
         //On affiche
         DisplayManager::display("roomconsignes", $data);
     }
 
-    public static function postCreateConsigne(\Entities\Request $req)
+    public static function postCreate(\Entities\Request $req)
     {
 
         //On recupère les données et faisons quelques verifications
@@ -149,7 +151,7 @@ class Consigne
 
         (new \Queries\Consignes)->save($c);
 
-        DisplayManager::redirectToController("Consigne", "ConsignesPage&pid=1");
+        DisplayManager::redirectToPath("consignes");
 
     }
 }

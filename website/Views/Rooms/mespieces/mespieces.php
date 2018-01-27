@@ -1,9 +1,14 @@
-<ul id="Menu">
-    <li id="Moncompte"><a href="account"><input type="button" value="Mon compte"/></a></li>
-    <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button" value="Mes périphériques"/></a></li>
-    <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a></li>
-    <li id="Mesconsignes"><a href="properties<?= $data["pid"]?>/consignes"><input type="button" value="Mes Consignes" /></a></li>
-</ul>
+<main>
+    <ul id="Menu">
+        <li id="Moncompte"><a href="account"><input type="button" value="Mon compte"/></a></li>
+        <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
+        </li>
+        <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
+                                                                                              value="Mes périphériques"/></a>
+        </li>
+        <li id="Mesconsignes"><a href="properties/<?= $data["pid"] ?>/consignes"><input type="button"
+                                                                                        value="Mes Consignes"/></a></li>
+    </ul>
 <h2 id="nompagepieces">Gestion de mes pièces</h2>
 
 
@@ -42,14 +47,19 @@ if (!empty($data["rooms"])):
                     $name = $r->getName();
 
 
-
-                    echo '<tr><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" >
-                                        <td><a class="link"  href="index.php?c=Room&a=Room&room=' . $r->getID() . '">   
-                                        '.$name.'</a></td> 
-                                        <td>'. $du .'</td>
-                                        <td>'. $dc .'</td>
-                                        <td><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" ><input type="submit" value="Supprimer"/></form></td>
-                                      </tr>';}
+                    echo '<tr>
+                            <td><a class="link"  href="properties/' . $data["pid"] . "/rooms/" . $r->getID() . '">   
+                            ' . $name . '</a></td> 
+                            <td>' . $du . '</td>
+                            <td>' . $dc . '</td>
+                            <td>
+                                <form action="properties/' . $data["pid"] . '/rooms/delete" method="post" >
+                                    <input type="hidden" name="rid" value="' . $r->getID() . '"/>
+                                    <input type="submit" value="Supprimer"/>
+                                </form>
+                            </td>
+                          </tr>';
+                }
 
             }
 
@@ -66,9 +76,8 @@ if (!empty($data["rooms"])):
 <div id="ajouterpieces">
     <h3>Ajouter une pièce</h3>
     <div id="champsajouterpiece">
-        <form method="post" name="ajouterpieces"  action="index.php?c=Room&a=Create&pid=1&debug=true">
+        <form method="post" name="ajouterpieces" action="properties/<?= $data["pid"] ?>/rooms/create">
             <label>Nom de la pièce : </label><input type="text" name="name" /><br><br>
-
             <br>
             <br>
             <input type="submit" value="Valider" id="validerajoutpiece" >

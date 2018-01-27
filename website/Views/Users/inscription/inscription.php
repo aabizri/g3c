@@ -49,7 +49,7 @@
                 valider votre compte.</p>
             <p id="CGU">
                 <input id="cgu-input" type="checkbox" name="cgu" value="accepted" required/>
-                <label for="cgu-input">J'ai lu et j'accepte les <a href="index.php?c=General&a=CGU">CGU</a></label>
+                <label for="cgu-input">J'ai lu et j'accepte les <a href="cgu">CGU</a></label>
             </p>
             <?php
             // On n'affiche le captcha que si le site est servi en HTTPS

@@ -1,9 +1,14 @@
-            <ul id="Menu">
-                <li id="Moncompte"><a href="account"><input type="button" value="Mon compte"/></a></li>
-                <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button" value="Mes périphériques"/></a></li>
-                <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a></li>
-              <li id="Mesconsignes"><a href="properties<?= $data["pid"]?>/consignes"><input type="button" value="Mes Consignes" /></a></li>
-            </ul>
+<main>
+    <ul id="Menu">
+        <li id="Moncompte"><a href="account"><input type="button" value="Mon compte"/></a></li>
+        <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
+        </li>
+        <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
+                                                                                              value="Mes périphériques"/></a>
+        </li>
+        <li id="Mesconsignes"><a href="properties/<?= $data["pid"] ?>/consignes"><input type="button"
+                                                                                        value="Mes Consignes"/></a></li>
+    </ul>
 
             <h2 id="titreperipherique">Liste des peripériques connectés</h2>
             <p id="nombrepc">Vous avez actuellement <?php echo count($data["peripherals_list"])?> périphériques connectés.</p>
@@ -52,12 +57,12 @@
                                 }
 
 
-                                echo '<tr><form action="/properties/'.$data["pid"].'/peripherals/'.$p->getUUID().'/remove&pid=1&debug=true" method="post" >
+                                echo '<tr><form action="properties/' . $data["pid"] . '/peripherals/' . $p->getUUID() . '/remove" method="post" >
                                         <td>'. $peripheral_name .'</td> 
                                         <td>'. $room_name .'</td>
                                         <td>'. $date .'</td>
                                         <td><input type="hidden" name="peripheral_id" value="'. $p->getUUID() .'"/>'. $p->getUUID() .'</td>
-                                        <td><form action="/properties/'.$data["pid"].'/peripherals/'.$p->getUUID().'/remove&pid=1&debug=true" method="post" ><input type="submit" value="Supprimer"/></form></td>
+                                        <td><form action="properties/' . $data["pid"] . '/peripherals/' . $p->getUUID() . '/remove" method="post" ><input type="submit" value="Supprimer"/></form></td>
                                       </tr>';}
 
                             }
@@ -74,7 +79,8 @@
             <div id="ajouterperipherique">
                 <h3>Ajouter un périphérique</h3>
                 <div id="champsajouterperipherique">
-                    <form name="Ajouter un peripherique" method="post" action="index.php?c=Peripherals&a=Add&pid=1&debug=true">
+                    <form name="Ajouter un peripherique" method="post"
+                          action="properties/<?= $data["pid"] ?>/peripherals/add">
                         <label>UUID : </label><input type="text" name="uuid" /><br><br>
                         <label>Nom du périphérique : </label><input type="text" name="display_name" />
                         <p> Dans quelle salle ?
