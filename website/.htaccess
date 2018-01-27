@@ -25,6 +25,7 @@ RewriteRule   ^account/subscription$                index.php?c=Subscription&a=S
 
 # Property-wise
 RewriteRule   ^properties$                          index.php?c=Properties&a=Select&%{QUERY_STRING}
+RewriteRule   ^properties/new$                      index.php?c=Properties&a=New&%{QUERY_STRING}
 RewriteRule   ^properties/([0-9]+)$                 index.php?c=Properties&a=Property&pid=$1&%{QUERY_STRING}
 RewriteRule   ^properties/([0-9]+)/adduser$         index.php?c=Properties&a=AddUser&pid=$1&%{QUERY_STRING}
 RewriteRule   ^properties/([0-9]+)/removeuser$      index.php?c=Properties&a=RemoveUser&pid=$1&%{QUERY_STRING}
