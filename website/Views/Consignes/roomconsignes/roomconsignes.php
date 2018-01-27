@@ -51,7 +51,7 @@
                         ->orderBy("creation_date", false)
                         ->findOne();
 
-                    echo '<div id="consign"><h4>' . $measure_type_name . ' voulue</h4>
+                    echo '<div id="consign"><h4>' . htmlspecialchars($measure_type_name) . ' voulue</h4>
                        <p>Dernière consigne : ' . $last_value->getDestinationValue() . '</p>
                       <form method="post" action="index.php?c=Consigne&a=CreateConsigne&pid=1&debug=true">
                         <input type="hidden" value="' . $last_value->getDestinationValue() . '" name="last_destination_value" />

@@ -48,9 +48,9 @@
 
                               echo '<tr><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" >
                                         <td><a class="link"  href="index.php?c=Room&a=Room&room=' . $r->getID() . '">   
-                                        '.$name.'</a></td> 
-                                        <td>'. $du .'</td>
-                                        <td>'. $dc .'</td>
+                                        '.htmlspecialchars($name).'</a></td> 
+                                        <td>'. htmlspecialchars($du) .'</td>
+                                        <td>'. htmlspecialchars($dc) .'</td>
                                         <td><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" ><input type="submit" value="Supprimer"/></form></td>
                                       </tr>';}
 
