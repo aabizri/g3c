@@ -299,7 +299,7 @@ class Peripheral extends Entity
     /**
      * Attach the Peripheral to a Room.php
      *
-     * It checks if the Room.php is linked to the same Property as the Peripheral, returns an Exception if it fails.
+     * It checks if the Room is linked to the same Property as the Peripheral, returns an Exception if it fails.
      *
      * @param int $roomID is the ID of the Room.php this Peripheral should be attached to
      *
@@ -309,11 +309,27 @@ class Peripheral extends Entity
      */
     public function attachToRoom(int $roomID): void
     {
-        Repositories\Peripherals::attachToRoom($this, $roomID);
+        // Get room's property
+        $room = (new \Queries\Rooms)->onColumns("property_id")->retrieve($roomID);
+        if ($room === null) {
+            throw new \Exception(sprintf("No such room ! [room_id: %d]", $roomID));
+        }
+        $room_property_id = $room->getPropertyID();
+        unset($room);
+
+        // Check
+        if ($room_property_id !== $this->getPropertyID()) {
+            throw new \Exception(
+                sprintf("Room linked different property than peripheral ! [room_id: %d, room_property_id: %d, peripheral_property_id: %d]",
+                    $roomID, $room_property_id, $this->getPropertyID()));
+        }
+
+        // Attach
+        $this->setRoomID($roomID);
     }
 
     /**
-     * Attach the Peripheral to a Property
+     * Attach the Peripheral to a Property, wipes old room attachment
      *
      * @param int $propertyID is the ID of the Property this Peripheral should be attached to
      *
@@ -323,7 +339,8 @@ class Peripheral extends Entity
      */
     public function attachToProperty(int $propertyID): void
     {
-        Repositories\Peripherals::attachToProperty($this, $propertyID);
+        $this->setRoomID(null);
+        $this->setPropertyID($propertyID);
     }
 
 }
