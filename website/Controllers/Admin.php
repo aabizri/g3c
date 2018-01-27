@@ -347,7 +347,7 @@ class Admin
         }
 
         // Retrieve the values
-        $users = (new \Queries\Properties)
+        $properties = (new \Queries\Properties)
             ->orderBy($order_by_column, $order_by_direction === "ASC")
             ->limit($count)
             ->offset($offset)
@@ -360,12 +360,12 @@ class Admin
                 $tbe_properties = [];
 
                 // For each property, transform it into a a minimal object
-                foreach ($users as $user) {
+                foreach ($properties as $property) {
                     $tbe_properties[] = (object)[
-                        "id" => $user->getID(),
-                        "name" => htmlspecialchars($user->getName()),
-                        "address" => htmlspecialchars($user->getAddress()),
-                        "creation_date" => (new \DateTime)->setTimestamp($user->getCreationDate())->format("Y-m-d"),
+                        "id" => $property->getID(),
+                        "name" => htmlspecialchars($property->getName()),
+                        "address" => htmlspecialchars($property->getAddress()),
+                        "creation_date" => (new \DateTime)->setTimestamp($property->getCreationDate())->format("Y-m-d"),
                     ];
                 }
 
@@ -505,10 +505,150 @@ class Admin
     /**
      * GET root/admin/peripherals
      * @param \Entities\Request $req
+     * @throws \Exception
      */
     public static function getPeripherals(\Entities\Request $req): void
     {
+        // TODO: Check authorisation for viewer
 
+        // Retrieve values necessary
+        $count = $req->getGET("count") ?? 20;
+        $offset = $req->getGET("offset") ?? 0;
+        $order_by_column = $req->getGET("order_by_column") ?? "build_date";
+        $order_by_direction = $req->getGET("order_by_direction");
+        if ($order_by_direction !== "ASC" && $order_by_direction !== "DESC") {
+            $order_by_direction = "DESC";
+        }
+
+        // Retrieve the values
+        $peripherals = (new \Queries\Peripherals)
+            ->orderBy($order_by_column, $order_by_direction === "ASC")
+            ->limit($count)
+            ->offset($offset)
+            ->find();
+
+        // Return view
+        switch ($req->getGET("v")) {
+            case "json":
+                // Peripherals array to be encoded
+                $tbe_peripherals = [];
+
+                // For each peripheral, transform it into a a minimal object
+                foreach ($peripherals as $peripheral) {
+                    $peripheral_property = $peripheral->getProperty();
+                    $peripheral_property_name = $peripheral_property !== null ? $peripheral_property->getName() : "Non défini";
+                    $peripheral_room = $peripheral->getRoom();
+                    $peripheral_room_name = $peripheral_room !== null ? $peripheral_room->getName() : "Non défini";
+                    $tbe_peripherals[] = (object)[
+                        "uuid" => $peripheral->getUUID(),
+                        "build_date" => $peripheral->getBuildDate(),
+                        "property_id" => $peripheral->getPropertyID() ?? "Pas de propriété liée",
+                        "property_name" => htmlspecialchars($peripheral_property_name),
+                        "room_id" => $peripheral->getRoomID() ?? "Pas de pièce liée",
+                        "room_name" => htmlspecialchars($peripheral_room_name),
+                        "add_date" => $peripheral->getAddDate(),
+                    ];
+                }
+
+                // Pagination
+                $tbe_pagination = (object)[
+                    "total" => (new \Queries\Peripherals)->select()->count(),
+                ];
+
+                // Complete object
+                $tbe = (object)[
+                    "pagination" => $tbe_pagination,
+                    "peripherals" => $tbe_peripherals,
+                ];
+
+                // Encode output
+                $output = json_encode($tbe);
+
+                // Output it & break
+                echo $output;
+                break;
+            default:
+                \Helpers\DisplayManager::display("peripherals");
+        }
+
+        // Return
+        return;
+    }
+
+    /**
+     * GET root/admin/peripherals/{UUID}
+     * @param \Entities\Request $req
+     * @throws \Exception
+     */
+    public static function getPeripheral(\Entities\Request $req): void
+    {
+        // Récupérer l'UUID
+        $peripheral_uuid = $req->getGET("queried_peripheral_uuid");
+        if (empty($peripheral_uuid)) {
+            http_response_code(400);
+            echo "UUID non indiqué";
+            return;
+        }
+        if (!\Helpers\UUID::is_valid($peripheral_uuid)) {
+            http_response_code(400);
+            echo "UUID invalide";
+            return;
+        }
+
+        // Récupérer l'entité
+        $peripheral = (new \Queries\Peripherals)
+            ->filterByColumn("uuid", "=", $peripheral_uuid)
+            ->findOne();
+        if ($peripheral === null) {
+            http_response_code(500);
+            echo "Pas de périphérique trouvé pour cet UUID";
+            return;
+        }
+
+        // Data to be encoded
+        $peripheral_info = (object)[
+            "uuid" => (object)[
+                "title" => "UUID",
+                "value" => $peripheral->getUUID(),
+                "type" => "immutable"],
+            "property_id" => (object)[
+                "title" => "Property ID",
+                "value" => $peripheral->getPropertyID(),
+                "type" => "number"],
+            "room_id" => (object)[
+                "title" => "Room ID",
+                "value" => $peripheral->getRoomID(),
+                "type" => "number"],
+            "display_name" => (object)[
+                "title" => "Display Name",
+                "value" => htmlspecialchars($peripheral->getDisplayName()),
+                "type" => "text"],
+            "build_date" => (object)[
+                "title" => "Build Date",
+                "value" => $peripheral->getBuildDate(),
+                "type" => "date"],
+            "last_updated" => (object)[
+                "title" => "Last Updated",
+                "value" => (new \DateTime)->setTimestamp($peripheral->getLastUpdated())->format("Y-m-d"),
+                "type" => "immutable"],
+        ];
+
+        // Create the JSON
+        $output = json_encode($peripheral_info);
+
+        // Call the view
+        switch ($req->getGET("v")) {
+            case "json":
+                echo $output;
+                break;
+            default:
+                $data_for_php_view = [
+                    "json" => $output,
+                    "pid" => $peripheral->getPropertyID(),
+                    "rid" => $peripheral->getRoomID(),
+                ];
+                \Helpers\DisplayManager::display("peripheral", $data_for_php_view);
+        }
     }
 
     /**
