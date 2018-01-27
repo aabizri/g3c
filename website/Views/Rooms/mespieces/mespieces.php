@@ -79,8 +79,8 @@ if (!empty($data["rooms"])):
     <h3>Ajouter une pièce</h3>
     <div id="champsajouterpiece">
         <form method="post" name="ajouterpieces" action="properties/<?= $data["pid"] ?>/rooms/create">
-            <label>Nom de la pièce : </label><input type="text" name="name" /><br><br>
             <br>
+            <label>Nom de la pièce : </label><input type="text" name="name" /><br><br>
             <br>
             <input type="submit" value="Valider" id="validerajoutpiece" >
         </form>
