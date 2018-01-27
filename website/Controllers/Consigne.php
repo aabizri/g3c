@@ -15,6 +15,11 @@ use Queries;
 
 class Consigne
 {
+    /**
+     * GET /properties/{PID}/orders
+     * @param \Entities\Request $req
+     * @throws \Exception
+     */
     public static function getConsignesPage(\Entities\Request $req)
     {
 
@@ -36,16 +41,14 @@ class Consigne
     }
 
     /**
-     * POST /properties/{PID}/rooms/orders
+     * GET /properties/{PID}/rooms/orders
      * @param \Entities\Request $req
      * @throws \Exception
      */
-    public static function postRoomConsignesPage(\Entities\Request $req)
+    public static function getRoomConsignesPage(\Entities\Request $req)
     {
-
         //On recupère l'id de la propriété
         $property_id = $req->getPropertyID();
-
         if (empty($property_id)) {
             http_response_code(400);
             echo "Pas de property_id donné";
@@ -53,7 +56,7 @@ class Consigne
         }
 
         //On recupère l'id de salle à laquelle l'utilisateur veut accéder
-        $room_id = $req->getPOST("room_id");
+        $room_id = $req->getGET("room_id");
         if (empty($room_id)) {
             http_response_code(400);
             echo "Pas de room_id donné";
