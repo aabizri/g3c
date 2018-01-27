@@ -34,3 +34,4 @@ RewriteRule   ^properties/([0-9]+)/rooms/([0-9]+)$    index.php?c=Rooms&a=Room&p
 ## Property others
 RewriteRule   ^properties/([0-9]+)/peripherals$       index.php?c=Peripherals&a=List&pid=$1&%{QUERY_STRING}
 RewriteRule   ^properties/([0-9]+)/parameters$        index.php?c=Property&a=Parameters&pid=$1&%{QUERY_STRING}
+RewriteRule   ^properties/([0-9]+)/consignes$       index.php?c=Consignes&a=Consignes&%{QUERY_STRING}
