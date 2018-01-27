@@ -86,14 +86,13 @@ body {
 #choixsalle
 {
     position: relative;
-    top: 80px;
+    top: 50px;
     left:20%;
 }
 
 #choixsalle input,#choixsalle select
 {
-    border-radius:1px;
-    font-size: medium;
+    border-radius:5px;
 }
 
 #action
@@ -143,4 +142,16 @@ body {
 {
     height: 20px;
     border-radius: 3px;
+}
+
+#lienhistorique
+{
+    position: relative;
+    top:185px;
+    left: 20%;
+}
+
+#boutonhistorique
+{
+    border-radius: 5px;
 }

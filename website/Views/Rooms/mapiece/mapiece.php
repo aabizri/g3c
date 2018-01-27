@@ -12,6 +12,10 @@
 if (!empty($data["rooms"])):
 ?>
 
+    <a id="lienhistorique" href="index.php?c=Sensorstats&a=SelectSensor&pid=1">
+        <button id="boutonhistorique">Accéder à l'historique des capteurs</button>
+    </a>
+
 <form method="get" action="index.php" id="choixsalle">
     <input type="hidden" name="c" value="Room"/>
     <input type="hidden" name="a" value="Room"/>

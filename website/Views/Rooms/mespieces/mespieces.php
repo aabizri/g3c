@@ -10,7 +10,6 @@
             <h2 id="nompagepieces">Gestion de mes pièces</h2>
 
 
-
           <?php
           if (!empty($data["rooms"])):
           ?>
