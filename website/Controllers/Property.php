@@ -56,7 +56,8 @@ class Property
     }
 
     //Ajouter un utilisateur à une propriété
-    public static function postNewPropertyUser( \Entities\Request $req){
+    public static function postAddUser(\Entities\Request $req)
+    {
 
         //On recupère la donnée et on vérifie qu'elle existe bien
         $nickname = $req->getPOST('nickname');
