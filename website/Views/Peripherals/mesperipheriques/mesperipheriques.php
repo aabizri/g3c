@@ -1,10 +1,8 @@
             <ul id="Menu">
                 <li id="Moncompte"><a href="account"><input type="button" value="Mon compte"/></a></li>
-                <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
-                                                                                                      value="Mes périphériques"/></a>
-                </li>
-                <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button"
-                                                                                         value="Mes pièces"/></a></li>
+                <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button" value="Mes périphériques"/></a></li>
+                <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a></li>
+              <li id="Mesconsignes"><a href="properties<?= $data["pid"]?>/consignes"><input type="button" value="Mes Consignes" /></a></li>
             </ul>
 
             <h2 id="titreperipherique">Liste des peripériques connectés</h2>
@@ -54,12 +52,12 @@
                                 }
 
 
-                                echo '<tr><form action="/properties/{PID}/peripherals/{PUUID}/remove&pid=1&debug=true" method="post" >
+                                echo '<tr><form action="/properties/'.$data["pid"].'/peripherals/'.$p->getUUID().'/remove&pid=1&debug=true" method="post" >
                                         <td>'. $peripheral_name .'</td> 
                                         <td>'. $room_name .'</td>
                                         <td>'. $date .'</td>
                                         <td><input type="hidden" name="peripheral_id" value="'. $p->getUUID() .'"/>'. $p->getUUID() .'</td>
-                                        <td><form action="/properties/{PID}/peripherals/{PUUID}/remove&pid=1&debug=true" method="post" ><input type="submit" value="Supprimer"/></form></td>
+                                        <td><form action="/properties/'.$data["pid"].'/peripherals/'.$p->getUUID().'/remove&pid=1&debug=true" method="post" ><input type="submit" value="Supprimer"/></form></td>
                                       </tr>';}
 
                             }

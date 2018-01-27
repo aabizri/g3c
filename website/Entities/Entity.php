@@ -18,6 +18,33 @@ use \Exceptions\SetFailedException;
  */
 abstract class Entity
 {
+
+    /**
+     * Entity constructor.
+     * Constructs the entity, allowing us to use setMultiple syntax.
+     *
+     * @param array $values
+     * @throws \Exception
+     */
+    public function __construct(?array $values = null)
+    {
+        if (!empty($values)) $this->setMultiple($values);
+    }
+
+    /**
+     * @param array $values
+     * @return Entity
+     * @throws \Exception
+     */
+    public static function __set_state(array $values): \Entities\Entity
+    {
+        // Create new entity
+        $entity = (new static($values));
+
+        // Return
+        return $entity;
+    }
+
     /**
      * @param array $order property_name
      *
@@ -112,7 +139,7 @@ abstract class Entity
         return true;
     }
 
-    abstract public function getID();
+
 }
 
 

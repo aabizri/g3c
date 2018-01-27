@@ -146,7 +146,8 @@ abstract class Query
         // Récupère le compte si on a pu récuperer l'ID, sinon 0
         $count = 0;
         if ($id !== null) {
-            $count = $this
+            $count_query = clone $this;
+            $count = $count_query
                 ->filterByEntity($this->entity_id_column_name, "=", $entity)
                 ->count();
         }
@@ -184,11 +185,18 @@ abstract class Query
      * @param string $key
      * @param \Entities\Entity $entity
      * @return $this
+     * @throws \Exception
      */
     public function filterByEntity(string $key, string $operator, \Entities\Entity $entity)
     {
         // Extract the IDs
-        $id = $entity->getID();
+        if (method_exists($entity, "getID")) {
+            $id = $entity->getID();
+        } else if (method_exists($entity, "getUUID")) {
+            $id = $entity->getUUID();
+        } else {
+            throw new \Exception("Couldn't extract ID either from getID or getUUID: " . get_class($entity));
+        }
 
         // Call filterBy
         return $this->filterByColumn($key, $operator, $id);
@@ -220,7 +228,7 @@ abstract class Query
      */
     public function retrieve($id)
     {
-        $this->filterByColumn("id", "=", $id);
+        $this->filterByColumn($this->entity_id_column_name, "=", $id);
         return $this->findOne();
     }
 
@@ -364,7 +372,7 @@ abstract class Query
         $this->operation = "UPDATE";
 
         // ID of the value as a where
-        $this->filterByEntity("id", "=", $entity);
+        $this->filterByEntity($this->entity_id_column_name, "=", $entity);
 
         // On ne push pas la valeur de l'ID, inutile dans tous les cas
         unset($this->manipulate_columns[array_search($this->entity_id_column_name, $this->manipulate_columns)]);
@@ -460,17 +468,6 @@ abstract class Query
         $number = count($entities);
         $this->insert_count = $number;
 
-        // Only insert the ones that aren't gen-on-insert (including ID)
-        foreach ($this->manipulate_columns as $column) {
-            $is_gen_on_insert = array_search("gen-on-insert", $this->table_columns[$column]) !== false;
-            if ($is_gen_on_insert) {
-                unset($this->manipulate_columns[array_search($column, $this->manipulate_columns)]);
-            }
-        }
-
-        // Rebase / Rekey
-        $this->manipulate_columns = array_values($this->manipulate_columns);
-
         // Iterate over all entities to be inserted
         foreach ($entities as $entity_index => $entity) {
             // Retrieve the data
@@ -531,21 +528,6 @@ abstract class Query
             default:
                 return $this->insertMultipleAtOnce($entities);
         }
-    }
-
-    /** DELETE */
-
-    // Returns the number of elements deleted
-    public function delete(): int
-    {
-        // Set operation
-        $this->operation = "DELETE";
-
-        // Prepare & execute
-        $stmt = $this->prepareAndExecute();
-
-        // Return row count
-        return $stmt->rowCount();
     }
 
     /** ENTITY MAPPING STUFF */
@@ -778,9 +760,6 @@ abstract class Query
      */
     private function toLexemesDelete(): array
     {
-        // Base Lexemes
-        $lexemes = ["DELETE", "FROM", $this->table, "WHERE", $this->where->toSQL()];
-        return $lexemes;
     }
 
     /**

@@ -1,19 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: arnoldrandy
- * Date: 27/11/2017
- * Time: 11:46
- */
 
 namespace Entities;
 
 /**
- * Class Property
+ * Class FrequentlyAskedQuestion
  * @package Entities
  */
-class Property extends Entity
+class FrequentlyAskedQuestion extends Entity
 {
+
     /* PROPERTIES */
 
     /**
@@ -24,12 +19,17 @@ class Property extends Entity
     /**
      * @var string
      */
-    private $name;
+    private $question;
 
     /**
      * @var string
      */
-    private $address;
+    private $answer;
+
+    /**
+     * @var int
+     */
+    private $priority;
 
     /**
      * @var float
@@ -41,11 +41,12 @@ class Property extends Entity
      */
     private $last_updated;
 
-    /* SETTERS AND GETTERS */
+    /* GETTERS AND SETTERS */
 
     /**
      * @return int
      */
+
     public function getID(): int
     {
         return $this->id;
@@ -64,36 +65,57 @@ class Property extends Entity
     /**
      * @return string
      */
-    public function getName(): string
+
+    public function getQuestion(): string
     {
-        return $this->name;
+        return $this->question;
     }
 
     /**
-     * @param string $name
+     * @param string $question
      * @return bool
      */
-    public function setName(string $name): bool
+    public function setQuestion(string $question): bool
     {
-        $this->name = $name;
+        $this->question = $question;
         return true;
     }
 
     /**
      * @return string
      */
-    public function getAddress(): string
+
+    public function getAnswer(): string
     {
-        return $this->address;
+        return $this->answer;
     }
 
     /**
-     * @param string $address
+     * @param string $answer
      * @return bool
      */
-    public function setAddress(string $address): bool
+    public function setAnswer(string $answer): bool
     {
-        $this->address = $address;
+        $this->answer = $answer;
+        return true;
+    }
+
+    /**
+     * @return int
+     */
+
+    public function getPriority(): int
+    {
+        return $this->priority;
+    }
+
+    /**
+     * @param int $priority
+     * @return bool
+     */
+    public function setPriority(int $priority): bool
+    {
+        $this->priority = $priority;
         return true;
     }
 
@@ -103,6 +125,7 @@ class Property extends Entity
     public function getCreationDate(): float
     {
         return $this->creation_date;
+
     }
 
     /**
@@ -111,6 +134,11 @@ class Property extends Entity
      */
     public function setCreationDate(float $creation_date): bool
     {
+        // Verifier que $creation_date est inférieure à la date actuelle
+        if ($creation_date > microtime(true)) {
+            return false;
+        }
+
         $this->creation_date = $creation_date;
         return true;
     }
@@ -133,6 +161,3 @@ class Property extends Entity
         return true;
     }
 }
-
-
-
