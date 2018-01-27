@@ -15,7 +15,7 @@
         <?php
             $room_entity=$data["room_entity"];
             $room_name=$room_entity->getName();
-            echo $room_name;
+            echo htmlspecialchars($room_name);
             ?>
     </h3>
 

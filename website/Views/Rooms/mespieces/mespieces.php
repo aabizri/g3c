@@ -51,9 +51,9 @@ if (!empty($data["rooms"])):
 
                     echo '<tr>
                             <td><a class="link"  href="properties/' . $data["pid"] . "/rooms/" . $r->getID() . '">   
-                            ' . $name . '</a></td> 
-                            <td>' . $du . '</td>
-                            <td>' . $dc . '</td>
+                            '.htmlspecialchars($name).'</a></td> 
+                                        <td>'. htmlspecialchars($du) .'</td>
+                                        <td>'. htmlspecialchars($dc) .'</td>
                             <td>
                                 <form action="properties/' . $data["pid"] . '/rooms/delete" method="post" >
                                     <input type="hidden" name="rid" value="' . $r->getID() . '"/>
