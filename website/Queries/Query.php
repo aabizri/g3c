@@ -61,7 +61,7 @@ abstract class Query
     public function __construct(string $table, array $table_columns, string $entity_class_name)
     {
         // Open an instance
-        $this->db = \Helpers\DB::getInstance();
+        $this->db = \Helpers\DB::getPDO();
 
         // Note the table
         $this->table = $table;
@@ -76,7 +76,7 @@ abstract class Query
         $this->manipulate_columns = array_keys($table_columns);
 
         // Validate the entity class name
-        if (!is_subclass_of($entity_class_name,"\Entities\Entity")) {
+        if (!is_subclass_of($entity_class_name, "\Entities\Entity")) {
             throw new \Exception("entity class not a child of \Entities\Entity");
         }
         $this->entity_class_name = $entity_class_name;
@@ -185,11 +185,18 @@ abstract class Query
      * @param string $key
      * @param \Entities\Entity $entity
      * @return $this
+     * @throws \Exception
      */
     public function filterByEntity(string $key, string $operator, \Entities\Entity $entity)
     {
         // Extract the IDs
-        $id = $entity->getID();
+        if (method_exists($entity, "getID")) {
+            $id = $entity->getID();
+        } else if (method_exists($entity, "getUUID")) {
+            $id = $entity->getUUID();
+        } else {
+            throw new \Exception("Couldn't extract ID either from getID or getUUID: " . get_class($entity));
+        }
 
         // Call filterBy
         return $this->filterByColumn($key, $operator, $id);
@@ -205,7 +212,8 @@ abstract class Query
      * @param int $limit
      * @return $this
      */
-    public function limit(int $limit) {
+    public function limit(int $limit)
+    {
         // Set operation to select
         $this->operation = "SELECT";
 
@@ -229,7 +237,8 @@ abstract class Query
      * Finds a single element and returns it
      * @throws \Exception
      */
-    public function findOne() {
+    public function findOne()
+    {
         // This is a select
         $this->operation = "SELECT";
 
@@ -257,7 +266,8 @@ abstract class Query
      * @return array
      * @throws \Exception
      */
-    public function find(): array {
+    public function find(): array
+    {
         // This is a select
         $this->operation = "SELECT";
 
@@ -431,7 +441,8 @@ abstract class Query
      * @return bool
      * @throws \Exception
      */
-    private function insertMultipleAtOnce(array $entities): bool {
+    private function insertMultipleAtOnce(array $entities): bool
+    {
         $this->operation = "INSERT INTO";
 
         // Number of sets to be inserted
@@ -462,7 +473,7 @@ abstract class Query
         $stmt = $this->preparePDO();
 
         // Lock the table in order to stop a race condition
-        $this->db->query("LOCK TABLES ".$this->table." WRITE");
+        $this->db->query("LOCK TABLES " . $this->table . " WRITE");
 
         // Execute
         if (!is_array($this->data)) {
@@ -511,7 +522,7 @@ abstract class Query
         }
     }
 
-    /** DELETE */
+    /* DELETE */
 
     // Returns the number of elements deleted
     public function delete(): int
@@ -534,7 +545,8 @@ abstract class Query
      * @return array
      * @throws \Exception if no columns were specifief to be retrieved
      */
-    private function toLexemesSelect(): array {
+    private function toLexemesSelect(): array
+    {
         // Lexemes
         $lexemes = ["SELECT"];
 
@@ -563,7 +575,7 @@ abstract class Query
             }
 
             // If we're not finished, insert a comma
-            if ($index !== count($this->manipulate_columns)-1){
+            if ($index !== count($this->manipulate_columns) - 1) {
                 $lexemes[] = ",";
             }
         }
@@ -585,7 +597,7 @@ abstract class Query
                 $lexemes[] = $key;
                 $lexemes[] = $order;
                 $keys = array_keys($this->orderby);
-                if ($key !== end($keys)){
+                if ($key !== end($keys)) {
                     $lexemes[] = ",";
                 }
             }
@@ -594,7 +606,7 @@ abstract class Query
         // Now the limit clause
         if (!empty($this->limit_value)) {
             $lexemes[] = "LIMIT";
-            $lexemes[] = (string) $this->limit_value;
+            $lexemes[] = (string)$this->limit_value;
         }
 
         // Now the offset clause (ALWAYS JUST AFTER LIMIT)
@@ -614,7 +626,8 @@ abstract class Query
      * @return array
      * @throws \Exception
      */
-    private function toLexemesInsertInto(): array {
+    private function toLexemesInsertInto(): array
+    {
         // Lexemes
         $lexemes = ["INSERT INTO", $this->table];
 
@@ -627,7 +640,7 @@ abstract class Query
         $lexemes[] = "(";
         foreach ($this->manipulate_columns as $index => $column) {
             $lexemes[] = $column;
-            if ($index !== count($this->manipulate_columns)-1){
+            if ($index !== count($this->manipulate_columns) - 1) {
                 $lexemes[] = ",";
             }
         }
@@ -673,7 +686,7 @@ abstract class Query
             $lexemes[] = ")";
 
             // If this isn't the last set to insert, add a coma
-            if ($entity_index !== $insert_count-1){
+            if ($entity_index !== $insert_count - 1) {
                 $lexemes[] = ",";
             }
         }
@@ -688,9 +701,10 @@ abstract class Query
      * @return array
      * @throws \Exception
      */
-    private function toLexemesUpdate(): array {
+    private function toLexemesUpdate(): array
+    {
         // Lexemes
-        $lexemes = ["UPDATE",$this->table];
+        $lexemes = ["UPDATE", $this->table];
 
         // if there are no manipulate_columns, throw an exception
         if (empty($this->manipulate_columns)) {
@@ -719,7 +733,7 @@ abstract class Query
             }
 
             // If not the last,
-            if ($index !== count($this->manipulate_columns)-1){
+            if ($index !== count($this->manipulate_columns) - 1) {
                 $lexemes[] = ",";
             }
         }
@@ -751,7 +765,8 @@ abstract class Query
      * @return array
      * @throws \Exception if error
      */
-    private function toLexemes(): array {
+    private function toLexemes(): array
+    {
         switch ($this->operation) {
             case "SELECT":
                 return $this->toLexemesSelect();
@@ -772,7 +787,8 @@ abstract class Query
      * @return string
      * @throws \Exception if error
      */
-    private function toSQL(): string {
+    private function toSQL(): string
+    {
         // Get lexemes
         $lexemes = $this->toLexemes();
 

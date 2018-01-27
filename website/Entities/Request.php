@@ -812,7 +812,7 @@ class Request extends Entity
         unset($this->get["pid"]);
 
         // Debug flag
-        $in_debug = false;
+        $in_debug = (new \Helpers\Config)->getDebugMode() ?? false;
         if (!empty($this->get["debug"])) {
             $in_debug = true;
         }
