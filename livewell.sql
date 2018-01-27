@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le :  ven. 26 jan. 2018 à 01:01
+-- Généré le :  sam. 27 jan. 2018 à 01:18
 -- Version du serveur :  10.1.28-MariaDB
 -- Version de PHP :  7.1.11
 
@@ -30,12 +30,20 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `actuators` (
   `id` int(11) NOT NULL,
-  `action_type` enum('undefined') COLLATE utf8_unicode_ci NOT NULL,
+  `measure_type_id` int(11) NOT NULL,
   `last_action_started` timestamp(3) NULL DEFAULT NULL,
-  `last_measure_id` int(11) DEFAULT NULL COMMENT 'A measure ID',
   `peripheral_uuid` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Déchargement des données de la table `actuators`
+--
+
+INSERT INTO `actuators` (`id`, `measure_type_id`, `last_action_started`, `peripheral_uuid`, `last_updated`) VALUES
+(2, 1, '0000-00-00 00:00:00.000', '017de9be-3fe8-4613-98b1-d0eeefbe4887', '0000-00-00 00:00:00.000'),
+(8, 2, '0000-00-00 00:00:00.000', '17a0b2b4-7d3c-4447-9524-e2cb5095a204', '0000-00-00 00:00:00.000'),
+(13, 3, '0000-00-00 00:00:00.000', '17a0b2b4-7d3c-4447-9524-e2cb5095a204', '0000-00-00 00:00:00.000');
 
 -- --------------------------------------------------------
 
@@ -59,6 +67,40 @@ INSERT INTO `cgu` (`id`, `text`, `last_updated`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `consignes`
+--
+
+CREATE TABLE `consignes` (
+  `id` int(11) NOT NULL,
+  `actuator_id` int(11) NOT NULL,
+  `destination_value` float NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  `creation_date` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Déchargement des données de la table `consignes`
+--
+
+INSERT INTO `consignes` (`id`, `actuator_id`, `destination_value`, `active`, `creation_date`, `last_updated`) VALUES
+(1, 2, 20, 0, '2018-01-16 21:06:34.516', '2018-01-16 21:06:34.516'),
+(2, 2, 20, 0, '2018-01-16 21:07:21.810', '2018-01-16 21:07:21.810'),
+(5, 13, 90, 1, '2018-01-16 21:11:28.662', '2018-01-16 21:11:28.662'),
+(6, 2, 25, 1, '2018-01-16 21:12:58.806', '2018-01-16 21:12:58.806'),
+(7, 8, 100, 1, '2018-01-16 21:13:42.049', '2018-01-16 21:13:42.049'),
+(8, 13, 30, 1, '2018-01-16 21:14:03.397', '2018-01-16 21:14:03.397'),
+(9, 2, 26, 1, '2018-01-16 21:19:20.323', '2018-01-16 21:19:20.323'),
+(11, 8, 100, 0, '2018-01-16 21:38:54.232', '2018-01-16 21:38:54.232'),
+(12, 2, 20, 1, '2018-01-16 21:59:04.797', '2018-01-16 21:59:04.797'),
+(13, 2, 30, 1, '2018-01-17 00:09:46.084', '2018-01-17 00:09:46.084'),
+(14, 2, 20, 1, '2018-01-17 00:10:14.906', '2018-01-17 00:10:14.906'),
+(15, 2, 30, 1, '2018-01-17 00:10:26.992', '2018-01-17 00:10:26.992'),
+(16, 2, 20, 1, '2018-01-17 12:15:58.363', '2018-01-17 12:15:58.363');
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `events`
 --
 
@@ -69,25 +111,6 @@ CREATE TABLE `events` (
   `type` enum('property','user','peripheral') COLLATE utf8_unicode_ci DEFAULT NULL,
   `severity` enum('DEBUG','INFO','WARNING','ERROR','FAILURE') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'DEBUG',
   `message` text COLLATE utf8_unicode_ci NOT NULL,
-  `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `filters`
---
-
-CREATE TABLE `filters` (
-  `id` int(11) NOT NULL,
-  `property_id` int(11) NOT NULL,
-  `sensor_id` int(11) NOT NULL,
-  `actuator_id` int(11) NOT NULL,
-  `name` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
-  `operator` enum('<','<=','>','>=','=','!=') COLLATE utf8_unicode_ci NOT NULL,
-  `threshold` float NOT NULL,
-  `actuator_params` float DEFAULT NULL,
-  `creation_date` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -123,7 +146,7 @@ CREATE TABLE `measures` (
   `id` int(11) NOT NULL,
   `type_id` int(11) NOT NULL,
   `date_time` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `value` float NOT NULL,
+  `value` double NOT NULL,
   `sensor_id` int(11) DEFAULT NULL,
   `actuator_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -140,8 +163,8 @@ CREATE TABLE `measure_types` (
   `description` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Température en Celsius"',
   `unit_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Celsius"',
   `unit_symbol` varchar(6) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "°C"',
-  `min` float DEFAULT NULL COMMENT 'Valeur minimale (opt)',
-  `max` float DEFAULT NULL COMMENT 'Valeur maximale (opt)'
+  `min` double DEFAULT NULL COMMENT 'Valeur minimale (opt)',
+  `max` double DEFAULT NULL COMMENT 'Valeur maximale (opt)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -149,7 +172,9 @@ CREATE TABLE `measure_types` (
 --
 
 INSERT INTO `measure_types` (`id`, `name`, `description`, `unit_name`, `unit_symbol`, `min`, `max`) VALUES
-(1, 'Température (*C)', 'Température en degrés Celsius', 'Celsius', '°C', -274, NULL);
+(1, 'Température (*C)', 'Température en degrés Celsius', 'Celsius', '°C', -274, NULL),
+(2, 'Luminosité (lux)', 'Luminosité en lumens', 'lux', 'lux', NULL, NULL),
+(3, 'Pression (bar)', 'Pression en bar', 'bar', 'bar', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -3214,7 +3239,84 @@ INSERT INTO `requests` (`id`, `ip`, `user_agent_txt`, `user_agent_hash`, `sessio
 (3170, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'FAQ', 'GET', 'FAQ', 1, '2018-01-25 23:51:37.042', 6618, 4, NULL, '', '/g3c/index.php?c=FAQ&a=FAQ&debug=true', -1, 429),
 (3171, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'FAQ', 'GET', 'FAQ', 1, '2018-01-25 23:52:04.841', 6773, 4, NULL, '', '/g3c/index.php?c=FAQ&a=FAQ&debug=true', -1, 431),
 (3172, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'FAQ', 'GET', 'FAQ', 1, '2018-01-25 23:52:19.077', 405269, 4, NULL, '', '/g3c/index.php?c=FAQ&a=FAQ&debug=true', -1, 678),
-(3173, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'FAQ', 'GET', 'FAQ', 1, '2018-01-25 23:54:29.089', 8414, 4, NULL, '', '/g3c/index.php?c=FAQ&a=FAQ&debug=true', -1, 751);
+(3173, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'FAQ', 'GET', 'FAQ', 1, '2018-01-25 23:54:29.089', 8414, 4, NULL, '', '/g3c/index.php?c=FAQ&a=FAQ&debug=true', -1, 751),
+(3174, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'FAQ', 'GET', 'FAQ', 1, '2018-01-26 00:31:47.608', 19831, 4, NULL, '', '/g3c/index.php?c=FAQ&a=FAQ&debug=true', -1, -1),
+(3175, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, NULL, 'User', 'GET', 'ConnectionPage', 0, '2018-01-26 01:18:56.795', 60266, NULL, NULL, '', '/g3c/index.php?c=User&a=ConnectionPage', -1, -1),
+(3176, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'ConnectionPage', 0, '2018-01-26 01:21:53.799', 145631, 4, NULL, '', '/g3c/index.php?c=User&a=ConnectionPage', -1, 1196),
+(3177, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'POST', 'Connection', 0, '2018-01-26 01:22:01.980', 17179, 4, NULL, '', '/g3c/index.php?c=User&a=Connection', 27, 20),
+(3178, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'Informations', 0, '2018-01-26 01:22:02.011', 17172, 4, NULL, '', '/g3c/index.php?c=User&a=Informations', -1, 1334),
+(3179, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'Informations', 0, '2018-01-26 01:31:11.174', 32902, 4, NULL, '', '/g3c/index.php?c=User&a=Informations', -1, 1334),
+(3180, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'Informations', 0, '2018-01-26 01:31:16.134', 922253, 4, NULL, '', '/g3c/index.php?c=User&a=Informations', -1, 1334),
+(3181, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'Informations', 0, '2018-01-26 01:36:42.532', 10893, 4, NULL, '', '/g3c/index.php?c=User&a=Informations', -1, 1334),
+(3182, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'Informations', 0, '2018-01-26 14:31:15.311', 282499, 4, NULL, '', '/g3c/index.php?c=User&a=Informations', -1, 1334),
+(3183, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'SessionList', 0, '2018-01-26 14:31:28.652', 83549, 4, NULL, '', '/g3c/index.php?c=User&a=SessionList', -1, 82),
+(3184, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'SessionList', 1, '2018-01-26 14:31:31.383', 62350, 4, NULL, '', '/g3c/index.php?c=User&a=SessionList&debug=true', -1, 442),
+(3185, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'SessionList', 1, '2018-01-26 14:32:15.763', 13694, 4, NULL, '', '/g3c/index.php?c=User&a=SessionList&debug=true', -1, -1),
+(3186, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'SessionList', 1, '2018-01-26 14:33:44.999', 129691, 4, NULL, '', '/g3c/index.php?c=User&a=SessionList&debug=true', -1, -1),
+(3187, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'SessionList', 1, '2018-01-26 14:33:54.555', 160876, 4, NULL, '', '/g3c/index.php?c=User&a=SessionList&debug=true', -1, 1312),
+(3188, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'ConnectionPage', 0, '2018-01-26 15:57:42.039', 25060, 4, NULL, '', '/g3c/index.php?c=User&a=ConnectionPage', -1, 1196),
+(3189, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'ConnectionPage', 0, '2018-01-26 23:09:34.872', 1218321, 4, NULL, '', '/g3c/index.php?c=User&a=ConnectionPage', -1, 1196),
+(3190, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'POST', 'Connection', 0, '2018-01-26 23:09:42.056', 5597, 4, NULL, '', '/g3c/index.php?c=User&a=Connection', 27, 20),
+(3191, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'Informations', 0, '2018-01-26 23:09:42.080', 14748, 4, NULL, '', '/g3c/index.php?c=User&a=Informations', -1, 1338),
+(3192, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 0, '2018-01-26 23:09:43.778', 10642, 4, NULL, '', '/g3c/index.php?c=Consigne&a=ConsignesPage', -1, 82),
+(3193, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 1, '2018-01-26 23:09:47.896', 6288, 4, NULL, '', '/g3c/index.php?c=Consigne&a=ConsignesPage&debug=true', -1, 82),
+(3194, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 1, '2018-01-26 23:09:49.920', 9052, 4, NULL, '', '/g3c/index.php?c=Consigne&a=ConsignesPage&debug=true', -1, 82),
+(3195, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 1, '2018-01-26 23:11:23.265', 6017, 4, NULL, '', '/g3c/index.php?c=Consigne&a=ConsignesPage&debug=true', -1, 82),
+(3196, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 1, '2018-01-26 23:11:25.611', 6146, 4, NULL, '', '/g3c/index.php?c=Consigne&a=ConsignesPage&debug=true', -1, 82),
+(3197, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 1, '2018-01-26 23:11:57.861', 7415, 4, NULL, '', '/g3c/index.php?c=Consigne&a=ConsignesPage&debug=true', -1, 82),
+(3198, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 1, '2018-01-26 23:12:06.973', 7266, 4, NULL, '', '/g3c/index.php?c=Consigne&a=ConsignesPage&debug=true', -1, 45),
+(3199, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 1, '2018-01-26 23:12:11.476', 31878, 4, 1, '', '/g3c/index.php?c=Consigne&a=ConsignesPage&debug=true&pid=1', -1, 1074),
+(3200, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'POST', 'roomConsignespage', 1, '2018-01-26 23:12:15.037', 31928, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=true', 9, 441),
+(3201, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'roomConsignespage', 1, '2018-01-26 23:22:12.455', 37914, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=true', -1, -1),
+(3202, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 1, '2018-01-26 23:22:16.466', 24946, 4, 1, '', '/g3c/index.php?c=Consigne&a=ConsignesPage&debug=true&pid=1', -1, 1074),
+(3203, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'POST', 'roomConsignespage', 1, '2018-01-26 23:22:17.580', 29700, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=true', 9, 441),
+(3204, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'roomConsignespage', 1, '2018-01-26 23:43:38.756', 31916, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=true', -1, -1),
+(3205, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'roomConsignespage', 1, '2018-01-26 23:43:41.259', 5134, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=true', -1, -1),
+(3206, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'RoomConsignespage', 1, '2018-01-26 23:43:46.487', 8320, 4, 1, '', '/g3c/index.php?c=Consigne&a=RoomConsignespage&pid=1&debug=true', -1, -1),
+(3207, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'roomConsignespage', 1, '2018-01-26 23:43:49.180', 5276, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=true', -1, -1),
+(3208, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 1, '2018-01-26 23:43:49.581', 35168, 4, 1, '', '/g3c/index.php?c=Consigne&a=ConsignesPage&debug=true&pid=1', -1, 1074),
+(3209, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'POST', 'roomConsignespage', 1, '2018-01-26 23:43:51.179', 52667, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=true', 9, 1340),
+(3210, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'roomConsignespage', 1, '2018-01-26 23:51:02.611', 54124, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=truel', -1, -1),
+(3211, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'roomConsignespage', 1, '2018-01-26 23:51:05.265', 7823, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=truel', -1, -1),
+(3212, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'roomConsignespage', 1, '2018-01-26 23:51:13.849', 66896, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=truel', -1, -1),
+(3213, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'POST', 'roomConsignespage', 1, '2018-01-26 23:51:48.966', 145876, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=true', 9, 1216),
+(3214, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'POST', 'roomConsignespage', 1, '2018-01-26 23:53:37.803', 57660, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=true', 9, 1216),
+(3215, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'POST', 'roomConsignespage', 1, '2018-01-26 23:56:25.374', 31277, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=true', 9, 1215),
+(3216, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'POST', 'roomConsignespage', 1, '2018-01-26 23:56:41.978', 59885, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=true', 9, 2555),
+(3217, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'POST', 'roomConsignespage', 1, '2018-01-26 23:57:16.495', 37516, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=true', 9, 2555),
+(3218, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'POST', 'roomConsignespage', 1, '2018-01-27 00:06:51.497', 85618, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=true', 9, 1270),
+(3219, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'POST', 'roomConsignespage', 1, '2018-01-27 00:08:08.795', 27825, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=true', 9, 1305),
+(3220, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'POST', 'roomConsignespage', 1, '2018-01-27 00:09:44.546', 48615, 4, 1, '', '/g3c/index.php?c=Consigne&a=roomConsignespage&pid=1&debug=true', 9, 1318),
+(3221, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'Informations', 0, '2018-01-27 00:10:27.963', 13094, 4, NULL, '', '/g3c/index.php?c=User&a=Informations', -1, 1338),
+(3222, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Room', 'GET', 'RoomsPage', 0, '2018-01-27 00:10:29.479', 10555, 4, NULL, '', '/g3c/index.php?c=Room&a=RoomsPage', -1, -1),
+(3223, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'Informations', 0, '2018-01-27 00:10:31.283', 11256, 4, NULL, '', '/g3c/index.php?c=User&a=Informations', -1, 1338),
+(3224, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Room', 'GET', 'RoomsPage', 0, '2018-01-27 00:10:32.416', 6656, 4, NULL, '', '/g3c/index.php?c=Room&a=RoomsPage', -1, -1),
+(3225, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'Informations', 0, '2018-01-27 00:10:33.608', 6845, 4, NULL, '', '/g3c/index.php?c=User&a=Informations', -1, 1338),
+(3226, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Room', 'GET', 'RoomsPage', 0, '2018-01-27 00:10:34.840', 5573, 4, NULL, '', '/g3c/index.php?c=Room&a=RoomsPage', -1, -1),
+(3227, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Room', 'GET', 'Rooms', 0, '2018-01-27 00:10:36.254', 43187, 4, NULL, '', '/g3c/index.php?c=Room&a=Rooms', -1, 85),
+(3228, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Room', 'GET', 'Rooms', 0, '2018-01-27 00:10:39.209', 15076, 4, 1, '', '/g3c/index.php?c=Room&a=Rooms&pid=1', -1, 1565),
+(3229, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Room', 'GET', 'Rooms', 0, '2018-01-27 00:11:27.794', 34764, 4, 1, '', '/g3c/index.php?c=Room&a=Rooms&pid=1', -1, 1566),
+(3230, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Room', 'GET', 'Rooms', 0, '2018-01-27 00:11:30.516', 5547, 4, NULL, '', '/g3c/index.php?c=Room&a=Rooms', -1, 85),
+(3231, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Room', 'GET', 'Rooms', 0, '2018-01-27 00:11:33.882', 9251, 4, 1, '', '/g3c/index.php?c=Room&a=Rooms&pid=1', -1, 1566),
+(3232, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'AccountPage', 0, '2018-01-27 00:11:36.019', 7020, 4, NULL, '', '/g3c/index.php?c=User&a=AccountPage', -1, -1),
+(3233, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'AccountPage', 0, '2018-01-27 00:11:53.649', 5714, 4, NULL, '', '/g3c/index.php?c=User&a=AccountPage', -1, -1),
+(3234, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Room', 'GET', 'Rooms', 0, '2018-01-27 00:11:55.104', 15400, 4, 1, '', '/g3c/index.php?c=Room&a=Rooms&pid=1', -1, 1563),
+(3235, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'Informations', 0, '2018-01-27 00:11:56.078', 7148, 4, NULL, '', '/g3c/index.php?c=User&a=Informations', -1, 1336);
+INSERT INTO `requests` (`id`, `ip`, `user_agent_txt`, `user_agent_hash`, `session_id`, `controller`, `method`, `action`, `in_debug`, `started_processing`, `duration`, `user_id`, `property_id`, `referer`, `request_uri`, `request_length`, `response_length`) VALUES
+(3236, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Room', 'GET', 'Rooms', 0, '2018-01-27 00:12:37.474', 6458, 4, NULL, '', '/g3c/index.php?c=Room&a=Rooms', -1, 85),
+(3237, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'Informations', 0, '2018-01-27 00:12:39.519', 8450, 4, NULL, '', '/g3c/index.php?c=User&a=Informations', -1, 1336),
+(3238, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 0, '2018-01-27 00:12:40.589', 6442, 4, NULL, '', '/g3c/index.php?c=Consigne&a=ConsignesPage', -1, 45),
+(3239, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 1, '2018-01-27 00:12:42.756', 55368, 4, 1, '', '/g3c/index.php?c=Consigne&a=ConsignesPage&debug=true&pid=1', -1, 1073),
+(3240, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'Informations', 0, '2018-01-27 00:12:44.559', 8635, 4, NULL, '', '/g3c/index.php?c=User&a=Informations', -1, 1336),
+(3241, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'User', 'GET', 'Informations', 0, '2018-01-27 00:14:27.385', 10952, 4, NULL, '', '/g3c/index.php?c=User&a=Informations', -1, 1336),
+(3242, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 0, '2018-01-27 00:14:30.032', 5892, 4, NULL, '', '/g3c/index.php?c=Consigne&a=ConsignesPage', -1, 45),
+(3243, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 0, '2018-01-27 00:14:32.961', 9073, 4, 1, '', '/g3c/index.php?c=Consigne&a=ConsignesPage&pid=1', -1, 1073),
+(3244, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 0, '2018-01-27 00:16:03.943', 10303, 4, 1, '', '/g3c/index.php?c=Consigne&a=ConsignesPage&pid=1', -1, 1087),
+(3245, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'RoomConsignesPage', 0, '2018-01-27 00:16:07.165', 7350, 4, NULL, '', '/g3c/index.php?c=Consigne&a=RoomConsignesPage&room_id=1', -1, 45),
+(3246, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 0, '2018-01-27 00:16:20.383', 9103, 4, 1, '', '/g3c/index.php?c=Consigne&a=ConsignesPage&pid=1', -1, 1087),
+(3247, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'ConsignesPage', 0, '2018-01-27 00:16:21.627', 10002, 4, 1, '', '/g3c/index.php?c=Consigne&a=ConsignesPage&pid=1', -1, 1087),
+(3248, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'RoomConsignesPage', 0, '2018-01-27 00:16:22.861', 5625, 4, NULL, '', '/g3c/index.php?c=Consigne&a=RoomConsignesPage&room_id=1', -1, 45),
+(3249, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '41fa04549736674b6b0ebc32495adfb0', 'Consigne', 'GET', 'RoomConsignesPage', 0, '2018-01-27 00:16:31.728', 43251, 4, 1, '', '/g3c/index.php?c=Consigne&a=RoomConsignesPage&room_id=1&pid=1', -1, 1317);
 
 -- --------------------------------------------------------
 
@@ -3988,7 +4090,6 @@ CREATE TABLE `subscriptions` (
   `property_id` int(11) NOT NULL,
   `start_date` date NOT NULL,
   `expiry_date` date DEFAULT NULL,
-  `command_id` int(11) DEFAULT NULL,
   `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -4044,7 +4145,7 @@ INSERT INTO `users` (`id`, `display`, `nick`, `birth_date`, `creation_date`, `em
 ALTER TABLE `actuators`
   ADD PRIMARY KEY (`id`),
   ADD KEY `peripheral_id` (`peripheral_uuid`) USING BTREE,
-  ADD KEY `current_situation` (`last_measure_id`);
+  ADD KEY `measure_type_id` (`measure_type_id`);
 
 --
 -- Index pour la table `cgu`
@@ -4053,20 +4154,17 @@ ALTER TABLE `cgu`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Index pour la table `consignes`
+--
+ALTER TABLE `consignes`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Index pour la table `events`
 --
 ALTER TABLE `events`
   ADD PRIMARY KEY (`id`),
   ADD KEY `property_id` (`property_id`);
-
---
--- Index pour la table `filters`
---
-ALTER TABLE `filters`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `property_id` (`property_id`),
-  ADD KEY `sensor_id` (`sensor_id`),
-  ADD KEY `actuator_id` (`actuator_id`);
 
 --
 -- Index pour la table `frequently_asked_questions`
@@ -4191,7 +4289,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pour la table `actuators`
 --
 ALTER TABLE `actuators`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT pour la table `cgu`
@@ -4200,15 +4298,15 @@ ALTER TABLE `cgu`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `consignes`
+--
+ALTER TABLE `consignes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
 -- AUTO_INCREMENT pour la table `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT pour la table `filters`
---
-ALTER TABLE `filters`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -4227,7 +4325,7 @@ ALTER TABLE `measures`
 -- AUTO_INCREMENT pour la table `measure_types`
 --
 ALTER TABLE `measure_types`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `notifications`
@@ -4257,7 +4355,7 @@ ALTER TABLE `properties`
 -- AUTO_INCREMENT pour la table `requests`
 --
 ALTER TABLE `requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3174;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3250;
 
 --
 -- AUTO_INCREMENT pour la table `roles`
@@ -4300,23 +4398,10 @@ ALTER TABLE `users`
 --
 
 --
--- Contraintes pour la table `actuators`
---
-ALTER TABLE `actuators`
-  ADD CONSTRAINT `actuators_ibfk_1` FOREIGN KEY (`peripheral_uuid`) REFERENCES `peripherals` (`uuid`),
-  ADD CONSTRAINT `actuators_ibfk_2` FOREIGN KEY (`last_measure_id`) REFERENCES `measures` (`id`);
-
---
 -- Contraintes pour la table `events`
 --
 ALTER TABLE `events`
   ADD CONSTRAINT `events_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`id`);
-
---
--- Contraintes pour la table `filters`
---
-ALTER TABLE `filters`
-  ADD CONSTRAINT `filters_ibfk_1` FOREIGN KEY (`property_id`) REFERENCES `properties` (`id`);
 
 --
 -- Contraintes pour la table `measures`
@@ -4382,19 +4467,3 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `consignes`
---
-
-CREATE TABLE `consignes` (
-  `id` int(11) NOT NULL,
-  `actuator_id` int(11) NOT NULL,
-  `destination_value` float NOT NULL,
-  `active` bool DEFAULT NOT NULL,
-  `creation_date` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `last_updated` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
