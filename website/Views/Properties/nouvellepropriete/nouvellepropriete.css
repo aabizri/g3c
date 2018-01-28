@@ -1,5 +1,25 @@
-#form{
-    position:relative;
-    top:100px;
-    left:40%;
+body{
+    overflow-x: hidden;
+}
+
+#form input{
+    display: flex;
+}
+
+#ajoutpropriete {
+    position: relative;
+    top:230px;
+    left:43%;
+    border: 1px solid #955252;
+    padding: 10px;
+    width: 165px;
+    text-align: center;
+    background-color: rgb(217,196,177);
+    border-radius: 5px;
+}
+
+#valider
+{
+    position: relative;
+    left: 33%;
 }
