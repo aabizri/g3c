@@ -9,7 +9,7 @@
 
 #Menu input
 {
-	background-color: #d9c4b19b;
+	background-color: rgb(217,196,177);
 	font-family: Verdana, sans-serif;
 	color: #955252;
 	width: 160px;
@@ -25,7 +25,7 @@
 	margin: 10px;
 }
 
-#Moncompte, #Mespieces, #Mesperipheriques, #Mesconsignes, #Mesparametres, #Boutique
+#Moncompte, #Mespieces, #Mesperipheriques, #Mesconsignes, #Mapropriete, #Boutique
 {
 	position: relative;
 	margin: 50px 10px;
@@ -41,12 +41,14 @@ body {
 	background-position: center;
 	font-family: Verdana;
 	overflow-x: hidden;
+	overflow-y: hidden;
 }
 
 #selectionsalle{
 	position: relative;
 	top: 70px;
 	left: 15%;
+	margin-bottom: 565px;
 }
 
 #selectionsalle input {
