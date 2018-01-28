@@ -11,6 +11,27 @@
     </ul>
 
 
+<h2 id="nompiece"> Choix de la salle</h2>
+
+    <a id="lienhistorique" href="index.php?c=Sensorstats&a=SelectSensor&pid=1">
+        <button id="boutonhistorique">Accéder à l'historique des capteurs</button>
+    </a>
+
+<form method="get" action="index.php" id="choixsalle">
+    <input type="hidden" name="c" value="Room"/>
+    <input type="hidden" name="a" value="Room"/>
+    <select name="room">
+        <?php
+        $rooms = $data["rooms"];
+        foreach ($rooms as $room) {
+            echo '<option value="'.$room->getID().'">'.$room->getName().'</option>';
+        }
+        ?>
+    </select>
+
+    <input type="submit" value="Valider" title="Valider pour accéder à la salle" />
+
+</form>
     <h3 id="nomdelapièce">
         <?php
             $room_entity=$data["room_entity"];
