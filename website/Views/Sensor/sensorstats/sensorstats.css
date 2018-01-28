@@ -1,6 +1,7 @@
 body
 {
     overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 #Menu  {
@@ -22,7 +23,7 @@ body
     cursor: pointer;
 }
 
-#Moncompte, #Mespieces, #Mesperipheriques, #Mesconsignes, #Mesparametres
+#Mespieces, #Mesperipheriques, #Mesconsignes, #Mapropriete
 {
     position: relative;
     margin: 50px 10px;
@@ -32,7 +33,6 @@ body
 #stats{
     position: relative;
     left: 20%;
-    top: 60px;
     width: 70%;
 }
 
@@ -48,4 +48,6 @@ body
     position: relative;
     left: 15%;
     top: 50px;
+    margin-bottom: 54px;
+
 }

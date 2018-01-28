@@ -1,10 +1,16 @@
 <main>
     <ul id="Menu">
-        <li id="Moncompte"><a href="index.php?c=User&a=Informations"><input type="button" value="Mon compte" /></a></li>
-        <li id="Mespieces"><a href="index.php?c=Room&a=Rooms"><input type="button" value="Mes pièces"/></a></li>
-        <li id="Mesperipheriques"> <a href="index.php?c=Peripheral&a=List"><input type="button" value="Mes périphériques" /></a></li>
-        <li id="Mesconsignes"><a href="index.php?c=Consigne&a=ConsignesPage"><input type="button" value="Mes Consignes" /></a></li>
-        <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
+        <li id="Mapropriete"><a href="properties/<?= $data["property"]->getID() ?>"><input type="button"
+                                                                                           value="Ma propriété"/></a></li>
+        <li id="Mespieces"><a href="properties/<?= $data["property"]->getID() ?>/rooms"><input type="button"
+                                                                                               value="Mes pièces"/></a>
+        </li>
+        <li id="Mesperipheriques"><a href="properties/<?= $data["property"]->getID() ?>/peripherals"><input type="button"
+                                                                                                            value="Mes périphériques"/></a>
+        </li>
+        <li id="Mesconsignes"><a href="properties/<?= $data["property"]->getID() ?>/consignes"><input type="button"
+                                                                                                      value="Mes Consignes"/></a>
+        </li>
     </ul>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js" ></script>

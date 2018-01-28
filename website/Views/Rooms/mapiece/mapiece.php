@@ -12,9 +12,6 @@
 
 
 <h2 id="nompiece"> Choix de la salle</h2>
-<?php
-if (!empty($data["rooms"])):
-?>
 
     <a id="lienhistorique" href="index.php?c=Sensorstats&a=SelectSensor&pid=1">
         <button id="boutonhistorique">Accéder à l'historique des capteurs</button>

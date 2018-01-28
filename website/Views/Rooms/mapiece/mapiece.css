@@ -97,5 +97,7 @@ body {
 
 #boutonhistorique
 {
+    position: relative;
+    top: 20px;
     border-radius: 5px;
 }

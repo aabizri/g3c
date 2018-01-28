@@ -36,6 +36,7 @@ class Sensorstats
                 }
             }
 
+            $data["property"] = (new \Queries\Properties) -> retrieve($property_id);
             $data["sensors"] = $sensors_list;
             $data["peripherals"] = $peripherals;
 
@@ -116,6 +117,7 @@ class Sensorstats
         //Préparation des données
         $data["sensors"] = $sensors_list;
         $data["peripherals"] = $peripherals;
+        $data["property"] = (new \Queries\Properties) -> retrieve($property_id);
 
         //Envoie vers la vue
         DisplayManager::display("selectsensorstats", $data);
