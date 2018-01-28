@@ -124,7 +124,7 @@ class Peripherals
                     ->filterByColumn("peripheral_uuid", "=", $uuid, "AND")
                     ->find();
             } catch (\Throwable $t) {
-                Error::getInternalError500Throwables($req,$t,"Error find sensors")
+                Error::getInternalError500Throwables($req,$t,"Error find sensors");
                 return;
             }
             //On recupère leurs ID
