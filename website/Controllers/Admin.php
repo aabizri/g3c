@@ -23,7 +23,6 @@ class Admin
     /**
      * GET root/admin/users
      * @param \Entities\Request $req
-     * @throws \Exception
      */
     public static function getUsers(\Entities\Request $req): void
     {
@@ -39,11 +38,17 @@ class Admin
         }
 
         // Retrieve the values
-        $users = (new \Queries\Users)
-            ->orderBy($order_by_column, $order_by_direction === "ASC")
-            ->limit($count)
-            ->offset($offset)
-            ->find();
+        $users = null;
+        try {
+            $users = (new \Queries\Users)
+                ->orderBy($order_by_column, $order_by_direction === "ASC")
+                ->limit($count)
+                ->offset($offset)
+                ->find();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while executing users query");
+            return;
+        }
 
         // Return view
         switch ($req->getGET("v")) {
@@ -62,8 +67,15 @@ class Admin
                 }
 
                 // Pagination
+                $count = null;
+                try {
+                    $count = (new \Queries\Users)->count();
+                } catch (\Throwable $t) {
+                    Error::getInternalError500Throwables($req, $t, "Error while counting results");
+                    return;
+                }
                 $tbe_pagination = (object)[
-                    "total" => (new \Queries\Users)->count(),
+                    "total" => $count,
                 ];
 
                 // Complete object
@@ -89,18 +101,24 @@ class Admin
     /**
      * GET root/admin/users/{UID}
      * @param \Entities\Request $req
-     * @throws \Exception
      */
     public static function getUser(\Entities\Request $req): void
     {
         // Retrieve the user ID
         $queried_user_id = $req->getGET("uid");
         if (empty($queried_user_id)) {
-            throw new \Exception("EMPTY UID");
+            Error::getBadRequest400($req, "Missing queried user ID");
+            return;
         }
 
         // Retrieve the user
-        $queried_user = (new \Queries\Users)->retrieve($queried_user_id);
+        $queried_user = null;
+        try {
+            $queried_user = (new \Queries\Users)->retrieve($queried_user_id);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while retrieve queried user");
+            return;
+        }
 
         // Data to be encoded
         $tbe = (object)[
@@ -159,7 +177,6 @@ class Admin
     /**
      * POST root/admin/users/{ID}
      * @param \Entities\Request $req
-     * @throws \Exception
      */
     public static function postUser(\Entities\Request $req): void
     {
@@ -168,12 +185,18 @@ class Admin
         // Retrieve the user ID
         $queried_user_id = $req->getGET("uid");
         if (empty($queried_user_id)) {
-            http_response_code(400);
-            throw new \Exception("EMPTY UID");
+            Error::getBadRequest400($req, "Missing queried user ID");
+            return;
         }
 
         // Retrieve the user
-        $queried_user = (new \Queries\Users)->retrieve($queried_user_id);
+        $queried_user = null;
+        try {
+            $queried_user = (new \Queries\Users)->retrieve($queried_user_id);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while retrieve queried user");
+            return;
+        }
 
         // Retrieve POST data (key => value)
         $order = [
@@ -194,18 +217,26 @@ class Admin
         }
 
         // Set them all
-        $queried_user->setMultiple($order);
+        try {
+            $queried_user->setMultiple($order);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while setting data");
+            return;
+        }
 
         // Push it
-        (new \Queries\Users)
-            ->onColumns(...array_keys($order))
-            ->update($queried_user);
+        try {
+            (new \Queries\Users)
+                ->onColumns(...array_keys($order))
+                ->update($queried_user);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while updating data");
+        }
     }
 
     /**
      * POST root/admin/users/new
      * @param \Entities\Request $req
-     * @throws \Exception
      */
     public static function postCreateUser(\Entities\Request $req): void
     {
@@ -229,12 +260,21 @@ class Admin
         }
 
         // Create the user
-        $u = (new \Entities\User);
-        $u->setMultiple($order);
+        $u = null;
+        try {
+            $u = (new \Entities\User);
+            $u->setMultiple($order);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while creating & populating user");
+        }
 
         // Insert it
-        (new \Queries\Users)
-            ->save($u);
+        try {
+            (new \Queries\Users)
+                ->insert($u);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while inserting new user");
+        }
 
         // Redirect to User view
         \Helpers\DisplayManager::redirect303("admin/users/uid" . $u->getID());
@@ -250,7 +290,6 @@ class Admin
 
     /**
      * @param \Entities\Request $req
-     * @throws \Exception
      */
     public static function getUserProperties(\Entities\Request $req): void
     {
@@ -259,7 +298,7 @@ class Admin
         // Retrieve values necessary
         $user_id = $req->getGET("uid");
         if ($user_id === null) {
-            echo "Pas de uid donné";
+            Error::getBadRequest400($req, "Missing queried user ID");
             return;
         }
         $count = $req->getGET("count") ?? 20;
@@ -271,12 +310,18 @@ class Admin
         }
 
         // Retrieve the roles
-        $roles = (new \Queries\Roles)
-            ->filterByUserID("=", $user_id)
-            ->orderBy($order_by_column, $order_by_direction === "ASC")
-            ->limit($count)
-            ->offset($offset)
-            ->find();
+        $roles = null;
+        try {
+            $roles = (new \Queries\Roles)
+                ->filterByUserID("=", $user_id)
+                ->orderBy($order_by_column, $order_by_direction === "ASC")
+                ->limit($count)
+                ->offset($offset)
+                ->find();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while retrieving roles");
+            return;
+        }
 
         // Retrieve the associated properties
         $properties = [];
@@ -301,8 +346,15 @@ class Admin
         }
 
         // Pagination
+        $count = null;
+        try {
+            $count = (new \Queries\Roles)->filterByUserID("=", $user_id)->count();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while getting roles count for user");
+            return;
+        }
         $tbe_pagination = (object)[
-            "total" => (new \Queries\Roles)->filterByUserID("=", $user_id)->count(),
+            "total" => $count,
         ];
 
         // Complete object
@@ -320,8 +372,15 @@ class Admin
                 echo $encoded;
                 return;
             default:
+                $user_nick = null;
+                try {
+                    $user_nick = (new \Queries\Users)->retrieve($user_id)->getNick();
+                } catch (\Throwable $t) {
+                    Error::getInternalError500Throwables($req, $t, "Error while getting user nick");
+                    return;
+                }
                 $data_for_php_view = ["json" => $encoded,
-                                      "user_nick" => (new \Queries\Users)->retrieve($user_id)->getNick(),
+                                      "user_nick" => $user_nick,
                 ];
                 \Helpers\DisplayManager::display("user_properties", $data_for_php_view);
         }
@@ -331,7 +390,6 @@ class Admin
     /**Properties
      * GET root/admin/properties
      * @param \Entities\Request $req
-     * @throws \Exception
      */
     public static function getProperties(\Entities\Request $req): void
     {
@@ -347,11 +405,17 @@ class Admin
         }
 
         // Retrieve the values
-        $properties = (new \Queries\Properties)
-            ->orderBy($order_by_column, $order_by_direction === "ASC")
-            ->limit($count)
-            ->offset($offset)
-            ->find();
+        $properties = null;
+        try {
+            $properties = (new \Queries\Properties)
+                ->orderBy($order_by_column, $order_by_direction === "ASC")
+                ->limit($count)
+                ->offset($offset)
+                ->find();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while querying for properties");
+            return;
+        }
 
         // Return view
         switch ($req->getGET("v")) {
@@ -370,8 +434,15 @@ class Admin
                 }
 
                 // Pagination
+                $count = null;
+                try {
+                    $count = (new \Queries\Properties)->count();
+                } catch (\Throwable $t) {
+                    Error::getInternalError500Throwables($req, $t, "Error while counting rows in Peripherals");
+                    return;
+                }
                 $tbe_pagination = (object)[
-                    "total" => (new \Queries\Users)->count(),
+                    "total" => $count,
                 ];
 
                 // Complete object
@@ -397,18 +468,24 @@ class Admin
     /**
      * GET root/admin/properties/{ID}
      * @param \Entities\Request $req
-     * @throws \Exception
      */
     public static function getProperty(\Entities\Request $req): void
     {
         // Retrieve the user ID
         $queried_property_id = $req->getGET("pid") ?? $req->getPropertyID();
-        if (empty($queried_property_id)) {
-            throw new \Exception("EMPTY PID");
+        if ($queried_property_id === null) {
+            Error::getBadRequest400($req, "Missing queried property ID");
+            return;
         }
 
         // Retrieve the property
-        $queried_property = (new \Queries\Properties)->retrieve($queried_property_id);
+        $queried_property = null;
+        try {
+            $queried_property = (new \Queries\Properties)->retrieve($queried_property_id);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while querying property");
+            return;
+        }
 
         // Data to be encoded
         $property_info = (object)[
@@ -505,7 +582,6 @@ class Admin
     /**
      * GET root/admin/peripherals
      * @param \Entities\Request $req
-     * @throws \Exception
      */
     public static function getPeripherals(\Entities\Request $req): void
     {
@@ -521,11 +597,17 @@ class Admin
         }
 
         // Retrieve the values
-        $peripherals = (new \Queries\Peripherals)
-            ->orderBy($order_by_column, $order_by_direction === "ASC")
-            ->limit($count)
-            ->offset($offset)
-            ->find();
+        $peripherals = null;
+        try {
+            $peripherals = (new \Queries\Peripherals)
+                ->orderBy($order_by_column, $order_by_direction === "ASC")
+                ->limit($count)
+                ->offset($offset)
+                ->find();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while retrieving peripherals");
+            return;
+        }
 
         // Return view
         switch ($req->getGET("v")) {
@@ -551,8 +633,15 @@ class Admin
                 }
 
                 // Pagination
+                $count = null;
+                try {
+                    $count = (new \Queries\Peripherals)->count();
+                } catch (\Throwable $t) {
+                    Error::getInternalError500Throwables($req, $t, "Error while counting peripherals");
+                    return;
+                }
                 $tbe_pagination = (object)[
-                    "total" => (new \Queries\Peripherals)->count(),
+                    "total" => $count,
                 ];
 
                 // Complete object
@@ -578,30 +667,32 @@ class Admin
     /**
      * GET root/admin/peripherals/{UUID}
      * @param \Entities\Request $req
-     * @throws \Exception
      */
     public static function getPeripheral(\Entities\Request $req): void
     {
         // Récupérer l'UUID
         $peripheral_uuid = $req->getGET("puuid");
         if (empty($peripheral_uuid)) {
-            http_response_code(400);
-            echo "UUID non indiqué";
-            return;
+            Error::getBadRequest400($req, "Missing peripheral UUID");
         }
         if (!\Helpers\UUID::is_valid($peripheral_uuid)) {
-            http_response_code(400);
-            echo "UUID invalide";
-            return;
+            Error::getBadRequest400($req, "Invalid peripheral UUID");
         }
 
         // Récupérer l'entité
-        $peripheral = (new \Queries\Peripherals)
-            ->filterByColumn("uuid", "=", $peripheral_uuid)
-            ->findOne();
+        $peripheral = null;
+        try {
+            $peripheral = (new \Queries\Peripherals)
+                ->filterByColumn("uuid", "=", $peripheral_uuid)
+                ->findOne();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while retrieving peripheral");
+            return;
+        }
+
+        // Si elle n'existe pas, erreur 400
         if ($peripheral === null) {
-            http_response_code(500);
-            echo "Pas de périphérique trouvé pour cet UUID";
+            Error::getBadRequest400($req, "Error: such a peripheral doesn't exist");
             return;
         }
 
@@ -658,7 +749,6 @@ class Admin
     /**
      * POST root/admin/peripherals/{UUID}
      * @param \Entities\Request $req
-     * @throws \Exception
      */
     public static function postPeripheral(\Entities\Request $req): void
     {
@@ -667,12 +757,18 @@ class Admin
         // Retrieve the user ID
         $peripheral_uuid = $req->getGET("puuid");
         if (empty($peripheral_uuid)) {
-            http_response_code(400);
-            throw new \Exception("Empty peripheral UUID");
+            Error::getBadRequest400($req, "Empty peripheral UUID");
+            return;
         }
 
         // Retrieve the user
-        $peripheral = (new \Queries\Peripherals)->filterByColumn("uuid", "=", $peripheral_uuid)->findOne();
+        $peripheral = null;
+        try {
+            $peripheral = (new \Queries\Peripherals)->filterByColumn("uuid", "=", $peripheral_uuid)->findOne();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while retrieving peripheral to be updated");
+            return;
+        }
 
         // Retrieve POST data (key => value)
         $order = [
@@ -692,12 +788,21 @@ class Admin
         }
 
         // Set them all
-        $peripheral->setMultiple($order);
+        try {
+            $peripheral->setMultiple($order);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while setting data");
+            return;
+        }
 
         // Push it
-        (new \Queries\Peripherals)
-            ->onColumns(...array_keys($order))
-            ->update($peripheral);
+        try {
+            (new \Queries\Peripherals)
+                ->onColumns(...array_keys($order))
+                ->update($peripheral);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while updating data");
+        }
     }
 
     /**
@@ -734,7 +839,13 @@ class Admin
     public static function getFAQ(\Entities\Request $req): void
     {
         // Retrieve all question/answers
-        $frequently_asked_questions = (new \Queries\FrequentlyAskedQuestions)->find();
+        $frequently_asked_questions = null;
+        try {
+            $frequently_asked_questions = (new \Queries\FrequentlyAskedQuestions)->find();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Failed while getting FAQ");
+            return;
+        }
 
         // Pass it
         $data = ["frequently_asked_questions" => $frequently_asked_questions];
@@ -751,25 +862,31 @@ class Admin
     {
         // Retrieve data
         $question = $req->getPOST("question");
-        if (empty($question)) Error::getInternalError500($req);
         $answer = $req->getPOST("answer");
-        if (empty($answer)) Error::getInternalError500($req);
+        if (empty($answer) || empty($question)) {
+            Error::getBadRequest400($req, "Empty question and/or answer");
+            return;
+        }
         $priority = $req->getPOST("priority") ?? 0;
 
         // Validate data
         if (strlen($question) > 255) {
-            http_response_code(400);
-            echo "une question ne peut pas faire plus de 255 caractères";
+            Error::getBadRequest400($req, "une question ne peut pas faire plus de 255 caractères");
             return;
         }
         if (!is_numeric($priority)) {
-            http_response_code(400);
-            echo "une priorité doit être numérique";
+            Error::getBadRequest400($req, "une priorité doit être numérique");
             return;
         }
 
         // Create new entity
-        $new_frequently_asked_question = new \Entities\FrequentlyAskedQuestion;
+        $new_frequently_asked_question = null;
+        try {
+            $new_frequently_asked_question = new \Entities\FrequentlyAskedQuestion;
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while creating FAQ");
+            return;
+        }
 
         // Populate it
         $setOrder = [
@@ -779,10 +896,19 @@ class Admin
         ];
 
         // Execute
-        $new_frequently_asked_question->setMultiple($setOrder);
+        try {
+            $new_frequently_asked_question->setMultiple($setOrder);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while setting FAQ");
+            return;
+        }
 
-        // Done
-        return;
+        // Insert
+        try {
+            (new \Queries\FrequentlyAskedQuestions)->insert($new_frequently_asked_question);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while inserting FAQ");
+        }
     }
 
     /**
@@ -799,31 +925,32 @@ class Admin
 
         // Validate data
         if ($frequently_asked_question_id === null) {
-            http_response_code(400);
-            echo "faqid non indiqué";
+            Error::getBadRequest400($req, "faqid non indiqué");
             return;
         }
         if (!is_numeric($frequently_asked_question_id)) {
-            http_response_code(400);
-            echo "faqid n'est pas un nombre";
+            Error::getBadRequest400($req, "faqid n'est pas un nombre");
             return;
         }
         if ($question !== null && strlen($question) > 255) {
-            http_response_code(400);
-            echo "une question ne peut pas faire plus de 255 caractères";
+            Error::getBadRequest400($req, "une question ne peut pas faire plus de 255 caractères");
             return;
         }
         if ($priority !== null && !is_numeric($priority)) {
-            http_response_code(400);
-            echo "une priorité doit être numérique";
+            Error::getBadRequest400($req, "une priorité doit être numérique");
             return;
         }
 
         // Retrieve entity
-        $frequently_asked_question = (new \Queries\FAQ)->retrieve($frequently_asked_question_id);
+        $frequently_asked_question = null;
+        try {
+            $frequently_asked_question = (new \Queries\FrequentlyAskedQuestions)->retrieve($frequently_asked_question_id);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error retrieve FAQ");
+            return;
+        }
         if ($frequently_asked_question === null) {
-            http_response_code(400);
-            echo "il n'y a pas de faq pour cet id";
+            Error::getBadRequest400($req, "il n'y a pas de faq pour cet id");
             return;
         }
 
@@ -840,11 +967,20 @@ class Admin
         }
 
         // Set them all
-        $frequently_asked_question->setMultiple($setOrder);
+        try {
+            $frequently_asked_question->setMultiple($setOrder);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while setting FAQ");
+            return;
+        }
 
         // Push it
-        (new \Queries\FAQ)
-            ->onColumns(...array_keys($setOrder))
-            ->update($frequently_asked_question);
+        try {
+            (new \Queries\FrequentlyAskedQuestions)
+                ->onColumns(...array_keys($setOrder))
+                ->update($frequently_asked_question);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error while updating data");
+        }
     }
 }
