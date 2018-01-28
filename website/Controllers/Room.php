@@ -29,7 +29,7 @@ class Room
 
 
         // Assigne & vérifie que les données existent
-        $name =htmlspecialchars($req->getPOST("name"));
+        $name = $req->getPOST("name");
 
         if (empty($name)) {
             http_response_code(400);
