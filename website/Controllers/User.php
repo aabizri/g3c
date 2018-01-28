@@ -117,6 +117,7 @@ class User
 
         //Là faut envoyer un mail avec un mdr provisoire random au type
         
+
        \Helpers\DisplayManager::redirectToController("User", "MajMdpReussie");
     }
 
