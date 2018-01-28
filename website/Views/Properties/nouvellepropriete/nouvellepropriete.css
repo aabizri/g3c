@@ -1,0 +1,27 @@
+body{
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+#form input{
+    display: flex;
+}
+
+#ajoutpropriete {
+    position: relative;
+    top:230px;
+    left:43%;
+    border: 1px solid #955252;
+    padding: 10px;
+    width: 165px;
+    text-align: center;
+    background-color: rgb(217,196,177);
+    border-radius: 5px;
+    margin-bottom: 520px;
+}
+
+#valider
+{
+    position: relative;
+    left: 33%;
+}

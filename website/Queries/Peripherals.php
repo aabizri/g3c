@@ -21,10 +21,10 @@ class Peripherals extends Query
                              "display_name" => [],
                              "build_date" => [],
                              "add_date" => [],
-                             "public_key" => [],
+                             "status" => [],
                              "property_id" => [],
                              "room_id" => [],
-                             "last_updated" => ["timestamp"]];
+                             "last_updated" => ["gen-on-insert", "timestamp"]];
     private const entity_class_name = "\Entities\Peripheral";
 
     /**
@@ -99,10 +99,6 @@ class Peripherals extends Query
      */
     public function save(\Entities\Peripheral $peripheral): bool
     {
-        $columns = array_keys(self::columns);
-        unset($columns[array_search("id", $columns)]);
-        unset($columns[array_search("last_updated", $columns)]);
-        $this->onColumns(...$columns);
         return parent::saveEntity($peripheral);
     }
 }

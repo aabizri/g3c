@@ -14,7 +14,8 @@ namespace Helpers;
  */
 class DisplayManager
 {
-    private const views_directory = "Views";
+    private const VIEWS_DIR = "Views";
+    private const DEFAULT_SUBROOT = "/";
 
     public static $views_categories = [
         "dashboard" => "Dashboard",
@@ -26,25 +27,40 @@ class DisplayManager
         "moncompte" => "Users",
         "mespieces" => "Rooms",
         "mesperipheriques"=> "Peripherals",
+        "mapropriete"=> "Users",
         "mysessions" => "Users",
+        "users" => "Admin",
+        "properties" => "Admin",
+        "user" => "Admin",
+        "property" => "Admin",
+        "console" => "Admin",
+        "user_properties" => "Admin",
+        "peripherals" => "Admin",
+        "peripheral" => "Admin",
+        "mesproprietes" => "Properties",
+        "nouvellepropriete" => "Properties",
+        "faq" => "FAQ",
+        "store" => "Store",
         "mapiece" => "Rooms",
         "majmdpreussie" => "Users",
+        "cgu" => "CGU",
+        "modificationcgu" => "CGU",
+        "consignes" => "Consignes",
+        "roomconsignes" => "Consignes",
     ];
 
+    /**
+     * @return string
+     * @throws \Exception
+     */
     private static function subroot(): string {
-        $path = __DIR__.DIRECTORY_SEPARATOR."..".DIRECTORY_SEPARATOR."config.ini";
-        $conf_file = parse_ini_file($path);
-        if ($conf_file == null) {
-            throw new \Exception("NO CONFIG FILE FFS");
-        }
-        if (!array_key_exists("subroot", $conf_file)) {
-            throw new \Exception("NO ARRAY MEMBER FFS");
-        }
-        return $conf_file["subroot"];
+        $subroot = (new \Helpers\Config)->getSubroot() ?? self::DEFAULT_SUBROOT;
+        return $subroot;
     }
 
     /**
      * @return string
+     * @throws \Exception
      */
     public static function websiteRootFS(string $dir = ""): string{
         return str_replace("/", DIRECTORY_SEPARATOR,$_SERVER["DOCUMENT_ROOT"].DIRECTORY_SEPARATOR.self::subroot().DIRECTORY_SEPARATOR.$dir);
@@ -52,6 +68,7 @@ class DisplayManager
 
     /**
      * @return string
+     * @throws \Exception
      */
     public static function websiteRootURL(string $dir = ""): string{
         return "/".str_replace("\\","/", self::subroot())."/".$dir;
@@ -60,6 +77,7 @@ class DisplayManager
     /**
      * @param string $path
      * @return string
+     * @throws \Exception
      */
     public static function absolutifyFS(string $path, string $origin = ""): string{
         return self::websiteRootFS($origin).$path;
@@ -68,6 +86,7 @@ class DisplayManager
     /**
      * @param string $path
      * @return string
+     * @throws \Exception
      */
     public static function absolutifyURL(string $path, string $origin = ""): string{
         return self::websiteRootURL($origin).$path;
@@ -86,13 +105,16 @@ class DisplayManager
         $category = self::$views_categories[$page_name];
 
         // Build the path
-        $base_path = self::views_directory."/".$category."/".$page_name."/".$page_name;
+        $base_path = self::VIEWS_DIR . "/" . $category . "/" . $page_name . "/" . $page_name;
         $res["php"] = str_replace("/",DIRECTORY_SEPARATOR,$base_path.".php");
         if (!file_exists(self::absolutifyFS($res["php"]))) {
             throw new \Exception("Page listed in internal repository but not found on disk : ".self::absolutifyFS($res["php"]));
         }
         if (file_exists(self::absolutifyFS($base_path.".css"))) {
             $res["css"] = $base_path.".css";
+        }
+        if (file_exists(self::absolutifyFS($base_path . ".js"))) {
+            $res["js"] = $base_path . ".js";
         }
 
         return $res;
@@ -119,16 +141,23 @@ class DisplayManager
     public static function display(string $name, array $data = []): void {
         // Resolve components
         $components = self::resolveMultipleComponents(["head","header",$name,"footer"]);
-        
+
         // For each, extract the css & php
-        $php = array();
-        $css = array();
+        $php = [];
+        $css = [];
+        $js = [];
         foreach ($components as $comp) {
             $php[] = $comp["php"];
             if (!empty($comp["css"])) {
                 $css[] = self::absolutifyURL($comp["css"]);
             }
+            if (!empty($comp["js"])) {
+                $js[] = self::absolutifyURL($comp["js"]);
+            }
         }
+
+        // Add JS
+        $js[] = "https://www.google.com/recaptcha/api.js";
 
         // Meta tags
         $meta = [
@@ -155,22 +184,58 @@ class DisplayManager
     }
 
     /**
-     * Redirects to destination with 302 (temporary redirect)
+     * Redirects to destination with 301 (Moved permeanently))
      *
      * @param string $destination
+     * @throws \Exception
      */
-    public static function redirectToController(string $category, string $action): void
+    public static function redirect301(string $destination, string $message = ""): void
     {
-        self::redirectToPath("index.php?c=$category&a=$action");
+        self::redirect($destination, 301, $message);
     }
 
     /**
      * Redirects to destination with 302 (temporary redirect)
      *
      * @param string $destination
+     * @throws \Exception
      */
-    public static function redirectToPath(string $destination): void
+    public static function redirect302(string $destination, string $message = ""): void
     {
-        header("Location: " . \Helpers\DisplayManager::absolutifyURL($destination));
+        self::redirect($destination, 302, $message);
+    }
+
+    /**
+     * Redirects to destination with 303 (see other)
+     * Useful for creation queries
+     *
+     * @param string $destination
+     * @throws \Exception
+     */
+    public static function redirect303(string $destination, string $message = ""): void
+    {
+        self::redirect($destination, 303, $message);
+    }
+
+    /**
+     * @param int $code
+     * @param string $destination
+     * @throws \Exception
+     */
+    private static function redirect(string $destination, int $code, string $message = ""): void
+    {
+        // Set the response code
+        http_response_code($code);
+
+        // Absolutify the destination
+        $absolutified_destination = \Helpers\DisplayManager::absolutifyURL($destination);
+
+        // Set the header
+        header("Location: " . $absolutified_destination);
+
+        // Echo a small message for redirection
+        $message .= $message !== "" ? "<br/>" : "";
+        $message .= 'Redirection en cours vers <code>' . $absolutified_destination . '</code><br/>Si votre navigateur n\'éxecute pas la redirection, veuillez <a href="' . $absolutified_destination . '">cliquer ici</a>';
+        echo $message;
     }
 }

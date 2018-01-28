@@ -1,28 +1,25 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Dinesh
- * Date: 11/01/2018
- * Time: 08:58
+ * User: Bryan
+ * Date: 25/01/2018
+ * Time: 15:27
  */
 
 namespace Queries;
-use Entities;
-use Entities\Sensor;
 
 class Sensors extends Query
 {
-
     /* COMMON CONSTANTS */
     private const table = "sensors";
     private const columns = ["id" => ["id", "gen-on-insert"],
         "measure_type_id" => [],
         "peripheral_uuid" => [],
-        "last_updated" => ["timestamp"]];
+        "last_updated" => ["gen-on-insert", "timestamp"]];
     private const entity_class_name = "\Entities\Sensor";
 
     /**
-     * Sensors constructor.
+     * Users constructor.
      * Calls the parent's one.
      *
      * @throws \Exception
@@ -73,7 +70,6 @@ class Sensors extends Query
 
     public function filterByPeripheralUUID(string $operator, string $peripheral_uuid): self
     {
-        return $this -> filterByColumn("peripheral_uuid", $operator, $peripheral_uuid
-        );
+        return $this -> filterByColumn("peripheral_uuid", $operator, $peripheral_uuid);
     }
 }

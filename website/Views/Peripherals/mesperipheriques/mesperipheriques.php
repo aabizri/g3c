@@ -1,12 +1,14 @@
-            <ul id="Menu">
-              <li id="Moncompte"><a href="index.php?c=User&a=Informations"><input type="button" value="Mon compte" /></a></li>
-              <li id="Mespieces"><a href="index.php?c=Room&a=RoomsPage"><input type="button" value="Mes pièces" /></a></li>
-                <li id="Mesperipheriques"><a href="index.php?c=Peripherals&a=List"><input type="button"
+<main>
+<ul id="Menu">
+    <li id="Mapropriete"><a href="properties/<?= $data["pid"]?>"><input type="button" value="Ma propriété" /></a> </li>
+    <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
+    </li>
+    <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
                                                                                           value="Mes périphériques"/></a>
-                </li>
-              <li id="Mesfiltres"><a href="Mesfiltres.html"><input type="button" value="Mes filtres" /></a></li>
-              <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
-            </ul>
+    </li>
+    <li id="Mesconsignes"><a href="properties/<?= $data["pid"] ?>/consignes"><input type="button"
+                                                                                    value="Mes Consignes"/></a></li>
+</ul>
 
             <h2 id="titreperipherique">Liste des peripériques connectés</h2>
             <p id="nombrepc">Vous avez actuellement <?php echo count($data["peripherals_list"])?> périphériques connectés.</p>
@@ -26,6 +28,7 @@
                                     <th>Localisation</th>
                                     <th>Dernière mise à jour</th>
                                     <th>UUID</th>
+                                    <th>Statut</th>
                                     <th>Gestion</th>
                                     </tr></thead>';
 
@@ -54,17 +57,27 @@
                                     $peripheral_name = $p->getDisplayName();
                                 }
 
+                                if ($p->getStatus() === "Fonctionnel" ){
+                                    $status = "<img id='status' src='http://t5.rbxcdn.com/78a4211079921cd8604d573ea33f48c3' alt='Fonctionnel' title='Fonctionnel' />";
+                                }
+                                elseif ($p->getStatus() === "Non-fonctionnel"){
+                                    $status = "<img id='status' src='https://www.spreadshirt.fr/image-server/v1/mp/designs/16377489,width=178,height=178/croix-cercle-icone-3006.png' alt='Non-fonctionnel' title='Non-fonctionnel' />";
+                                }
+                                else {
+                                    $status = "<img id='status' src='http://www.icone-png.com/png/16/16126.png' alt='Pas de capteurs liés' title='Pas de capteurs liés' />";
+                                }
 
-                                echo '<tr><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" >
-                                        <td>'. $peripheral_name .'</td> 
-                                        <td>'. $room_name .'</td>
-                                        <td>'. $date .'</td>
+                                echo '<tr><form action="properties/' . $data["pid"] . '/peripherals/' . $p->getUUID() . '/remove" method="post" >
+                                        <td>'. htmlspecialchars($peripheral_name) .'</td> 
+                                        <td>'. htmlspecialchars($room_name) .'</td>
+                                        <td>'. htmlspecialchars($date) .'</td>
+                                        <td>'. $status .'</td>
                                         <td><input type="hidden" name="peripheral_id" value="'. $p->getUUID() .'"/>'. $p->getUUID() .'</td>
-                                        <td><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" ><input type="submit" value="Supprimer"/></form></td>
+                                        <td><form action="properties/' . $data["pid"] . '/peripherals/' . $p->getUUID() . '/remove" method="post" ><input type="submit" value="Supprimer"/></form></td>
                                       </tr>';}
 
                             }
-                        
+
                         else {
                             echo 'Pas de périphériques dans la propriété';
                         }
@@ -77,7 +90,8 @@
             <div id="ajouterperipherique">
                 <h3>Ajouter un périphérique</h3>
                 <div id="champsajouterperipherique">
-                    <form name="Ajouter un peripherique" method="post" action="index.php?c=Peripherals&a=Add&pid=1&debug=true">
+                    <form name="Ajouter un peripherique" method="post"
+                          action="properties/<?= $data["pid"] ?>/peripherals/add">
                         <label>UUID : </label><input type="text" name="uuid" /><br><br>
                         <label>Nom du périphérique : </label><input type="text" name="display_name" />
                         <p> Dans quelle salle ?
@@ -94,4 +108,4 @@
                     </form>
                 </div>
             </div>
-
+</main>

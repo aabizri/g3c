@@ -32,7 +32,7 @@ body {
 	margin: 10px;
 }
 
-#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres, #Mesparametres, #Boutique
+#Moncompte, #Mespieces, #Mesperipheriques, #Mesconsignes, #Mesparametres, #Mapropriete
 {
 	position: relative;
 	margin: 50px 10px;
@@ -70,6 +70,7 @@ body {
     border: 1px solid #955252;
     border-radius: 20px;
 	background-color: rgb(217,196,177);
+	margin-bottom: 290px;
 }
 
 #tableperipheriques
@@ -102,19 +103,13 @@ table
 {
 	position: relative;
 	left: 22.5%;
-	top: 130px;
+	top: -120px;
 	border: 1px solid #955252;
 	border-radius: 20px;
 	width: 65%;
 	background-color: rgb(217,196,177);
 	text-align: center;
-    margin-bottom: 20px;
-}
 
-#choixsalle
-{
-    position: relative;
-    margin-left: 30px;
 }
 
 #champsajouterperipherique
@@ -123,4 +118,11 @@ table
 	position: relative;
 	left: 20px;
 	padding-bottom: 20px;
+	margin-bottom:20px;
+}
+
+#status
+{
+	width: 30px;
+	height: 30px;
 }

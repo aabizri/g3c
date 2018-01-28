@@ -49,7 +49,7 @@ class Handler
                 ->count();
             if ($count === 0) {
                 echo "L'utilisateur n'a pas de connexion à cette propriété, interdit !";
-                // TODO: A fixer (faire un return)
+                return;
             }
         }
 
@@ -61,14 +61,10 @@ class Handler
         // S'il est connecté, il est redirigé vers la page de selection de propriété
         if (empty($category) && empty($action)) {
             if ($req->getUserID() === null) {
-                $category = "User";
-                $action = "ConnectionPage";
+                DisplayManager::redirect302("login");
             } else {
-                $category = "User"; // = "Property";
-                $action = "AccountPage"; // = "Select";
+                DisplayManager::redirect302("account");
             }
-            // Redirection
-            DisplayManager::redirectToController($category, $action);
         } else if (empty($category) XOR empty($action)) {
             \Controllers\Error::getControllerNotFound404($req);
             return;
@@ -89,7 +85,7 @@ class Handler
             try {
                 $call($req);
             } catch (\Throwable $t) {
-                \Controllers\Error::getInternalError500($req, $t);
+                \Controllers\Error::getInternalError500Throwables($req, $t);
             }
         }
 

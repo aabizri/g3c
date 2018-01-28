@@ -1,0 +1,19 @@
+body{
+    overflow-x: hidden;
+}
+
+#cgu
+{
+    position: relative;
+    top: 100px;
+    left: 20%;
+    border: 1px solid #955252;
+    width: 60%;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+#titre{
+    position: relative;
+    left: 30%;
+}

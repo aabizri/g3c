@@ -162,12 +162,18 @@ class User extends Entity
         }
 
         // Verifier que le courriel est correct
-        if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
-            return false; // Email invalid
+        if (!self::validateEmail($email)) {
+            return false;
         }
 
         $this->email = $email;
         return true;
+    }
+
+    public static function validateEmail(string $email): bool
+    {
+        // Verifier que le courriel est correct
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 
     /**
@@ -203,8 +209,29 @@ class User extends Entity
      */
     public function setPhone(string $phone): bool
     {
+        $phone = self::sanitizePhone($phone);
+        if (!self::validatePhone($phone)) {
+            return false;
+        }
         $this->phone = $phone;
         return true;
+    }
+
+    // Validate phone validates a phone number in a more liberal way (spaces, numbers, parenthesis, dashes and dots)
+    public static function validatePhone(string $phone): bool
+    {
+        $match = preg_match('/[^0-9\+\ \-\(\)\.]/',$phone);
+        return $match !== 1;
+    }
+
+    // Sanitizes a phone number (removes all but + and numbers
+    public static function sanitizePhone(string $phone): string
+    {
+        // Remove all but numbers and +
+        $sanitized = preg_replace('/[^0-9\+]/', '', $phone);
+
+        // Return
+        return $sanitized;
     }
 
     /**
@@ -257,6 +284,18 @@ class User extends Entity
     {
         // Calculer le hash associé au mot de passe via BCRYPT, le salt étant généré automatiquement
         return $this->setPassword(password_hash($clear, PASSWORD_BCRYPT));
+    }
+
+    public function validatePasswordClear(string $clear): bool
+    {
+        // Check for length
+        $length = mb_strlen($clear);
+        if ($length < 6) {
+            return false;
+        }
+
+        // Else
+        return true;
     }
 
     /**
