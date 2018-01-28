@@ -4,7 +4,8 @@
 
 <h4 id="identificationutilisateur">Vous êtes l'utilisateur
     <?php
-        $u = $data["user"];
+    //On récupère l'entité lié à l'user
+        $u = (new \Queries\Users) -> retrieve($data["user"]);
         echo $u->getNick()
     ?>
 </h4>
