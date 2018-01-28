@@ -1,5 +1,6 @@
 body{
     overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 #form input{
@@ -16,6 +17,7 @@ body{
     text-align: center;
     background-color: rgb(217,196,177);
     border-radius: 5px;
+    margin-bottom: 520px;
 }
 
 #valider

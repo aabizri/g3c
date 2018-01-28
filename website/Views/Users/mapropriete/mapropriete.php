@@ -1,6 +1,5 @@
 <main>
 <ul id="Menu">
-    <li id="Moncompte"><a href="account"><input type="button" value="Mon compte"/></a></li>
     <li id="Mapropriete"><a href="properties/<?= $data["property"]->getID() ?>"><input type="button"
                                                                                        value="Ma propriété"/></a></li>
     <li id="Mespieces"><a href="properties/<?= $data["property"]->getID() ?>/rooms"><input type="button"
