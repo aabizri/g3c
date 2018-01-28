@@ -17,7 +17,7 @@
                 <img width="10px" height="10px" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Black_triangle.svg/220px-Black_triangle.svg.png">
                 <ul class="niveau2">
                     <li></li>
-                    <li><a href="/g3c/website/account"><button>Mon compte</button></a></li>
+                    <li><a href="account"><button>Mon compte</button></a></li>
                     <li><form action="logout" method="post"><button type="submit">Déconnexion</button></form></li>
                 </ul>
             </li>
