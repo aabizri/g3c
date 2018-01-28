@@ -11,9 +11,10 @@
                                                                                         value="Mes Consignes"/></a></li>
     </ul>
 
-<h2 id="Tableaudebord">Tableau de bord</h2>
-
-<?php
+    <h2 id="Tableaudebord">Tableau de bord</h2>
+    <div id="setting">
+    <a id="settings" href="properties/<?= $data["pid"] ?>/settings">Réglages</a></div>
+    <?php
 
     $rooms=$data["rooms"];
     $last_measures= $data["last_measures"];

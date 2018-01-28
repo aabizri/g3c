@@ -267,3 +267,14 @@ footer {
 	bottom: 0px;
 	font-size: 60%;
 }
+#setting {
+	position: relative;
+	top: 20px;
+}
+#settings{
+	position: relative;
+	left: 90%;
+	text-align: left;
+	color: #955252;
+	text-decoration: none;
+}
