@@ -142,28 +142,35 @@ class Properties
     //Supprimer un utilisateur de la propriété
     public static function postRemoveUser(\Entities\Request $req)
     {
+        // On récupère l'ID de la propriété
+        $property_id = $req->getPropertyID();
+        if ($property_id === null) {
+            Error::getBadRequest400($req, "Erreur: pas de propriété indiquée");
+            return;
+        }
+
         //On récupère les données
         $to_delete_user_id = $req->getPOST('user_id');
         if ($to_delete_user_id === null) {
-            http_response_code(400);
-            echo "Erreur : pas de user à supprimer indiqué";
-            return;
-        }
-        $property_id = $req->getPropertyID();
-        if ($property_id === null) {
-            http_response_code(400);
-            echo "Erreur: pas de propriété indiquée";
+            Error::getBadRequest400($req, "Erreur : pas de propriété à supprimer indiqué");
             return;
         }
 
         //On supprime l'utilisateur de la propriété
-        $count = (new \Queries\Roles)
-            ->filterByColumn("property_id", "=", $property_id, "AND")
-            ->filterByColumn("user_id", "=", $to_delete_user_id, "AND")
-            ->delete();
+        $count = null;
+        try {
+            $count = (new \Queries\Roles)
+                ->filterByColumn("property_id", "=", $property_id, "AND")
+                ->filterByColumn("user_id", "=", $to_delete_user_id, "AND")
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "erreur dans la suppression de l'utilisateur");
+            return;
+        }
+
+        // Vérirication du compte
         if ($count !== 1) {
-            http_response_code(500);
-            echo "Erreur: erreur interne lors de la suppression, compte de suppression: " . $count;
+            Error::getInternalError500($req, "Erreur: erreur interne lors de la suppression, compte de suppression: " . $count);
             return;
         }
 
@@ -175,25 +182,36 @@ class Properties
     {
         $u = $req->getUser();
         if ($u === null) {
-            http_response_code(403);
+            Error::getForbidden403($req, "Pas d'utilisateur indiqué");
             return;
         }
 
         // Récupère tous les rôles associés à l'utilisateur
-        // Pour chaque rôle, tu récupère la propriété associé, et tu l'ajoute à une liste
-        $roles = (new \Queries\Roles)->filterByUser("=", $u)->find();
-        $properties_id = [];
-        foreach ($roles as $r) {
-            $properties_id[] = $r->getPropertyID();
+        $roles = null;
+        try {
+            $roles = (new \Queries\Roles)->filterByUser("=", $u)->find();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Erreur dans la récupération des roles");
+            return;
         }
 
-        $properties_query = new \Queries\Properties;
-        foreach ($properties_id as $pid) {
-            $properties[] = $properties_query->filterByColumn("id", "=", $pid, "OR");
+        // Pour chaque rôle, tu récupère la propriété associé, et tu l'ajoute à une liste
+        $properties = null;
+        try {
+            $properties_query = new \Queries\Properties;
+            foreach ($roles as $role) {
+                $property_id = $role->getPropertyID();
+                $properties[] = $properties_query->filterByColumn("id", "=", $property_id, "OR");
+            }
+            $properties = $properties_query->find();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Erreur lors de la récupération des propriétés");
         }
-        $properties = $properties_query->find();
+
+        // Ajout aux données destinées à la vue
         $data["properties"] = $properties;
 
+        // Affichage
         \Helpers\DisplayManager::display("mesproprietes", $data);
     }
 
@@ -208,35 +226,47 @@ class Properties
         // Extraire les données
         $user_id = $req->getUserID();
         $name = $req->getPOST("name");
-        if (empty($name)) return;
         $address = $req->getPOST("address");
-        if (empty($address)) return;
+        if (empty($address) || empty($address)) {
+            Error::getBadRequest400($req, "Il manque le nom et/ou l'addresse dans le formulaire");
+            return;
+        }
 
         // Create the entity
-        $p = new \Entities\Property();
-        $p->setName($name);
-        $p->setAddress($address);
+        try {
+            $p = new \Entities\Property();
+            $p->setName($name);
+            $p->setAddress($address);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "erreur lors du set des données sur la propriété");
+            return;
+        }
 
         // Insert it
         try {
             (new \Queries\Properties)->save($p);
         } catch (\Throwable $t) {
-            Error::getInternalError500Throwables($req, $t);
+            Error::getInternalError500Throwables($req, $t, "erreur lors de l'enregistrement de la propriété");
             return;
         }
 
         $property_id = $p->getID();
 
         //Create role entity
-        $r = new \Entities\Role();
-        $r->setUserID($user_id);
-        $r->setPropertyID($property_id);
+        try {
+            $r = new \Entities\Role();
+            $r->setUserID($user_id);
+            $r->setPropertyID($property_id);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "erreur lors du set des données");
+            return;
+        }
 
         // Insert it
         try {
             (new \Queries\Roles)->save($r);
         } catch (\Throwable $t) {
-            Error::getInternalError500Throwables($req, $t);
+            Error::getInternalError500Throwables($req, $t, "erreur lors de l'enregistrement du rôle");
             return;
         }
 
