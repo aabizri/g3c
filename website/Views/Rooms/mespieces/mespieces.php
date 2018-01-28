@@ -22,7 +22,7 @@
               <h3 id="pieces"><strong>Pièces</strong><br></h3>
               <div id="tablepieces">
                   <table align="center">
-                      <form action="properties/<?= $data["pid"] ?>/rooms/delete>" method="post" >
+                      <form action="properties/<?= $data["pid"] ?>/rooms/delete" method="post">
                       <?php
                       //Créer un tableau qui s'indente en fonction du nombre de périphériques
                       $Nbrdonnees = count($data["rooms"]);
