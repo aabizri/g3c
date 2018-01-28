@@ -37,28 +37,11 @@ body {
 
 /*Mes pièces*/
 
-#nompiece
-{
-
-    position: relative;
-    top: 80px;
-    left:20%;
-}
-
-#informationspiece
-{
-
-    display: flex;
-    position: relative;
-    justify-content: center;
-    font-size: 15px;
-}
-
 #nomdelapièce
 {
     position: relative;
     left: 20%;
-    top:80px;
+    top:100px;
 }
 
 
@@ -82,6 +65,7 @@ body {
     width:70%;
     background-color: rgb(217,196,177);
     text-align: center;
+    height: 100px;
 }
 
 #choixsalle
