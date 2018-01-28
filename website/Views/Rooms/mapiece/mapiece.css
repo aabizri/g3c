@@ -6,6 +6,7 @@ body {
     width: auto;
     font-family: Verdana;
     overflow-x: hidden;
+    height: 715px;
 }
 
 #Menu  {
@@ -27,7 +28,7 @@ body {
     cursor: pointer;
 }
 
-#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres, #Mesparametres
+#Moncompte, #Mespieces, #Mesperipheriques, #Mesfiltres, #Mesparametres, #Mesconsignes
 {
     position: relative;
     margin: 50px 10px;
@@ -96,51 +97,4 @@ body {
     font-size: medium;
 }
 
-#action
-{
-    position: relative;
-    left: 23%;
-    top: 200px;
-    border: 1px solid #955252;
-    border-radius: 5px;
-    width: 70%;
-    background-color: rgb(217,196,177);
-    text-align: center;
-}
 
-#actionspieces
-{
-    display: flex;
-    justify-content: center;
-    padding: 10px 40px;
-}
-
-#actionspieces p
-{
-    width: 25%;
-    padding-top: 10px;
-    padding-bottom: 50px;
-    margin: 10px;
-    border: 1px solid #955252 ;
-    background-color: rgb(217,196,177);
-    border-radius: 5px;
-}
-
-#actionspieces input
-{
-    margin-bottom: 5px;
-}
-
-.action{
-    height: 50%;
-    width: 40%;
-    font-size: large;
-    text-align: center;
-    border-radius:5px;
-}
-
-#valider
-{
-    height: 20px;
-    border-radius: 3px;
-}
