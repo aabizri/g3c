@@ -42,8 +42,8 @@
         tout</p>
 
     <!-- Actions -->
-    <p id="create_property_paragraph"><a id="create_property_link" href="index.php?c=Admin&a=CreateProperty">Créer une
-            nouvelle propriété</a></p>
+    <p id="create_peripheral_paragraph"><a id="create_peripheral_link" href="admin/peripherals/create">Créer un
+            nouveau peripherique</a></p>
 
     <script>
 
@@ -60,7 +60,7 @@
                 let row = document.createElement("tr");
 
                 // Attributes
-                row.setAttribute("onclick", "window.location.href = \"index.php?c=Admin&a=Peripheral&queried_peripheral_uuid=" + value.uuid + "\"");
+                row.setAttribute("onclick", "window.location.href = \"admin/peripherals/" + value.uuid + "\"");
                 row.setAttribute("title", "Obtenir plus d'informations sur le périphérique");
 
                 // Deal with them

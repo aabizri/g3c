@@ -39,7 +39,8 @@
         tout</p>
 
     <!-- Actions -->
-    <p id="create_property_paragraph"><a id="create_property_link" href="index.php?c=Admin&a=CreateProperty">Créer une nouvelle propriété</a></p>
+    <p id="create_property_paragraph"><a id="create_property_link" href="admin/properties/create">Créer une nouvelle
+            propriété</a></p>
 
     <script>
 
@@ -56,7 +57,7 @@
                 let row = document.createElement("tr");
 
                 // Attributes
-                row.setAttribute("onclick", "window.location.href = \"index.php?c=Admin&a=Property&queried_property_id=" + value.id + "\"");
+                row.setAttribute("onclick", "window.location.href = \"admin/properties/" + value.id + "\"");
                 row.setAttribute("title", "Obtenir plus d'informations sur la propriété \"" + value.name + "\"");
 
                 // Deal with them

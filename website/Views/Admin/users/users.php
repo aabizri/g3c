@@ -38,7 +38,7 @@
         tout</p>
 
     <!-- Actions -->
-    <p id="create_user_paragraph"><a id="create_user_link" href="index.php?c=Admin&a=CreateUser">Créer un nouvel utilisateur</a></p>
+    <p id="create_user_paragraph"><a id="create_user_link" href="admin/users/create">Créer un nouvel utilisateur</a></p>
 
     <script>
 
@@ -55,7 +55,7 @@
                 let row = document.createElement("tr");
 
                 // Attributes
-                row.setAttribute("onclick", "window.location.href = \"index.php?c=Admin&a=User&uid=" + value.id + "\"");
+                row.setAttribute("onclick", "window.location.href = \"admin/users/" + value.id + "\"");
                 row.setAttribute("title", "Obtenir plus d'informations sur l'utilisateur \"" + value.nick + "\"");
 
                 // Deal with them
