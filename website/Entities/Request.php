@@ -634,6 +634,12 @@ class Request extends Entity
         return true;
     }
 
+    /* PRINTING */
+    public function prettyPrint(): string
+    {
+        return print_r($this, true);
+    }
+
     /* BUSINESS LOGIC */
 
     /**
@@ -812,7 +818,7 @@ class Request extends Entity
         unset($this->get["pid"]);
 
         // Debug flag
-        $in_debug = false;
+        $in_debug = (new \Helpers\Config)->getDebugMode() ?? false;
         if (!empty($this->get["debug"])) {
             $in_debug = true;
         }
