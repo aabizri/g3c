@@ -237,7 +237,7 @@ class Admin
             ->save($u);
 
         // Redirect to User view
-        \Helpers\DisplayManager::redirectToController("Admin", "User", ["uid" => $u->getID()]);
+        \Helpers\DisplayManager::redirect302("admin/users/uid" . $u->getID());
     }
 
     public static function getCreateUser(\Entities\Request $req): void

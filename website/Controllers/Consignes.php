@@ -151,7 +151,7 @@ class Consignes
 
         (new \Queries\Consignes)->save($c);
 
-        DisplayManager::redirectToPath("consignes");
+        DisplayManager::redirect302("consignes");
 
     }
 }

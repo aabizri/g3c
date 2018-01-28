@@ -58,7 +58,7 @@ class Properties
         //On recupère la donnée et on vérifie qu'elle existe bien
         $nickname = $req->getPOST('nickname');
         if ($nickname === null) {
-            \Helpers\DisplayManager::redirectToPath("properties/" . $property_id);
+            \Helpers\DisplayManager::redirect302("properties/" . $property_id);
             return;
         }
 
@@ -66,7 +66,7 @@ class Properties
         //Si on ne trouve rien, c'est que le nickname n'existe pas
         $user = (new \Queries\Users)->filterByNick("=", $nickname)->findOne();
         if ($user === null) {
-            \Helpers\DisplayManager::redirectToPath("properties/" . $property_id);
+            \Helpers\DisplayManager::redirect302("properties/" . $property_id);
             return;
         }
 
@@ -75,7 +75,7 @@ class Properties
 
         //On vérifie que le nickname n'est pas deja lié à cette propriété
         if ((new \Queries\Roles)->filterByUserID("=", $user_id)->findOne()) {
-            \Helpers\DisplayManager::redirectToPath("properties/" . $property_id);
+            \Helpers\DisplayManager::redirect302("properties/" . $property_id);
             return;
         }
 
@@ -87,7 +87,7 @@ class Properties
         //On insère le role dans la bdd
         (new \Queries\Roles)->save($r);
 
-        \Helpers\DisplayManager::redirectToPath("properties/" . $property_id);
+        \Helpers\DisplayManager::redirect302("properties/" . $property_id);
     }
 
 
@@ -120,7 +120,7 @@ class Properties
         }
 
         //On affiche la page avec l'utilisateur supprimé
-        \Helpers\DisplayManager::redirectToPath("properties/" . $property_id);
+        \Helpers\DisplayManager::redirect302("properties/" . $property_id);
     }
 
     public static function getSelect(\Entities\Request $req): void
@@ -193,6 +193,6 @@ class Properties
         }
 
         // Include la page de confirmation
-        \Helpers\DisplayManager::redirectToPath("properties");
+        \Helpers\DisplayManager::redirect302("properties");
     }
 }

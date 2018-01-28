@@ -75,7 +75,7 @@ class Peripherals
             return;
         }
 
-        DisplayManager::redirectToPath("properties/" . $property_id . "/peripherals");
+        DisplayManager::redirect302("properties/" . $property_id . "/peripherals");
     }
 
     /**
@@ -165,6 +165,6 @@ class Peripherals
         (new \Queries\Peripherals) -> update($peripheral);
 
         //Affichage de la page peripherique mise a jour
-        \Helpers\DisplayManager::redirectToPath("properties/" . $property_id . "/peripherals");
+        \Helpers\DisplayManager::redirect302("properties/" . $property_id . "/peripherals");
     }
 }

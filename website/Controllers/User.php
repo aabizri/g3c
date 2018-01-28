@@ -111,7 +111,7 @@ class User
     {
         // Si l'usager est déjà connecté, le rediriger vers la page d'accueil
         if ($req->getUserID() !== null) {
-            \Helpers\DisplayManager::redirectToPath("properties");
+            \Helpers\DisplayManager::redirect302("properties");
             return;
         }
 
@@ -152,7 +152,7 @@ class User
             return;
         }
 
-        \Helpers\DisplayManager::redirectToPath("properties");
+        \Helpers\DisplayManager::redirect302("properties");
     }
 
     public static function getLogin(\Entities\Request $req): void
@@ -194,7 +194,7 @@ class User
         //MAJ de l'email si besoin
         if ((new \Queries\Users) -> filterByEmail("=", $email) -> findOne() != null)
         {
-            DisplayManager::redirectToPath("account");
+            DisplayManager::redirect302("account");
             return;
         }
         if ($email === $newemail AND $email != null) {
@@ -216,7 +216,7 @@ class User
             Error::getInternalError500($req);
             return;
         }
-        \Helpers\DisplayManager::redirectToPath("account");
+        \Helpers\DisplayManager::redirect302("account");
     }
 
     //Changement de mdp
@@ -241,17 +241,17 @@ class User
 
         //Vérification de l'ancien mdp
         if ($user->verifyPassword($ancienmdp) === false) {
-            \Helpers\DisplayManager::redirectToPath("account");
+            \Helpers\DisplayManager::redirect302("account");
             return;
         }
 
         if ($ancienmdp === $newmdp){
-            \Helpers\DisplayManager::redirectToPath("account");
+            \Helpers\DisplayManager::redirect302("account");
             return;
         }
 
         if ($newmdp !== $cnewmdp){
-            \Helpers\DisplayManager::redirectToPath("account");
+            \Helpers\DisplayManager::redirect302("account");
             return;
         }
 
@@ -353,6 +353,6 @@ class User
         session_destroy();
 
         //On redirige vers la page de connexion
-        DisplayManager::redirectToPath("login");
+        DisplayManager::redirect302("login");
     }
 }
