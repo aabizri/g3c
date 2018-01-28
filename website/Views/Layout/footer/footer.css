@@ -9,13 +9,27 @@ footer {
     z-index: -100;
     left: -7px;
 }
+#faq{
+    position: relative;
+    left: 55.9%;
+    top: -22px;
+    font-size: x-small;
+}
+
+#cgu
+{
+    position: relative;
+    top: -39px;
+    left: 31.5%;
+    font-size: x-small;
+}
 
 #SAV {
     position : relative;
-    bottom : -14px;
     left : 20px;
     margin: 1px;
     font-size: 90%;
+    top: 5px;
 }
 #Reseauxsociaux {
     position : absolute;
@@ -26,15 +40,21 @@ footer {
 #Fb
 {
     position: absolute;
-    right: 30px;
-    bottom: 0px;
+    right: 35px;
+    bottom: 5px;
+    width: 45px;
+    height: 40px;
+    cursor: pointer;
 }
 
-#Twitter
+#Google
 {
     position: absolute;
-    right: 90px;
-    bottom: 0px;
+    right: 85px;
+    bottom: -1px;
+    width: 53px;
+    height: 53px;
+    cursor: pointer;
 }
 
 #rights{
@@ -42,4 +62,10 @@ footer {
     left:45%;
     bottom: 0px;
     font-size: 60%;
+}
+
+#reseaux img
+{
+    width: 45px;
+    height: 40px;
 }

@@ -2,16 +2,21 @@
     <li id="properties"><a href="properties"><input type="button" value="Mes propriétés"/></a></li>
 </ul>
 
+<h4 id="identificationutilisateur">Vous êtes l'utilisateur
+    <?php
+        $u = $data["user"];
+        echo $u->getNick()
+    ?>
+</h4>
+
 <div id="infosmoncompte">
     <div id="mesinformations">
         <h4 id="titremesinfos">Mes informations</h4>
         <?php
-        $u = $data["user"];
                 echo
                 "
                 <p>Prénom/Nom : ".$u -> getDisplay()."</p>
                 <p>Email : ".$u -> getEmail()."</p>
-                <p>Addresse : </p>
                 <p>Téléphone : ".$u -> getPhone()."</p>
                 <p>Login : ".$u -> getNick()."</p>
                  ";
@@ -47,8 +52,6 @@
     </div>
 
 </div>
-
-<h4 id="identificationutilisateur">Vous êtes l'utilisateur <?php echo $u->getNick()?> </h4>
 
     <div id="modifmdp">
         <h4 id="titremodifmdp">Modifier mon mot de passe</h4>
