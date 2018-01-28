@@ -75,7 +75,7 @@ class Peripherals
             return;
         }
 
-        DisplayManager::redirect302("properties/" . $property_id . "/peripherals");
+        DisplayManager::redirect303("properties/" . $property_id . "/peripherals");
     }
 
     /**

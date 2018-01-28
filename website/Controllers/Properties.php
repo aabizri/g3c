@@ -193,6 +193,6 @@ class Properties
         }
 
         // Include la page de confirmation
-        \Helpers\DisplayManager::redirect302("properties");
+        \Helpers\DisplayManager::redirect303("properties/" . $property_id);
     }
 }
