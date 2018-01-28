@@ -201,7 +201,7 @@
         }
 
         // Data populated in PHP, but set via JS
-        var data = JSON.parse(document.getElementById("json_data").innerHTML);
+        let data = JSON.parse(document.getElementById("json_data").innerHTML);
         updateData(data);
     </script>
 </main>
