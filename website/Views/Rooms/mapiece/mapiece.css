@@ -54,6 +54,11 @@ body {
     border-radius: 5px;;
 }
 
+#informationspiece
+{
+    display: flex;
+}
+
 
 #vueinformation
 {
@@ -65,7 +70,7 @@ body {
     width:70%;
     background-color: rgb(217,196,177);
     text-align: center;
-    height: 100px;
+    padding-bottom: 20px;
 }
 
 #choixsalle
