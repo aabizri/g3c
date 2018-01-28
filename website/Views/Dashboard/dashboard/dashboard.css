@@ -89,7 +89,7 @@ header {
 	left:20%;
 }
 
-#informationspiece
+.informationspiece
 {
 	display: flex;
 	position: relative;
@@ -97,8 +97,13 @@ header {
 	font-size: 15px;
 }
 
-#temperature, #luminosite, #humidite, #qualiteair, #presence
+.temperatureName
 {
+	font-size: x-small;
+}
+.temperature
+{
+	overflow: hidden;
 	width: 15%;
 	padding-bottom: 20px;
 	margin: 10px;
@@ -108,7 +113,7 @@ header {
 }
 
 
-#vueinformation
+.vueinformation
 {
 	position: relative;
 	left:23%;
@@ -118,6 +123,15 @@ header {
 	width:70%;
 	background-color:#d9c4b19b;
 	text-align: center;
+	margin: 10px;
+}
+
+.nomdelapièce
+{
+	position: relative;
+	text-align: center;
+	margin: 10px;
+
 }
 
 #choixsalle
@@ -252,4 +266,15 @@ footer {
 	left: 45%;
 	bottom: 0px;
 	font-size: 60%;
+}
+#setting {
+	position: relative;
+	top: 20px;
+}
+#settings{
+	position: relative;
+	left: 90%;
+	text-align: left;
+	color: #955252;
+	text-decoration: none;
 }
