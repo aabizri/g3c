@@ -20,6 +20,9 @@ abstract class Query
     // Entity class name
     private $entity_class_name;
 
+    // Entity ID column name
+    private $entity_id_column_name;
+
     // Operation to be executed (SELECT, INSERT INTO, UPDATE, DELETE)
     private $operation;
 
@@ -58,7 +61,7 @@ abstract class Query
     public function __construct(string $table, array $table_columns, string $entity_class_name)
     {
         // Open an instance
-        $this->db = \Helpers\DB::getInstance();
+        $this->db = \Helpers\DB::getPDO();
 
         // Note the table
         $this->table = $table;
@@ -66,11 +69,14 @@ abstract class Query
         // Note the columns
         $this->table_columns = $table_columns;
 
+        // Set the ID column
+        $this->entity_id_column_name = self::extractIDColumn($table_columns);
+
         // By default, we manipulate all columns
         $this->manipulate_columns = array_keys($table_columns);
 
         // Validate the entity class name
-        if (!is_subclass_of($entity_class_name,"\Entities\Entity")) {
+        if (!is_subclass_of($entity_class_name, "\Entities\Entity")) {
             throw new \Exception("entity class not a child of \Entities\Entity");
         }
         $this->entity_class_name = $entity_class_name;
@@ -79,6 +85,27 @@ abstract class Query
         $this->where = new \Queries\Clauses\Where("OR");
     }
 
+    /**
+     * @param array $table_columns
+     * @return string
+     * @throws \Exception
+     */
+    private static function extractIDColumn(array $table_columns): string
+    {
+        $id_column = "";
+        foreach ($table_columns as $column_name => $attributes) {
+            // Si l'attribut ID est présent, on quitte
+            $has_id_attribute = array_search("id", $attributes) !== false;
+            if ($has_id_attribute) {
+                $id_column = $column_name;
+                break; // @see https://secure.php.net/manual/en/control-structures.break.php
+            }
+        }
+        if (empty($id_column)) {
+            throw new \Exception("Query has no column indicated as acting as ID");
+        }
+        return $id_column;
+    }
 
     /* PUBLIC METHODS */
 
@@ -109,20 +136,21 @@ abstract class Query
      */
     public function saveEntity(\Entities\Entity $entity): bool
     {
-        // On vérifie si l'entité a une ID
-
+        // Récupère l'ID si possible
+        $id = null;
         try {
-            $entity->getID();
-        } catch (\TypeError $te) {
-            unset($this->manipulate_columns[0]);
-            $this->manipulate_columns = array_values($this->manipulate_columns);
-            return $this->insert($entity);
+            $id = $entity->getMultiple([$this->entity_id_column_name]);
+        } catch (\Throwable $t) {
         }
 
-        // Récupère le compte
-        $count = $this
-            ->filterByEntity("id", "=", $entity)
-            ->count();
+        // Récupère le compte si on a pu récuperer l'ID, sinon 0
+        $count = 0;
+        if ($id !== null) {
+            $count_query = clone $this;
+            $count = $count_query
+                ->filterByEntity($this->entity_id_column_name, "=", $entity)
+                ->count();
+        }
 
         // Selon si l'entité existe déjà, on peut soit faire un INSERT soit un UPDATE
         switch ($count) {
@@ -157,33 +185,24 @@ abstract class Query
      * @param string $key
      * @param \Entities\Entity $entity
      * @return $this
+     * @throws \Exception
      */
     public function filterByEntity(string $key, string $operator, \Entities\Entity $entity)
     {
         // Extract the IDs
-        $id = $entity->getID();
+        if (method_exists($entity, "getID")) {
+            $id = $entity->getID();
+        } else if (method_exists($entity, "getUUID")) {
+            $id = $entity->getUUID();
+        } else {
+            throw new \Exception("Couldn't extract ID either from getID or getUUID: " . get_class($entity));
+        }
 
         // Call filterBy
         return $this->filterByColumn($key, $operator, $id);
     }
 
     /* ON SELECT */
-
-    /**
-     * Sets the operation to SELECT
-     *
-     * If it is already set to something else, throws an exception
-     *
-     * @return $this
-     */
-    public function select()
-    {
-        // Set operation to select
-        $this->operation = "SELECT";
-
-        // Return
-        return $this;
-    }
 
     /**
      * Puts a limit on the number of results returned from the query.
@@ -193,9 +212,10 @@ abstract class Query
      * @param int $limit
      * @return $this
      */
-    public function limit(int $limit) {
+    public function limit(int $limit)
+    {
         // Set operation to select
-        $this->select();
+        $this->operation = "SELECT";
 
         // Set the limit value
         $this->limit_value = $limit;
@@ -207,9 +227,9 @@ abstract class Query
     /**
      * Retrieves a single entity
      */
-    public function retrieve($id): ?\Entities\Entity
+    public function retrieve($id)
     {
-        $this->filterByColumn("id", "=", $id);
+        $this->filterByColumn($this->entity_id_column_name, "=", $id);
         return $this->findOne();
     }
 
@@ -217,9 +237,10 @@ abstract class Query
      * Finds a single element and returns it
      * @throws \Exception
      */
-    public function findOne() {
+    public function findOne()
+    {
         // This is a select
-        $this->select();
+        $this->operation = "SELECT";
 
         // Set the limit to one
         $this->limit(1);
@@ -228,18 +249,11 @@ abstract class Query
         $stmt = $this->prepareAndExecute();
 
         // Fetch
-        $lines = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $entity = $this->fetchOne($stmt);
 
         // If empty, we return null
-        if ($lines === false || $lines === null) {
+        if ($entity === null) {
             return null;
-        }
-
-        // Populate
-        $entity = new $this->entity_class_name;
-        $success = $this->populateEntity($entity,$lines);
-        if ($success === false) {
-            throw new \Exception("failed while populating entity of type ". (gettype($entity) === "object" ? get_class($entity) : gettype($entity)));
         }
 
         // Return the entity
@@ -252,31 +266,16 @@ abstract class Query
      * @return array
      * @throws \Exception
      */
-    public function find(): array {
+    public function find(): array
+    {
         // This is a select
-        $this->select();
+        $this->operation = "SELECT";
 
         // Prepare the statement
         $stmt = $this->prepareAndExecute();
 
-        // Fetch all
-        $lines = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        // If empty, we return null
-        if ($lines === false || $lines === null) {
-            return null;
-        }
-
-        // Populate
-        $entities = [];
-        foreach ($lines as $line) {
-            $entity = new $this->entity_class_name;
-            $success = $this->populateEntity($entity, $line);
-            if ($success === false) {
-                throw new \Exception("failed while populating entity of type" . gettype($entity));
-            }
-            $entities[] = $entity;
-        }
+        // Fetch
+        $entities = $this->fetchAll($stmt);
 
         // Return the entities
         return $entities;
@@ -319,7 +318,7 @@ abstract class Query
     public function orderBy(string $key, bool $asc = true)
     {
         // Sets the operation to SELCT
-        $this->select();
+        $this->operation = "SELECT";
 
         // Sets the orderby directive
         $this->orderby[$key] = $asc ? "ASC" : "DESC";
@@ -335,7 +334,7 @@ abstract class Query
     public function offset(int $offset)
     {
         // Sets the operation to SELCT
-        $this->select();
+        $this->operation = "SELECT";
 
         // Sets the offset
         $this->offset = $offset;
@@ -345,16 +344,32 @@ abstract class Query
     /* ON UPDATE */
 
     /**
-     * @param object $entity
+     * @param \Entities\Entity $entity
      * @return bool
      * @throws \Exception
      */
-    public function update($entity): bool {
+    public function update(\Entities\Entity $entity): bool
+    {
         // Operation is an UPDATE
         $this->operation = "UPDATE";
 
         // ID of the value as a where
-        $this->filterByEntity("id", "=", $entity);
+        $this->filterByEntity($this->entity_id_column_name, "=", $entity);
+
+        // On ne push pas la valeur de l'ID, inutile dans tous les cas
+        unset($this->manipulate_columns[array_search($this->entity_id_column_name, $this->manipulate_columns)]);
+        $this->manipulate_columns = array_values($this->manipulate_columns); // Re-key
+
+        // Only update the ones that aren't gen-on-insert
+        foreach ($this->manipulate_columns as $column) {
+            $is_gen_on_insert = array_search("gen-on-insert", $this->table_columns[$column]) !== false;
+            if ($is_gen_on_insert) {
+                unset($this->manipulate_columns[array_search($column, $this->manipulate_columns)]);
+            }
+        }
+
+        // Rebase / Rekey
+        $this->manipulate_columns = array_values($this->manipulate_columns);
 
         // Values to be inserted
         $entity_values = $entity->getMultiple($this->manipulate_columns);
@@ -382,9 +397,21 @@ abstract class Query
      * @return bool
      * @throws \Exception
      */
-    private function insertSingle($entity): bool {
+    private function insertSingle(\Entities\Entity $entity): bool
+    {
         // Set the operation to insert
         $this->operation = "INSERT INTO";
+
+        // Only insert the ones that aren't gen-on-insert (including ID)
+        foreach ($this->manipulate_columns as $column) {
+            $is_gen_on_insert = array_search("gen-on-insert", $this->table_columns[$column]) !== false;
+            if ($is_gen_on_insert) {
+                unset($this->manipulate_columns[array_search($column, $this->manipulate_columns)]);
+            }
+        }
+
+        // Rebase / Rekey
+        $this->manipulate_columns = array_values($this->manipulate_columns);
 
         // Retrieve the data
         $entity_values = $entity->getMultiple($this->manipulate_columns);
@@ -401,10 +428,10 @@ abstract class Query
             return false;
         }
 
-        // Get the insert ID
-        if (method_exists($entity,"setID")) {
-            $insert_id = (int)$this->db->lastInsertId();
-            $entity->setID($insert_id);
+        // On récupère la colonne ID en itérant sur toutes les colonnes, et si elle est gen-on-insert on récupère l'ID
+        if (array_search("gen-on-insert", $this->table_columns[$this->entity_id_column_name]) !== false) {
+            $insert_id = (int)$this->db->lastInsertId(); // INT as currently all our IDs are ints
+            $entity->setMultiple([$this->entity_id_column_name => $insert_id]);
         }
 
         // Return
@@ -412,16 +439,28 @@ abstract class Query
     }
 
     /**
-     * @param array $entities
+     * @param \Entities\Entity[] $entities
      * @return bool
      * @throws \Exception
      */
-    private function insertMultipleAtOnce(array $entities): bool {
+    private function insertMultipleAtOnce(array $entities): bool
+    {
         $this->operation = "INSERT INTO";
 
         // Number of sets to be inserted
         $number = count($entities);
         $this->insert_count = $number;
+
+        // Only insert the ones that aren't gen-on-insert (including ID)
+        foreach ($this->manipulate_columns as $column) {
+            $is_gen_on_insert = array_search("gen-on-insert", $this->table_columns[$column]) !== false;
+            if ($is_gen_on_insert) {
+                unset($this->manipulate_columns[array_search($column, $this->manipulate_columns)]);
+            }
+        }
+
+        // Rebase / Rekey
+        $this->manipulate_columns = array_values($this->manipulate_columns);
 
         // Iterate over all entities to be inserted
         foreach ($entities as $entity_index => $entity) {
@@ -433,10 +472,10 @@ abstract class Query
         }
 
         // Prepare the statement to be executed
-        $stmt = $this->prepare();
+        $stmt = $this->preparePDO();
 
         // Lock the table in order to stop a race condition
-        $this->db->query("LOCK TABLES ".$this->table." WRITE");
+        $this->db->query("LOCK TABLES " . $this->table . " WRITE");
 
         // Execute
         if (!is_array($this->data)) {
@@ -455,11 +494,12 @@ abstract class Query
 
         // Get their insert ID
         // No race condition because of LOCK/UNLOCK tables (right ??)
-        if (method_exists($entities[0],"setID")) {
+        // On récupère la colonne ID en itérant sur toutes les colonnes, et si elle est gen-on-insert on récupère l'ID
+        if (array_search("gen-on-insert", $this->table_columns[$this->entity_id_column_name]) !== false) {
             $last_insert_id = (int)$this->db->lastInsertId();
             for ($i = 0; $i < $row_count; $i++) {
                 $id = $last_insert_id + $row_count;
-                $entities[$i]->setID($id);
+                $entities[$i]->setMultiple([$this->entity_id_column_name => $id]);
             }
         }
 
@@ -468,11 +508,12 @@ abstract class Query
     }
 
     /**
-     * @param array ...$entities
+     * @param \Entities\Entity[] ...$entities
      * @return bool
      * @throws \Exception
      */
-    public function insert(...$entities): bool {
+    public function insert(\Entities\Entity ...$entities): bool
+    {
         switch (count($entities)) {
             case 0:
                 return false;
@@ -483,20 +524,19 @@ abstract class Query
         }
     }
 
-    /** ENTITY MAPPING STUFF */
+    /* DELETE */
 
-    /**
-     * Populates the entity given the column names => data mapping
-     *
-     * @param \Entities\Entity $entity
-     * @param array $results
-     *
-     * @return bool true on success, false on failure
-     * @throws \Exception
-     */
-    private function populateEntity(\Entities\Entity $entity, array $results): bool
+    // Returns the number of elements deleted
+    public function delete(): int
     {
-        return $entity->setMultiple($results, true);
+        // Set operation
+        $this->operation = "DELETE";
+
+        // Prepare & execute
+        $stmt = $this->prepareAndExecute();
+
+        // Return row count
+        return $stmt->rowCount();
     }
 
     /** QUERY BUILDING STUFF */
@@ -507,7 +547,8 @@ abstract class Query
      * @return array
      * @throws \Exception if no columns were specifief to be retrieved
      */
-    private function toLexemesSelect(): array {
+    private function toLexemesSelect(): array
+    {
         // Lexemes
         $lexemes = ["SELECT"];
 
@@ -518,24 +559,25 @@ abstract class Query
 
         // Then with the columns to retrieve
         foreach ($this->manipulate_columns as $index => $column) {
-            $column_attribute = $this->table_columns[$column] ?? null;
-            switch ($column_attribute) {
-                case "hex":
-                    $lexemes[] = "HEX(";
-                    $lexemes[] = $column;
-                    $lexemes[] = ") as ";
-                    $lexemes[] = $column;
-                    break;
-                case "timestamp":
-                    $lexemes[] = "UNIX_TIMESTAMP(";
-                    $lexemes[] = $column;
-                    $lexemes[] = ") as ";
-                    $lexemes[] = $column;
-                    break;
-                default:
-                    $lexemes[] = $column;
+            $column_attributes = $this->table_columns[$column] ?? [];
+
+            // Check for special attributes
+            if (array_search("hex", $column_attributes) !== false) {
+                $lexemes[] = "HEX(";
+                $lexemes[] = $column;
+                $lexemes[] = ") as ";
+                $lexemes[] = $column;
+            } else if (array_search("timestamp", $column_attributes) !== false) {
+                $lexemes[] = "UNIX_TIMESTAMP(";
+                $lexemes[] = $column;
+                $lexemes[] = ") as ";
+                $lexemes[] = $column;
+            } else {
+                $lexemes[] = $column;
             }
-            if ($index !== count($this->manipulate_columns)-1){
+
+            // If we're not finished, insert a comma
+            if ($index !== count($this->manipulate_columns) - 1) {
                 $lexemes[] = ",";
             }
         }
@@ -557,7 +599,7 @@ abstract class Query
                 $lexemes[] = $key;
                 $lexemes[] = $order;
                 $keys = array_keys($this->orderby);
-                if ($key !== end($keys)){
+                if ($key !== end($keys)) {
                     $lexemes[] = ",";
                 }
             }
@@ -566,7 +608,7 @@ abstract class Query
         // Now the limit clause
         if (!empty($this->limit_value)) {
             $lexemes[] = "LIMIT";
-            $lexemes[] = (string) $this->limit_value;
+            $lexemes[] = (string)$this->limit_value;
         }
 
         // Now the offset clause (ALWAYS JUST AFTER LIMIT)
@@ -586,7 +628,8 @@ abstract class Query
      * @return array
      * @throws \Exception
      */
-    private function toLexemesInsertInto(): array {
+    private function toLexemesInsertInto(): array
+    {
         // Lexemes
         $lexemes = ["INSERT INTO", $this->table];
 
@@ -599,7 +642,7 @@ abstract class Query
         $lexemes[] = "(";
         foreach ($this->manipulate_columns as $index => $column) {
             $lexemes[] = $column;
-            if ($index !== count($this->manipulate_columns)-1){
+            if ($index !== count($this->manipulate_columns) - 1) {
                 $lexemes[] = ",";
             }
         }
@@ -620,22 +663,21 @@ abstract class Query
                 $this->data[$key] = $value;
 
                 // Write the key as lexeme
-                $column_attribute = $this->table_columns[$column_name];
+                $column_attributes = $this->table_columns[$column_name] ?? [];
 
                 $to_be_inserted = ":" . $key;
-                switch ($column_attribute) {
-                    case "hex":
-                        $lexemes[] = "UNHEX(";
-                        $lexemes[] = $to_be_inserted;
-                        $lexemes[] = ")";
-                        break;
-                    case "timestamp":
-                        $lexemes[] = "FROM_UNIXTIME(";
-                        $lexemes[] = $to_be_inserted;
-                        $lexemes[] = ")";
-                        break;
-                    default:
-                        $lexemes[] = $to_be_inserted;
+
+                // Check for special attributes
+                if (array_search("hex", $column_attributes) !== false) {
+                    $lexemes[] = "UNHEX(";
+                    $lexemes[] = $to_be_inserted;
+                    $lexemes[] = ")";
+                } else if (array_search("timestamp", $column_attributes) !== false) {
+                    $lexemes[] = "FROM_UNIXTIME(";
+                    $lexemes[] = $to_be_inserted;
+                    $lexemes[] = ")";
+                } else {
+                    $lexemes[] = $to_be_inserted;
                 }
 
                 // If we're not at the end, add a coma
@@ -646,7 +688,7 @@ abstract class Query
             $lexemes[] = ")";
 
             // If this isn't the last set to insert, add a coma
-            if ($entity_index !== $insert_count-1){
+            if ($entity_index !== $insert_count - 1) {
                 $lexemes[] = ",";
             }
         }
@@ -661,9 +703,10 @@ abstract class Query
      * @return array
      * @throws \Exception
      */
-    private function toLexemesUpdate(): array {
+    private function toLexemesUpdate(): array
+    {
         // Lexemes
-        $lexemes = ["UPDATE",$this->table];
+        $lexemes = ["UPDATE", $this->table];
 
         // if there are no manipulate_columns, throw an exception
         if (empty($this->manipulate_columns)) {
@@ -675,22 +718,24 @@ abstract class Query
         foreach ($this->manipulate_columns as $index => $column) {
             $lexemes[] = $column;
             $lexemes[] = "=";
-            $column_attribute = $this->table_columns[$column];
-            switch ($column_attribute) {
-                case "hex":
-                    $lexemes[] = "UNHEX(";
-                    $lexemes[] = ":" . $column;
-                    $lexemes[] = ")";
-                    break;
-                case "timestamp":
-                    $lexemes[] = "FROM_UNIXTIME(";
-                    $lexemes[] = ":" . $column;
-                    $lexemes[] = ")";
-                    break;
-                default:
-                    $lexemes[] = ":" . $column;
+            $column_attributes = $this->table_columns[$column];
+
+            $to_be_inserted = ":" . $column;
+            // Check for special attributes
+            if (array_search("hex", $column_attributes) !== false) {
+                $lexemes[] = "UNHEX(";
+                $lexemes[] = $to_be_inserted;
+                $lexemes[] = ")";
+            } else if (array_search("timestamp", $column_attributes) !== false) {
+                $lexemes[] = "FROM_UNIXTIME(";
+                $lexemes[] = $to_be_inserted;
+                $lexemes[] = ")";
+            } else {
+                $lexemes[] = $to_be_inserted;
             }
-            if ($index !== count($this->manipulate_columns)-1){
+
+            // If not the last,
+            if ($index !== count($this->manipulate_columns) - 1) {
                 $lexemes[] = ",";
             }
         }
@@ -709,7 +754,12 @@ abstract class Query
      *
      * @return array
      */
-    private function toLexemesDelete(): array {}
+    private function toLexemesDelete(): array
+    {
+        // Base Lexemes
+        $lexemes = ["DELETE", "FROM", $this->table, "WHERE", $this->where->toSQL()];
+        return $lexemes;
+    }
 
     /**
      * Processes the current instructions and transform them to lexemes
@@ -717,7 +767,8 @@ abstract class Query
      * @return array
      * @throws \Exception if error
      */
-    private function toLexemes(): array {
+    private function toLexemes(): array
+    {
         switch ($this->operation) {
             case "SELECT":
                 return $this->toLexemesSelect();
@@ -763,7 +814,7 @@ abstract class Query
      * @return \PDOStatement
      * @throws \Exception if fails to generate the SQL
      */
-    public function prepare(?string $sql = null): \PDOStatement
+    public function preparePDO(?string $sql = null): \PDOStatement
     {
         // Si on ne nous donne pas de SQL, on le génère nous-même
         if (empty($sql)) {
@@ -781,15 +832,15 @@ abstract class Query
     }
 
     /**
+     * Executes a PDO Statement
+     *
+     * @param \PDOStatement $stmt
      * @param array|null $data
      * @return \PDOStatement
      * @throws \Exception
      */
-    public function prepareAndExecute(?string $sql = null, array $data = null): \PDOStatement
+    protected function executePDO(\PDOStatement $stmt, array $data = null): \PDOStatement
     {
-        // Prepare statement
-        $stmt = $this->prepare($sql);
-
         // Si on ne nous donne pas d'array, on utilise $this->data
         if (empty($data)) {
             if (!is_array($this->data)) {
@@ -800,8 +851,89 @@ abstract class Query
 
         // Execute statement
         $stmt->execute($data);
-
-        // Return statement
         return $stmt;
+    }
+
+    /**
+     * Prepares a SQL Query into a PDO Statement and execute it (but doesn't fetch)
+     *
+     * @param array|null $data
+     * @return \PDOStatement
+     * @throws \Exception
+     */
+    protected function prepareAndExecute(?string $sql = null, array $data = null): \PDOStatement
+    {
+        $stmt = $this->preparePDO($sql);
+        $stmt = $this->executePDO($stmt, $data);
+        return $stmt;
+    }
+
+    /**
+     * Fetch all rows from an already-executed statement, populates entities and return them
+     *
+     * @param \PDOStatement $stmt
+     * @return array
+     * @throws \Exception
+     */
+    protected function fetchAll(\PDOStatement $stmt): array
+    {
+        // Set Associative Fetch
+        $stmt->setFetchMode(\PDO::FETCH_ASSOC);
+
+        // Populate all entities
+        $entities = [];
+        foreach ($stmt as $row) {
+            // Create entity
+            $entity = new $this->entity_class_name;
+
+            // Populate it
+            self::populateEntity($entity, $row);
+
+            // Add it to the array
+            $entities[] = $entity;
+        }
+        return $entities;
+    }
+
+    /**
+     * Fetch a single row from an already-executed statement, populates the entity and returns it
+     *
+     * @param \PDOStatement $stmt
+     * @return \Entities\Entity|null , null if none found
+     * @throws \Exception
+     */
+    protected function fetchOne(\PDOStatement $stmt): ?\Entities\Entity
+    {
+        // Set Associative Fetch
+        $stmt->setFetchMode(\PDO::FETCH_ASSOC);
+
+        // Fetch a single row
+        $row = $stmt->fetch();
+        if ($row === false || $row === null) {
+            return null;
+        }
+
+        // Create entity
+        $entity = new $this->entity_class_name;
+
+        // Populate it
+        self::populateEntity($entity, $row);
+
+        // Return it
+        return $entity;
+    }
+
+    /**
+     * Populates the entity given the column names => data mapping
+     *
+     * @param \Entities\Entity $entity
+     * @param array $results
+     *
+     * @return bool true on success, false on failure
+     * @throws \Exception
+     */
+    private static function populateEntity(\Entities\Entity $entity, array $results): bool
+    {
+        return $entity->setMultiple($results);
     }
 }

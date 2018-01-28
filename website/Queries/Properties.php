@@ -17,11 +17,11 @@ class Properties extends Query
 {
     /* COMMON CONSTANTS */
     private const table = "properties";
-    private const columns = ["id" => "",
-                             "name" => "",
-                             "address" => "",
-                             "creation_date" => "",
-                             "last_updated" => "timestamp"];
+    private const columns = ["id" => ["id", "gen-on-insert"],
+                             "name" => [],
+                             "address" => [],
+                             "creation_date" => ["gen-on-insert", "timestamp"],
+                             "last_updated" => ["gen-on-insert", "timestamp"]];
     private const entity_class_name = "\Entities\Property";
 
     /**
@@ -45,5 +45,9 @@ class Properties extends Query
     public function save(\Entities\Property $property): bool
     {
         return parent::saveEntity($property);
+    }
+
+    public function filterByPropertyID(int $property_id){
+        return $this->filterBy("email", $operator, $email);
     }
 }

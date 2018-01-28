@@ -16,15 +16,15 @@ class Users extends Query
 {
     /* COMMON CONSTANTS */
     private const table = "users";
-    private const columns = ["id" => "",
-                             "display" => "",
-                             "nick" => "",
-                             "birth_date" => "",
-                             "creation_date" => "",
-                             "email" => "",
-                             "password" => "",
-                             "phone" => "",
-                             "last_updated" => ""];
+    private const columns = ["id" => ["id", "gen-on-insert"],
+                             "display" => [],
+                             "nick" => [],
+                             "birth_date" => [],
+                             "creation_date" => ["gen-on-insert", "timestamp"],
+                             "email" => [],
+                             "password" => [],
+                             "phone" => [],
+                             "last_updated" => ["gen-on-insert", "timestamp"]];
     private const entity_class_name = "\Entities\User";
 
     /**

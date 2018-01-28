@@ -3,7 +3,6 @@
 namespace Controllers;
 
 use Helpers\DisplayManager;
-use Repositories;
 use Entities;
 
 /**
@@ -12,6 +11,12 @@ use Entities;
  */
 class User
 {
+
+    public static function getJoin(\Entities\Request $req): void
+    {
+        DisplayManager::display("inscription");
+    }
+
     /**
      * join subscribes a user
      * @throws \Exception
@@ -41,6 +46,7 @@ class User
                 $captcha = new \Helpers\ReCAPTCHA("", "6Le5Pz4UAAAAAK3tAgJ2sCG3SF8qz0zVeILYJiuo");
                 $ok = $captcha->verify($response);
                 if (!$ok) {
+                    http_response_code(400);
                     echo "Invalid captcha";
                     return;
                 }
@@ -56,7 +62,9 @@ class User
         $display = $post["name"] . " " . $_POST["surname"];
         $phone = $post["phone"];
 
+
         if (($email_conf != $email) || ($password_clear != $password_clear_conf)){
+            http_response_code(400);
             echo "La confirmation n'est pas valide !";
             return;
         }
@@ -84,7 +92,7 @@ class User
 
         // Insert it
         try {
-            (new \Queries\Users)->insert($u);
+            (new \Queries\Users)->save($u);
         } catch (\Exception $e) {
             echo "Error inserting user: " . $e;
         }
@@ -93,35 +101,28 @@ class User
         $data = [
             "user" => $u,
         ];
-        \Helpers\DisplayManager::redirectToController("User", "ConnectionPage");
+        DisplayManager::display("connexion",$data);
     }
 
     /**
      * Connexion
      */
-    public static function postConnection(\Entities\Request $req): void
+    public static function postLogin(\Entities\Request $req): void
     {
         // Si l'usager est déjà connecté, le rediriger vers la page d'accueil
         if ($req->getUserID() !== null) {
-            \Helpers\DisplayManager::redirectToController("User", "AccountPage");
+            \Helpers\DisplayManager::redirectToPath("properties");
             return;
         }
 
-        // Récupère le post
-        $post = $req->getAllPOST();
-
-        // Check if the data exists
-        $required = ["login", "password"];
-        foreach ($required as $key) {
-            if (empty($post[$key])) {
-                echo "Missing key: " . $key;
-                return;
-            }
-        }
-
         // Récupérer les données
-        $login = $_POST['login'];
-        $password_clear = $_POST['password'];
+        $login = $req->getPOST('login');
+        $password_clear = $req->getPOST('password');
+        if (empty($login) || empty($password_clear)) {
+            http_response_code(400);
+            echo "Login et/ou mot de passe non spécifié";
+            return;
+        }
 
         /**
          * Vérifier que le nick et/ou e-mail existe et récupérer l'entité liée
@@ -132,6 +133,7 @@ class User
             $u = (new \Queries\Users)->filterByEmail("=", $login)->findOne();
         }
         if ($u === null) {
+            http_response_code(400);
             echo "Ce login n'existe pas";
             return;
         }
@@ -150,36 +152,128 @@ class User
             return;
         }
 
-        \Helpers\DisplayManager::redirectToController("User", "AccountPage"); /* Redirection du navigateur */; // TODO: Le rediriger vers la page de sélection de propriété
+        \Helpers\DisplayManager::redirectToPath("properties");
     }
 
-    public static function getConnectionPage(\Entities\Request $req): void
+    public static function getLogin(\Entities\Request $req): void
     {
         DisplayManager::display("connexion");
     }
 
-    public static function getSubscriptionPage(\Entities\Request $req): void
-    {
-        DisplayManager::display("inscription");
-    }
-
-    public static function getAccountPage(\Entities\Request $req):void
+    public static function getAccount(\Entities\Request $req): void
     {
         $u = $req->getUser();
         if ($u === null) {
             http_response_code(403);
-            echo "Utilisateur non connecté, nous ne pouvons pas accéder à la page moncompte";
             return;
         }
 
-        DisplayManager::display("moncompte");
+        //On envoie vers la vue
+        $data["user"] = $u;
+
+        //Afficher
+        \Helpers\DisplayManager::display("moncompte", $data);
+    }
+
+    //Mettre à jour les infos
+    public static function postAccount(\Entities\Request $req): void
+    {
+        $post= $req->getAllPOST();
+
+        //On récupère des données
+        $email = $post["email"];
+        $newemail = $post["newemail"];
+        $newphone = $post["nouveautel"];
+        $mdp = $post["mdp"];
+
+        //On récupère l'entité de l'utilisateur
+
+        //On récupère l'entité user depui(s la page de connexion
+        $user = $req -> getUser();
+
+        //MAJ de l'email si besoin
+        if ((new \Queries\Users) -> filterByEmail("=", $email) -> findOne() != null)
+        {
+            DisplayManager::redirectToPath("account");
+            return;
+        }
+        if ($email === $newemail AND $email != null) {
+            $user->setEmail($email);
+        }
+
+        //MAJ du numero de tel
+        if ($newphone != null) {
+            $user->setPhone($newphone);
+        }
+
+        // Insertion de l'entité et de ses maj si le mdp de vérification est valide
+        if ($user->verifyPassword($mdp) === false){
+            return;
+        }
+        try {
+            (new \Queries\Users) ->update($user);
+        } catch (\Exception $e) {
+            Error::getInternalError500($req);
+            return;
+        }
+        \Helpers\DisplayManager::redirectToPath("account");
+    }
+
+    //Changement de mdp
+    public static function postAccountPassword(\Entities\Request $req)
+    {
+
+        $post = $req->getAllPOST();
+
+        //On recupère les données
+        $user = $req->getUser();
+
+        //On récupère les infos après avoir vérifier qu'elles existent
+        if (!isset($post["ancienmdp"]) OR !isset($post["nouveaumdp"]) OR !isset($post["cnouveaumdp"])){
+            self::getAccount($req);
+            return;
+        }
+
+        //On récupère les données
+        $ancienmdp = $post["ancienmdp"];
+        $newmdp = $post['nouveaumdp'];
+        $cnewmdp = $post["cnouveaumdp"];
+
+        //Vérification de l'ancien mdp
+        if ($user->verifyPassword($ancienmdp) === false) {
+            \Helpers\DisplayManager::redirectToPath("account");
+            return;
+        }
+
+        if ($ancienmdp === $newmdp){
+            \Helpers\DisplayManager::redirectToPath("account");
+            return;
+        }
+
+        if ($newmdp !== $cnewmdp){
+            \Helpers\DisplayManager::redirectToPath("account");
+            return;
+        }
+
+        $user ->setPasswordClear($newmdp);
+
+        // Insertion de l'entité et de ses maj
+        try {
+            (new \Queries\Users) -> update($user);
+        } catch (\Exception $e) {
+            Error::getInternalError500($req);
+            return;
+        }
+
+        DisplayManager:: display("majmdpreussie");
+
     }
 
     /**
      * @param Entities\Request $req
      * @throws \Exception
      */
-    public static function getSessionList(\Entities\Request $req): void
+    public static function getSessions(\Entities\Request $req): void
     {
         $user = $req->getUser();
         if ($user === null) {
@@ -213,7 +307,7 @@ class User
         DisplayManager::display("mysessions", $data);
     }
 
-    public static function postSessionCancel(\Entities\Request $req): void
+    public static function postSessionsCancel(\Entities\Request $req): void
     {
         $user_id = $req->getUserID();
         if ($user_id === null) {
@@ -223,12 +317,12 @@ class User
         }
 
         // Retrieve post parameter for session ids
-        if (empty($req->getAllPOST()["session_id"])) {
+        $session_ids = $req->getPOST("session_id");
+        if (empty($session_ids)) {
             http_response_code(400);
             echo "Mauvaise requête: veuillez indiquer une session ID valide";
             return;
         }
-        $session_ids = $req->getPOST("session_id");
 
         foreach ($session_ids as $session_id) {
             // Retrieve session
@@ -249,5 +343,16 @@ class User
 
         // Return to session list
         self::getSessionList($req);
+    }
+
+    //Déconnexion
+    public static function postLogout(\Entities\Request $req)
+    {
+
+        //On détruit la session
+        session_destroy();
+
+        //On redirige vers la page de connexion
+        DisplayManager::redirectToPath("login");
     }
 }
