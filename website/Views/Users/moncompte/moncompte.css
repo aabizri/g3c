@@ -15,7 +15,7 @@ body {
 	position: fixed;
 	list-style: none;
 	left:-49px;
-	top: 20px;
+	top: -10px;
 }
 
 #Menu input
@@ -30,7 +30,7 @@ body {
 	cursor: pointer;
 }
 
-#Moncompte, #Mespieces, #Mesperipheriques, #Mesconsignes,#Mapropriete, #Mesparametres
+#properties
 {
 	position: relative;
 	margin: 80px 10px;
