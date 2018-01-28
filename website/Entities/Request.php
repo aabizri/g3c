@@ -634,6 +634,12 @@ class Request extends Entity
         return true;
     }
 
+    /* PRINTING */
+    public function prettyPrint(): string
+    {
+        return print_r($this, true);
+    }
+
     /* BUSINESS LOGIC */
 
     /**
