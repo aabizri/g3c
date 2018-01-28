@@ -63,7 +63,7 @@ class Admin
 
                 // Pagination
                 $tbe_pagination = (object)[
-                    "total" => (new \Queries\Users)->select()->count(),
+                    "total" => (new \Queries\Users)->count(),
                 ];
 
                 // Complete object
@@ -257,9 +257,9 @@ class Admin
         // TODO: Check auhorisation for viewer
 
         // Retrieve values necessary
-        $user_id = $req->getGET("queried_user_id");
+        $user_id = $req->getGET("uid");
         if ($user_id === null) {
-            echo "Pas de queried_user_id donné";
+            echo "Pas de uid donné";
             return;
         }
         $count = $req->getGET("count") ?? 20;
@@ -302,7 +302,7 @@ class Admin
 
         // Pagination
         $tbe_pagination = (object)[
-            "total" => (new \Queries\Roles)->select()->filterByUserID("=", $user_id)->count(),
+            "total" => (new \Queries\Roles)->filterByUserID("=", $user_id)->count(),
         ];
 
         // Complete object
@@ -371,7 +371,7 @@ class Admin
 
                 // Pagination
                 $tbe_pagination = (object)[
-                    "total" => (new \Queries\Users)->select()->count(),
+                    "total" => (new \Queries\Users)->count(),
                 ];
 
                 // Complete object
@@ -402,7 +402,7 @@ class Admin
     public static function getProperty(\Entities\Request $req): void
     {
         // Retrieve the user ID
-        $queried_property_id = $req->getGET("queried_property_id");
+        $queried_property_id = $req->getGET("pid") ?? $req->getPropertyID();
         if (empty($queried_property_id)) {
             throw new \Exception("EMPTY PID");
         }
@@ -460,7 +460,7 @@ class Admin
         // TODO: Check authorisation for viewer
 
         // Retrieve the user ID
-        $queried_property_id = $req->getGET("pid");
+        $queried_property_id = $req->getGET("pid") ?? $req->getPropertyID();
         if (empty($queried_property_id)) {
             http_response_code(400);
             throw new \Exception("Empty property ID");
@@ -552,7 +552,7 @@ class Admin
 
                 // Pagination
                 $tbe_pagination = (object)[
-                    "total" => (new \Queries\Peripherals)->select()->count(),
+                    "total" => (new \Queries\Peripherals)->count(),
                 ];
 
                 // Complete object
@@ -583,7 +583,7 @@ class Admin
     public static function getPeripheral(\Entities\Request $req): void
     {
         // Récupérer l'UUID
-        $peripheral_uuid = $req->getGET("queried_peripheral_uuid");
+        $peripheral_uuid = $req->getGET("puuid");
         if (empty($peripheral_uuid)) {
             http_response_code(400);
             echo "UUID non indiqué";
@@ -665,7 +665,7 @@ class Admin
         // TODO: Check authorisation for viewer
 
         // Retrieve the user ID
-        $peripheral_uuid = $req->getGET("queried_peripheral_uuid");
+        $peripheral_uuid = $req->getGET("puuid");
         if (empty($peripheral_uuid)) {
             http_response_code(400);
             throw new \Exception("Empty peripheral UUID");
