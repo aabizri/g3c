@@ -15,9 +15,6 @@
 
 
 
-<?php
-if (!empty($data["rooms"])):
-?>
 
 
 <p id="nombrepc">Vous avez actuellement <?php echo count($data["rooms"])?> pièces.</p>
@@ -68,7 +65,6 @@ if (!empty($data["rooms"])):
             else {
                 echo 'Pas de pièces dans la propriété';
             }
-            endif;
             ?>
         </table>
     </div>

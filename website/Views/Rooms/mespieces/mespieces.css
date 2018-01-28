@@ -60,7 +60,7 @@ body {
 {
 	position: relative;
 	left: 30%;
-	top: -140px;
+	top: -150px;
 	border: 1px solid #955252;
 	border-radius: 20px;
 	width: 50%;
@@ -108,7 +108,7 @@ body {
 	border: 1px solid #955252;
 	border-radius: 20px;
 	background-color: rgb(217,196,177);
-	margin-bottom: 300px;
+	margin-bottom: 349px;
 }
 
 #tablepieces
@@ -133,3 +133,4 @@ table
 	color: #955252;
 	text-decoration: none;
 }
+
