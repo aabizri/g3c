@@ -7,33 +7,39 @@ body {
 	overflow-x: hidden;
 }
 
-#join-block {
+#civilite {
+	position: relative;
+	right: 152px;
+}
+
+#hommefemme {
+	position: absolute;
+	left: 220px;
+	top:62px;
+}
+
+#infos {
 	background-color: #d9c4b19b;
 	position: relative;
 	border: 1px solid #955252;
 	top: 60px;
-	left: 27%;
-	text-align: center;
-	width: 660px;
+	left: 35%;
+	text-align: center; 
+	width: 360px;
 	padding: 5px 20px;
 	padding-bottom: 15px;
 	border-radius: 10px;
-}
-
-#join-inputs {
-	text-align: left;
-}
-
-#join-inputs > fieldset > input {
-	position: absolute;
-	right: 30px;
 }
 
 input {
 	border-radius: 5px;
 }
 
-.g-recaptcha {
-	display: block;
-	align-content: center;
+#leftline {
+	text-align: left;
+}
+
+#line {
+	position: absolute;
+	right: 20px;
 }

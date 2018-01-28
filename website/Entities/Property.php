@@ -106,7 +106,7 @@ class Property extends Entity
     }
 
     /**
-     * @param flaot $creation_date
+     * @param float $creation_date
      * @return bool
      */
     public function setCreationDate(float $creation_date): bool

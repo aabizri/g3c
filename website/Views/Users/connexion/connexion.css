@@ -5,6 +5,8 @@ body {
 	background-size: cover;
 	overflow-x: hidden;
 	top: 30px;
+	height: 705px;
+	overflow-y: hidden;
 }
 
 #explications
@@ -40,7 +42,6 @@ body {
 	width: 50%;
 	font-family: didot, serif ;
 	font-size: x-large;
-	top:120px;
+	top:70px;
 	text-align: center;
-	margin-bottom: 46px;
 }

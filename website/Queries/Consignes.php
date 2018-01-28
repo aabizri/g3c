@@ -1,28 +1,28 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: jeremy
- * Date: 14/01/2018
- * Time: 18:25
+ * User: Bryan
+ * Date: 15/01/2018
+ * Time: 19:37
  */
 
 namespace Queries;
 
 
-class FAQ extends Query
+class Consignes extends Query
 {
     /* COMMON CONSTANTS */
-    private const table = "faq";
+    private const table = "consignes";
     private const columns = ["id" => ["id", "gen-on-insert"],
-        "question" => [],
-        "answer" => [],
+        "actuator_id" => [],
+        "destination_value" => [],
+        "active" => [],
         "creation_date" => ["timestamp"],
         "last_updated" => ["timestamp"]];
-
-    private const entity_class_name = "\Entities\FAQ";
+    private const entity_class_name = "\Entities\Consigne";
 
     /**
-     * faq constructor.
+     * Consigne constructor.
      * Calls the parent's one.
      *
      * @throws \Exception
@@ -32,16 +32,13 @@ class FAQ extends Query
         parent::__construct(self::table, self::columns, self::entity_class_name);
     }
 
-
-    /* OTHERS */
-
     /**
-     * @param \Entities\faq $faq
+     * @param \Entities\Consigne $consigne
      * @return bool
      * @throws \Exception
      */
-    public function save(\Entities\FAQ $faq): bool
+    public function save(\Entities\Consigne $consigne): bool
     {
-        return parent::saveEntity($faq);
+        return parent::saveEntity($consigne);
     }
 }

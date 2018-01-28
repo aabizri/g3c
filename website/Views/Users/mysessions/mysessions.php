@@ -2,7 +2,7 @@
     <br/>
     <br/>
     <br/>
-    <form action="index.php?c=User&a=SessionCancel" method="post">
+    <form action="account/sessions/cancel" method="post">
         <table>
             <thead>
             <tr>

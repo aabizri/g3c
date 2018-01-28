@@ -1,0 +1,42 @@
+RewriteEngine on
+
+# Admin
+RewriteRule   ^admin$                               index.php?c=Admin&a=Console&%{QUERY_STRING}
+
+## Admin/Users
+RewriteRule   ^admin/users$                         index.php?c=Admin&a=Users&%{QUERY_STRING}
+RewriteRule   ^admin/user/([0-9]+)$                 index.php?c=Admin&a=User&uid=$1&%{QUERY_STRING}
+RewriteRule   ^admin/user/([0-9]+)/sessions$        index.php?c=Admin&a=UserSessions&uid=$1&%{QUERY_STRING}
+RewriteRule   ^admin/user/([0-9]+)/requests$        index.php?c=Admin&a=UserRequests&uid=$1&%{QUERY_STRING}
+RewriteRule   ^admin/user/([0-9]+)/properties$      index.php?c=Admin&a=UserProperties&uid=$1&%{QUERY_STRING}
+
+## Admin/Properties
+RewriteRule   ^admin/properties$                    index.php?c=Admin&a=Properties&pid=$1&%{QUERY_STRING}
+RewriteRule   ^admin/property/([0-9]+)$             index.php?c=Admin&a=Property&pid=$1&%{QUERY_STRING}
+RewriteRule   ^admin/property/([0-9]+)/users$       index.php?c=Admin&a=PropertyUsers&pid=$1&%{QUERY_STRING}
+RewriteRule   ^admin/property/([0-9]+)/peripherals$ index.php?c=Admin&a=PropertyPeripherals&pid=$1&%{QUERY_STRING}
+
+# Client
+RewriteRule   ^login$                               index.php?c=User&a=Login&%{QUERY_STRING}
+RewriteRule   ^logout$                              index.php?c=User&a=Logout&%{QUERY_STRING}
+RewriteRule   ^join$                                index.php?c=User&a=Join&%{QUERY_STRING}
+RewriteRule   ^account$                             index.php?c=User&a=Account&%{QUERY_STRING}
+RewriteRule   ^account/subscription$                index.php?c=Subscription&a=Status&%{QUERY_STRING}
+
+# Property-wise
+RewriteRule   ^properties$                          index.php?c=Properties&a=Select&%{QUERY_STRING}
+RewriteRule   ^properties/new$                      index.php?c=Properties&a=New&%{QUERY_STRING}
+RewriteRule   ^properties/([0-9]+)$                 index.php?c=Properties&a=Property&pid=$1&%{QUERY_STRING}
+RewriteRule   ^properties/([0-9]+)/adduser$         index.php?c=Properties&a=AddUser&pid=$1&%{QUERY_STRING}
+RewriteRule   ^properties/([0-9]+)/removeuser$      index.php?c=Properties&a=RemoveUser&pid=$1&%{QUERY_STRING}
+
+## Property rooms
+RewriteRule   ^properties/([0-9]+)/rooms$             index.php?c=Rooms&a=Rooms&pid=$1&%{QUERY_STRING}
+RewriteRule   ^properties/([0-9]+)/rooms/([0-9]+)$    index.php?c=Rooms&a=Room&pid=$1&rid=$2&%{QUERY_STRING}
+RewriteRule   ^properties/([0-9]+)/rooms/create       index.php?c=Rooms&a=Create&pid=$1&%{QUERY_STRING}
+
+## Property others
+RewriteRule   ^properties/([0-9]+)/peripherals$       index.php?c=Peripherals&a=List&pid=$1&%{QUERY_STRING}
+RewriteRule   ^properties/([0-9]+)/peripherals/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/remove$  index.php?c=Peripherals&a=Remove&pid=$1&peripheral_id=$2&%{QUERY_STRING}
+RewriteRule   ^properties/([0-9]+)/parameters$        index.php?c=Property&a=Parameters&pid=$1&%{QUERY_STRING}
+RewriteRule   ^properties/([0-9]+)/consignes$       index.php?c=Consignes&a=Consignes&pid=$1&%{QUERY_STRING}

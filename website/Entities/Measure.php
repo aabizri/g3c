@@ -162,7 +162,7 @@ class Measure extends Entity
      * @param int $actuator_id
      * @return bool
      */
-    public function setActuatorID(int $actuator_id): bool
+    public function setActuatorID(?int $actuator_id): bool
     {
         $this->actuator_id = $actuator_id;
         return true;
@@ -180,7 +180,7 @@ class Measure extends Entity
      * @param int $sensor_id
      * @return bool
      */
-    public function setSensorID(int $sensor_id): bool
+    public function setSensorID(?int $sensor_id): bool
     {
         $this->sensor_id = $sensor_id;
         return true;
