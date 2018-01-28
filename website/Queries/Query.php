@@ -357,7 +357,8 @@ abstract class Query
         $this->filterByEntity($this->entity_id_column_name, "=", $entity);
 
         // On ne push pas la valeur de l'ID, inutile dans tous les cas
-        unset($this->manipulate_columns[array_search($this->entity_id_column_name, $this->manipulate_columns)]);
+        $entity_id_column_index = array_search($this->entity_id_column_name, $this->manipulate_columns);
+        if ($entity_id_column_index !== false) unset($this->manipulate_columns[$entity_id_column_index]);
 
         // Only update the ones that aren't gen-on-insert
         foreach ($this->manipulate_columns as $column) {
