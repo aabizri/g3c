@@ -1,7 +1,7 @@
 <main>
     <div id="join-block">
         <h3>Formulaire d'inscription</h3>
-        <form id="join-form" method="post" action="/join">
+        <form id="join-form" method="post" action="join">
             <div id="join-inputs">
                 <fieldset id="civil-fieldset">
                     <legend>état civil</legend>
