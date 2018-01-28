@@ -623,6 +623,10 @@ class Admin
                 "title" => "Display Name",
                 "value" => htmlspecialchars($peripheral->getDisplayName()),
                 "type" => "text"],
+            "add_date" => (object)[
+                "title" => "Add Date",
+                "value" => $peripheral->getAddDate(),
+                "type" => "date"],
             "build_date" => (object)[
                 "title" => "Build Date",
                 "value" => $peripheral->getBuildDate(),
@@ -649,6 +653,51 @@ class Admin
                 ];
                 \Helpers\DisplayManager::display("peripheral", $data_for_php_view);
         }
+    }
+
+    /**
+     * POST root/admin/peripherals/{UUID}
+     * @param \Entities\Request $req
+     * @throws \Exception
+     */
+    public static function postPeripheral(\Entities\Request $req): void
+    {
+        // TODO: Check authorisation for viewer
+
+        // Retrieve the user ID
+        $peripheral_uuid = $req->getGET("queried_peripheral_uuid");
+        if (empty($peripheral_uuid)) {
+            http_response_code(400);
+            throw new \Exception("Empty peripheral UUID");
+        }
+
+        // Retrieve the user
+        $peripheral = (new \Queries\Peripherals)->filterByColumn("uuid", "=", $peripheral_uuid)->findOne();
+
+        // Retrieve POST data (key => value)
+        $order = [
+            "display_name" => $req->getPOST("new_display_name"),
+            "add_date" => $req->getPOST("new_add_date"),
+            "build_date" => $req->getPOST("new_build_date"),
+            "property_id" => $req->getPOST("new_property_id"),
+            "room_id" => $req->getPOST("new_room_id"),
+        ];
+
+        // Validate them all
+        foreach ($order as $title => $pair) {
+            if (empty($pair)) {
+                unset($order[$title]);
+                continue;
+            }
+        }
+
+        // Set them all
+        $peripheral->setMultiple($order);
+
+        // Push it
+        (new \Queries\Peripherals)
+            ->onColumns(...array_keys($order))
+            ->update($peripheral);
     }
 
     /**
