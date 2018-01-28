@@ -24,15 +24,15 @@ class Room
 
         if (empty($property_id)) {
             http_response_code(400);
-            echo "Requête concernant une propriété mais non associée à une propriété, erreur";
             return;
         }
 
+
         // Assigne & vérifie que les données existent
-        $name = $req->getPOST("name");
+        $name =htmlspecialchars($req->getPOST("name"));
+
         if (empty($name)) {
             http_response_code(400);
-            echo "Il manque le nom";
             return;
         }
 
@@ -44,11 +44,10 @@ class Room
         // Insérer l'entité dans la bdd
         try {
             (new \Queries\Rooms)->insert($r);
-        } catch (\Exception $e) {
-            echo "Erreur" . $e;
         }
+        catch (\Exception $e) {}
 
-        \Helpers\DisplayManager::redirectToController("Room", "Rooms&pid=1");
+        \Helpers\DisplayManager::redirectToController("Room", "Rooms&pid=".$property_id);
     }
 
     /**
@@ -62,7 +61,6 @@ class Room
         $property_id = $req->getPropertyID();
         if (empty($property_id)) {
             http_response_code(403);
-            echo "Requête concernant une propriété mais non associée à une propriété, erreur";
             return;
         }
 
@@ -71,7 +69,10 @@ class Room
             ->filterByPropertyID("=", $property_id)
             ->find();
 
-        \Helpers\DisplayManager::display("mespieces", ["rooms" => $rooms]);
+        //On envoie la liste des pièces ainsi que l'id de la propriété
+        $data["rooms"]=$rooms;
+        $data["pid"]=$property_id;
+        \Helpers\DisplayManager::display("mespieces", $data);
     }
 
     /**
@@ -84,12 +85,13 @@ class Room
         //On récupère l'id de la pièce
         $rid = $req
             ->getGET("room");
+        $pid=(new Queries\Rooms)->retrieve($rid)->getPropertyID();
 
 
+        // On verifie si il y a une room_id
         if (empty($rid)) {
             // Si la requête n'est pas associée à une pièce, retourner une erreur
             http_response_code(400);
-            echo "Paramètre d'ID de pièce absent";
             return;
         }
 
@@ -135,17 +137,62 @@ class Room
 
         }
 
+        // On récupère l'entité complète de la pièce
         $room_entity = (new Queries\Rooms)
             ->retrieve($rid);
 
+        // On envoie les données nécessaires à la vue
         $data["last_measures"] = $last_measures;
         $pid = (new \Queries\Rooms)->retrieve($rid)->getPropertyID();
         $data["rooms"] = (new \Queries\Rooms)->filterByPropertyID("=", $pid)->find();
         $data["room_entity"] = $room_entity;
+        $data["pid"]=$pid;
 
         \Helpers\DisplayManager::display("mapiece", $data);
 
     }
 
 
+    public function postDelete(\Entities\Request $req): void
+    {
+        // On récupère le room_id via le formulaire
+        $rid =$req->getPOST("rid");
+        $pid=(new Queries\Rooms) ->retrieve($rid)->getPropertyID();
+
+        // On récupère les périphérique liée à la pièce
+        $peripheral_list=(new Queries\Peripherals)
+            ->filterByRoomID("=",$rid)
+            ->find();
+
+        // On verifie que l'id_room et l'id_property ne sont pas vide.
+        if (empty($rid)) {
+            http_response_code(403);
+            return;
+        }
+        if (empty($pid)) {
+            http_response_code(403);
+            return;
+        }
+
+        // On set null en room_id pour désassocier chaque périphérique à la pièce
+        foreach ($peripheral_list as $peripheral)
+        {
+            // Supprimer le périphérique
+
+            $peripheral->setRoomID(null);
+
+            // Push
+            (new \Queries\Peripherals) -> update($peripheral);
+
+
+        }
+
+            (new Queries\Rooms)
+            ->filterByColumn("id","=",$rid)
+            ->delete();
+
+        $data["rooms"] = (new \Queries\Rooms)->filterByPropertyID("=",$pid)->find();
+        \Helpers\DisplayManager::redirectToController("Room","Rooms&pid=".$pid."");
+
+    }
 }

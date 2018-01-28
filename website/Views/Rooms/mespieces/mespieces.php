@@ -22,7 +22,7 @@
               <h3 id="pieces"><strong>Pièces</strong><br></h3>
               <div id="tablepieces">
                   <table align="center">
-
+                      <form action="index.php?c=Room&a=Delete&pid=<?php echo $data["pid"]?>" method="post" >
                       <?php
                       //Créer un tableau qui s'indente en fonction du nombre de périphériques
                       $Nbrdonnees = count($data["rooms"]);
@@ -41,17 +41,17 @@
                               //On met les date sous le bon format
                               $du = date( "d/m/Y", $r->getLastUpdated()) . ' à ' . date( "H:i",$r->getLastUpdated() );
                               $dc = date( "d/m/Y", $r->getCreationDate()) . ' à ' . date( "H:i",$r->getCreationDate() );
-                              //On récupère le nom pour des salles
+                              //On récupère le nom et l'id pour les salles
                               $name = $r->getName();
+                              $rid = $r->getID();
 
 
 
-                              echo '<tr><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" >
-                                        <td><a class="link"  href="index.php?c=Room&a=Room&room=' . $r->getID() . '">   
-                                        '.$name.'</a></td> 
+                              echo '<tr>
+                                        <td><a class="link"  href="index.php?c=Room&a=Room&room=' . $r->getID() . '">'.$name.'</a></td> 
                                         <td>'. $du .'</td>
                                         <td>'. $dc .'</td>
-                                        <td><form action="index.php?c=Peripherals&a=Remove&pid=1&debug=true" method="post" ><input type="submit" value="Supprimer"/></form></td>
+                                        <td><input type="checkbox" name="rid" value="'.$rid.'"/><input type="submit" value="Supprimer"/></td>
                                       </tr>';}
 
                       }
@@ -61,6 +61,7 @@
                       }
                       endif;
                       ?>
+                      </form>
                   </table>
               </div>
           </div>
@@ -69,7 +70,7 @@
             <div id="ajouterpieces">
                 <h3>Ajouter une pièce</h3>
                 <div id="champsajouterpiece">
-                    <form method="post" name="ajouterpieces"  action="index.php?c=Room&a=Create&pid=1&debug=true">
+                    <form method="post" name="ajouterpieces"  action="index.php?c=Room&a=Create&pid=<?php echo $data["pid"] ?>">
                         <label>Nom de la pièce : </label><input type="text" name="name" /><br><br>
 
                         <br>
