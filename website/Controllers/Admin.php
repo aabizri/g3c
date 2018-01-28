@@ -740,7 +740,7 @@ class Admin
         $data = ["frequently_asked_questions" => $frequently_asked_questions];
 
         // Display
-        \Helpers\DisplayManager::display("faq", $data);
+        \Helpers\DisplayManager::display("admin-faq", $data);
     }
 
     /**
