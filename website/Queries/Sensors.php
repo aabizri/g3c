@@ -1,27 +1,25 @@
 <?php
-    /**
-     * Created by PhpStorm.
-     * User: Dinesh
-     * Date: 11/01/2018
-     * Time: 08:58
-     */
+/**
+ * Created by PhpStorm.
+ * User: Bryan
+ * Date: 25/01/2018
+ * Time: 15:27
+ */
 
 namespace Queries;
-    use Entities\Sensor;
 
 class Sensors extends Query
 {
-
     /* COMMON CONSTANTS */
     private const table = "sensors";
     private const columns = ["id" => ["id", "gen-on-insert"],
         "measure_type_id" => [],
         "peripheral_uuid" => [],
-        "last_updated" => ["timestamp"]];
+        "last_updated" => ["gen-on-insert", "timestamp"]];
     private const entity_class_name = "\Entities\Sensor";
 
     /**
-     * Sensors constructor.
+     * Users constructor.
      * Calls the parent's one.
      *
      * @throws \Exception

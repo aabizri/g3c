@@ -111,6 +111,79 @@ class Peripherals
             Error::getInternalError500Throwables($req, $t);
             return;
         }
+        //Envoyer le status des peripheriques
+        foreach ($property_peripherals as $peripheral){
+
+            //On trouve l'UUID de tous les peripheriques de la propriété
+            $uuid = $peripheral -> getUUID();
+
+            //Puis on cherche les sensors liés à ces périphériques
+            $sensor = null;
+            try {
+                $sensor = (new \Queries\Sensors)
+                    ->filterByColumn("peripheral_uuid", "=", $uuid, "AND")
+                    ->find();
+            } catch (\Throwable $t) {
+                Error::getInternalError500Throwables($req,$t,"Error find sensors")
+                return;
+            }
+            //On recupère leurs ID
+            $sensors_id = [];
+            foreach ($sensor as $s){
+                $sensors_id[] = $s -> getID();
+            }
+
+            //Ces ids nous permettent de trouver l'entité de la dernière mesure
+            $sensors_status = [];
+            foreach ($sensors_id as $sid){
+                $measure = null;
+                try {
+                    $measure = (new \Queries\Measures)->filterByColumn("sensor_id", "=", $sid, "AND")
+                        ->orderBy("date_time", false)
+                        ->findOne();
+                } catch (\Throwable $t) {
+                    Error::getInternalError500Throwables($req,$t,"Erro retrieving last measure for sensor");
+                    return;
+                }
+
+                if (isset($measure)) {
+                    $date_time = $measure->getDateTime();
+                }
+                else{
+                    //Trouver une solution
+                }
+
+                $difference = time() - strtotime($date_time);
+
+                if ( $difference > 1800 ){
+                    $status = "Non-fonctionnel";
+                }
+                else{
+                    $status = "Fonctionnel";
+                }
+
+                $sensors_status[] = $status;
+            }
+
+            if (array_search("Non-fonctionnel", $sensors_status) !== false) {
+                $final_status = "Non-fonctionnel";
+            }
+            elseif (empty($sensors_status)){
+                $final_status = "Pas de capteurs liés";
+            }
+            else {
+                $final_status = "Fonctionnel";
+            }
+
+            $peripheral -> setStatus($final_status);
+
+            // Insert it
+            try {
+                (new \Queries\Peripherals)->update($peripheral);
+            } catch (\Throwable $t) {
+                Error::getInternalError500Throwables($req,$t,"Error updating peripheral");
+            }
+        }
 
         //Trouver toutes les rooms id de la propriété
         $property_rooms = null;

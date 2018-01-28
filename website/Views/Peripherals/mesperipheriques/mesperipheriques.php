@@ -29,6 +29,7 @@
                                     <th>Localisation</th>
                                     <th>Dernière mise à jour</th>
                                     <th>UUID</th>
+                                    <th>Statut</th>
                                     <th>Gestion</th>
                                     </tr></thead>';
 
@@ -57,11 +58,21 @@
                                     $peripheral_name = $p->getDisplayName();
                                 }
 
+                                if ($p->getStatus() === "Fonctionnel" ){
+                                    $status = "<img id='status' src='http://t5.rbxcdn.com/78a4211079921cd8604d573ea33f48c3' alt='Fonctionnel' title='Fonctionnel' />";
+                                }
+                                elseif ($p->getStatus() === "Non-fonctionnel"){
+                                    $status = "<img id='status' src='https://www.spreadshirt.fr/image-server/v1/mp/designs/16377489,width=178,height=178/croix-cercle-icone-3006.png' alt='Non-fonctionnel' title='Non-fonctionnel' />";
+                                }
+                                else {
+                                    $status = "<img id='status' src='http://www.icone-png.com/png/16/16126.png' alt='Pas de capteurs liés' title='Pas de capteurs liés' />";
+                                }
 
                                 echo '<tr><form action="properties/' . $data["pid"] . '/peripherals/' . $p->getUUID() . '/remove" method="post" >
                                         <td>'. htmlspecialchars($peripheral_name) .'</td> 
                                         <td>'. htmlspecialchars($room_name) .'</td>
                                         <td>'. htmlspecialchars($date) .'</td>
+                                        <td>'. $status .'</td>
                                         <td><input type="hidden" name="peripheral_id" value="'. $p->getUUID() .'"/>'. $p->getUUID() .'</td>
                                         <td><form action="properties/' . $data["pid"] . '/peripherals/' . $p->getUUID() . '/remove" method="post" ><input type="submit" value="Supprimer"/></form></td>
                                       </tr>';}

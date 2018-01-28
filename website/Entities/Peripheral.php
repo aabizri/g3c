@@ -175,10 +175,9 @@ class Peripheral extends Entity
      * @param string|null $status
      * @return bool
      */
-    public function setStatus(string $status): bool
+    public function setStatus(string $status)
     {
         $this->status = $status;
-        return true;
     }
 
     /**
