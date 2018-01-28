@@ -52,7 +52,7 @@
                                         '.htmlspecialchars($name).'</a></td> 
                                         <td>'. $du .'</td>
                                         <td>'. $dc .'</td>
-                                        <td><input type="checkbox" name="rid" value="'.$rid.'"/><input type="submit" value="Supprimer"/></td>
+                                        <td><input type="checkbox" name="rid[]" value="' . $rid . '"/></td>
                                       </tr>';}
 
             }
@@ -62,6 +62,8 @@
             }
             ?>
         </table>
+                  <input type="submit" value="Supprimer"
+                         onsubmit="return confirm('êtes vous sûr de vouloir supprimer toutes ces pièces ?')"/>
     </div>
 </div>
 
