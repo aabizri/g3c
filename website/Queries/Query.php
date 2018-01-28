@@ -287,9 +287,11 @@ abstract class Query
      */
     public function count(): int
     {
+        // Mets l'opération à "SELECT"
+        $this->operation = "SELECT";
+
         // Set la fonction à être executée (un count)
         $this->manipulate_columns = ["COUNT(*)"];
-        $this->operation = "SELECT";
 
         // Prepare the statement
         $stmt = $this->prepareAndExecute();
@@ -355,8 +357,8 @@ abstract class Query
         $this->filterByEntity($this->entity_id_column_name, "=", $entity);
 
         // On ne push pas la valeur de l'ID, inutile dans tous les cas
-        unset($this->manipulate_columns[array_search($this->entity_id_column_name, $this->manipulate_columns)]);
-        $this->manipulate_columns = array_values($this->manipulate_columns); // Re-key
+        $entity_id_column_index = array_search($this->entity_id_column_name, $this->manipulate_columns);
+        if ($entity_id_column_index !== false) unset($this->manipulate_columns[$entity_id_column_index]);
 
         // Only update the ones that aren't gen-on-insert
         foreach ($this->manipulate_columns as $column) {
@@ -787,10 +789,13 @@ abstract class Query
      * @return string
      * @throws \Exception if error
      */
-    private function toSQL(): string
+    public function toSQL(): string
     {
         // Get lexemes
         $lexemes = $this->toLexemes();
+        if (empty($lexemes)) {
+            return "";
+        }
 
         // Now process
         $sql = "";
@@ -809,11 +814,14 @@ abstract class Query
      * @return \PDOStatement
      * @throws \Exception if fails to generate the SQL
      */
-    private function preparePDO(?string $sql = null): \PDOStatement
+    public function preparePDO(?string $sql = null): \PDOStatement
     {
         // Si on ne nous donne pas de SQL, on le génère nous-même
         if (empty($sql)) {
             $sql = $this->toSQL();
+        }
+        if (empty($sql)) {
+            throw new \Exception("Empty SQL query generated : \"" . $sql . "\"");
         }
 
         // Preparer

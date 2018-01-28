@@ -29,6 +29,14 @@ class DisplayManager
         "mesperipheriques"=> "Peripherals",
         "mapropriete"=> "Users",
         "mysessions" => "Users",
+        "users" => "Admin",
+        "properties" => "Admin",
+        "user" => "Admin",
+        "property" => "Admin",
+        "console" => "Admin",
+        "user_properties" => "Admin",
+        "peripherals" => "Admin",
+        "peripheral" => "Admin",
         "mesproprietes" => "Properties",
         "nouvellepropriete" => "Properties",
         "faq" => "FAQ",
@@ -176,13 +184,58 @@ class DisplayManager
     }
 
     /**
+     * Redirects to destination with 301 (Moved permeanently))
+     *
+     * @param string $destination
+     * @throws \Exception
+     */
+    public static function redirect301(string $destination, string $message = ""): void
+    {
+        self::redirect($destination, 301, $message);
+    }
+
+    /**
      * Redirects to destination with 302 (temporary redirect)
      *
      * @param string $destination
      * @throws \Exception
      */
-    public static function redirectToPath(string $destination): void
+    public static function redirect302(string $destination, string $message = ""): void
     {
-        header("Location: " . \Helpers\DisplayManager::absolutifyURL($destination));
+        self::redirect($destination, 302, $message);
+    }
+
+    /**
+     * Redirects to destination with 303 (see other)
+     * Useful for creation queries
+     *
+     * @param string $destination
+     * @throws \Exception
+     */
+    public static function redirect303(string $destination, string $message = ""): void
+    {
+        self::redirect($destination, 303, $message);
+    }
+
+    /**
+     * @param int $code
+     * @param string $destination
+     * @throws \Exception
+     */
+    private static function redirect(string $destination, int $code, string $message = ""): void
+    {
+        // Set the response code
+        http_response_code($code);
+
+        // Absolutify the destination
+        $absolutified_destination = \Helpers\DisplayManager::absolutifyURL($destination);
+
+        // Set the header
+        header("Location: " . $absolutified_destination);
+
+        // Echo a small message for redirection
+        $message .= $message !== "" ? "<br/>" : "";
+        $message .= 'Redirection en cours vers <code>' . $absolutified_destination . '</code><br/>Si votre navigateur n\'éxecute pas la redirection, veuillez <a href="' . $absolutified_destination . '">cliquer ici</a>';
+        echo $message;
     }
 }

@@ -162,6 +162,7 @@ class Consignes
         // Enregistrement
         (new \Queries\Consignes)->insert($c);
 
-        DisplayManager::redirectToPath("consignes");
+        DisplayManager::redirect302("consignes");
+
     }
 }
