@@ -23,8 +23,25 @@ class Store
      */
     public static function getStore(\Entities\Request $req): void
     {
-        $products_list_peripheral = (new \Queries\Products)->filterByColumn('category', '=', 'peripheral', 'AND')->find();
-        $products_list_accessory = (new \Queries\Products)->filterByColumn('category', '=', 'accessory', 'AND')->find();
+        $products_list_peripheral = [];
+        try {
+            $products_list_peripheral = (new \Queries\Products)
+                ->filterByColumn('category', '=', 'peripheral', 'AND')
+                ->find();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t,
+                "Erreur lors de la récupération des produits (périphériques)");
+        }
+
+        $products_list_accessory = null;
+        try {
+            $products_list_accessory = (new \Queries\Products)
+                ->filterByColumn('category', '=', 'accessory', 'AND')
+                ->find();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t,
+                "Erreur lors de la récupération des produits (accessoires)");
+        }
 
         // Publish data
         $data["products_peripherals"] = $products_list_peripheral;

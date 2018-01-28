@@ -112,7 +112,7 @@ class Actuator extends Entity
     /**
      * @return mixed
      */
-    public function getPeripheralUuid() : string
+    public function getPeripheralUUID(): string
     {
         return $this->peripheral_uuid;
     }
@@ -120,7 +120,7 @@ class Actuator extends Entity
     /**
      * @param mixed $peripheral_uuid
      */
-    public function setPeripheralUuid( string $peripheral_uuid): bool
+    public function setPeripheralUUID(string $peripheral_uuid): bool
     {
         $this->peripheral_uuid = $peripheral_uuid;
         return true;
