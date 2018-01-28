@@ -625,7 +625,7 @@ class Admin
                 "type" => "text"],
             "add_date" => (object)[
                 "title" => "Add Date",
-                "value" => $peripheral->getAddDate(),
+                "value" => (new \DateTime)->setTimestamp($peripheral->getAddDate())->format("Y-m-d"),
                 "type" => "date"],
             "build_date" => (object)[
                 "title" => "Build Date",
