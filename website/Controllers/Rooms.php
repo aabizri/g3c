@@ -7,8 +7,7 @@ use Entities;
 /**
  * Class Rooms
  * @package Controllers
- */use Queries;
-
+ */
 class Rooms
 {
 
@@ -18,39 +17,49 @@ class Rooms
      */
     public function postCreate(\Entities\Request $req): void
     {
-        //Si la requête n'est pas associée à une propriété, retourner une erreur
-
+        // Récupére l'ID de la propriété liée
         $property_id = $req->getPropertyID();
 
+        // Si celle-ci n'est pas set, erreur
         if (empty($property_id)) {
-            http_response_code(400);
-            echo "Requête concernant une propriété mais non associée à une propriété, erreur";
+            Error::getBadRequest400($req, "Requête non-associée à une propriété");
             return;
         }
 
         // Assigne & vérifie que les données existent
         $name = $req->getPOST("name");
         if (empty($name)) {
-            http_response_code(400);
-            echo "Il manque le nom";
+            Error::getBadRequest400($req, "Nom absent dans la requête POST");
             return;
         }
 
         // Créer l'entité
-        $r = new Entities\Room();
-        $r->setName($name);
-        $r->setPropertyID($property_id);
+        try {
+            $r = new Entities\Room();
+            $r->setName($name);
+            $r->setPropertyID($property_id);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t,
+                "Erreur lors de la création d'une nouvelle pièce (pré-enregistrement)");
+            return;
+        }
 
         // Insérer l'entité dans la bdd
         try {
             (new \Queries\Rooms)->insert($r);
-        } catch (\Exception $e) {
-            echo "Erreur" . $e;
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t,
+                "Erreur dans la query insertion de la nouvelle pièce dans la BDD");
+            return;
         }
 
-        http_response_code(303); // HTTP Created
-        header("Location: " . \Helpers\DisplayManager::absolutifyURL("properties/" . $property_id . "/rooms/" . $r->getID()));
-        //\Helpers\DisplayManager::redirectToPath("properties/" . $property_id . "/rooms/" . $r->getID());
+        // Crée ! See other
+        try {
+            http_response_code(303); // HTTP Created (See other)
+            header("Location: " . \Helpers\DisplayManager::absolutifyURL("properties/" . $property_id . "/rooms/" . $r->getID()));
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Erreur lors de la redirection");
+        }
     }
 
     /**
@@ -60,18 +69,24 @@ class Rooms
      */
     public function getRooms(\Entities\Request $req): void
     {
-        // Si la requête n'est pas associée à une propriété, retourner une erreur
+        // Récupére l'ID de la propriété liée
         $property_id = $req->getPropertyID();
+
+        // Si celle-ci n'est pas set, erreur
         if (empty($property_id)) {
-            http_response_code(403);
-            echo "Requête concernant une propriété mais non associée à une propriété, erreur";
+            Error::getBadRequest400($req, "Requête non-associée à une propriété");
             return;
         }
 
         //Récupérer liste des pièces
-        $rooms = (new \Queries\Rooms)
-            ->filterByPropertyID("=", $property_id)
-            ->find();
+        try {
+            $rooms = (new \Queries\Rooms)
+                ->filterByPropertyID("=", $property_id)
+                ->find();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Erreur lors de la query de recherche des pièces");
+            return;
+        }
 
         // Données pour la vue PHP
         $data_for_php_view = [
@@ -89,38 +104,59 @@ class Rooms
      */
     public function getRoom(\Entities\Request $req): void
     {
+        // Récupére l'ID de la propriété liée
+        $property_id = $req->getPropertyID();
+
+        // Si celle-ci n'est pas set, erreur
+        if (empty($property_id)) {
+            Error::getBadRequest400($req, "Requête non-associée à une propriété");
+            return;
+        }
+
         //On récupère l'id de la pièce
-        $rid = $req
-            ->getGET("rid");
+        $rid = $req->getGET("rid");
+
+        // Si la requête n'est pas associée à une pièce, retourner une erreur
         if (empty($rid)) {
-            // Si la requête n'est pas associée à une pièce, retourner une erreur
-            http_response_code(400);
-            echo "Paramètre d'ID de pièce absent";
+            Error::getBadRequest400($req, "Paramètre d'ID de pièce absent");
             return;
         }
 
-        // On vérifie si elle existe / on la récupère
-        $room = (new \Queries\Rooms)->retrieve($rid);
+        // On la récupère
+        $room = null;
+        try {
+            $room = (new \Queries\Rooms)->retrieve($rid);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Erreur lors de la récupéation de la pièce");
+            return;
+        }
+
+        // On vérifie si elle existe
         if ($room === null) {
-            http_response_code(400);
-            echo "Cette pièce n'existe pas";
+            Error::getBadRequest400($req, "La pièce indiquée n'existe pas");
             return;
         }
+
+        // si elle n'appartient pas à la même propriété que cella actuellement selectionnée, erreur
         if ($room->getPropertyID() !== $req->getPropertyID()) {
-            http_response_code(400);
-            echo "Cette pièce n'est pas associée à la même propriété que celle actuelle";
+            Error::getForbidden403($req, "Cette pièce n'est pas associée à la même propriété que celle actuelle");
             return;
         }
 
-
+        // Les donnes qu'on va récupérer
         $room_sensors = [];
         $last_measures = [];
 
         //On récupère tout les périphériques d'une pièce.
-        $peripherals = (new \Queries\Peripherals)
-            ->filterByRoomID('=', $rid)
-            ->find();
-
+        $peripherals = null;
+        try {
+            $peripherals = (new \Queries\Peripherals)
+                ->filterByRoomID('=', $rid)
+                ->find();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Erreur lors de la récupération des périphériques");
+            return;
+        }
 
         /**
          *   Pour chaque péripérique on récupère son UUID,
@@ -128,17 +164,21 @@ class Rooms
          * */
         foreach ($peripherals as $peripheral) {
             // Récupère la liste des capteurs associés au péiphérique
-            $room_sensors_for_peripheral = (new \Queries\Sensors)
-                ->filterbyPeripheral('=', $peripheral)
-                ->find();
-
-            // Si cette liste est vide, sauter au prochain
-            if (count($room_sensors_for_peripheral) === 0) {
-                continue;
+            $room_sensors_for_peripheral = null;
+            try {
+                $room_sensors_for_peripheral = (new \Queries\Sensors)
+                    ->filterbyPeripheral('=', $peripheral)
+                    ->find();
+            } catch (\Throwable $t) {
+                Error::getInternalError500Throwables($req, $t,
+                    "Erreur lors de la récupération des capteurs du périphérique");
+                return;
             }
 
-            // Sinon, push les valeurs
-            array_push($room_sensors, ...$room_sensors_for_peripheral);
+            // Si cette liste n'est pas vide, push l'array
+            if (count($room_sensors_for_peripheral) > 0) {
+                array_push($room_sensors, ...$room_sensors_for_peripheral);
+            }
         }
 
 
@@ -146,20 +186,25 @@ class Rooms
          * Pour chacun des capteurs on récupère la dernière mesure sous forme d'entité
          */
         foreach ($room_sensors as $sensor) {
-            $last_measure_for_sensor = (new \Queries\Measures)
-                ->filterLastMeasureBySensor('=', $sensor)
-                ->findOne();
+            $last_measure_for_sensor = null;
+            try {
+                $last_measure_for_sensor = (new \Queries\Measures)
+                    ->filterLastMeasureBySensor('=', $sensor)
+                    ->findOne();
+            } catch (\Throwable $t) {
+                Error::getInternalError500Throwables($req, $t,
+                    "Erreur lors de la récupération de la dernière mesure du capteur");
+                return;
+            }
+
+            // Si elle n'existe pas, on s'en fout
             $last_measures[$sensor->getID()] = $last_measure_for_sensor;
-
-
         }
 
-
         $data["last_measures"] = $last_measures;
-        $pid = (new \Queries\Rooms)->retrieve($rid)->getPropertyID();
-        $data["rooms"] = (new \Queries\Rooms)->filterByPropertyID("=", $pid)->find();
+        $data["rooms"] = (new \Queries\Rooms)->filterByPropertyID("=", $property_id)->find();
         $data["room_entity"] = $room;
-        $data["pid"] = $req->getPropertyID();
+        $data["pid"] = $property_id;
 
         \Helpers\DisplayManager::display("mapiece", $data);
 
