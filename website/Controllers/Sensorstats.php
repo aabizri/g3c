@@ -24,13 +24,9 @@ class Sensorstats
                 -> filterByPropertyID("=", $property_id)
                 -> find();
 
-            $peripherals_uuid = [];
-            foreach ($peripherals as $p) {
-                $peripherals_uuid[] = $p -> getUUID();
-            }
-
             $sensors_list = [];
-            foreach ($peripherals_uuid as $puuid){
+            foreach ($peripherals as $p){
+                $puuid = $p -> getUUID();
                 $sensors = (new \Queries\Sensors)
                     -> filterByColumn("peripheral_uuid", "=", $puuid, "AND")
                     -> find();
