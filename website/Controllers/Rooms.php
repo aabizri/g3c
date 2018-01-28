@@ -211,4 +211,76 @@ class Rooms
     }
 
 
+    public function postDelete(\Entities\Request $req): void
+    {
+        // Récuperation du pid
+        $pid = $req->getPropertyID();
+        if (empty($pid)) {
+            Error::getBadRequest400($req, "Il manque le property ID pour la suppression");
+            return;
+        }
+
+        // On récupère le room_id via le formulaire
+        $rid = $req->getPOST("rid");
+        if (empty($rid)) {
+            Error::getBadRequest400($req, "Room ID Manquant");
+            return;
+        }
+
+        // On vérfie que le room_id appartient bien à cette propriété
+        $room = null;
+        try {
+            $room = (new \Queries\Rooms)->retrieve($rid);
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Erreur lors de la récupération de la pièce");
+            return;
+        }
+
+        // On récupère les périphérique liée à la pièce
+        $peripheral_list = null;
+        try {
+            $peripheral_list = (new \Queries\Peripherals)
+                ->filterByRoomID("=", $rid)
+                ->find();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Erreur lors de la récupération des périphériques");
+            return;
+        }
+
+        // On set null en room_id pour désassocier chaque périphérique à la pièce
+        foreach ($peripheral_list as $peripheral) {
+            // Supprimer le périphérique
+            $peripheral->setRoomID(null);
+
+            // Push
+            try {
+                (new \Queries\Peripherals)->update($peripheral);
+            } catch (\Throwable $t) {
+                Error::getInternalError500Throwables($req, $t, "Erreur lors de la mise à jour du périphérique " . $peripheral->getUUID());
+                return;
+            }
+        }
+
+        // Suppression de la pièce
+        try {
+            (new \Queries\Rooms)
+                ->filterByColumn("id", "=", $rid)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Erreur lors de l'éxécution de la query de suppression de pièce");
+            return;
+        }
+
+        // Récupération des pièces
+        $rooms = null;
+        try {
+            $rooms = (new \Queries\Rooms)->filterByPropertyID("=", $pid)->find();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Erreur lors de l'éxecution de la query de récupération des pièces");
+            return;
+        }
+
+        $data["rooms"] = $rooms;
+        \Helpers\DisplayManager::redirect303("properties/" . $pid . "/rooms");
+    }
 }
