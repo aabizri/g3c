@@ -31,28 +31,66 @@ header {
 #accroche {
     font-family: Verdana, sans-serif;
     color: white;
-    left: 500px;
     position: relative;
-    left: 40%;
+    left: 500px;
     top: -45px;
+
 }
 
 #nomdelapage {
     font-family: Verdana, sans-serif;
     color: white;
     position: relative;
-    left: 85%;
+    left: 1050px;
     top: -80px;
 }
 
-#deconnexion {
-    position: relative;
-    top: -117px;
-    left: 93%;
+#menu{
+    position: fixed;
+    color: white;
+    top: 5px;
+    left: 90%;
+    cursor: pointer;
 }
 
-#deconnexion input
+#menu ul ul
 {
-    border-radius: 5px;
+    display: none;
+    position: absolute;
+    top: 23px;
+    left: -30px;
+    margin:0px;
+    padding: 0px;
+}
+
+#menu li
+{
+    list-style-type: none;
+    position: relative;
+    width: 150px;
+    background-color: #955252;
+    padding: 5px;
+}
+
+#menu li:hover
+{
+    background-color: #955252;
+}
+
+#menu li.niveau2{
+    padding: 1px;
+}
+
+#menu li:hover ul.niveau2, li li:hover
+{
+    display: block
+}
+
+#menu button
+{
+    width: 130px;
+    height: 60px;
+    color: black;
+    border: 1px solid rgb(217,196,177);
     cursor: pointer;
 }

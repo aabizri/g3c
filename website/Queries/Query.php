@@ -61,7 +61,7 @@ abstract class Query
     public function __construct(string $table, array $table_columns, string $entity_class_name)
     {
         // Open an instance
-        $this->db = \Helpers\DB::getInstance();
+        $this->db = \Helpers\DB::getPDO();
 
         // Note the table
         $this->table = $table;
@@ -249,18 +249,11 @@ abstract class Query
         $stmt = $this->prepareAndExecute();
 
         // Fetch
-        $lines = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $entity = $this->fetchOne($stmt);
 
         // If empty, we return null
-        if ($lines === false || $lines === null) {
+        if ($entity === null) {
             return null;
-        }
-
-        // Populate
-        $entity = new $this->entity_class_name;
-        $success = $this->populateEntity($entity, $lines);
-        if ($success === false) {
-            throw new \Exception("failed while populating entity of type" . gettype($entity));
         }
 
         // Return the entity
@@ -281,24 +274,8 @@ abstract class Query
         // Prepare the statement
         $stmt = $this->prepareAndExecute();
 
-        // Fetch all
-        $lines = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        // If empty, we return null
-        if ($lines === false || $lines === null) {
-            return null;
-        }
-
-        // Populate
-        $entities = [];
-        foreach ($lines as $line) {
-            $entity = new $this->entity_class_name;
-            $success = $this->populateEntity($entity, $line);
-            if ($success === false) {
-                throw new \Exception("failed while populating entity of type" . gettype($entity));
-            }
-            $entities[] = $entity;
-        }
+        // Fetch
+        $entities = $this->fetchAll($stmt);
 
         // Return the entities
         return $entities;
@@ -310,9 +287,11 @@ abstract class Query
      */
     public function count(): int
     {
+        // Mets l'opération à "SELECT"
+        $this->operation = "SELECT";
+
         // Set la fonction à être executée (un count)
         $this->manipulate_columns = ["COUNT(*)"];
-        $this->operation = "SELECT";
 
         // Prepare the statement
         $stmt = $this->prepareAndExecute();
@@ -378,8 +357,8 @@ abstract class Query
         $this->filterByEntity($this->entity_id_column_name, "=", $entity);
 
         // On ne push pas la valeur de l'ID, inutile dans tous les cas
-        unset($this->manipulate_columns[array_search($this->entity_id_column_name, $this->manipulate_columns)]);
-        $this->manipulate_columns = array_values($this->manipulate_columns); // Re-key
+        $entity_id_column_index = array_search($this->entity_id_column_name, $this->manipulate_columns);
+        if ($entity_id_column_index !== false) unset($this->manipulate_columns[$entity_id_column_index]);
 
         // Only update the ones that aren't gen-on-insert
         foreach ($this->manipulate_columns as $column) {
@@ -493,7 +472,7 @@ abstract class Query
         }
 
         // Prepare the statement to be executed
-        $stmt = $this->prepare();
+        $stmt = $this->preparePDO();
 
         // Lock the table in order to stop a race condition
         $this->db->query("LOCK TABLES " . $this->table . " WRITE");
@@ -558,22 +537,6 @@ abstract class Query
 
         // Return row count
         return $stmt->rowCount();
-    }
-
-    /** ENTITY MAPPING STUFF */
-
-    /**
-     * Populates the entity given the column names => data mapping
-     *
-     * @param \Entities\Entity $entity
-     * @param array $results
-     *
-     * @return bool true on success, false on failure
-     * @throws \Exception
-     */
-    private function populateEntity(\Entities\Entity $entity, array $results): bool
-    {
-        return $entity->setMultiple($results);
     }
 
     /** QUERY BUILDING STUFF */
@@ -826,10 +789,13 @@ abstract class Query
      * @return string
      * @throws \Exception if error
      */
-    private function toSQL(): string
+    public function toSQL(): string
     {
         // Get lexemes
         $lexemes = $this->toLexemes();
+        if (empty($lexemes)) {
+            return "";
+        }
 
         // Now process
         $sql = "";
@@ -848,11 +814,14 @@ abstract class Query
      * @return \PDOStatement
      * @throws \Exception if fails to generate the SQL
      */
-    private function prepare(?string $sql = null): \PDOStatement
+    public function preparePDO(?string $sql = null): \PDOStatement
     {
         // Si on ne nous donne pas de SQL, on le génère nous-même
         if (empty($sql)) {
             $sql = $this->toSQL();
+        }
+        if (empty($sql)) {
+            throw new \Exception("Empty SQL query generated : \"" . $sql . "\"");
         }
 
         // Preparer
@@ -863,15 +832,15 @@ abstract class Query
     }
 
     /**
+     * Executes a PDO Statement
+     *
+     * @param \PDOStatement $stmt
      * @param array|null $data
      * @return \PDOStatement
      * @throws \Exception
      */
-    private function prepareAndExecute(array $data = null): \PDOStatement
+    protected function executePDO(\PDOStatement $stmt, array $data = null): \PDOStatement
     {
-        // Prepare statement
-        $stmt = $this->prepare();
-
         // Si on ne nous donne pas d'array, on utilise $this->data
         if (empty($data)) {
             if (!is_array($this->data)) {
@@ -882,8 +851,89 @@ abstract class Query
 
         // Execute statement
         $stmt->execute($data);
-
-        // Return statement
         return $stmt;
+    }
+
+    /**
+     * Prepares a SQL Query into a PDO Statement and execute it (but doesn't fetch)
+     *
+     * @param array|null $data
+     * @return \PDOStatement
+     * @throws \Exception
+     */
+    protected function prepareAndExecute(?string $sql = null, array $data = null): \PDOStatement
+    {
+        $stmt = $this->preparePDO($sql);
+        $stmt = $this->executePDO($stmt, $data);
+        return $stmt;
+    }
+
+    /**
+     * Fetch all rows from an already-executed statement, populates entities and return them
+     *
+     * @param \PDOStatement $stmt
+     * @return array
+     * @throws \Exception
+     */
+    protected function fetchAll(\PDOStatement $stmt): array
+    {
+        // Set Associative Fetch
+        $stmt->setFetchMode(\PDO::FETCH_ASSOC);
+
+        // Populate all entities
+        $entities = [];
+        foreach ($stmt as $row) {
+            // Create entity
+            $entity = new $this->entity_class_name;
+
+            // Populate it
+            self::populateEntity($entity, $row);
+
+            // Add it to the array
+            $entities[] = $entity;
+        }
+        return $entities;
+    }
+
+    /**
+     * Fetch a single row from an already-executed statement, populates the entity and returns it
+     *
+     * @param \PDOStatement $stmt
+     * @return \Entities\Entity|null , null if none found
+     * @throws \Exception
+     */
+    protected function fetchOne(\PDOStatement $stmt): ?\Entities\Entity
+    {
+        // Set Associative Fetch
+        $stmt->setFetchMode(\PDO::FETCH_ASSOC);
+
+        // Fetch a single row
+        $row = $stmt->fetch();
+        if ($row === false || $row === null) {
+            return null;
+        }
+
+        // Create entity
+        $entity = new $this->entity_class_name;
+
+        // Populate it
+        self::populateEntity($entity, $row);
+
+        // Return it
+        return $entity;
+    }
+
+    /**
+     * Populates the entity given the column names => data mapping
+     *
+     * @param \Entities\Entity $entity
+     * @param array $results
+     *
+     * @return bool true on success, false on failure
+     * @throws \Exception
+     */
+    private static function populateEntity(\Entities\Entity $entity, array $results): bool
+    {
+        return $entity->setMultiple($results);
     }
 }

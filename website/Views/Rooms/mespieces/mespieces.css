@@ -3,7 +3,6 @@ body {
 	background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
 	background-size: cover;
 	background-position: center;
-	width: auto;
 	font-family: Verdana;
     overflow-x: hidden;
 }
@@ -27,7 +26,7 @@ body {
 	cursor: pointer;
 }
 
-#Moncompte, #Mespieces, #Mesperipheriques, #Mesconsignes, #Mesparametres
+#Moncompte, #Mespieces, #Mesperipheriques, #Mesconsignes, #Mesparametres, #Mapropriete
 {
 	position: relative;
 	margin: 50px 10px;
@@ -60,14 +59,13 @@ body {
 #ajouterpieces
 {
 	position: relative;
-	left: 20%;
-	top: 150px;
+	left: 30%;
+	top: -150px;
 	border: 1px solid #955252;
-	border-radius: 5px;
-	width: 70%;
+	border-radius: 20px;
+	width: 50%;
 	background-color: rgb(217,196,177);
 	text-align: center;
-    margin-bottom: 80px;
 }
 
 #champsajouterpiece
@@ -80,10 +78,10 @@ body {
 
 #validerajoutpiece
 {
+	position: relative;
 	border-radius: 5px;
+	left: 45%;
 }
-
-
 
 #nombrepc
 {
@@ -104,19 +102,19 @@ body {
 {
 	position: relative;
 	text-align: center ;
-	width: 70%;
-	left: 20%;
+	width: 60%;
+	left: 25%;
 	top: 90px;
 	border: 1px solid #955252;
 	border-radius: 20px;
 	background-color: rgb(217,196,177);
+	margin-bottom: 349px;
 }
 
 #tablepieces
 {
 	margin-bottom: 20px;
 	margin-left: 2%;
-	margin-right: 2%;
 }
 
 #tablepieces td, #tablepieces th
@@ -130,11 +128,11 @@ table
 	border-collapse: collapse;
 }
 
-
-
-
 .link
 {
 	color: #955252;
 	text-decoration: none;
 }
+
+
+

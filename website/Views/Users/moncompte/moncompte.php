@@ -1,21 +1,23 @@
 <ul id="Menu">
-    <li id="Moncompte"><a href="index.php?c=User&a=Informations"><input type="button" value="Mon compte" /></a></li>
-    <li id="Mespieces"><a href="index.php?c=Room&a=Rooms"><input type="button" value="Mes pièces"/></a></li>
-    <li id="Mesperipheriques"> <a href="index.php?c=Peripheral&a=List"><input type="button" value="Mes périphériques" /></a></li>
-    <li id="Mesconsignes"><a href="index.php?c=Consigne&a=ConsignesPage"><input type="button" value="Mes Consignes" /></a></li>
-    <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
+    <li id="properties"><a href="properties"><input type="button" value="Mes propriétés"/></a></li>
 </ul>
+
+<h4 id="identificationutilisateur">Vous êtes l'utilisateur
+    <?php
+    //On récupère l'entité lié à l'user
+        $u = (new \Queries\Users) -> retrieve($data["user"]);
+        echo $u->getNick()
+    ?>
+</h4>
 
 <div id="infosmoncompte">
     <div id="mesinformations">
         <h4 id="titremesinfos">Mes informations</h4>
         <?php
-        $u = $data["user"];
                 echo
                 "
                 <p>Prénom/Nom : ".$u -> getDisplay()."</p>
                 <p>Email : ".$u -> getEmail()."</p>
-                <p>Addresse : </p>
                 <p>Téléphone : ".$u -> getPhone()."</p>
                 <p>Login : ".$u -> getNick()."</p>
                  ";
@@ -25,7 +27,8 @@
 
     <div id="modifiermesinformations">
         <h4 id="titremodifierinfos">Modifier mes informations</h4>
-        <form method="post" id="formulairemodif" action="http://localhost/g3c/website/index.php?c=User&a=MAJInformations&debug=true" name="modifierinfos" onsubmit="return validateEmail()">
+        <form method="post" id="formulairemodif" action="account" name="modifierinfos"
+              onsubmit="return validateEmail()">
             <p>
                 <label>Nouvel email :</label><input type="email" id="formdroit" name="email"/><br>
             </p>
@@ -51,11 +54,9 @@
 
 </div>
 
-<h4 id="identificationutilisateur">Vous êtes l'utilisateur <?php echo $u->getNick()?> </h4>
-
     <div id="modifmdp">
         <h4 id="titremodifmdp">Modifier mon mot de passe</h4>
-        <form method="post" action="http://localhost/g3c/website/index.php?c=User&a=MDP" name="modifiermdp" onsubmit=" return validateMdp()">
+        <form method="post" action="account/changepassword" name="modifiermdp" onsubmit=" return validateMdp()">
         <p>
             <label>Ancien mot de passe : </label><input type="password" id="droit" name="ancienmdp"/><br>
         </p>

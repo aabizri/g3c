@@ -1,0 +1,51 @@
+main {
+    font-family: Ubuntu, Roboto, arial, sans-serif;
+}
+
+.module {
+    width: 150px;
+    height: 150px;
+
+    /* Pour arrondir la bordure (utile pour le hover) */
+    border-radius: 2px;
+
+    /* Espace interne */
+    padding: 15px;
+
+    /* Pour qu'ils soient sur la même ligne */
+    float: left;
+
+    /* Pour qu'il y ait de l'espace entre les lignes */
+    margin-bottom: 50px;
+}
+
+.module:hover {
+    background-color: lightgrey;
+    cursor: pointer;
+}
+
+.module_image {
+    display: block;
+    width: 40%;
+    height: 40%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 3px;
+}
+
+.module_title {
+    font-size: 14pt;
+    font-weight: 500;
+    font-family: Ubuntu, Roboto, arial, sans-serif;
+    margin-top: 0;
+    margin-bottom: 0;
+    color: #333;
+    text-align: center;
+}
+
+.module_description {
+    font-size: 11pt;
+    margin-top: 9px;
+    color: #333;
+    text-align: center;
+}

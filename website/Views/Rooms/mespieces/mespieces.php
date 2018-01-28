@@ -1,28 +1,28 @@
-          <ul id="Menu">
-              <li id="Moncompte"><a href="index.php?c=User&a=Informations"><input type="button" value="Mon compte"/></a>
-              </li>
-              <li id="Mespieces"><a href="index.php?c=Room&a=Rooms"><input type="button" value="Mes pièces"/></a></li>
-              <li id="Mesperipheriques"> <a href="index.php?c=Peripheral&a=List"><input type="button" value="Mes périphériques" /></a></li>
-              <li id="Mesconsignes"><a href="index.php?c=Consigne&a=ConsignesPage"><input type="button" value="Mes Consignes" /></a></li>
-              <li id="Mesparametres"><a href="Mesparametres.html"><input type="button" value="Mes paramètres" /></a></li>
-          </ul>
+<main>
+<ul id="Menu">
+    <li id="Mapropriete"><a href="properties/<?= $data["pid"]?>"><input type="button" value="Ma propriété" /></a> </li>
+    <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
+    </li>
+    <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
+                                                                                          value="Mes périphériques"/></a>
+    </li>
+    <li id="Mesconsignes"><a href="properties/<?= $data["pid"] ?>/consignes"><input type="button"
+                                                                                    value="Mes Consignes"/></a></li>
+</ul>
 
             <h2 id="nompagepieces">Gestion de mes pièces</h2>
 
 
 
-          <?php
-          if (!empty($data["rooms"])):
-          ?>
 
 
-          <p id="nombrepc">Vous avez actuellement <?php echo count($data["rooms"])?> pièces.</p>
+<p id="nombrepc">Vous avez actuellement <?php echo count($data["rooms"])?> pièces.</p>
 
           <div id="listepiece">
               <h3 id="pieces"><strong>Pièces</strong><br></h3>
               <div id="tablepieces">
                   <table align="center">
-                      <form action="index.php?c=Room&a=Delete&pid=<?php echo $data["pid"]?>" method="post" >
+                      <form action="properties/<?= $data["pid"] ?>/rooms/delete>" method="post" >
                       <?php
                       //Créer un tableau qui s'indente en fonction du nombre de périphériques
                       $Nbrdonnees = count($data["rooms"]);
@@ -35,47 +35,46 @@
                                     <th>Gestion</th>
                                     </tr></thead>';
 
-                          //Ici nous ajoutons une ligne avec les infos
-                          foreach ($data["rooms"] as $r){
+                //Ici nous ajoutons une ligne avec les infos
+                foreach ($data["rooms"] as $r){
 
-                              //On met les date sous le bon format
-                              $du = date( "d/m/Y", $r->getLastUpdated()) . ' à ' . date( "H:i",$r->getLastUpdated() );
-                              $dc = date( "d/m/Y", $r->getCreationDate()) . ' à ' . date( "H:i",$r->getCreationDate() );
-                              //On récupère le nom et l'id pour les salles
-                              $name = $r->getName();
-                              $rid = $r->getID();
+                    //On met les date sous le bon format
+                    $du = date( "d/m/Y", $r->getLastUpdated()) . ' à ' . date( "H:i",$r->getLastUpdated() );
+                    $dc = date( "d/m/Y", $r->getCreationDate()) . ' à ' . date( "H:i",$r->getCreationDate() );
+                    //On récupère le nom pour des salles
+                    $name = $r->getName();
+                    $rid = $r->getID();
 
 
 
                               echo '<tr>
-                                        <td><a class="link"  href="index.php?c=Room&a=Room&room=' . $r->getID() . '">'.$name.'</a></td> 
+                                        <td><a class="link"  href="properties/' . $data["pid"] . "/rooms/" . $r->getID() . '">   
+                                        '.htmlspecialchars($name).'</a></td> 
                                         <td>'. $du .'</td>
                                         <td>'. $dc .'</td>
                                         <td><input type="checkbox" name="rid" value="'.$rid.'"/><input type="submit" value="Supprimer"/></td>
                                       </tr>';}
 
-                      }
+            }
 
-                      else {
-                          echo 'Pas de pièces dans la propriété';
-                      }
-                      endif;
-                      ?>
-                      </form>
-                  </table>
-              </div>
-          </div>
+            else {
+                echo 'Pas de pièces dans la propriété';
+            }
+            ?>
+        </table>
+    </div>
+</div>
 
 
-            <div id="ajouterpieces">
-                <h3>Ajouter une pièce</h3>
-                <div id="champsajouterpiece">
-                    <form method="post" name="ajouterpieces"  action="index.php?c=Room&a=Create&pid=<?php echo $data["pid"] ?>">
-                        <label>Nom de la pièce : </label><input type="text" name="name" /><br><br>
-
-                        <br>
-                        <br>
-                        <input type="submit" value="Valider" id="validerajoutpiece" >
-                    </form>
-                </div>
-            </div>
+<div id="ajouterpieces">
+    <h3>Ajouter une pièce</h3>
+    <div id="champsajouterpiece">
+        <form method="post" name="ajouterpieces" action="properties/<?= $data["pid"] ?>/rooms/create">
+            <br>
+            <label>Nom de la pièce : </label><input type="text" name="name" /><br><br>
+            <br>
+            <input type="submit" value="Valider" id="validerajoutpiece" >
+        </form>
+    </div>
+</div>
+</main>
