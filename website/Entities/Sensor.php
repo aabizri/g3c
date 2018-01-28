@@ -89,9 +89,9 @@ class Sensor extends Entity
     }
 
     /**
-     * @return string
+     * @return float
      */
-    public function getLastUpdated(): string
+    public function getLastUpdated(): float
     {
         return $this->last_updated;
     }
