@@ -3,7 +3,7 @@ footer {
     font-family: Verdana, sans-serif;
     color: #955252;
     position :absolute;
-    bottom:-7px;
+    bottom: 0px;
     height: 80px;
     width: 101.5%;
     z-index: -100;

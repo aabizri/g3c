@@ -32,6 +32,9 @@
                     echo $measure_type->getName()."</strong><br><br>"
                         .$measure->getValue()."". $measure_type->getUnitSymbol()."<br></p>";
                 }
+                if (empty($last_measures)){
+                    echo "Pas de données dans cette salle";
+                }
 
         ?>
     </div>
