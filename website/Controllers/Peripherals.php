@@ -84,8 +84,8 @@ class Peripherals
             return;
         }
 
-        // Redirection en mode temporaire (302)
-        DisplayManager::redirectToPath("properties/" . $property_id . "/peripherals");
+        // Redirection en mode temporaire (303)
+        DisplayManager::redirect303("properties/" . $property_id . "/peripherals");
     }
 
     /**
@@ -268,6 +268,6 @@ class Peripherals
         }
 
         //Affichage de la page peripherique mise a jour
-        \Helpers\DisplayManager::redirectToPath("properties/" . $property_id . "/peripherals");
+        \Helpers\DisplayManager::redirect302("properties/" . $property_id . "/peripherals");
     }
 }

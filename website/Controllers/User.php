@@ -130,7 +130,7 @@ class User
         // Si l'usager est déjà connecté, le rediriger vers la page d'accueil
         if ($req->getUserID() !== null) {
             try {
-                \Helpers\DisplayManager::redirectToPath("properties");
+                \Helpers\DisplayManager::redirect302("properties");
             } catch (\Throwable $t) {
                 Error::getInternalError500Throwables($req, $t,
                     "Erreur lors de la redirection de l'utilisateur déjà connecté");
@@ -177,7 +177,7 @@ class User
         $req->setUser($u);
 
         try {
-            \Helpers\DisplayManager::redirectToPath("properties");
+            \Helpers\DisplayManager::redirect302("properties");
         } catch (\Throwable $t) {
             Error::getInternalError500Throwables($req, $t,
                 "Erreur lors de la redirection de l'utilisateur");
@@ -273,7 +273,7 @@ class User
 
         // Redirige vers la page compte
         try {
-            \Helpers\DisplayManager::redirectToPath("account");
+            \Helpers\DisplayManager::redirect302("account");
         } catch (\Throwable $t) {
             Error::getInternalError500Throwables($req, $t,
                 "Erreur lors de la redirection de l'utilisateur");
@@ -305,7 +305,7 @@ class User
 
         // Vérification que l'ancien mdp et le nouveau ne sont pas les mêmes
         if ($ancienmdp === $newmdp) {
-            \Helpers\DisplayManager::redirectToPath("account");
+            \Helpers\DisplayManager::redirect302("account");
             return;
         }
 
@@ -424,7 +424,7 @@ class User
 
         // Return to session list
         try {
-            \Helpers\DisplayManager::redirectToPath("account/sessions");
+            \Helpers\DisplayManager::redirect302("account/sessions");
         } catch (\Throwable $t) {
             Error::getInternalError500Throwables($req, $t,
                 "Erreur lors de la redirection de l'utilisateur");
@@ -439,7 +439,7 @@ class User
 
         //On redirige vers la page de connexion
         try {
-            DisplayManager::redirectToPath("login");
+            DisplayManager::redirect302("login");
         } catch (\Throwable $t) {
             Error::getInternalError500Throwables($req, $t,
                 "Erreur lors de la redirection de l'utilisateur");
