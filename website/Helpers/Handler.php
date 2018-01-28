@@ -85,7 +85,7 @@ class Handler
             try {
                 $call($req);
             } catch (\Throwable $t) {
-                \Controllers\Error::getInternalError500($req, $t);
+                \Controllers\Error::getInternalError500Throwables($req, $t);
             }
         }
 
