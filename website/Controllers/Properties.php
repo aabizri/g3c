@@ -33,13 +33,6 @@ class Properties
             return;
         }
 
-        // Si il n'y a pas de pièce; A basculer sur la vue.
-        if (empty($rooms)) {
-            // Si la requête n'est pas associée à une pièce, retourner une erreur
-            Error::getBadRequest400($req, "Pas de pièces");
-            return;
-        }
-
 
         $last_measures_for_room_by_room_id = [];
         //Pour chaque pièce recuperer les peripheriques, puis les capteurs, puis leur dernière mesures;

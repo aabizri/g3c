@@ -14,13 +14,21 @@
     <h2 id="Tableaudebord">Tableau de bord</h2>
     <div id="setting">
     <a id="settings" href="properties/<?= $data["pid"] ?>/settings">Réglages</a></div>
+
     <?php
 
     $rooms=$data["rooms"];
     $last_measures= $data["last_measures"];
 
+    // Si il n'y a pas de pièce
+    if (empty($rooms)) {
+        echo "<p id='norooms' >Pas de pièces dans la propriété. Vous pouvez en rajouter dans 'Mes pièces'.</p> ";
+        return;
+    }
+
     foreach ($rooms as $r)
     {
+
         $room_measures=$last_measures[$r->getID()];
         echo    '<div class="vueinformation">
                 <h3 class="nomdelapièce">';
@@ -44,4 +52,3 @@
         echo '</div></div>';
      }
      ?>
-
