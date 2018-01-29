@@ -64,7 +64,7 @@
             ?>
         </table>
                   <input type="submit" value="Supprimer"
-                          onsubmit="return confirm('êtes vous sûr de vouloir supprimer toutes ces pièces ?')"/>
+                         onclick="return confirm('êtes vous sûr de vouloir supprimer toutes ces pièces ?')"/>
                       </form>
     </div>
 </div>
