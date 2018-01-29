@@ -56,7 +56,7 @@ class Rooms
         // Crée ! See other
         try {
             http_response_code(303); // HTTP Created (See other)
-            header("Location: " . \Helpers\DisplayManager::absolutifyURL("properties/" . $property_id . "/rooms/" . $r->getID()));
+            header("Location: " . \Helpers\DisplayManager::absolutifyURL("properties/" . $property_id . "/rooms" ));
         } catch (\Throwable $t) {
             Error::getInternalError500Throwables($req, $t, "Erreur lors de la redirection");
         }
