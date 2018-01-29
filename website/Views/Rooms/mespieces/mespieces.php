@@ -1,4 +1,4 @@
-<main>
+<main xmlns="http://www.w3.org/1999/html">
 <ul id="Menu">
     <li id="Mapropriete"><a href="properties/<?= $data["pid"]?>"><input type="button" value="Ma propriété" /></a> </li>
     <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
@@ -21,8 +21,9 @@
           <div id="listepiece">
               <h3 id="pieces"><strong>Pièces</strong><br></h3>
               <div id="tablepieces">
-                  <table align="center">
+
                       <form action="properties/<?= $data["pid"] ?>/rooms/delete" method="post">
+                          <table align="center">
                       <?php
                       //Créer un tableau qui s'indente en fonction du nombre de périphériques
                       $Nbrdonnees = count($data["rooms"]);
@@ -63,7 +64,8 @@
             ?>
         </table>
                   <input type="submit" value="Supprimer"
-                         onsubmit="return confirm('êtes vous sûr de vouloir supprimer toutes ces pièces ?')"/>
+                          onsubmit="return confirm('êtes vous sûr de vouloir supprimer toutes ces pièces ?')"/>
+                      </form>
     </div>
 </div>
 
