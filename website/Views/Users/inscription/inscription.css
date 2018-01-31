@@ -10,13 +10,14 @@ body {
 	background-color: #d9c4b19b;
 	position: relative;
 	border: 1px solid #955252;
-	top: 60px;
+	top: 100px;
 	left: 27%;
 	text-align: center;
 	width: 660px;
 	padding: 5px 20px;
 	padding-bottom: 15px;
 	border-radius: 10px;
+	margin-bottom: 170px;
 }
 
 #join-inputs {
