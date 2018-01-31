@@ -289,6 +289,58 @@ class Admin
     }
 
     /**
+     * POST admin/users/{UID}/delete
+     * @param \Entities\Request $req
+     */
+    public static function postDeleteUser(\Entities\Request $req): void
+    {
+        // Retrieve User ID
+        $queried_user_id = $req->getGET("uid");
+
+        // Delete User-Linked Requests
+        try {
+            (new \Queries\Requests)
+                ->filterByColumn("user_id", "=", $queried_user_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting requests linked to user with ID: " . $queried_user_id);
+            return;
+        }
+
+        // Delete User-Linked Sessions
+        try {
+            (new \Queries\Sessions)
+                ->filterByColumn("user_id", "=", $queried_user_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting requests linked to user with ID: " . $queried_user_id);
+            return;
+        }
+
+        // Delete User-Linked Roles
+        try {
+            (new \Queries\Roles)
+                ->filterByColumn("user_id", "=", $queried_user_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting requests linked to user with ID: " . $queried_user_id);
+            return;
+        }
+
+        // Delete User
+        try {
+            (new \Queries\Users)
+                ->filterByColumn("id", "=", $queried_user_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting requests linked to user with ID: " . $queried_user_id);
+            return;
+        }
+
+        // Finished
+    }
+
+    /**
      * @param \Entities\Request $req
      */
     public static function getUserProperties(\Entities\Request $req): void

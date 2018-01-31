@@ -6,6 +6,7 @@ RewriteRule   ^admin$                               index.php?c=Admin&a=Console&
 ## Admin/Users
 RewriteRule   ^admin/users$                         index.php?c=Admin&a=Users&%{QUERY_STRING}
 RewriteRule   ^admin/users/([0-9]+)$                 index.php?c=Admin&a=User&uid=$1&%{QUERY_STRING}
+RewriteRule   ^admin/users/([0-9]+)/delete$          index.php?c=Admin&a=DeleteUser&uid=$1&%{QUERY_STRING}
 RewriteRule   ^admin/users/([0-9]+)/sessions$        index.php?c=Admin&a=UserSessions&uid=$1&%{QUERY_STRING}
 RewriteRule   ^admin/users/([0-9]+)/requests$        index.php?c=Admin&a=UserRequests&uid=$1&%{QUERY_STRING}
 RewriteRule   ^admin/users/([0-9]+)/properties$      index.php?c=Admin&a=UserProperties&uid=$1&%{QUERY_STRING}
