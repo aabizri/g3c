@@ -22,7 +22,7 @@
             <p class="module_title">Périphériques</p>
             <p class="module_description">Visualiser, modifier et supprimer des périphériques</p>
         </div>
-        <div class="module" id="products" onclick="window.location.href = 'admin/products'"
+        <div hidden class="module" id="products" onclick="window.location.href = 'admin/products'"
              title="Visualiser, modifier et supprimer des produits de la boutique">
             <img class="module_image" src="Views/Admin/console/images/products.svg"/>
             <p class="module_title">Produits</p>

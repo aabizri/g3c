@@ -9,7 +9,7 @@
 
     <div>
         <label for="count-input">Nombre de périphériques à afficher</label>
-        <select id="count-input" name="cars" onclick="formSubmit()">
+        <select id="count-input" name="cars">
             <option selected value="5">5</option>
             <option value="10">10</option>
             <option value="50">50</option>
@@ -42,6 +42,6 @@
         tout</p>
 
     <!-- Actions -->
-    <p id="create_peripheral_paragraph"><a id="create_peripheral_link" href="admin/peripherals/create">Créer un
+    <p hidden id="create_peripheral_paragraph"><a id="create_peripheral_link" href="admin/peripherals/create">Créer un
             nouveau peripherique</a></p>
 </main>

@@ -11,7 +11,7 @@ function createRow(columns, values, rowCallback) {
         let row = document.createElement("tr");
 
         // Attributes
-        row.setAttribute("onclick", "window.location.href = \"admin/properties" + value.property_id + "\"");
+        row.setAttribute("onclick", "window.location.href = \"admin/properties/" + value.property_id + "\"");
         row.setAttribute("title", "Obtenir plus d'informations sur la propriété \"" + value.name + "\"");
 
         // Deal with them
