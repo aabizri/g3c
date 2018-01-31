@@ -41,7 +41,7 @@
         tout</p>
 
     <!-- Actions -->
-    <p id="create_property_paragraph"><a id="create_property_link"
-                                         href="admin/users/<?= $data["uid"] ?>/properties/create">Créer un
+    <p hidden id="create_property_paragraph"><a id="create_property_link"
+                                                href="admin/users/<?= $data["uid"] ?>/properties/create">Créer un
             nouveau rôle</a></p>
 </main>

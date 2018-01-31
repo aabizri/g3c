@@ -17,8 +17,8 @@
 
     <!-- Actions -->
     <div id="actions_block">
-        <h4>Vues</h4>
-        <ul id="views_list">
+        <h4 hidden>Vues</h4>
+        <ul hidden id="views_list">
             <li><a href="admin/properties/<?= urlencode($data["pid"]) ?>/roles" id="show_roles_action">Afficher les
                     propriétés
                     associées</a></li>
