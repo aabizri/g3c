@@ -98,3 +98,8 @@ body {
     left: 15%;
     top: 100px;
 }
+
+footer{
+    position: relative;
+    bottom: -122px;
+}

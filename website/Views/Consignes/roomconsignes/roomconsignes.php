@@ -6,23 +6,7 @@
         <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
                                                                                             value="Mes périphériques"/></a>
         </li>
-        <li id="Mesconsignes"><a href="properties/<?= $data["pid"] ?>/consignes"><input type="button"
-                                                                                        value="Mes Consignes"/></a></li>
     </ul>
-
-    <div id="selectionsalle">
-        <h2>Choix de la salle</h2>
-        <form id="sallepropriété" action="index.php?c=Consignes&a=RoomConsignes&pid=1" method="post">
-            <select name="room_id">
-                <?php
-                foreach ($data["property_rooms"] as $pr) {
-                    echo "<option value='" . $pr->getID() . "'>" . $pr->getName() . "</option>";
-                }
-                ?>
-            </select>
-            <input type="submit" value="Valider">
-        </form>
-    </div>
 
     <h3 id="salleactuelle">
         <?php
@@ -53,7 +37,8 @@
 
                     echo '<div id="consign"><h4>' . htmlspecialchars($measure_type_name) . ' voulue</h4>
                        <p>Dernière consigne : ' . $last_value->getDestinationValue() . '</p>
-                      <form method="post" action="index.php?c=Consignes&a=Create&pid=1&debug=true">
+                      <form method="post" action="properties/'.$data["pid"].'/consignescreate">
+                        <input type="hidden" value="'. $data["room"]->getID().'" name="room_id" />
                         <input type="hidden" value="' . $last_value->getDestinationValue() . '" name="last_destination_value" />
                         <input type="hidden" value="' . $a->getID() . '" name="actuator_id" />
                         <input name="destination_value" id="destination_value" type="number" /><br><br>

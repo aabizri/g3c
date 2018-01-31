@@ -27,7 +27,7 @@
 
     <div id="modifiermesinformations">
         <h4 id="titremodifierinfos">Modifier mes informations</h4>
-        <form method="post" id="formulairemodif" action="account" name="modifierinfos"
+        <form method="post" id="formulairemodif" action="account/modifyaccount" name="modifierinfos"
               onsubmit="return validateEmail()">
             <p>
                 <label>Nouvel email :</label><input type="email" id="formdroit" name="email"/><br>
@@ -42,7 +42,7 @@
             </p><br>
 
             <p>
-                <label>Mot de passe pour pouvoir modifier : </label><input type="password" id="formdroit" name="mdp"/><br>
+                <label>Mot de passe pour pouvoir modifier : </label><input type="password" id="formdroit" name="mdp" required/><br>
             </p>
 
             <p>
@@ -58,19 +58,27 @@
         <h4 id="titremodifmdp">Modifier mon mot de passe</h4>
         <form method="post" action="account/changepassword" name="modifiermdp" onsubmit=" return validateMdp()">
         <p>
-            <label>Ancien mot de passe : </label><input type="password" id="droit" name="ancienmdp"/><br>
+            <label>Ancien mot de passe : </label><input type="password" id="droit" name="ancienmdp" required/><br>
         </p>
 
         <p>
-            <label>Nouveau mot de passe : </label><input type="password" id="droit" name="nouveaumdp"/><br>
+            <label>Nouveau mot de passe : </label><input type="password" id="droit" name="nouveaumdp" required/><br>
         </p>
 
         <p>
-            <label>Confirmer le mot de passe : </label><input type="password" id="droit" name="cnouveaumdp"/><br>
+            <label>Confirmer le mot de passe : </label><input type="password" id="droit" name="cnouveaumdp" required/><br>
         </p>
 
         <p>
             <input id="validermodifmdp" type="submit" value="Valider" title="Vous modifiez votre mot de passe"/>
         </p>
         </form>
+    </div>
+
+    <div id="deleteaccount">
+        <a>
+            <form type="submit" action="account/delete" method="post" onsubmit="return validateDelete()">
+                <button><p>Supprimer mon compte</p></button>
+            </form>
+        </a>
     </div>

@@ -8,9 +8,6 @@
     <li id="Mesperipheriques"><a class="button" href="properties/<?= $data["property"]->getID() ?>/peripherals"><input type="button"
                                                                                                         value="Mes périphériques"/></a>
     </li>
-    <li id="Mesconsignes"><a class="button" href="properties/<?= $data["property"]->getID() ?>/consignes"><input type="button"
-                                                                                                  value="Mes Consignes"/></a>
-    </li>
 </ul>
 
 <h2 id="titrepage">Ma propriété</h2>
