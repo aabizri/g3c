@@ -51,6 +51,7 @@ class DisplayManager
         "roomconsignes" => "Consignes",
         "404" => "Errors",
         "500" => "Errors",
+        "identifiantoublie" => "Users",
     ];
 
     /**

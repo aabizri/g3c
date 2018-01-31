@@ -1,0 +1,17 @@
+body {
+    overflow-x: hidden;
+}
+#newid{
+    position: relative;
+    top: 90px;
+}
+#login {
+    display: block;
+    position: relative;
+    text-align: center;
+    top: 80px;
+    left: 44%;
+    margin-bottom: 350px;
+    border: 1px solid #955252;
+    width: 12%;
+}

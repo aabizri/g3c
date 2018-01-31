@@ -172,6 +172,7 @@ function pushModify(key, value) {
     let fetchOptions = {
         method: "POST",
         body: form,
+        credentials: "same-origin"
     };
 
     // Push

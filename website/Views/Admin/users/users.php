@@ -38,5 +38,6 @@
         tout</p>
 
     <!-- Actions -->
-    <p id="create_user_paragraph"><a id="create_user_link" href="admin/users/create">Créer un nouvel utilisateur</a></p>
+    <p hidden id="create_user_paragraph"><a id="create_user_link" href="admin/users/create">Créer un nouvel
+            utilisateur</a></p>
 </main>

@@ -20,7 +20,7 @@
         <ul id="actions_list">
             <li id="show_property_action" <?= $data["pid"] === null ? "hidden" : "" ?>><a
                         href="admin/properties/<?= $data["pid"] ?>">Afficher la propriété associée</a></li>
-            <li id="show_room_action" <?= $data["rid"] === null ? "hidden" : "" ?>><a
+            <li hidden id="show_room_action" <?= $data["rid"] === null ? "hidden" : "" ?>><a
                         href="admin/rooms/<?= $data["rid"] ?>">Afficher la pièce associée</a></li>
         </ul>
     </div>

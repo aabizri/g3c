@@ -143,8 +143,8 @@ function updateData(data) {
     // Update links
     let viewPropertyLink = document.getElementById("show_property_action");
     viewPropertyLink.hidden = data["property_id"].value === null;
-    let viewRoomLink = document.getElementById("show_room_action");
-    viewRoomLink.hidden = data["room_id"].value === null;
+    //let viewRoomLink = document.getElementById("show_room_action");
+    //viewRoomLink.hidden = data["room_id"].value === null;
 }
 
 // Push

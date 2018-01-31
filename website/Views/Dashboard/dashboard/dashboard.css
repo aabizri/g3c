@@ -109,15 +109,15 @@ body {
 {
 	position: relative;
 	top: 80px;
+	left: 20%;
 }
 
-#settings
+#setting button
 {
-	text-align: right;
-	position: relative;
-	left: 20%;
-	color:#955252;
-	text-decoration: none;
+	border-radius: 5px;
+	width: 15%;
+	height: 35px;
+	font-size: large;
 }
 
 footer {

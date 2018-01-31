@@ -19,16 +19,19 @@
     <div id="actions_block">
         <h4>Vues</h4>
         <ul id="views_list">
-            <li><a href="admin/user/<?= urlencode($data["uid"]) ?>/roles" id="show_roles_action">Afficher les propriétés
+            <li><a href="admin/users/<?= urlencode($data["uid"]) ?>/properties" id="show_roles_action">Afficher les
+                    propriétés
                     associées</a></li>
-            <li><a href="admin/user/<?= urlencode($data["uid"]) ?>/sessions" id="show_sessions_action">Afficher les
+            <li hidden><a href="admin/users/<?= urlencode($data["uid"]) ?>/sessions" id="show_sessions_action">Afficher
+                    les
                     sessions associées</a></li>
-            <li><a href="admin/user/<?= urlencode($data["uid"]) ?>/requests" id="show_requests_action">Afficher les
+            <li hidden><a href="admin/users/<?= urlencode($data["uid"]) ?>/requests" id="show_requests_action">Afficher
+                    les
                     requêtes associées</a></li>
         </ul>
         <h4>Actions</h4>
         <ul id="actions_list">
-            <li>
+            <li hidden>
                 <button id="reset_password_action" onclick="return resetPassword()">Réinitialiser le mot de passe de
                     l'utilisateur
                 </button>

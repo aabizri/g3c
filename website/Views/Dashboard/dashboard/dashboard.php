@@ -7,9 +7,9 @@
         </li>
     </ul>
 
-    <h2 id="Tableaudebord">Tableau de bord</h2>
+    <h2 id="Tableaudebord">Tableau de bord de ma propriété</h2>
     <br><div id="setting">
-    <a id="settings" href="properties/<?= $data["pid"] ?>/settings">Réglages</a></div>
+        <a id="settings" href="properties/<?= $data["pid"] ?>/settings"><button title="Ajouter/Supprimer des utilisateurs de la propriété">Gestion de ma propriété</button></a></div>
 
     <?php
 

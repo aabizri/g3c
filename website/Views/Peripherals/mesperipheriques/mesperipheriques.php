@@ -69,8 +69,8 @@
                                         <td>'. htmlspecialchars($peripheral_name) .'</td> 
                                         <td>'. htmlspecialchars($room_name) .'</td>
                                         <td>'. htmlspecialchars($date) .'</td>
-                                        <td>'. $status .'</td>
                                         <td><input type="hidden" name="peripheral_id" value="'. $p->getUUID() .'"/>'. $p->getUUID() .'</td>
+                                        <td>'. $status .'</td>
                                         <td><form action="properties/' . $data["pid"] . '/peripherals/' . $p->getUUID() . '/remove" method="post" ><input type="submit" value="Supprimer"/></form></td>
                                       </tr>';}
 

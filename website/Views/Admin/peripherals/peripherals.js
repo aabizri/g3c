@@ -132,7 +132,7 @@ function sync() {
     let options = {credentials: 'same-origin'};
 
     // Execute request
-    fetch(url.href, options)..then(function (res) {
+    fetch(url.href, options).then(function (res) {
         let columns = ["uuid", "build_date", "property_id", "property_name", "room_id", "room_name", "add_date"];
         applyResponse("peripherals", "peripherals", columns, res);
     });
@@ -148,5 +148,6 @@ function formSubmit() {
 // Add the event listener
 window.addEventListener("load", function () {
     window.addEventListener("hashchange", sync, false);
+    document.getElementById("count-input", formSubmit(), false);
     sync();
 });

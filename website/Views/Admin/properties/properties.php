@@ -39,6 +39,7 @@
         tout</p>
 
     <!-- Actions -->
-    <p id="create_property_paragraph"><a id="create_property_link" href="admin/properties/create">Créer une nouvelle
+    <p hidden id="create_property_paragraph"><a id="create_property_link" href="admin/properties/create">Créer une
+            nouvelle
             propriété</a></p>
 </main>
