@@ -60,10 +60,13 @@ body {
     background-color: rgb(217,196,177);
     border-radius: 5px;;
 }
-
+.temperatureName
+{
+    font-size: x-small;
+}
 #informationspiece
 {
-    padding-left: 50px;
+
     display: flex;
     justify-content: center;
 }
@@ -74,7 +77,6 @@ body {
     position: relative;
     left:23%;
     top: 160px;
-    overflow: scroll;
     border: 1px solid #955252;
     border-radius: 5px;
     width:70%;
