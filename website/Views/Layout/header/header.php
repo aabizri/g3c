@@ -19,6 +19,7 @@
                     <li></li>
                     <li><a href="account"><button>Mon compte</button></a></li>
                     <li><form action="logout" method="post"><button type="submit">Déconnexion</button></form></li>
+                    <li><a href="properties"><button>Mes propriétés</button></a></li>
                 </ul>
             </li>
         </ul>
