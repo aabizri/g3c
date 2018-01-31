@@ -28,6 +28,7 @@
     <input type="submit" value="Connexion"/>
 </form>
     <p id="inscription">Vous n'êtes pas inscrit? Cliquez <a href="join">ici</a></p>
+    <p id="motdepasseoublie">Mot de passe oublié ? Cliquez <a href="findid">ici</a></p>
 </div>
 <div id="domisep">
     <i><h2>Par DOMISEP</h2>
