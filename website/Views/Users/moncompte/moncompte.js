@@ -26,3 +26,7 @@ function validateMdp()
     }
 }
 
+function validateDelete() {
+    return window.confirm("Etes-vous sur de vouloir supprimer votre compte? La suppresion d'un compte est irréversible.")
+}
+

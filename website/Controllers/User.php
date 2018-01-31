@@ -445,4 +445,22 @@ class User
                 "Erreur lors de la redirection de l'utilisateur");
         }
     }
+
+    //Supprimer un utilisateur
+    public static function postDeleteUser( \Entities\Request $req){
+
+        //Récupérer user id
+        $user_id = $req -> getUserID();
+
+        //On supprime les roles et le user id
+        (new \Queries\Roles)
+            -> filterByUserID("=", $user_id)
+            -> delete();
+
+        (new \Queries\Users)
+            -> filterByColumn("id", "=", $user_id,"AND")
+            -> delete();
+
+        DisplayManager::redirect303("login");
+    }
 }

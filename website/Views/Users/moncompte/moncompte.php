@@ -74,3 +74,11 @@
         </p>
         </form>
     </div>
+
+    <div id="deleteaccount">
+        <a>
+            <form type="submit" action="account/delete" method="post" onsubmit="return validateDelete()">
+                <button><p>Supprimer mon compte</p></button>
+            </form>
+        </a>
+    </div>
