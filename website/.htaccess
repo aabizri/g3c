@@ -26,6 +26,7 @@ RewriteRule   ^admin/peripherals/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4
 RewriteRule   ^login$                               index.php?c=User&a=Login&%{QUERY_STRING}
 RewriteRule   ^logout$                              index.php?c=User&a=Logout&%{QUERY_STRING}
 RewriteRule   ^join$                                index.php?c=User&a=Join&%{QUERY_STRING}
+RewriteRule   ^findid$                              index.php?c=User&a=NewID%{QUERY_STRING}
 RewriteRule   ^account$                             index.php?c=User&a=Account&%{QUERY_STRING}
 RewriteRule   ^account/subscription$                index.php?c=Subscription&a=Status&%{QUERY_STRING}
 RewriteRule   ^account/delete$                      index.php?c=User&a=DeleteUser&%(QUERY_STRING)
