@@ -10,7 +10,7 @@
     </li>
 </ul>
 
-<h2 id="titrepage">Ma propriété</h2>
+<h2 id="titrepage">Gestion de ma propriété</h2>
 
 <div id="property">
     <h4>Informations sur ma propriété</h4>

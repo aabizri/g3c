@@ -11,14 +11,13 @@
     $room_id = $data["room_entity"] -> getID();
 ?>
 
-<h2 id="nompiece"> Choix de la salle</h2>
 
     <a id="lienhistorique" href="properties/<?php $room_entity=$data["room_entity"]; echo $room_entity->getPropertyID();?>/rooms/<?php echo $room_entity->getID();?>/stats">
         <button id="boutonhistorique">Accéder à l'historique des capteurs</button>
     </a>
     <a id="lienconsigne" href="properties/<?= $data["pid"] ?>/room/<?= $data["room_entity"] -> getID() ?>/consignes">
         <button id="boutonconsigne">Accéder aux consignes de la salle</button>
-    </a>
+    </a><br/>><br/>
 
 
     <h3 id="nomdelapièce">
