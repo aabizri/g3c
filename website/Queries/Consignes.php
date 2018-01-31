@@ -14,11 +14,11 @@ class Consignes extends Query
     /* COMMON CONSTANTS */
     private const table = "consignes";
     private const columns = ["id" => ["id", "gen-on-insert"],
-        "actuator_id" => [],
-        "destination_value" => [],
-        "active" => [],
-        "creation_date" => ["timestamp"],
-        "last_updated" => ["timestamp"]];
+                             "actuator_id" => [],
+                             "destination_value" => [],
+                             "active" => [],
+                             "creation_date" => ["timestamp"],
+                             "last_updated" => ["timestamp"]];
     private const entity_class_name = "\Entities\Consigne";
 
     /**

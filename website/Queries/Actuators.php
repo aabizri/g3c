@@ -16,10 +16,10 @@ class Actuators extends Query
     /* COMMON CONSTANTS */
     private const table = "actuators";
     private const columns = ["id" => ["id", "gen-on-insert"],
-        "measure_type_id" => [],
-        "last_action_started" => ["timestamp"],
-        "peripheral_uuid" => [],
-        "last_updated" => ["timestamp"]];
+                             "measure_type_id" => [],
+                             "last_action_started" => ["timestamp"],
+                             "peripheral_uuid" => [],
+                             "last_updated" => ["timestamp"]];
     private const entity_class_name = "\Entities\Actuator";
 
     /**
@@ -51,6 +51,6 @@ class Actuators extends Query
 
     public function filterByPeripheralUUID(string $operator, string $peripheral_uuid): self
     {
-        return $this -> filterByColumn("peripheral_uuid", $operator, $peripheral_uuid);
+        return $this->filterByColumn("peripheral_uuid", $operator, $peripheral_uuid);
     }
 }

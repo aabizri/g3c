@@ -27,8 +27,8 @@ class DisplayManager
         "moncompte" => "Users",
         "mapiece" => "Rooms",
         "mespieces" => "Rooms",
-        "mesperipheriques"=> "Peripherals",
-        "mapropriete"=> "Users",
+        "mesperipheriques" => "Peripherals",
+        "mapropriete" => "Users",
         "mysessions" => "Users",
         "users" => "Admin",
         "properties" => "Admin",
@@ -55,7 +55,8 @@ class DisplayManager
      * @return string
      * @throws \Exception
      */
-    private static function subroot(): string {
+    private static function subroot(): string
+    {
         $subroot = (new \Helpers\Config)->getSubroot() ?? self::DEFAULT_SUBROOT;
         return $subroot;
     }
@@ -64,25 +65,18 @@ class DisplayManager
      * @return string
      * @throws \Exception
      */
-    public static function websiteRootFS(string $dir = ""): string{
-        return str_replace("/", DIRECTORY_SEPARATOR,$_SERVER["DOCUMENT_ROOT"].DIRECTORY_SEPARATOR.self::subroot().DIRECTORY_SEPARATOR.$dir);
+    public static function websiteRootFS(string $dir = ""): string
+    {
+        return str_replace("/", DIRECTORY_SEPARATOR, $_SERVER["DOCUMENT_ROOT"] . DIRECTORY_SEPARATOR . self::subroot() . DIRECTORY_SEPARATOR . $dir);
     }
 
     /**
      * @return string
      * @throws \Exception
      */
-    public static function websiteRootURL(string $dir = ""): string{
-        return "/".str_replace("\\","/", self::subroot())."/".$dir;
-    }
-
-    /**
-     * @param string $path
-     * @return string
-     * @throws \Exception
-     */
-    public static function absolutifyFS(string $path, string $origin = ""): string{
-        return self::websiteRootFS($origin).$path;
+    public static function websiteRootURL(string $dir = ""): string
+    {
+        return "/" . str_replace("\\", "/", self::subroot()) . "/" . $dir;
     }
 
     /**
@@ -90,8 +84,19 @@ class DisplayManager
      * @return string
      * @throws \Exception
      */
-    public static function absolutifyURL(string $path, string $origin = ""): string{
-        return self::websiteRootURL($origin).$path;
+    public static function absolutifyFS(string $path, string $origin = ""): string
+    {
+        return self::websiteRootFS($origin) . $path;
+    }
+
+    /**
+     * @param string $path
+     * @return string
+     * @throws \Exception
+     */
+    public static function absolutifyURL(string $path, string $origin = ""): string
+    {
+        return self::websiteRootURL($origin) . $path;
     }
 
     /**
@@ -99,21 +104,22 @@ class DisplayManager
      * @return string[] the absolute paths to that page in "php" and "css"
      * @throws \Exception
      */
-    private static function resolveSingleComponent(string $page_name): array {
+    private static function resolveSingleComponent(string $page_name): array
+    {
         // Category
-        if (!array_key_exists($page_name,self::$views_categories)) {
-            throw new \Exception("Page not listed in internal repository : ".$page_name);
+        if (!array_key_exists($page_name, self::$views_categories)) {
+            throw new \Exception("Page not listed in internal repository : " . $page_name);
         }
         $category = self::$views_categories[$page_name];
 
         // Build the path
         $base_path = self::VIEWS_DIR . "/" . $category . "/" . $page_name . "/" . $page_name;
-        $res["php"] = str_replace("/",DIRECTORY_SEPARATOR,$base_path.".php");
+        $res["php"] = str_replace("/", DIRECTORY_SEPARATOR, $base_path . ".php");
         if (!file_exists(self::absolutifyFS($res["php"]))) {
-            throw new \Exception("Page listed in internal repository but not found on disk : ".self::absolutifyFS($res["php"]));
+            throw new \Exception("Page listed in internal repository but not found on disk : " . self::absolutifyFS($res["php"]));
         }
-        if (file_exists(self::absolutifyFS($base_path.".css"))) {
-            $res["css"] = $base_path.".css";
+        if (file_exists(self::absolutifyFS($base_path . ".css"))) {
+            $res["css"] = $base_path . ".css";
         }
         if (file_exists(self::absolutifyFS($base_path . ".js"))) {
             $res["js"] = $base_path . ".js";
@@ -127,7 +133,8 @@ class DisplayManager
      * @return array
      * @throws \Exception
      */
-    public static function resolveMultipleComponents(array $page_names): array {
+    public static function resolveMultipleComponents(array $page_names): array
+    {
         $out = array();
         foreach ($page_names as $name) {
             $out[] = self::resolveSingleComponent($name);
@@ -140,9 +147,10 @@ class DisplayManager
      * @param array $data
      * @throws \Exception
      */
-    public static function display(string $name, array $data = []): void {
+    public static function display(string $name, array $data = []): void
+    {
         // Resolve components
-        $components = self::resolveMultipleComponents(["head","header",$name,"footer"]);
+        $components = self::resolveMultipleComponents(["head", "header", $name, "footer"]);
 
         // For each, extract the css & php
         $php = [];

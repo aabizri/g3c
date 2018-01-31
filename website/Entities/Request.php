@@ -333,7 +333,7 @@ class Request extends Entity
      */
     public function setMethod(string $method): bool
     {
-        if (!in_array($method, ["GET","POST","HEAD","PUT","PATCH","DELETE","CONNECT","OPTIONS","TRACE","PATCH"])) {
+        if (!in_array($method, ["GET", "POST", "HEAD", "PUT", "PATCH", "DELETE", "CONNECT", "OPTIONS", "TRACE", "PATCH"])) {
             return false;
         }
         $this->method = $method;
@@ -439,7 +439,8 @@ class Request extends Entity
     /**
      * @return bool
      */
-    public function getInDebug(): bool {
+    public function getInDebug(): bool
+    {
         return $this->in_debug;
     }
 
@@ -447,7 +448,8 @@ class Request extends Entity
      * @param bool $is
      * @return bool
      */
-    public function setInDebug(bool $is): bool {
+    public function setInDebug(bool $is): bool
+    {
         $this->in_debug = $is;
         return true;
     }
@@ -704,7 +706,8 @@ class Request extends Entity
      * @param array|null $post
      * @return bool
      */
-    public function setParams(array $get = null, array $post = null): bool {
+    public function setParams(array $get = null, array $post = null): bool
+    {
         if ($get === null) {
             $get = $_GET;
         }
@@ -756,7 +759,7 @@ class Request extends Entity
         }
 
         // Set request time
-        $time = (float) $info["REQUEST_TIME_FLOAT"];
+        $time = (float)$info["REQUEST_TIME_FLOAT"];
         $ok = $this->setStartedProcessing($time);
         if (!$ok) {
             return false;
@@ -861,7 +864,8 @@ class Request extends Entity
     /**
      * Autosets the values from the superglobals $_SERVER, $GET, $POST and the controllers from the GET.
      */
-    public function autoSet() {
+    public function autoSet()
+    {
         $this->setInfo();
         $this->setParams();
         $this->extractRoutingInfo();

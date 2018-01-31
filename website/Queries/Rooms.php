@@ -5,6 +5,7 @@
  * Date: 11/27/17
  * Time: 9:15 PM
  */
+
 namespace Queries;
 
 /**

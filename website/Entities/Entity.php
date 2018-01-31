@@ -51,7 +51,8 @@ abstract class Entity
      * @return array
      * @throws \Exception if invalid property name given
      */
-    public function getMultiple(array $order): array {
+    public function getMultiple(array $order): array
+    {
         // Results associative array
         $results = [];
 
@@ -62,7 +63,7 @@ abstract class Entity
 
             // Check if it exists
             if (!method_exists($this, $getter_name)) {
-                throw new UnknownGetterException($this,$getter_name);
+                throw new UnknownGetterException($this, $getter_name);
             }
 
             // Apply it
@@ -147,7 +148,8 @@ abstract class Entity
  * @param string $snake_case
  * @return string
  */
-function snakeCaseToPascalCase(string $snake_case): string {
+function snakeCaseToPascalCase(string $snake_case): string
+{
     return str_replace('_', '', ucwords($snake_case, '_'));
 }
 
@@ -156,7 +158,8 @@ function snakeCaseToPascalCase(string $snake_case): string {
  * @param string $prefix
  * @return string
  */
-function propertyNameToMethodName(string $property_name, string $prefix): string {
+function propertyNameToMethodName(string $property_name, string $prefix): string
+{
     // Apply prefix and get the pascal case
     $method_name = $prefix . snakeCaseToPascalCase($property_name);
 

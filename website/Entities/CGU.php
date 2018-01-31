@@ -18,7 +18,7 @@ class CGU extends Entity
     /**
      * @return mixed
      */
-    public function getID() : ?int
+    public function getID(): ?int
     {
         return $this->id;
     }
@@ -26,7 +26,7 @@ class CGU extends Entity
     /**
      * @param mixed $id
      */
-    public function setID(int $id) : bool
+    public function setID(int $id): bool
     {
         $this->id = $id;
         return true;
@@ -35,7 +35,7 @@ class CGU extends Entity
     /**
      * @return mixed
      */
-    public function getText() : ?string
+    public function getText(): ?string
     {
         return $this->text;
     }
@@ -43,7 +43,7 @@ class CGU extends Entity
     /**
      * @param mixed $text
      */
-    public function setText(string $text) : bool
+    public function setText(string $text): bool
     {
         $this->text = $text;
         return true;
@@ -52,7 +52,7 @@ class CGU extends Entity
     /**
      * @return mixed
      */
-    public function getLastUpdated() : ?float
+    public function getLastUpdated(): ?float
     {
         return $this->last_updated;
     }
@@ -60,7 +60,7 @@ class CGU extends Entity
     /**
      * @param mixed $last_updated
      */
-    public function setLastUpdated(float $last_updated) : bool
+    public function setLastUpdated(float $last_updated): bool
     {
         $this->last_updated = $last_updated;
         return true;
