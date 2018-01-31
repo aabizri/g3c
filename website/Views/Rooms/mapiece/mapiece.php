@@ -1,9 +1,9 @@
 <main>
     <ul id="Menu">
-        <li id="Moncompte"><a href="account"><input type="button" value="Mon compte"/></a></li>
-        <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
+        <li id="Moncompte"><a class="button" href="account"><input type="button" value="Mon compte"/></a></li>
+        <li id="Mespieces"><a class="button" href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
         </li>
-        <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
+        <li id="Mesperipheriques"><a class="button" href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
                                                                                               value="Mes périphériques"/></a>
         </li>
     </ul>
@@ -13,7 +13,7 @@
 
 <h2 id="nompiece"> Choix de la salle</h2>
 
-    <a id="lienhistorique" href="index.php?c=Sensorstats&a=SelectSensor&pid=1">
+    <a id="lienhistorique" href="properties/<?php $room_entity=$data["room_entity"]; echo $room_entity->getPropertyID();?>/rooms/<?php echo $room_entity->getID();?>/stats">
         <button id="boutonhistorique">Accéder à l'historique des capteurs</button>
     </a>
     <a id="lienconsigne" href="properties/<?= $data["pid"] ?>/room/<?= $data["room_entity"] -> getID() ?>/consignes">
@@ -21,24 +21,9 @@
     </a>
 
 
-<form method="get" action="index.php" id="choixsalle">
-    <input type="hidden" name="c" value="Room"/>
-    <input type="hidden" name="a" value="Room"/>
-    <select name="room">
-        <?php
-        $rooms = $data["rooms"];
-        foreach ($rooms as $room) {
-            echo '<option value="'.$room->getID().'">'.$room->getName().'</option>';
-        }
-        ?>
-    </select>
-
-    <input type="submit" value="Valider" title="Valider pour accéder à la salle" />
-
-</form>
     <h3 id="nomdelapièce">
         <?php
-            $room_entity=$data["room_entity"];
+            $room_entity = $data["room_entity"];
             $room_name=$room_entity->getName();
             echo htmlspecialchars($room_name);
             ?>
@@ -52,7 +37,7 @@
 
                 foreach ($last_measures as $measure)
                 {
-                    echo "<p class=\"temperature\"><strong>";
+                    echo "<p class=\"temperature\"><strong class='temperatureName'>";
                     $measure_type=(new \Queries\MeasureTypes)-> retrieve($measure -> getTypeID());
                     echo $measure_type->getName()."</strong><br><br>"
                         .$measure->getValue()."". $measure_type->getUnitSymbol()."<br></p>";

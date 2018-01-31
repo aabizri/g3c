@@ -18,7 +18,7 @@ RewriteRule   ^admin/properties/([0-9]+)/peripherals$ index.php?c=Admin&a=Proper
 
 ## Admin/Peripherals
 RewriteRule   ^admin/peripherals$                    index.php?c=Admin&a=Peripherals&%{QUERY_STRING}
-RewriteRule   ^admin/peripherals/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$ index.php?c=Admin&a=Peripheral&puuid=$1&%{QUERY_STRING}
+RewriteRule   ^admin/peripherals/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})$ inddx.php?c=Admin&a=Peripheral&puuid=$1&%{QUERY_STRING}
 
 # Client
 RewriteRule   ^login$                               index.php?c=User&a=Login&%{QUERY_STRING}
@@ -27,6 +27,8 @@ RewriteRule   ^join$                                index.php?c=User&a=Join&%{QU
 RewriteRule   ^account$                             index.php?c=User&a=Account&%{QUERY_STRING}
 RewriteRule   ^account/subscription$                index.php?c=Subscription&a=Status&%{QUERY_STRING}
 RewriteRule   ^account/delete$                      index.php?c=User&a=DeleteUser&%(QUERY_STRING)
+RewriteRule   ^account/changepassword$              index.php?c=User&a=AccountPassword&%(QUERY_STRING)
+RewriteRule   ^account/modifyaccount$               index.php?c=User&a=Account&¨(QUERY_STRING)
 
 # Property-wise
 RewriteRule   ^properties$                          index.php?c=Properties&a=Select&%{QUERY_STRING}
@@ -41,6 +43,8 @@ RewriteRule   ^properties/([0-9]+)/rooms$             index.php?c=Rooms&a=Rooms&
 RewriteRule   ^properties/([0-9]+)/rooms/([0-9]+)$    index.php?c=Rooms&a=Room&pid=$1&rid=$2&%{QUERY_STRING}
 RewriteRule   ^properties/([0-9]+)/rooms/create       index.php?c=Rooms&a=Create&pid=$1&%{QUERY_STRING}
 RewriteRule   ^properties/([0-9]+)/rooms/delete       index.php?c=Rooms&a=Delete&pid=$1&%{QUERY_STRING}
+RewriteRule   ^properties/([0-9]+)/rooms/([0-9]+)/stats$ index.php?c=Sensorstats&a=Selectsensor&pid=$1&rid=$2&%{QUERY_STRING}
+RewriteRule   ^properties/([0-9]+)/sensorstats$       index.php?c=Sensorstats&a=Sensorstats&pid=$1&%{QUERY_STRING}
 
 ## Property others
 RewriteRule   ^properties/([0-9]+)/peripherals$       index.php?c=Peripherals&a=List&pid=$1&%{QUERY_STRING}
@@ -51,3 +55,5 @@ RewriteRule   ^properties/([0-9]+)/room/([0-9]+)/consignes$       index.php?c=Co
 RewriteRule   ^properties/([0-9]+)/consignescreate$       index.php?c=Consignes&a=Create&pid=$1&%{QUERY_STRING}
 
 #CGU & FAQ
+RewriteRule   ^faq                                    index.php?c=FAQ&a=FAQ&%{QUERY_STRING}
+RewriteRule   ^cgu                                    index.php?c=CGU&a=CGU&%{QUERY_STRING}
