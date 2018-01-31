@@ -95,8 +95,9 @@ class Sensorstats
 
         //Liste des sensors
         $peripherals = (new \Queries\Peripherals)
-            ->filterByPropertyID("=", $property_id)
-            ->find();
+            -> filterByColumn("property_id","=", $property_id,"AND")
+            -> filterByColumn("room_id","!=","null","AND")
+            -> find();
 
         //On récupère l'uuid
         $peripherals_uuid = [];
@@ -108,8 +109,8 @@ class Sensorstats
         $sensors_list = [];
         foreach ($peripherals_uuid as $puuid) {
             $sensors = (new \Queries\Sensors)
-                ->filterByColumn("peripheral_uuid", "=", $puuid, "AND")
-                ->find();
+                -> filterByColumn("peripheral_uuid", "=", $puuid, "OR")
+                -> find();
 
             foreach ($sensors as $s) {
                 $sensors_list[] = $s;

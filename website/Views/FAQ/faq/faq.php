@@ -1,5 +1,5 @@
 <main>
-    <div id="faq">
+    <div id="faqpage">
 
         <h2 id="titre">Foire Aux Questions</h2>
 

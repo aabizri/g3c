@@ -44,9 +44,6 @@ class Product extends Entity
     private $quantity;
 
 
-
-
-
     /* GETTERS AND SETTERS */
 
     /**
@@ -89,7 +86,7 @@ class Product extends Entity
     /**
      * @return string
      */
-    public function getDescription() : string
+    public function getDescription(): string
     {
         return $this->description;
     }
@@ -98,7 +95,7 @@ class Product extends Entity
      * @param string $description
      * @return bool
      */
-    public function setDescription(string $description) : bool
+    public function setDescription(string $description): bool
     {
         $this->description = $description;
         return true;
@@ -116,7 +113,7 @@ class Product extends Entity
      * @param string $category
      * @return bool
      */
-    public function setCategory(string $category) : bool
+    public function setCategory(string $category): bool
     {
         $this->category = $category;
         return true;

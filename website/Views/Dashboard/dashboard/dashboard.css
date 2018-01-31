@@ -1,6 +1,5 @@
 body {
 	position : relative;
-	background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
 	background-size: cover;
 	background-position: center;
 	width: auto;
@@ -27,13 +26,17 @@ body {
 	cursor: pointer;
 }
 
-#Moncompte, #Mespieces, #Mesperipheriques, #Mesconsignes, #Mesparametres, #Mapropriete
+ #Mespieces, #Mesperipheriques, #Mesconsignes, #Mesparametres, #Mapropriete
 {
 	position: relative;
 	margin: 50px 10px;
 	width: 100%;
 }
-
+.button
+{
+	text-decoration: none;
+	color: #955252;
+}
 /*Mes pièces*/
 
 #Tableaudebord
@@ -100,6 +103,21 @@ body {
 #champsdashboard
 {
 	border: 1px solid black;
+}
+
+#setting
+{
+	position: relative;
+	top: 80px;
+}
+
+#settings
+{
+	text-align: right;
+	position: relative;
+	left: 20%;
+	color:#955252;
+	text-decoration: none;
 }
 
 footer {

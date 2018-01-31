@@ -17,11 +17,26 @@
 
     <!-- Actions -->
     <div id="actions_block">
+        <h4>Vues</h4>
+        <ul id="views_list">
+            <li><a href="admin/properties/<?= urlencode($data["pid"]) ?>/roles" id="show_roles_action">Afficher les
+                    propriétés
+                    associées</a></li>
+            <li><a href="admin/properties/<?= urlencode($data["pid"]) ?>/sessions" id="show_sessions_action">Afficher
+                    les
+                    sessions associées</a></li>
+            <li><a href="admin/properties/<?= urlencode($data["pid"]) ?>/peripherals" id="show_peripherals_action">Afficher
+                    les
+                    périphériques associées</a></li>
+            <li><a href="admin/properties/<?= urlencode($data["pid"]) ?>/requests" id="show_requests_action">Afficher
+                    les
+                    requêtes associées</a></li>
+        </ul>
+        <h4>Actions</h4>
         <ul id="actions_list">
-            <li><a id="show_roles_action">Afficher les utilisateurs associées</a></li>
-            <li><a id="show_rooms_action">Afficher les pièces associées</a></li>
-            <li><a id="show_peripherals_action">Afficher les périphériques associés</a></li>
-            <li><a id="show_requests_action">Afficher les requêtes associées</a></li>
+            <li>
+                <button id="delete_action" onclick="return deleteProperty()">Supprimer la propriété du système</button>
+            </li>
         </ul>
     </div>
 

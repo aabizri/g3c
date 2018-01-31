@@ -2,7 +2,6 @@
 
 body {
     position : relative;
-    background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
     background-size: cover;
     background-position: center;
     font-family: Verdana;
@@ -35,6 +34,12 @@ body {
     position: relative;
     margin: 50px 10px;
     width: 100%;
+}
+
+.button
+{
+    text-decoration: none;
+    color: #955252;
 }
 
 #creervoirutilisateur

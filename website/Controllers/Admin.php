@@ -332,6 +332,58 @@ class Admin
     }
 
     /**
+     * POST admin/users/{UID}/delete
+     * @param \Entities\Request $req
+     */
+    public static function postDeleteUser(\Entities\Request $req): void
+    {
+        // Retrieve User ID
+        $queried_user_id = $req->getGET("uid");
+
+        // Delete User-Linked Requests
+        try {
+            (new \Queries\Requests)
+                ->filterByColumn("user_id", "=", $queried_user_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting requests linked to user with ID: " . $queried_user_id);
+            return;
+        }
+
+        // Delete User-Linked Sessions
+        try {
+            (new \Queries\Sessions)
+                ->filterByColumn("user_id", "=", $queried_user_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting requests linked to user with ID: " . $queried_user_id);
+            return;
+        }
+
+        // Delete User-Linked Roles
+        try {
+            (new \Queries\Roles)
+                ->filterByColumn("user_id", "=", $queried_user_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting requests linked to user with ID: " . $queried_user_id);
+            return;
+        }
+
+        // Delete User
+        try {
+            (new \Queries\Users)
+                ->filterByColumn("id", "=", $queried_user_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting requests linked to user with ID: " . $queried_user_id);
+            return;
+        }
+
+        // Finished
+    }
+
+    /**
      * @param \Entities\Request $req
      */
     public static function getUserProperties(\Entities\Request $req): void
@@ -576,6 +628,7 @@ class Admin
             default:
                 $data_for_php_view = [
                     "json" => $output,
+                    "pid" => $queried_property_id,
                 ];
                 \Helpers\DisplayManager::display("property", $data_for_php_view);
         }
@@ -635,6 +688,73 @@ class Admin
     public static function postCreateProperty(\Entities\Request $req): void
     {
 
+    }
+
+    /**
+     * POST admin/properties/{PID}/delete
+     * @param \Entities\Request $req
+     */
+    public static function postDeleteProperty(\Entities\Request $req): void
+    {
+        // Retrieve User ID
+        $queried_property_id = $req->getGET("pid") ?? $req->getPropertyID();
+
+
+        // Delete Property-Linked Requests
+        try {
+            (new \Queries\Requests)
+                ->filterByColumn("property_id", "=", $queried_property_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting requests linked to property with ID: " . $queried_property_id);
+            return;
+        }
+
+        // Delete Property-Linked Roles
+        try {
+            (new \Queries\Roles)
+                ->filterByColumn("property_id", "=", $queried_property_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting roles linked to property with ID: " . $queried_property_id);
+            return;
+        }
+
+        // Deassociate Property-Linked peripherals
+        try {
+            $peripherals = (new \Queries\Peripherals)
+                ->filterByColumn("property_id", "=", $queried_property_id);
+            foreach ($peripherals as $peripheral) {
+                $peripheral->setRoomID(null);
+                $peripheral->setPropertyID(null);
+                (new \Queries\Peripherals)->update($peripheral);
+            }
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deassociating peripherals linked to property with ID: " . $queried_property_id);
+            return;
+        }
+
+        // Delete Property-Linked Rooms
+        try {
+            (new \Queries\Rooms)
+                ->filterByColumn("property_id", "=", $queried_property_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting rooms linked to property with ID: " . $queried_property_id);
+            return;
+        }
+
+        // Delete property
+        try {
+            (new \Queries\Properties())
+                ->filterByColumn("id", "=", $queried_property_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting property with ID: " . $queried_property_id);
+            return;
+        }
+
+        // Finished
     }
 
     /**

@@ -14,8 +14,8 @@ class CGU extends Query
     /* COMMON CONSTANTS */
     private const table = "cgu";
     private const columns = ["id" => ["id", "gen-on-insert"],
-        "text" => [],
-        "last_updated" => ["timestamp"]];
+                             "text" => [],
+                             "last_updated" => ["timestamp"]];
     private const entity_class_name = "\Entities\CGU";
 
     /**

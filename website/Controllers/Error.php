@@ -41,16 +41,17 @@ class Error
         }
     }
 
-    public static function getControllerNotFound404(\Entities\Request $req) {
+    public static function getControllerNotFound404(\Entities\Request $req)
+    {
         http_response_code(404);
         echo "Page inexistante, veuillez re-essayer avec une page valide";
         if ($req->getInDebug()) {
             echo "<br/> <h2> Informations de débuggage sur le routage : </h2><br/>";
-            echo "Méthode utilisée : ".$req->getMethod();
+            echo "Méthode utilisée : " . $req->getMethod();
             echo "<br/>";
             echo "Controlleur demandé : " . $req->getController();
             echo "<br/>";
-            echo "Action demandée : ".$req->getAction();
+            echo "Action demandée : " . $req->getAction();
             echo "<br/> <h3> Informations de débuggage sur la requête : </h3><br/>";
             echo "<pre>";
             echo $req->prettyPrint();

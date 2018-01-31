@@ -225,7 +225,7 @@ class User extends Entity
     // Validate phone validates a phone number in a more liberal way (spaces, numbers, parenthesis, dashes and dots)
     public static function validatePhone(string $phone): bool
     {
-        $match = preg_match('/[^0-9\+\ \-\(\)\.]/',$phone);
+        $match = preg_match('/[^0-9\+\ \-\(\)\.]/', $phone);
         return $match !== 1;
     }
 

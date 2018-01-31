@@ -1,16 +1,14 @@
 <main>
     <ul id="Menu">
-        <li id="Moncompte"><a href="account"><input type="button" value="Mon compte"/></a></li>
-        <li id="Mapropriete"><a href="properties/<?= $data["pid"]?>"><input type="button" value="Ma propriété" /></a> </li>
-        <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
+        <li id="Mapropriete"><a class="button" href="properties/<?= $data["pid"]?>"><input type="button" value="Ma propriété" /></a> </li>
+        <li id="Mespieces"><a class="button" href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
         </li>
-        <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
-                                                                                              value="Mes périphériques"/></a>
+        <li id="Mesperipheriques"><a class="button" href="properties/<?= $data["pid"] ?>/peripherals"><input type="button" value="Mes périphériques"/></a>
         </li>
     </ul>
 
     <h2 id="Tableaudebord">Tableau de bord</h2>
-    <div id="setting">
+    <br><div id="setting">
     <a id="settings" href="properties/<?= $data["pid"] ?>/settings">Réglages</a></div>
 
     <?php
