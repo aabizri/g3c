@@ -15,34 +15,6 @@ use Queries;
 
 class Consignes
 {
-    /**
-     * GET /properties/{PID}/orders
-     * @param \Entities\Request $req
-     * @throws \Exception
-     */
-    public static function getConsignes(\Entities\Request $req)
-    {
-
-        $property_id = $req->getPropertyID();
-        if ($property_id === null) {
-            \Controllers\Error::getBadRequest400($req, "Pas d'ID de propriété donné");
-            return;
-        }
-
-        //On affiche toutes les salles diponibles de la propriété
-        try {
-            $property_rooms = (new \Queries\Rooms)->filterByPropertyID("=", $property_id)->find();
-        } catch (\Throwable $t) {
-            Error::getInternalError500Throwables($req, $t, "erreur lors de la récupération des pièces");
-        }
-
-        //On peuple la vue
-        $data["property_rooms"] = $property_rooms;
-        $data["pid"] = $property_id;
-
-        //On envoie les données vers la page
-        DisplayManager::display("consignes", $data);
-    }
 
     /**
      * GET /properties/{PID}/rooms/orders
@@ -59,7 +31,7 @@ class Consignes
         }
 
         //On recupère l'id de salle à laquelle l'utilisateur veut accéder
-        $room_id = $req->getGET("room_id");
+        $room_id = $req->getGET("rid");
         if (empty($room_id)) {
             \Controllers\Error::getBadRequest400($req, "Pas de RoomID donné");
             return;
@@ -131,6 +103,7 @@ class Consignes
         // On récupères les données en POST
         $destination_value = $req->getPOST("destination_value");
         $actuator_id = $req->getPOST("actuator_id");
+        $room_id = $req -> getPOST("room_id");
 
         // On vérifie leur présence
         if ($actuator_id === null || $destination_value === null) {
@@ -162,7 +135,7 @@ class Consignes
         // Enregistrement
         (new \Queries\Consignes)->insert($c);
 
-        DisplayManager::redirect302("consignes");
+        DisplayManager::redirect303("properties/".$property_id."/room/".$room_id."/consignes");
 
     }
 }

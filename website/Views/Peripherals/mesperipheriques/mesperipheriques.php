@@ -6,8 +6,6 @@
     <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
                                                                                           value="Mes périphériques"/></a>
     </li>
-    <li id="Mesconsignes"><a href="properties/<?= $data["pid"] ?>/consignes"><input type="button"
-                                                                                    value="Mes Consignes"/></a></li>
 </ul>
 
             <h2 id="titreperipherique">Liste des peripériques connectés</h2>

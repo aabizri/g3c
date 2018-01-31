@@ -97,7 +97,21 @@ body {
     left: 20%;
 }
 
+#lienconsigne
+{
+    position: relative;
+    top:185px;
+    left: 20%;
+}
+
 #boutonhistorique
+{
+    position: relative;
+    top: 20px;
+    border-radius: 5px;
+}
+
+#boutonconsigne
 {
     position: relative;
     top: 20px;

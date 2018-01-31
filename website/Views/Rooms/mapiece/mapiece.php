@@ -6,16 +6,20 @@
         <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
                                                                                               value="Mes périphériques"/></a>
         </li>
-        <li id="Mesconsignes"><a href="properties/<?= $data["pid"] ?>/consignes"><input type="button"
-                                                                                        value="Mes Consignes"/></a></li>
     </ul>
-
+<?php
+    $room_id = $data["room_entity"] -> getID();
+?>
 
 <h2 id="nompiece"> Choix de la salle</h2>
 
     <a id="lienhistorique" href="index.php?c=Sensorstats&a=SelectSensor&pid=1">
         <button id="boutonhistorique">Accéder à l'historique des capteurs</button>
     </a>
+    <a id="lienconsigne" href="properties/<?= $data["pid"] ?>/room/<?= $data["room_entity"] -> getID() ?>/consignes">
+        <button id="boutonconsigne">Accéder aux consignes de la salle</button>
+    </a>
+
 
 <form method="get" action="index.php" id="choixsalle">
     <input type="hidden" name="c" value="Room"/>
