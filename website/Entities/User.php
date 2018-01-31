@@ -51,6 +51,11 @@ class User extends Entity
     private $phone;
 
     /**
+     * @var bool
+     */
+    private $admin;
+
+    /**
      * @var float
      */
     private $last_updated;
@@ -232,6 +237,22 @@ class User extends Entity
 
         // Return
         return $sanitized;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAdmin(): bool
+    {
+        return $this->admin;
+    }
+
+    /**
+     * @param bool $admin
+     */
+    public function setAdmin(bool $admin)
+    {
+        $this->admin = $admin;
     }
 
     /**
