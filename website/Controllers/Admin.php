@@ -640,7 +640,8 @@ class Admin
     public static function postDeleteProperty(\Entities\Request $req): void
     {
         // Retrieve User ID
-        $queried_property_id = $req->getGET("pid");
+        $queried_property_id = $req->getGET("pid") ?? $req->getPropertyID();
+
 
         // Delete Property-Linked Requests
         try {
