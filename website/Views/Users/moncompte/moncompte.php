@@ -77,7 +77,7 @@
 
     <div id="deleteaccount">
         <a>
-            <form type="submit" action="index.php?c=User&a=DeleteUser&debug=true" method="post" onsubmit="return validateDelete()">
+            <form type="submit" action="account/delete" method="post" onsubmit="return validateDelete()">
                 <button><p>Supprimer mon compte</p></button>
             </form>
         </a>
