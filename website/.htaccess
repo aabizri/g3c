@@ -27,6 +27,8 @@ RewriteRule   ^join$                                index.php?c=User&a=Join&%{QU
 RewriteRule   ^account$                             index.php?c=User&a=Account&%{QUERY_STRING}
 RewriteRule   ^account/subscription$                index.php?c=Subscription&a=Status&%{QUERY_STRING}
 RewriteRule   ^account/delete$                      index.php?c=User&a=DeleteUser&%(QUERY_STRING)
+RewriteRule   ^account/changepassword$              index.php?c=User&a=AccountPassword&%(QUERY_STRING)
+RewriteRule   ^account/modifyaccount                index.php?c=User&a=Account&¨(QUERY_STRING)
 
 # Property-wise
 RewriteRule   ^properties$                          index.php?c=Properties&a=Select&%{QUERY_STRING}
