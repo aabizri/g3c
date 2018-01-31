@@ -497,7 +497,7 @@ class Admin
                 "title" => "Name",
                 "value" => htmlspecialchars($queried_property->getName()),
                 "type" => "text"],
-            "nick" => (object)[
+            "address" => (object)[
                 "title" => "Address",
                 "value" => htmlspecialchars($queried_property->getAddress()),
                 "type" => "text"],
@@ -550,6 +550,7 @@ class Admin
         $order = [
             "name" => $req->getPOST("new_name"),
             "email" => $req->getPOST("new_email"),
+            "address" => $req->getPOST("new_address"),
         ];
 
         // Validate them all
