@@ -17,17 +17,56 @@
 
     <!-- Actions -->
     <div id="actions_block">
+        <h4>Vues</h4>
+        <ul id="views_list">
+            <li><a href="admin/properties/<?= urlencode($data["pid"]) ?>/roles" id="show_roles_action">Afficher les
+                    propriétés
+                    associées</a></li>
+            <li><a href="admin/properties/<?= urlencode($data["pid"]) ?>/sessions" id="show_sessions_action">Afficher
+                    les
+                    sessions associées</a></li>
+            <li><a href="admin/properties/<?= urlencode($data["pid"]) ?>/peripherals" id="show_peripherals_action">Afficher
+                    les
+                    périphériques associées</a></li>
+            <li><a href="admin/properties/<?= urlencode($data["pid"]) ?>/requests" id="show_requests_action">Afficher
+                    les
+                    requêtes associées</a></li>
+        </ul>
+        <h4>Actions</h4>
         <ul id="actions_list">
-            <li><a id="show_roles_action">Afficher les utilisateurs associées</a></li>
-            <li><a id="show_rooms_action">Afficher les pièces associées</a></li>
-            <li><a id="show_peripherals_action">Afficher les périphériques associés</a></li>
-            <li><a id="show_requests_action">Afficher les requêtes associées</a></li>
+            <li>
+                <button id="delete_action" onclick="return deleteProperty()">Supprimer la propriété du système</button>
+            </li>
         </ul>
     </div>
 
     <div id="json_data" hidden><?= $data["json"] ?></div>
 
     <script>
+        function deleteProperty() {
+            // Confirmer
+            let ok = confirm("CELA SUPPRIMERA DEFINITIVEMENT LA PROPRIETE " + data["name"].value + "\nÊTES VOUS SÛR DE CONTINUER ?");
+            if (!ok) {
+                return false;
+            }
+
+            // Fetch options
+            let fetchOptions = {
+                method: "POST",
+            };
+
+            // Push
+            return fetch(window.location.href + "/delete", fetchOptions).then(function (response) {
+                return response;
+            }).then(function (response) {
+                if (response.status !== 200) {
+                    return false;
+                } else {
+                    window.location.href = "admin/properties"
+                }
+            });
+        }
+
         function startModify() {
             // If immutable, do not modify
             if (data[this.parentNode.id].type === "immutable") {
@@ -104,11 +143,6 @@
             // Set the text to the input value
             cell.innerText = inputValue;
 
-            // Set the H3 to the input value if this is the nick
-            if (cell.parentNode.id === "display") {
-                document.getElementsByTagName("h3")[0].innerHTML = inputValue;
-            }
-
             // Attach startModify onclick
             cell.onclick = startModify;
         }
@@ -184,6 +218,6 @@
         // Data populated in PHP, but set via JS
         let data = JSON.parse(document.getElementById("json_data").innerHTML);
         updateTable(data);
-        document.getElementsByTagName("h3")[0].innerHTML = data["display"].value;
+        document.getElementsByTagName("h3")[0].innerHTML = data["name"].value;
     </script>
 </main>
