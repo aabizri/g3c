@@ -5,6 +5,10 @@ main {
 	background-size: cover;
 }
 
+body{
+	overflow-x: hidden;
+}
+
 #navigation{
 	top: 50px;
 	position: relative;
@@ -88,4 +92,7 @@ main {
 
     text-decoration: underline;
 
+}
+footer{
+	top: 1750px;
 }
