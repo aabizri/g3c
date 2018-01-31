@@ -176,7 +176,7 @@
 
             // Execute request
             fetch(url.href).then(function (res) {
-                let columns = ["id", "name", "addresse", "creation_date"];
+                let columns = ["id", "name", "address", "creation_date"];
                 applyResponse("properties", "properties", columns, res);
             });
         }
