@@ -29,15 +29,25 @@ final class TrameCouranteRequete extends TrameCourante
      */
     public $tim_secondes;
 
-
-    public function parseTrameCouranteRequete(string $line): string
+    protected function parseStage(string $line): string
     {
         // Parse le parent
-        $payload = parent::parseTrameCourante($line);
+        $payload = parent::parseStage($line);
 
         // Extractions des parties
         $this->val = substr($payload, 0, 4);
         $this->tim_minutes = (int)substr($payload, 4, 2);
         $this->tim_secondes = (int)substr($payload, 6, 2);
+
+        return "";
+    }
+
+    public function parse(string $line)
+    {
+        // Parse the stage
+        $this->parseStage($line);
+
+        // Done !
+        return;
     }
 }

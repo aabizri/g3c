@@ -48,29 +48,43 @@ abstract class TrameCourante extends Trame
      */
     public $chk;
 
-    protected function parseTrameCourante(string $line): string
-    {
-        // Parse le parent
-        parent::parseTrame($line);
+    private const CHECK_CHECKSUM = false;
 
+    protected function parseStage(string $line): string
+    {
         // Une trame fait plus que N caractères
         if (strlen($line) < 11) {
             throw new \Exception("Invalid length");
         }
 
-        // Extraction des données
-        // $tra = (int)$line[0];
-        $this->tra = (int)$line[0];
-        $this->obj = (int)hexdec(substr($line, 1, 4));
-        $this->req = (int)$line[4];
-        $this->typ = (int)$line[5];
-        $this->num = (int)hexdec(substr($line, 6, 4));
-        $this->chk = (int)hexdec(substr($line, strlen($line) - 2, 2));
+        // Parse le parent
+        parent::parseStage($line);
 
-        // Vérification du checksum
-        // TODO Il faut checker le checksum
+        // Calcul du checksum
+        if (self::CHECK_CHECKSUM) {
+            $calc_chk = 0;
+            foreach (str_split(substr($line, 0, strlen($line) - 2)) as $char) {
+                $calc_chk += ord($char);
+                var_dump($char, ord($char));
+            }
+
+            // Récupération du checksum déclaré
+            $decl_chk = (int)hexdec(substr($line, strlen($line) - 2, 2));
+
+            // Vérification
+            if ($calc_chk !== $decl_chk) {
+                throw new \Exception(sprintf("Invalid cheksum: declared %d, calculated %d", $decl_chk, $calc_chk));
+            }
+        }
+
+        // Extraction des données
+        $this->obj = (int)hexdec(substr($line, 1, 4));
+        $this->req = (int)$line[5];
+        $this->typ = (int)$line[6];
+        $this->num = (int)hexdec(substr($line, 7, 2));
+        $this->chk = (int)hexdec(substr($line, 17, 2));;
 
         // Retourner le payload
-        return substr($line, 9, strlen($line) - 2 - 9);
+        return substr($line, 9, 17 - 9);
     }
 }
