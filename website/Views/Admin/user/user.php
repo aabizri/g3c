@@ -63,7 +63,11 @@
             return fetch(window.location.href + "/delete", fetchOptions).then(function (response) {
                 return response;
             }).then(function (response) {
-                window.location.href = "admin/users"
+                if (response.status !== 200) {
+                    return false;
+                } else {
+                    window.location.href = "admin/users"
+                }
             });
         }
 
