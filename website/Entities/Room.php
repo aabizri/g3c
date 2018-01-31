@@ -9,6 +9,7 @@
 namespace Entities;
 
 use Queries;
+
 /**
  * Class Room
  * @package Entities

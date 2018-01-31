@@ -96,7 +96,7 @@ class Actuator extends Entity
     /**
      * @return float
      */
-    public function getLastActionStarted() : ?float
+    public function getLastActionStarted(): ?float
     {
         return $this->last_action_started;
     }
@@ -129,7 +129,7 @@ class Actuator extends Entity
     /**
      * @return mixed
      */
-    public function getLastUpdated() : float
+    public function getLastUpdated(): float
     {
         return $this->last_updated;
     }
@@ -137,7 +137,7 @@ class Actuator extends Entity
     /**
      * @param mixed $last_updated
      */
-    public function setLastUpdated( float $last_updated): bool
+    public function setLastUpdated(float $last_updated): bool
     {
         $this->last_updated = $last_updated;
         return true;

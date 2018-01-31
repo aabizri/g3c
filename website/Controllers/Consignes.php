@@ -103,7 +103,7 @@ class Consignes
         // On récupères les données en POST
         $destination_value = $req->getPOST("destination_value");
         $actuator_id = $req->getPOST("actuator_id");
-        $room_id = $req -> getPOST("room_id");
+        $room_id = $req->getPOST("room_id");
 
         // On vérifie leur présence
         if ($actuator_id === null || $destination_value === null) {
@@ -135,7 +135,7 @@ class Consignes
         // Enregistrement
         (new \Queries\Consignes)->insert($c);
 
-        DisplayManager::redirect303("properties/".$property_id."/room/".$room_id."/consignes");
+        DisplayManager::redirect303("properties/" . $property_id . "/room/" . $room_id . "/consignes");
 
     }
 }
