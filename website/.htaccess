@@ -39,6 +39,7 @@ RewriteRule   ^properties/([0-9]+)/removeuser$      index.php?c=Properties&a=Rem
 RewriteRule   ^properties/([0-9]+)/rooms$             index.php?c=Rooms&a=Rooms&pid=$1&%{QUERY_STRING}
 RewriteRule   ^properties/([0-9]+)/rooms/([0-9]+)$    index.php?c=Rooms&a=Room&pid=$1&rid=$2&%{QUERY_STRING}
 RewriteRule   ^properties/([0-9]+)/rooms/create       index.php?c=Rooms&a=Create&pid=$1&%{QUERY_STRING}
+RewriteRule   ^properties/([0-9]+)/rooms/delete       index.php?c=Rooms&a=Delete&pid=$1&%{QUERY_STRING}
 
 ## Property others
 RewriteRule   ^properties/([0-9]+)/peripherals$       index.php?c=Peripherals&a=List&pid=$1&%{QUERY_STRING}

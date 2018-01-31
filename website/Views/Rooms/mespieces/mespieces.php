@@ -1,4 +1,4 @@
-<main>
+<main xmlns="http://www.w3.org/1999/html">
 <ul id="Menu">
     <li id="Mapropriete"><a href="properties/<?= $data["pid"]?>"><input type="button" value="Ma propriété" /></a> </li>
     <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
@@ -18,17 +18,18 @@
 
 <p id="nombrepc">Vous avez actuellement <?php echo count($data["rooms"])?> pièces.</p>
 
-<div id="listepiece">
-    <h3 id="pieces"><strong>Pièces</strong><br></h3>
-    <div id="tablepieces">
-        <table align="center">
+          <div id="listepiece">
+              <h3 id="pieces"><strong>Pièces</strong><br></h3>
+              <div id="tablepieces">
 
-            <?php
-            //Créer un tableau qui s'indente en fonction du nombre de périphériques
-            $Nbrdonnees = count($data["rooms"]);
-            if ($Nbrdonnees != 0){
-                //Ici nous faisons le tableau avec ses titres
-                echo '<thead><tr>
+                      <form action="properties/<?= $data["pid"] ?>/rooms/delete" method="post">
+                          <table align="center">
+                      <?php
+                      //Créer un tableau qui s'indente en fonction du nombre de périphériques
+                      $Nbrdonnees = count($data["rooms"]);
+                      if ($Nbrdonnees != 0){
+                          //Ici nous faisons le tableau avec ses titres
+                          echo '<thead><tr>
                                     <th>Nom de la pièce</th>
                                     <th>Date de création</th>
                                     <th>Dernière mise à jour</th>
@@ -43,21 +44,17 @@
                     $dc = date( "d/m/Y", $r->getCreationDate()) . ' à ' . date( "H:i",$r->getCreationDate() );
                     //On récupère le nom pour des salles
                     $name = $r->getName();
+                    $rid = $r->getID();
 
 
-                    echo '<tr>
-                            <td><a class="link"  href="properties/' . $data["pid"] . "/rooms/" . $r->getID() . '">   
-                            '.htmlspecialchars($name).'</a></td> 
-                                        <td>'. htmlspecialchars($du) .'</td>
-                                        <td>'. htmlspecialchars($dc) .'</td>
-                            <td>
-                                <form action="properties/' . $data["pid"] . '/rooms/delete" method="post" >
-                                    <input type="hidden" name="rid" value="' . $r->getID() . '"/>
-                                    <input type="submit" value="Supprimer"/>
-                                </form>
-                            </td>
-                          </tr>';
-                }
+
+                              echo '<tr>
+                                        <td><a class="link"  href="properties/' . $data["pid"] . "/rooms/" . $r->getID() . '">   
+                                        '.htmlspecialchars($name).'</a></td> 
+                                        <td>'. $du .'</td>
+                                        <td>'. $dc .'</td>
+                                        <td><input type="checkbox" name="rid[]" value="' . $rid . '"/></td>
+                                      </tr>';}
 
             }
 
@@ -66,6 +63,9 @@
             }
             ?>
         </table>
+                  <input type="submit" value="Supprimer"
+                         onclick="return confirm('êtes vous sûr de vouloir supprimer toutes ces pièces ?')"/>
+                      </form>
     </div>
 </div>
 
