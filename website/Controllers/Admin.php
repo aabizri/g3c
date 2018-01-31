@@ -12,6 +12,32 @@ namespace Controllers;
 class Admin
 {
     /**
+     * @param \Entities\Request $req
+     * @param bool $must
+     * @return bool
+     * @throws \Throwable
+     */
+    private static function authentify(\Entities\Request $req, bool $must = false): bool
+    {
+        try {
+            // Retrieve user
+            $user = $req->getUser();
+            if ($user === null) {
+                throw new \Exception("Not connected, failure");
+            }
+
+            // Retrieve Admin
+            if (!$user->getAdmin()) {
+                throw new \Exception("Not an admin");
+            }
+        } catch (\Throwable $t) {
+            if ($must) throw $t;
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * GET root/admin
      * @param \Entities\Request $req
      */
@@ -26,7 +52,10 @@ class Admin
      */
     public static function getUsers(\Entities\Request $req): void
     {
-        // TODO: Check authorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Retrieve values necessary
         $count = $req->getGET("count") ?? 20;
@@ -104,6 +133,11 @@ class Admin
      */
     public static function getUser(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         // Retrieve the user ID
         $queried_user_id = $req->getGET("uid");
         if (empty($queried_user_id)) {
@@ -180,7 +214,10 @@ class Admin
      */
     public static function postUser(\Entities\Request $req): void
     {
-        // TODO: Check authorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Retrieve the user ID
         $queried_user_id = $req->getGET("uid");
@@ -240,7 +277,10 @@ class Admin
      */
     public static function postCreateUser(\Entities\Request $req): void
     {
-        // TODO: Check authorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Retrieve POST data (key => value)
         $order = [
@@ -282,7 +322,10 @@ class Admin
 
     public static function getCreateUser(\Entities\Request $req): void
     {
-        // TODO: Check auhorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Show the view
         \Helpers\DisplayManager::display("createuser");
@@ -345,7 +388,10 @@ class Admin
      */
     public static function getUserProperties(\Entities\Request $req): void
     {
-        // TODO: Check auhorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Retrieve values necessary
         $user_id = $req->getGET("uid");
@@ -445,7 +491,10 @@ class Admin
      */
     public static function getProperties(\Entities\Request $req): void
     {
-        // TODO: Check authorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Retrieve values necessary
         $count = $req->getGET("count") ?? 20;
@@ -523,6 +572,11 @@ class Admin
      */
     public static function getProperty(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         // Retrieve the user ID
         $queried_property_id = $req->getGET("pid") ?? $req->getPropertyID();
         if ($queried_property_id === null) {
@@ -587,7 +641,10 @@ class Admin
      */
     public static function postProperty(\Entities\Request $req): void
     {
-        // TODO: Check authorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Retrieve the user ID
         $queried_property_id = $req->getGET("pid") ?? $req->getPropertyID();
@@ -706,7 +763,10 @@ class Admin
      */
     public static function getPeripherals(\Entities\Request $req): void
     {
-        // TODO: Check authorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Retrieve values necessary
         $count = $req->getGET("count") ?? 20;
@@ -791,6 +851,11 @@ class Admin
      */
     public static function getPeripheral(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         // Récupérer l'UUID
         $peripheral_uuid = $req->getGET("puuid");
         if (empty($peripheral_uuid)) {
@@ -873,7 +938,10 @@ class Admin
      */
     public static function postPeripheral(\Entities\Request $req): void
     {
-        // TODO: Check authorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Retrieve the user ID
         $peripheral_uuid = $req->getGET("puuid");
@@ -932,7 +1000,10 @@ class Admin
      */
     public static function getProducts(\Entities\Request $req): void
     {
-
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
     }
 
     /**
@@ -941,6 +1012,11 @@ class Admin
      */
     public static function getSettings(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         \Helpers\DisplayManager::display("settings");
     }
 
@@ -950,6 +1026,11 @@ class Admin
      */
     public static function postSettings(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         // Configure name, etc.
     }
 
@@ -959,6 +1040,11 @@ class Admin
      */
     public static function getFAQ(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         // Retrieve all question/answers
         $frequently_asked_questions = null;
         try {
@@ -981,6 +1067,11 @@ class Admin
      */
     public static function postCreateFAQ(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         // Retrieve data
         $question = $req->getPOST("question");
         $answer = $req->getPOST("answer");
@@ -1038,6 +1129,11 @@ class Admin
      */
     public static function postFAQ(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         // Retrieve data
         $frequently_asked_question_id = $req->getGET("faqid");
         $question = $req->getPOST("question");
