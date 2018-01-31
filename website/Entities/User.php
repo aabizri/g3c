@@ -53,7 +53,7 @@ class User extends Entity
     /**
      * @var bool
      */
-    private $admin;
+    private $admin = false;
 
     /**
      * @var float

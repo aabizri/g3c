@@ -58,7 +58,7 @@ class Error
             "message" => $message,
             "req" => $req,
         ];
-        \Helpers\DisplayManager::display("500t", $data);
+        \Helpers\DisplayManager::display("500", $data);
     }
 
     public static function getInternalError500(\Entities\Request $req, string $message = "")
