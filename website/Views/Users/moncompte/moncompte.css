@@ -131,7 +131,6 @@ body {
     text-align: left;
     position: relative;
     left: 16%;
-	margin-bottom: 90px;
 }
 
 #modifmdp input
@@ -158,4 +157,22 @@ body {
     right: 20px;
     width: 200px;
     border-radius: 5px;
+}
+
+#deleteaccount
+{
+	position: relative;
+	left: 66%;
+	font-size: larger;
+	top: -150px;
+}
+
+#deleteaccount button
+{
+	width: 20%;
+	height: 100px;
+	font-size: large;
+	border-radius: 5px;
+	color: red;
+	background-color: rgb(217,196,177);
 }
