@@ -62,7 +62,7 @@ class Sensorstats
         $measure_name = $measure_type -> getName();
 
 
-        //On récupère l'historique du capteur classé de la plus vieille valeur à la plus récente
+        //On récupère l'historique du capteur classé de la plus vieille valeur à la plus récente en fonction du type de mesure
         $measures = (new \Queries\Measures)
                 -> filterByColumn("sensor_id", "=", $sensor_id, "AND")
                 -> orderBy("date_time", true)
