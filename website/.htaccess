@@ -53,5 +53,7 @@ RewriteRule   ^properties/([0-9]+)/peripherals/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]
 RewriteRule   ^properties/([0-9]+)/parameters$        index.php?c=Property&a=Parameters&pid=$1&%{QUERY_STRING}
 RewriteRule   ^properties/([0-9]+)/room/([0-9]+)/consignes$       index.php?c=Consignes&a=RoomConsignes&pid=$1&rid=$2&%{QUERY_STRING}
 RewriteRule   ^properties/([0-9]+)/consignescreate$       index.php?c=Consignes&a=Create&pid=$1&%{QUERY_STRING}
+
+#CGU & FAQ
 RewriteRule   ^faq                                    index.php?c=FAQ&a=FAQ&%{QUERY_STRING}
 RewriteRule   ^cgu                                    index.php?c=CGU&a=CGU&%{QUERY_STRING}
