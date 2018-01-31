@@ -36,7 +36,7 @@
                         $measure_type = (new \Queries\MeasureTypes)
                             -> retrieve($measure_type_id);
 
-                        echo '<option value="'.$s->getID().'">'.$measure_type->getName().' de la salle : '.$room -> getName().'</option>';
+                        echo '<option value="'.$s->getID().'">'.$measure_type->getName().' de la salle : '.$room -> getName().'</option>"';
                     }
                 }
             }
