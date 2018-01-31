@@ -45,6 +45,7 @@ class Peripherals
             $peripheral = (new \Queries\Peripherals)->filterByUUID("=", $uuid)->findOne();
         } catch (\Throwable $t) {
             Error::getInternalError500Throwables($req, $t);
+            return;
         }
 
         // Vérifier que le périphérique existe
@@ -78,8 +79,9 @@ class Peripherals
 
         // Mettre à jour la BDD
         try {
-            (new \Queries\Peripherals)->save($peripheral);
+            (new \Queries\Peripherals)->update($peripheral);
         } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Error updating peripheral");
             return;
         }
 
