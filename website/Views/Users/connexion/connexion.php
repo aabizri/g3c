@@ -1,4 +1,7 @@
 <main>
+    <div id="boutique">
+        <a href="boutique"><button>Accéder à la boutique</button></a>
+    </div>
 <div id="explications">
     <div>
         <h3>CONFORT</h3>
