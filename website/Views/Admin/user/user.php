@@ -48,7 +48,27 @@
         }
 
         function deleteUser() {
-            return confirm("CELA SUPPRIMERA DEFINITIVEMENT L'UTILISATEUR " + data["nick"].value + "\nÊTES VOUS SÛR DE CONTINUER ?");
+            // Confirmer
+            let ok = confirm("CELA SUPPRIMERA DEFINITIVEMENT L'UTILISATEUR " + data["nick"].value + "\nÊTES VOUS SÛR DE CONTINUER ?");
+            if (!ok) {
+                return false;
+            }
+
+            // Fetch options
+            let fetchOptions = {
+                method: "POST",
+            };
+
+            // Push
+            return fetch(window.location.href + "/delete", fetchOptions).then(function (response) {
+                return response;
+            }).then(function (response) {
+                if (response.status !== 200) {
+                    return false;
+                } else {
+                    window.location.href = "admin/users"
+                }
+            });
         }
 
         function startModify() {
