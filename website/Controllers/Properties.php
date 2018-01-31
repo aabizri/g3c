@@ -317,22 +317,23 @@ class Properties
             Error::getInternalError500Throwables($req, $t, "Erreur dans la récupération des roles");
             return;
         }
-
-        // Pour chaque rôle, tu récupère la propriété associé, et tu l'ajoute à une liste
-        $properties = null;
-        try {
-            $properties_query = new \Queries\Properties;
-            foreach ($roles as $role) {
-                $property_id = $role->getPropertyID();
-                $properties[] = $properties_query->filterByColumn("id", "=", $property_id, "OR");
+        $properties=[];
+        if (!empty($roles)) {
+            // Pour chaque rôle, tu récupère la propriété associé, et tu l'ajoute à une liste
+            $properties = null;
+            try {
+                $properties_query = new \Queries\Properties;
+                foreach ($roles as $role) {
+                    $property_id = $role->getPropertyID();
+                    $properties[] = $properties_query->filterByColumn("id", "=", $property_id, "OR");
+                }
+                $properties = $properties_query->find();
+            } catch (\Throwable $t) {
+                Error::getInternalError500Throwables($req, $t, "Erreur lors de la récupération des propriétés");
             }
-            $properties = $properties_query->find();
-        } catch (\Throwable $t) {
-            Error::getInternalError500Throwables($req, $t, "Erreur lors de la récupération des propriétés");
         }
-
-        // Ajout aux données destinées à la vue
-        $data["properties"] = $properties;
+            // Ajout aux données destinées à la vue
+            $data["properties"] = $properties;
 
         // Affichage
         \Helpers\DisplayManager::display("mesproprietes", $data);
