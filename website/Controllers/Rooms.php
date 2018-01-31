@@ -17,8 +17,23 @@ class Rooms
      */
     public function postCreate(\Entities\Request $req): void
     {
-        // Récupére l'ID de la propriété liée
+        //On recupere l'user_id et le property_id:
+        $user_id=$req->getUserID();
         $property_id = $req->getPropertyID();
+
+        //Trouve le role ayant en commun cet user_id et property_id
+        $role=(new \Queries\Roles)
+            ->filterByColumn("user_id","=",$user_id,"AND")
+            ->filterByColumn("property_id","=",$property_id,"AND")
+            ->findOne();
+
+        //Si aucun role n'existe afficher une erreur.
+        if (empty($role))
+        {
+            Error::getBadRequest400($req,"Propriété non associé à l'utilisateur");
+            return;
+        }
+
 
         // Si celle-ci n'est pas set, erreur
         if (empty($property_id)) {
@@ -69,8 +84,23 @@ class Rooms
      */
     public function getRooms(\Entities\Request $req): void
     {
-        // Récupére l'ID de la propriété liée
+        //On recupere l'user_id et le property_id:
+        $user_id=$req->getUserID();
         $property_id = $req->getPropertyID();
+
+        //Trouve le role ayant en commun cet user_id et property_id
+        $role=(new \Queries\Roles)
+            ->filterByColumn("user_id","=",$user_id,"AND")
+            ->filterByColumn("property_id","=",$property_id,"AND")
+            ->findOne();
+
+        //Si aucun role n'existe afficher une erreur.
+        if (empty($role))
+        {
+            Error::getBadRequest400($req,"Propriété non associé à l'utilisateur");
+            return;
+        }
+
 
         // Si celle-ci n'est pas set, erreur
         if (empty($property_id)) {
@@ -104,8 +134,22 @@ class Rooms
      */
     public function getRoom(\Entities\Request $req): void
     {
-        // Récupére l'ID de la propriété liée
+        //On recupere l'user_id et le property_id:
+        $user_id=$req->getUserID();
         $property_id = $req->getPropertyID();
+
+        //Trouve le role ayant en commun cet user_id et property_id
+        $role=(new \Queries\Roles)
+            ->filterByColumn("user_id","=",$user_id,"AND")
+            ->filterByColumn("property_id","=",$property_id,"AND")
+            ->findOne();
+
+        //Si aucun role n'existe afficher une erreur.
+        if (empty($role))
+        {
+            Error::getBadRequest400($req,"Propriété non associé à l'utilisateur");
+            return;
+        }
 
         // Si celle-ci n'est pas set, erreur
         if (empty($property_id)) {
@@ -213,6 +257,23 @@ class Rooms
 
     public function postDelete(\Entities\Request $req): void
     {
+        //On recupere l'user_id et le property_id:
+        $user_id=$req->getUserID();
+        $property_id = $req->getPropertyID();
+
+        //Trouve le role ayant en commun cet user_id et property_id
+        $role=(new \Queries\Roles)
+            ->filterByColumn("user_id","=",$user_id,"AND")
+            ->filterByColumn("property_id","=",$property_id,"AND")
+            ->findOne();
+
+        //Si aucun role n'existe afficher une erreur.
+        if (empty($role))
+        {
+            Error::getBadRequest400($req,"Propriété non associé à l'utilisateur");
+            return;
+        }
+
         // Récuperation du pid
         $pid = $req->getPropertyID();
         if (empty($pid)) {

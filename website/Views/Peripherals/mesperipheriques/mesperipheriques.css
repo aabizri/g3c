@@ -38,6 +38,11 @@ body {
 	position: relative;
 	margin: 50px 10px;
 }
+.button
+{
+	text-decoration: none;
+	color: #955252;
+}
 
 #nombrepc
 {

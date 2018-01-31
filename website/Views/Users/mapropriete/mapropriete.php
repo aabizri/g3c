@@ -1,14 +1,14 @@
 <main>
 <ul id="Menu">
-    <li id="Mapropriete"><a href="properties/<?= $data["property"]->getID() ?>"><input type="button"
+    <li id="Mapropriete"><a class="button" href="properties/<?= $data["property"]->getID() ?>"><input type="button"
                                                                                        value="Ma propriété"/></a></li>
-    <li id="Mespieces"><a href="properties/<?= $data["property"]->getID() ?>/rooms"><input type="button"
+    <li id="Mespieces"><a class="button" href="properties/<?= $data["property"]->getID() ?>/rooms"><input type="button"
                                                                                            value="Mes pièces"/></a>
     </li>
-    <li id="Mesperipheriques"><a href="properties/<?= $data["property"]->getID() ?>/peripherals"><input type="button"
+    <li id="Mesperipheriques"><a class="button" href="properties/<?= $data["property"]->getID() ?>/peripherals"><input type="button"
                                                                                                         value="Mes périphériques"/></a>
     </li>
-    <li id="Mesconsignes"><a href="properties/<?= $data["property"]->getID() ?>/consignes"><input type="button"
+    <li id="Mesconsignes"><a class="button" href="properties/<?= $data["property"]->getID() ?>/consignes"><input type="button"
                                                                                                   value="Mes Consignes"/></a>
     </li>
 </ul>

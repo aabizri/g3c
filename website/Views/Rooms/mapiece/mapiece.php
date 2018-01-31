@@ -1,12 +1,12 @@
 <main>
     <ul id="Menu">
-        <li id="Moncompte"><a href="account"><input type="button" value="Mon compte"/></a></li>
-        <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
+        <li id="Moncompte"><a class="button" href="account"><input type="button" value="Mon compte"/></a></li>
+        <li id="Mespieces"><a class="button" href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
         </li>
-        <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
+        <li id="Mesperipheriques"><a class="button" href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
                                                                                               value="Mes périphériques"/></a>
         </li>
-        <li id="Mesconsignes"><a href="properties/<?= $data["pid"] ?>/consignes"><input type="button"
+        <li id="Mesconsignes"><a class="button" href="properties/<?= $data["pid"] ?>/consignes"><input type="button"
                                                                                         value="Mes Consignes"/></a></li>
     </ul>
 

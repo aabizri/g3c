@@ -33,7 +33,11 @@ body {
 	margin: 50px 10px;
 	width: 100%;
 }
-
+.button
+{
+	text-decoration: none;
+	color: #955252;
+}
 /*Mes pièces*/
 
 #Tableaudebord
@@ -100,6 +104,21 @@ body {
 #champsdashboard
 {
 	border: 1px solid black;
+}
+
+#setting
+{
+	position: relative;
+	top: 10%;
+}
+
+#settings
+{
+	text-align: right;
+	position: relative;
+	left: 90%;
+	color:#955252;
+	text-decoration: none;
 }
 
 footer {

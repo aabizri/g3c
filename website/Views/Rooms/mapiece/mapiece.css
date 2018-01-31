@@ -36,6 +36,12 @@ body {
     width: 100%;
 }
 
+.button
+{
+    text-decoration: none;
+    color: #955252;
+}
+
 /*Mes pièces*/
 
 #nomdelapièce
