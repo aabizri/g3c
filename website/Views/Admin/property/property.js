@@ -1,3 +1,5 @@
+var data;
+
 function startModify() {
     // If immutable, do not modify
     if (data[this.parentNode.id].type === "immutable") {
@@ -154,7 +156,7 @@ function pushModify(key, value) {
 
 // Data populated in PHP, but set via JS
 window.addEventListener("load", function () {
-    let data = JSON.parse(document.getElementById("json_data").innerHTML);
+    data = JSON.parse(document.getElementById("json_data").innerHTML);
     updateTable(data);
     document.getElementsByTagName("h3")[0].innerHTML = data["display"].value;
 });

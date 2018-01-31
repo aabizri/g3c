@@ -1,3 +1,5 @@
+var data;
+
 function resetPassword() {
     return confirm("Cela enverra un mail de réinitialisation à " + data["nick"].value + " <" + data["email"].value + ">\nÊtes vous sûr ?");
 }
@@ -162,7 +164,7 @@ function pushModify(key, value) {
 
 // Data populated in PHP, but set via JS
 window.addEventListener("load", function () {
-    let data = JSON.parse(document.getElementById("json_data").innerHTML);
+    data = JSON.parse(document.getElementById("json_data").innerHTML);
     updateTable(data);
     document.getElementsByTagName("h3")[0].innerHTML = data["display"].value;
 });
