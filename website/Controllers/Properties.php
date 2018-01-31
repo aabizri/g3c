@@ -15,9 +15,26 @@ class Properties
      */
     public function getDashboard(\Entities\Request $req): void
     {
-        // Si la requête n'est pas associée à une propriété, retourner une erreur
+        //On recupere l'user_id et le property_id:
+        $user_id=$req->getUserID();
         $property_id = $req->getPropertyID();
-        if (empty($property_id) === null) {
+
+        //Trouve le role ayant en commun cet user_id et property_id
+        $count=(new \Queries\Roles)
+            ->filterByColumn("user_id","=",$user_id,"AND")
+            ->filterByColumn("property_id","=",$property_id,"AND")
+            ->count();
+
+        //Si aucun role n'existe afficher une erreur.
+        if ($count!==1)
+        {
+            Error::getBadRequest400($req,"Propriété non associé à l'utilisateur");
+            return;
+        }
+
+        // Si la requête n'est pas associée à une propriété, retourner une erreur
+        if (empty($property_id))
+        {
             Error::getBadRequest400($req, "ID de propriété non-indiqué");
             return;
         }
@@ -120,7 +137,7 @@ class Properties
     {
         //On récupère les données
         $property = $req->getProperty();
-        if ($property === null) {
+        if (empty($property)) {
             Error::getBadRequest400($req, "ID de propriété non-indiqué");
             return;
         }
