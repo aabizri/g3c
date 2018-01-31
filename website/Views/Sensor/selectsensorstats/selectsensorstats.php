@@ -16,7 +16,7 @@
     <h2 id="titre">Historique des mesures d'un capteur</h2>
 
     <div id="selectionsensor">
-    <form method="post" action="index.php?c=Sensorstats&a=SensorStats&debug=true&pid=1">
+    <form method="post" action="properties/<?php $property=$data["property"]; echo $property->getID();?>/sensorstats">
         <select name="sensor_id">
             <?php
             $sensors = $data["sensors"];
@@ -25,9 +25,7 @@
             foreach ($peripherals as $p){
                 foreach ($sensors as $s) {
                     if ($p->getUUID() === $s->getPeripheralUUID()) {
-
                         $room_id = $p -> getRoomID();
-
                         $measure_type_id = $s -> getMeasureTypeID();
 
                         $room = (new \Queries\Rooms)
@@ -36,7 +34,7 @@
                         $measure_type = (new \Queries\MeasureTypes)
                             -> retrieve($measure_type_id);
 
-                        echo '<option value="'.$s->getID().'">'.$measure_type->getName().' de la salle : '.$room -> getName().'</option>"';
+                        echo '<option value="' . $s->getID() . '">' . $measure_type->getName() . ' de la salle : ' . $room->getName() . '</option>"';
                     }
                 }
             }

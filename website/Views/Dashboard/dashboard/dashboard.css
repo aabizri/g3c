@@ -27,7 +27,7 @@ body {
 	cursor: pointer;
 }
 
-#Moncompte, #Mespieces, #Mesperipheriques, #Mesconsignes, #Mesparametres, #Mapropriete
+ #Mespieces, #Mesperipheriques, #Mesconsignes, #Mesparametres, #Mapropriete
 {
 	position: relative;
 	margin: 50px 10px;
@@ -109,14 +109,14 @@ body {
 #setting
 {
 	position: relative;
-	top: 10%;
+	top: 80px;
 }
 
 #settings
 {
 	text-align: right;
 	position: relative;
-	left: 90%;
+	left: 20%;
 	color:#955252;
 	text-decoration: none;
 }

@@ -18,7 +18,7 @@
     <h2 id="titre">Historique des mesures d'un capteur</h2>
 
     <div id="selectionsensor">
-        <form method="post" action="index.php?c=Sensorstats&a=SensorStats&debug=true&pid=1">
+        <form method="post" action="properties/<?php $property=$data["property"]; echo $property->getID();?>/sensorstats">
             <select name="sensor_id" >
                 <optgroup label="Sélectionnez un capteur"></optgroup>
                 <?php

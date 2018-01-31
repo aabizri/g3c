@@ -21,6 +21,7 @@ class Peripherals
      */
     public function postAdd(\Entities\Request $req): void
     {
+
         // On récupère l'id de la propriété
         $property_id = $req->getPropertyID();
         if (empty($property_id)) {

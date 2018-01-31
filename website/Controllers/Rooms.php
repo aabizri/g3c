@@ -22,13 +22,13 @@ class Rooms
         $property_id = $req->getPropertyID();
 
         //Trouve le role ayant en commun cet user_id et property_id
-        $role=(new \Queries\Roles)
+        $count=(new \Queries\Roles)
             ->filterByColumn("user_id","=",$user_id,"AND")
             ->filterByColumn("property_id","=",$property_id,"AND")
-            ->findOne();
+            ->count();
 
         //Si aucun role n'existe afficher une erreur.
-        if (empty($role))
+        if ($count!==1)
         {
             Error::getBadRequest400($req,"Propriété non associé à l'utilisateur");
             return;
@@ -89,13 +89,13 @@ class Rooms
         $property_id = $req->getPropertyID();
 
         //Trouve le role ayant en commun cet user_id et property_id
-        $role=(new \Queries\Roles)
+        $count=(new \Queries\Roles)
             ->filterByColumn("user_id","=",$user_id,"AND")
             ->filterByColumn("property_id","=",$property_id,"AND")
-            ->findOne();
+            ->count();
 
         //Si aucun role n'existe afficher une erreur.
-        if (empty($role))
+        if ($count!==1)
         {
             Error::getBadRequest400($req,"Propriété non associé à l'utilisateur");
             return;
@@ -139,13 +139,13 @@ class Rooms
         $property_id = $req->getPropertyID();
 
         //Trouve le role ayant en commun cet user_id et property_id
-        $role=(new \Queries\Roles)
+        $count=(new \Queries\Roles)
             ->filterByColumn("user_id","=",$user_id,"AND")
             ->filterByColumn("property_id","=",$property_id,"AND")
-            ->findOne();
+            ->count();
 
         //Si aucun role n'existe afficher une erreur.
-        if (empty($role))
+        if ($count!==1)
         {
             Error::getBadRequest400($req,"Propriété non associé à l'utilisateur");
             return;
@@ -262,13 +262,13 @@ class Rooms
         $property_id = $req->getPropertyID();
 
         //Trouve le role ayant en commun cet user_id et property_id
-        $role=(new \Queries\Roles)
+        $count=(new \Queries\Roles)
             ->filterByColumn("user_id","=",$user_id,"AND")
             ->filterByColumn("property_id","=",$property_id,"AND")
-            ->findOne();
+            ->count();
 
         //Si aucun role n'existe afficher une erreur.
-        if (empty($role))
+        if ($count!==1)
         {
             Error::getBadRequest400($req,"Propriété non associé à l'utilisateur");
             return;

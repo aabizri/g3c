@@ -20,20 +20,21 @@ class Properties
         $property_id = $req->getPropertyID();
 
         //Trouve le role ayant en commun cet user_id et property_id
-        $role=(new \Queries\Roles)
+        $count=(new \Queries\Roles)
             ->filterByColumn("user_id","=",$user_id,"AND")
             ->filterByColumn("property_id","=",$property_id,"AND")
-            ->findOne();
+            ->count();
 
         //Si aucun role n'existe afficher une erreur.
-        if (empty($role))
+        if ($count!==1)
         {
             Error::getBadRequest400($req,"Propriété non associé à l'utilisateur");
             return;
         }
 
         // Si la requête n'est pas associée à une propriété, retourner une erreur
-        if (empty($property_id) === null) {
+        if (empty($property_id))
+        {
             Error::getBadRequest400($req, "ID de propriété non-indiqué");
             return;
         }
@@ -136,7 +137,7 @@ class Properties
     {
         //On récupère les données
         $property = $req->getProperty();
-        if ($property === null) {
+        if (empty($property)) {
             Error::getBadRequest400($req, "ID de propriété non-indiqué");
             return;
         }

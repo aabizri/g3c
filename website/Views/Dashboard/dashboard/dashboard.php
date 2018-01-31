@@ -1,6 +1,5 @@
 <main>
     <ul id="Menu">
-        <li id="Moncompte"><a class="button" href="account"><input type="button" value="Mon compte"/></a></li>
         <li id="Mapropriete"><a class="button" href="properties/<?= $data["pid"]?>"><input type="button" value="Ma propriété" /></a> </li>
         <li id="Mespieces"><a class="button" href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
         </li>
@@ -12,7 +11,7 @@
     </ul>
 
     <h2 id="Tableaudebord">Tableau de bord</h2>
-    <div id="setting">
+    <br><div id="setting">
     <a id="settings" href="properties/<?= $data["pid"] ?>/settings">Réglages</a></div>
 
     <?php
