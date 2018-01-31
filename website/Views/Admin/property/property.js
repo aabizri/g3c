@@ -1,5 +1,29 @@
 var data;
 
+function deleteProperty() {
+    // Confirmer
+    let ok = confirm("CELA SUPPRIMERA DEFINITIVEMENT LA PROPRIETE " + data["name"].value + "\nÊTES VOUS SÛR DE CONTINUER ?");
+    if (!ok) {
+        return false;
+    }
+
+    // Fetch options
+    let fetchOptions = {
+        method: "POST",
+    };
+
+    // Push
+    return fetch(window.location.href + "/delete", fetchOptions).then(function (response) {
+        return response;
+    }).then(function (response) {
+        if (response.status !== 200) {
+            return false;
+        } else {
+            window.location.href = "admin/properties"
+        }
+    });
+}
+
 function startModify() {
     // If immutable, do not modify
     if (data[this.parentNode.id].type === "immutable") {
@@ -76,11 +100,6 @@ function commitModify(element) {
     // Set the text to the input value
     cell.innerText = inputValue;
 
-    // Set the H3 to the input value if this is the nick
-    if (cell.parentNode.id === "display") {
-        document.getElementsByTagName("h3")[0].innerHTML = inputValue;
-    }
-
     // Attach startModify onclick
     cell.onclick = startModify;
 }
@@ -143,7 +162,6 @@ function pushModify(key, value) {
     let fetchOptions = {
         method: "POST",
         body: form,
-        credentials: "same-origin",
     };
 
     // Push
@@ -158,5 +176,5 @@ function pushModify(key, value) {
 window.addEventListener("load", function () {
     data = JSON.parse(document.getElementById("json_data").innerHTML);
     updateTable(data);
-    document.getElementsByTagName("h3")[0].innerHTML = data["display"].value;
+    document.getElementsByTagName("h3")[0].innerHTML = data["name"].value;
 });
