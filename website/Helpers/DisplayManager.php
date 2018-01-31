@@ -49,6 +49,7 @@ class DisplayManager
         "selectsensorstats" => "Sensor",
         "consignes" => "Consignes",
         "roomconsignes" => "Consignes",
+        "identifiantoublie" => "Users",
     ];
 
     /**

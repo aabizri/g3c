@@ -463,4 +463,71 @@ class User
 
         DisplayManager::redirect303("login");
     }
+
+
+
+
+    public static function postNewID (\Entities\Request $req)
+    {
+        //Récuperer le login ainsi que le mail associé
+        $phone= $req ->getPOST("phone");
+        $mail = $req->getPOST("email");
+        if (empty($phone))
+        {
+            Error::getBadRequest400($req, "Missing key: phone");
+            return;
+        }
+        if (empty($mail))
+        {
+            Error::getBadRequest400($req, "Missing key: mail");
+            return;
+        }
+
+        $user = (new \Queries\Users)
+            ->filterByColumn("email",'=',$mail,"AND")
+            ->filterByColumn("phone","=",$phone,"AND")
+            ->findOne();
+
+        //Si un utilisateur a été trouvé
+        if(!empty($user))
+        {
+            $login = $user->getNick();
+            // Génération d'une chaine aléatoire
+            $chaine = 'azertyuiopqsdfghjklmwxcvbn0123456789';
+
+            $nb_lettres = strlen($chaine) - 1;
+            $password = '';
+            for ($i = 0; $i < 8; $i++) {
+                $pos = mt_rand(0, $nb_lettres);
+                $car = $chaine[$pos];
+                $password .= $car;
+            }
+
+            // Set le password
+            $user->setPasswordClear($password);
+
+            // Insertion de l'entité et de ses maj
+            try {
+                (new \Queries\Users)->update($user);
+            } catch (\Exception $e) {
+                Error::getInternalError500Throwables($req);
+                return;
+            }
+
+            //Envoie du mail
+            mail($mail, "Voici vos identifiant",
+                'Bonjour' . $login . ',<br> Voici un nouveau mot de passe temporaire que nous vous conseillons de changer:' . $password . '<br>Cordialement,<br>G3C');
+        }
+        else
+        {
+            Error::getBadRequest400($req, "Mail and number are not matching ");
+            return;
+        }
+        DisplayManager::display("connexion");
+    }
+
+    public static function getNewID(\Entities\Request $req): void
+    {
+        DisplayManager::display("identifiantoublie");
+    }
 }
