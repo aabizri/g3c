@@ -49,6 +49,8 @@ class DisplayManager
         "selectsensorstats" => "Sensor",
         "consignes" => "Consignes",
         "roomconsignes" => "Consignes",
+        "404" => "Errors",
+        "500" => "Errors",
         "identifiantoublie" => "Users",
     ];
 
