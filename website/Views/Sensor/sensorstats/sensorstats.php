@@ -8,9 +8,6 @@
         <li id="Mesperipheriques"><a href="properties/<?= $data["property"]->getID() ?>/peripherals"><input type="button"
                                                                                                             value="Mes périphériques"/></a>
         </li>
-        <li id="Mesconsignes"><a href="properties/<?= $data["property"]->getID() ?>/consignes"><input type="button"
-                                                                                                      value="Mes Consignes"/></a>
-        </li>
     </ul>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js" ></script>

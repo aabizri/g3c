@@ -8,9 +8,6 @@
         <li id="Mesperipheriques"><a href="properties/<?= $data["property"]->getID() ?>/peripherals"><input type="button"
                                                                                                             value="Mes périphériques"/></a>
         </li>
-        <li id="Mesconsignes"><a href="properties/<?= $data["property"]->getID() ?>/consignes"><input type="button"
-                                                                                                      value="Mes Consignes"/></a>
-        </li>
     </ul>
 
     <h2 id="titre">Historique des mesures d'un capteur</h2>
