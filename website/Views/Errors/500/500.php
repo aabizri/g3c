@@ -21,5 +21,5 @@
 
         <h4> Informations de débuggage sur la requête : </h4>
         <pre><?= $req->prettyPrint() ?></pre>
-    <? endif; ?>
+    <?php endif; ?>
 </main>

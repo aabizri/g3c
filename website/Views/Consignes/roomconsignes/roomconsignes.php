@@ -35,11 +35,19 @@
                         ->orderBy("creation_date", false)
                         ->findOne();
 
+                    if ( $last_value === null ){
+                        $value = "Null";
+                    }
+                    else {
+                        $value = $last_value -> getDestinationValue();
+                    }
+
+
                     echo '<div id="consign"><h4>' . htmlspecialchars($measure_type_name) . ' voulue</h4>
-                       <p>Dernière consigne : ' . $last_value->getDestinationValue() . '</p>
+                       <p>Dernière consigne : ' . $value . '</p>
                       <form method="post" action="properties/'.$data["pid"].'/consignescreate">
                         <input type="hidden" value="'. $data["room"]->getID().'" name="room_id" />
-                        <input type="hidden" value="' . $last_value->getDestinationValue() . '" name="last_destination_value" />
+                        <input type="hidden" value="' . $value . '" name="last_destination_value" />
                         <input type="hidden" value="' . $a->getID() . '" name="actuator_id" />
                         <input name="destination_value" id="destination_value" type="number" /><br><br>
                         <input type="submit"/>
