@@ -258,7 +258,7 @@ class Properties
             Error::getInternalError500Throwables($req, $t, "Erreur lors de l'insertion du nouveau rôle");
         }
 
-        \Helpers\DisplayManager::redirect302("properties/" . $property_id);
+        \Helpers\DisplayManager::redirect302("properties/$property_id/settings");
     }
 
 
@@ -298,7 +298,7 @@ class Properties
         }
 
         //On affiche la page avec l'utilisateur supprimé
-        \Helpers\DisplayManager::redirect302("properties/" . $property_id);
+        \Helpers\DisplayManager::redirect302("properties/$property_id/settings");
     }
 
     public static function getSelect(\Entities\Request $req): void
