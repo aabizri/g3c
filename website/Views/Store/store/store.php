@@ -1,10 +1,10 @@
 <main>
 
     <div id="navigation"> <!--Boutons pour accéder aux différentes catégories-->
-        <a href="boutique">
+        <a href="boutique#peripheriques">
             <button title="Voir les Périphériques" id="bouton1">Periphériques</button>
         </a>
-        <a href="boutique">
+        <a href="boutique#accessoires">
             <button title="Voir les accessoires" id="bouton2">Accessoires</button>
         </a>
     </div>
