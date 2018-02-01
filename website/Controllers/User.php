@@ -176,11 +176,23 @@ class User
         $_SESSION["user_id"] = $u->getID();
         $req->setUser($u);
 
+        $admin = $u -> getAdmin();
+
+        if ($admin === false){
         try {
             \Helpers\DisplayManager::redirect302("properties");
         } catch (\Throwable $t) {
             Error::getInternalError500Throwables($req, $t,
                 "Erreur lors de la redirection de l'utilisateur");
+        }
+        }
+        elseif($admin === true){
+        try {
+            \Helpers\DisplayManager::redirect302("admin");
+            }   catch (\Throwable $t) {
+             Error::getInternalError500Throwables($req, $t,
+            "Erreur lors de la redirection de l'utilisateur");
+        }
         }
     }
 
