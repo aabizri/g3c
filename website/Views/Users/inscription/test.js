@@ -1,0 +1,2 @@
+onclick
+alert(inner.htmlText)

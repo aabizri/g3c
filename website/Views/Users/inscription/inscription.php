@@ -1,5 +1,6 @@
 <main>
     <div id="join-block">
+
         <h3>Formulaire d'inscription</h3>
         <form id="join-form" method="post" action="index.php?c=User&a=Join">
             <div id="join-inputs">
@@ -18,7 +19,9 @@
                     <legend>informations du compte</legend>
 
                     <label for="phone-input">Téléphone</label>:
-                    <input id="phone-input" type="tel" name="phone" spellcheck="false" autocomplete="tel"/> <br/>
+                    <input id="phone-input" type="tel" name="phone" spellcheck="false" autocomplete="tel"/>
+
+                    <br/>
 
                     <label for="login-input">Login</label>:
                     <input id="login-input" type="text" name="nick" spellcheck="false" required/> <br/>
