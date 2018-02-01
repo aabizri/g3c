@@ -43,6 +43,11 @@ class Admin
      */
     public static function getConsole(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         \Helpers\DisplayManager::display("console");
     }
 
