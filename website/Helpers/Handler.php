@@ -42,7 +42,10 @@ class Handler
         }
 
         // Vérifie que le User a le droit d'accéder à la propriété
-        if ($req->getUserID() !== null && $req->getPropertyID() !== null) {
+        if ($req->getPropertyID() !== null) {
+            if ($req->getUserID() === null) {
+                \Controllers\Error::getForbidden403($req, "Pas d'autorisation sur la propriété");
+            }
             $count = (new \Queries\Roles)
                 ->filterByColumn("property_id", "=", $req->getPropertyID(), "AND")
                 ->filterByColumn("user_id", "=", $req->getUserID(), "AND")
