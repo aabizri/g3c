@@ -86,7 +86,7 @@ class Sensor extends Entity
     }
 
     /**
-     * @return string
+     * @return float
      */
     public function getLastUpdated(): float
     {

@@ -13,7 +13,7 @@ class Products extends Query
 {
     /* COMMON CONSTANTS */
     private const table = "products";
-    private const columns = ["id" => ["id","gen-on-insert"],
+    private const columns = ["id" => ["id", "gen-on-insert"],
                              "name" => [],
                              "description" => [],
                              "category" => [],

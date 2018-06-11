@@ -1,38 +1,50 @@
 <main>
     <ul id="Menu">
-        <li id="Moncompte"><a href="account"><input type="button" value="Mon compte"/></a></li>
-        <li id="Mapropriete"><a href="properties/<?= $data["pid"]?>"><input type="button" value="Ma propriété" /></a> </li>
-        <li id="Mespieces"><a href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
+        <li id="Mapropriete"><a class="button" href="properties/<?= $data["pid"]?>"><input type="button" value="Ma propriété" /></a> </li>
+        <li id="Mespieces"><a class="button" href="properties/<?= $data["pid"] ?>/rooms"><input type="button" value="Mes pièces"/></a>
         </li>
-        <li id="Mesperipheriques"><a href="properties/<?= $data["pid"] ?>/peripherals"><input type="button"
-                                                                                              value="Mes périphériques"/></a>
+        <li id="Mesperipheriques"><a class="button" href="properties/<?= $data["pid"] ?>/peripherals"><input type="button" value="Mes périphériques"/></a>
         </li>
-        <li id="Mesconsignes"><a href="properties/<?= $data["pid"] ?>/consignes"><input type="button"
-                                                                                        value="Mes Consignes"/></a></li>
     </ul>
 
-<h2 id="Tableaudebord">Tableau de bord</h2>
+    <h2 id="Tableaudebord">Tableau de bord de ma propriété</h2>
+    <br><div id="setting">
+        <a id="settings" href="properties/<?= $data["pid"] ?>/settings"><button title="Ajouter/Supprimer des utilisateurs de la propriété">Gestion de ma propriété</button></a></div>
 
-<div id="vueinformation">
-    <h3>Vues favorites</h3>
-    <div id="informationspiece">
-        <p id="temperature"><strong>Température globale</strong><br><br>22°C</p>
-        <p id="humidite"><strong>Humidité du salon</strong><br><br>17%</p>
-        <p id="luminosite"><strong>Lumisosité de la chambre 1</strong><br><br>68%</p>
-        <p id="qualiteair"><strong>Qualité de l'air du salon</strong><br><br>Bonne</p>
-        <p id="presence"><strong>Présence dans la maison</strong><br><br>3</p>
-    </div>
-</div>
+    <?php
 
-<div id="action">
-    <h3>Actions favorites</h3>
-    <form action="">
-        <div id="actionspieces">
-            <p>Température voulue dans la chambre des enfants(°C)<br><br><input type="number" class="action" name="temperaturevoulue" /><br><br><input type="submit" value="Valider" id="valider" /></p>
-            <p>Luminosité voulue dans le salon(%)<br><br><input type="number"class="action" name="luminositevoulue"/><br><br><input type="submit" value="Valider" id="valider"/></p>
-            <p>Ouvrir/Fermer volets<br><br><input type="button" class="action" value="Ouvrir" onclick="Fermer"/><br>
-                <input type="button" class="action" value="Fermer" onclick="Fermer" >
-            </p>
-        </div>
-    </form>
-</div>
+    $rooms=$data["rooms"];
+    $last_measures= $data["last_measures"];
+
+    // Si il n'y a pas de pièce
+    if (empty($rooms)) {
+        echo "<p id='norooms' >Pas de pièces dans la propriété. Vous pouvez en rajouter dans 'Mes pièces'.</p> ";
+        return;
+    }
+
+    foreach ($rooms as $r)
+    {
+
+        $room_measures=$last_measures[$r->getID()];
+        echo    '<div class="vueinformation">
+                <h3 class="nomdelapièce">';
+
+        $room_name = $r->getName();
+        echo $room_name. '</h3>';
+        if($room_measures===[]){
+        echo '<p>Pas de capteur dans la pièce</p>';}
+        else
+            echo '<h4>Information pièce</h4>
+        
+            <div class="informationspiece">';
+
+        foreach ($room_measures as $measure)
+        {
+            echo "<p class=\"temperature\"><strong class='temperatureName'>";
+            $measure_type = (new \Queries\MeasureTypes)->retrieve($measure->getTypeID());
+            echo $measure_type->getName() . "</strong><br><br>"
+                . $measure->getValue() . "" . $measure_type->getUnitSymbol() . '<br></p>';
+        }
+        echo '</div></div>';
+     }
+     ?>

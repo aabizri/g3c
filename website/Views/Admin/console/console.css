@@ -1,3 +1,8 @@
+body{
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
 main {
     font-family: Ubuntu, Roboto, arial, sans-serif;
 }
@@ -48,4 +53,9 @@ main {
     margin-top: 9px;
     color: #333;
     text-align: center;
+}
+
+#modules
+{
+    margin-bottom: 565px;
 }

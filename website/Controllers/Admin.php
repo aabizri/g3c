@@ -12,11 +12,42 @@ namespace Controllers;
 class Admin
 {
     /**
+     * @param \Entities\Request $req
+     * @param bool $must
+     * @return bool
+     * @throws \Throwable
+     */
+    private static function authentify(\Entities\Request $req, bool $must = false): bool
+    {
+        try {
+            // Retrieve user
+            $user = $req->getUser();
+            if ($user === null) {
+                throw new \Exception("Not connected, failure");
+            }
+
+            // Retrieve Admin
+            if (!$user->getAdmin()) {
+                throw new \Exception("Not an admin");
+            }
+        } catch (\Throwable $t) {
+            if ($must) throw $t;
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * GET root/admin
      * @param \Entities\Request $req
      */
     public static function getConsole(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         \Helpers\DisplayManager::display("console");
     }
 
@@ -26,7 +57,10 @@ class Admin
      */
     public static function getUsers(\Entities\Request $req): void
     {
-        // TODO: Check authorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Retrieve values necessary
         $count = $req->getGET("count") ?? 20;
@@ -104,6 +138,11 @@ class Admin
      */
     public static function getUser(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         // Retrieve the user ID
         $queried_user_id = $req->getGET("uid");
         if (empty($queried_user_id)) {
@@ -180,7 +219,10 @@ class Admin
      */
     public static function postUser(\Entities\Request $req): void
     {
-        // TODO: Check authorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Retrieve the user ID
         $queried_user_id = $req->getGET("uid");
@@ -240,7 +282,10 @@ class Admin
      */
     public static function postCreateUser(\Entities\Request $req): void
     {
-        // TODO: Check authorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Retrieve POST data (key => value)
         $order = [
@@ -282,10 +327,65 @@ class Admin
 
     public static function getCreateUser(\Entities\Request $req): void
     {
-        // TODO: Check auhorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Show the view
         \Helpers\DisplayManager::display("createuser");
+    }
+
+    /**
+     * POST admin/users/{UID}/delete
+     * @param \Entities\Request $req
+     */
+    public static function postDeleteUser(\Entities\Request $req): void
+    {
+        // Retrieve User ID
+        $queried_user_id = $req->getGET("uid");
+
+        // Delete User-Linked Requests
+        try {
+            (new \Queries\Requests)
+                ->filterByColumn("user_id", "=", $queried_user_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting requests linked to user with ID: " . $queried_user_id);
+            return;
+        }
+
+        // Delete User-Linked Sessions
+        try {
+            (new \Queries\Sessions)
+                ->filterByColumn("user_id", "=", $queried_user_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting requests linked to user with ID: " . $queried_user_id);
+            return;
+        }
+
+        // Delete User-Linked Roles
+        try {
+            (new \Queries\Roles)
+                ->filterByColumn("user_id", "=", $queried_user_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting requests linked to user with ID: " . $queried_user_id);
+            return;
+        }
+
+        // Delete User
+        try {
+            (new \Queries\Users)
+                ->filterByColumn("id", "=", $queried_user_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting requests linked to user with ID: " . $queried_user_id);
+            return;
+        }
+
+        // Finished
     }
 
     /**
@@ -293,7 +393,10 @@ class Admin
      */
     public static function getUserProperties(\Entities\Request $req): void
     {
-        // TODO: Check auhorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Retrieve values necessary
         $user_id = $req->getGET("uid");
@@ -393,7 +496,10 @@ class Admin
      */
     public static function getProperties(\Entities\Request $req): void
     {
-        // TODO: Check authorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Retrieve values necessary
         $count = $req->getGET("count") ?? 20;
@@ -471,6 +577,11 @@ class Admin
      */
     public static function getProperty(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         // Retrieve the user ID
         $queried_property_id = $req->getGET("pid") ?? $req->getPropertyID();
         if ($queried_property_id === null) {
@@ -497,7 +608,7 @@ class Admin
                 "title" => "Name",
                 "value" => htmlspecialchars($queried_property->getName()),
                 "type" => "text"],
-            "nick" => (object)[
+            "address" => (object)[
                 "title" => "Address",
                 "value" => htmlspecialchars($queried_property->getAddress()),
                 "type" => "text"],
@@ -522,6 +633,7 @@ class Admin
             default:
                 $data_for_php_view = [
                     "json" => $output,
+                    "pid" => $queried_property_id,
                 ];
                 \Helpers\DisplayManager::display("property", $data_for_php_view);
         }
@@ -534,7 +646,10 @@ class Admin
      */
     public static function postProperty(\Entities\Request $req): void
     {
-        // TODO: Check authorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Retrieve the user ID
         $queried_property_id = $req->getGET("pid") ?? $req->getPropertyID();
@@ -550,6 +665,7 @@ class Admin
         $order = [
             "name" => $req->getPOST("new_name"),
             "email" => $req->getPOST("new_email"),
+            "address" => $req->getPOST("new_address"),
         ];
 
         // Validate them all
@@ -580,12 +696,82 @@ class Admin
     }
 
     /**
+     * POST admin/properties/{PID}/delete
+     * @param \Entities\Request $req
+     */
+    public static function postDeleteProperty(\Entities\Request $req): void
+    {
+        // Retrieve User ID
+        $queried_property_id = $req->getGET("pid") ?? $req->getPropertyID();
+
+
+        // Delete Property-Linked Requests
+        try {
+            (new \Queries\Requests)
+                ->filterByColumn("property_id", "=", $queried_property_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting requests linked to property with ID: " . $queried_property_id);
+            return;
+        }
+
+        // Delete Property-Linked Roles
+        try {
+            (new \Queries\Roles)
+                ->filterByColumn("property_id", "=", $queried_property_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting roles linked to property with ID: " . $queried_property_id);
+            return;
+        }
+
+        // Deassociate Property-Linked peripherals
+        try {
+            $peripherals = (new \Queries\Peripherals)
+                ->filterByColumn("property_id", "=", $queried_property_id);
+            foreach ($peripherals as $peripheral) {
+                $peripheral->setRoomID(null);
+                $peripheral->setPropertyID(null);
+                (new \Queries\Peripherals)->update($peripheral);
+            }
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deassociating peripherals linked to property with ID: " . $queried_property_id);
+            return;
+        }
+
+        // Delete Property-Linked Rooms
+        try {
+            (new \Queries\Rooms)
+                ->filterByColumn("property_id", "=", $queried_property_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting rooms linked to property with ID: " . $queried_property_id);
+            return;
+        }
+
+        // Delete property
+        try {
+            (new \Queries\Properties())
+                ->filterByColumn("id", "=", $queried_property_id)
+                ->delete();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "error while deleting property with ID: " . $queried_property_id);
+            return;
+        }
+
+        // Finished
+    }
+
+    /**
      * GET root/admin/peripherals
      * @param \Entities\Request $req
      */
     public static function getPeripherals(\Entities\Request $req): void
     {
-        // TODO: Check authorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Retrieve values necessary
         $count = $req->getGET("count") ?? 20;
@@ -670,6 +856,11 @@ class Admin
      */
     public static function getPeripheral(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         // Récupérer l'UUID
         $peripheral_uuid = $req->getGET("puuid");
         if (empty($peripheral_uuid)) {
@@ -716,7 +907,7 @@ class Admin
                 "type" => "text"],
             "add_date" => (object)[
                 "title" => "Add Date",
-                "value" => (new \DateTime)->setTimestamp($peripheral->getAddDate())->format("Y-m-d"),
+                "value" => (new \DateTime)->setTimestamp(strtotime($peripheral->getAddDate()))->format("Y-m-d"),
                 "type" => "date"],
             "build_date" => (object)[
                 "title" => "Build Date",
@@ -752,7 +943,10 @@ class Admin
      */
     public static function postPeripheral(\Entities\Request $req): void
     {
-        // TODO: Check authorisation for viewer
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
 
         // Retrieve the user ID
         $peripheral_uuid = $req->getGET("puuid");
@@ -811,7 +1005,10 @@ class Admin
      */
     public static function getProducts(\Entities\Request $req): void
     {
-
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
     }
 
     /**
@@ -820,6 +1017,11 @@ class Admin
      */
     public static function getSettings(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         \Helpers\DisplayManager::display("settings");
     }
 
@@ -829,6 +1031,11 @@ class Admin
      */
     public static function postSettings(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         // Configure name, etc.
     }
 
@@ -838,6 +1045,11 @@ class Admin
      */
     public static function getFAQ(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         // Retrieve all question/answers
         $frequently_asked_questions = null;
         try {
@@ -860,6 +1072,11 @@ class Admin
      */
     public static function postCreateFAQ(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         // Retrieve data
         $question = $req->getPOST("question");
         $answer = $req->getPOST("answer");
@@ -917,6 +1134,11 @@ class Admin
      */
     public static function postFAQ(\Entities\Request $req): void
     {
+        if (!self::authentify($req)) {
+            Error::getForbidden403($req, "Forbidden");
+            return;
+        }
+
         // Retrieve data
         $frequently_asked_question_id = $req->getGET("faqid");
         $question = $req->getPOST("question");

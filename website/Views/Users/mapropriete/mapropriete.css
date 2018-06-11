@@ -2,13 +2,12 @@
 
 body {
     position : relative;
-    background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
     background-size: cover;
     background-position: center;
     font-family: Verdana;
     overflow-x: hidden;
     font-size: medium;
-    overflow-y: hidden;
+    min-height: 780px;
 }
 
 #Menu  {
@@ -37,12 +36,18 @@ body {
     width: 100%;
 }
 
+.button
+{
+    text-decoration: none;
+    color: #955252;
+}
+
 #creervoirutilisateur
 {
     display: flex;
     position: relative;
     left: 16%;
-    top:7%;
+    margin-bottom: 190px;
 }
 
 #creerutilisateur
@@ -81,7 +86,6 @@ body {
     padding: 0px 10px;
     top: 100px;
     padding-bottom: 30px;
-    margin-bottom: 320px;
 }
 
 #titrelisteutilisateurs

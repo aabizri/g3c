@@ -7,6 +7,7 @@
  */
 
 namespace Queries;
+
 use Entities\Entity;
 use Entities\Measure;
 
@@ -66,9 +67,9 @@ class Measures extends Query
      * @return Measure
      */
 
-    public function filterBySensor(string $operator, \Entities\Sensor $sensor):self
+    public function filterBySensor(string $operator, \Entities\Sensor $sensor): self
     {
-        return $this->filterByEntity( "sensor_id", $operator, $sensor);
+        return $this->filterByEntity("sensor_id", $operator, $sensor);
     }
 
     /**
@@ -81,8 +82,8 @@ class Measures extends Query
     public function filterLastMeasureBySensor(string $operator, \Entities\Sensor $sensor): self
 
     {
-        return $this  -> filterBySensor($operator, $sensor)
-                      ->orderBy("date_time",false);
+        return $this->filterBySensor($operator, $sensor)
+            ->orderBy("date_time", false);
     }
 
     /**
@@ -91,9 +92,9 @@ class Measures extends Query
      * @return Measure
      */
 
-    public function filterByTypeID(string $operator, int $type_id) : self
+    public function filterByTypeID(string $operator, int $type_id): self
     {
-        return $this->filterByColumn( "type_id", $operator, $type_id);
+        return $this->filterByColumn("type_id", $operator, $type_id);
     }
 
     /* OTHERS */

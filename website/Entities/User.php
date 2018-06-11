@@ -51,6 +51,11 @@ class User extends Entity
     private $phone;
 
     /**
+     * @var bool
+     */
+    private $admin = false;
+
+    /**
      * @var float
      */
     private $last_updated;
@@ -220,7 +225,7 @@ class User extends Entity
     // Validate phone validates a phone number in a more liberal way (spaces, numbers, parenthesis, dashes and dots)
     public static function validatePhone(string $phone): bool
     {
-        $match = preg_match('/[^0-9\+\ \-\(\)\.]/',$phone);
+        $match = preg_match('/[^0-9\+\ \-\(\)\.]/', $phone);
         return $match !== 1;
     }
 
@@ -232,6 +237,22 @@ class User extends Entity
 
         // Return
         return $sanitized;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAdmin(): bool
+    {
+        return $this->admin;
+    }
+
+    /**
+     * @param bool $admin
+     */
+    public function setAdmin(bool $admin)
+    {
+        $this->admin = $admin;
     }
 
     /**

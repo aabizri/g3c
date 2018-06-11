@@ -1,0 +1,54 @@
+table {
+    border-collapse: collapse;
+}
+
+table {
+    margin-left: 2%;
+    width: 25%;
+    table-layout: fixed;
+}
+
+table, th, td {
+    text-align: left;
+    padding: 6px;
+    border: 0.5px solid black;
+}
+
+/* Pour la troncation des cellules */
+th, td {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* Pour la couleur du header */
+th {
+    background-color: #955252;
+    color: white;
+}
+
+/* Tailles minimales et maximales de chaque enfant */
+td:first-child {
+    font-weight: bold;
+}
+
+td:nth-child(2) {
+    font-family: "Ubuntu Mono", monospace;
+}
+
+/* Pour l'alternation de couleurs grises et blanches entre chaque lignes */
+tr:nth-child(even) {
+    background-color: rgb(217, 196, 177);
+}
+
+/* Pour quand il y "hover", qu'il y ai un changement de couleur de la ligne */
+tr:hover {
+    background-color: beige;
+}
+
+/* Pour que quand il y ai "hover", le curseur change et que la police devienne plus grasse */
+tr:hover > td {
+    cursor: pointer;
+    font-weight: bolder;
+}
+

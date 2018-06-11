@@ -2,7 +2,7 @@
 <ul>
     <div id="property">
     <?php
-    $properties = $data["properties"];
+    $properties = $data["properties"] ?? [];
     foreach ($properties as $property) : ?>
         <li>
             <a href="properties/<?= $property->getID() ?>">

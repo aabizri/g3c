@@ -2,7 +2,6 @@
 
 body {
 	position : relative;
-	background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
 	background-size: cover;
 	background-position: center;
 	font-family: Verdana;
@@ -157,4 +156,23 @@ body {
     right: 20px;
     width: 200px;
     border-radius: 5px;
+}
+
+#deleteaccount
+{
+	position: relative;
+	left: 66%;
+	font-size: larger;
+	top: -150px;
+}
+
+#deleteaccount button
+{
+	width: 20%;
+	height: 100px;
+	font-size: large;
+	border-radius: 5px;
+	color: red;
+	background-color: rgb(217,196,177);
+	border:1px solid #955252;
 }

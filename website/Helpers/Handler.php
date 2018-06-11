@@ -16,7 +16,7 @@ class Handler
         // Lancement de la temporisation (Niveau 0)
         ob_start(null, 0, PHP_OUTPUT_HANDLER_STDFLAGS);
         // Lancement de la temporisation (Niveau 1)
-        ob_start("ob_gzhandler",0,PHP_OUTPUT_HANDLER_STDFLAGS);
+        ob_start("ob_gzhandler", 0, PHP_OUTPUT_HANDLER_STDFLAGS);
 
         // Installation du handler de session
         session_set_save_handler(new \Helpers\SessionSaveHandler);
@@ -42,7 +42,10 @@ class Handler
         }
 
         // Vérifie que le User a le droit d'accéder à la propriété
-        if ($req->getUserID() !== null && $req->getPropertyID() !== null) {
+        if ($req->getPropertyID() !== null) {
+            if ($req->getUserID() === null) {
+                \Controllers\Error::getForbidden403($req, "Pas d'autorisation sur la propriété");
+            }
             $count = (new \Queries\Roles)
                 ->filterByColumn("property_id", "=", $req->getPropertyID(), "AND")
                 ->filterByColumn("user_id", "=", $req->getUserID(), "AND")

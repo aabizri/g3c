@@ -13,9 +13,9 @@ class Sensors extends Query
     /* COMMON CONSTANTS */
     private const table = "sensors";
     private const columns = ["id" => ["id", "gen-on-insert"],
-        "measure_type_id" => [],
-        "peripheral_uuid" => [],
-        "last_updated" => ["gen-on-insert", "timestamp"]];
+                             "measure_type_id" => [],
+                             "peripheral_uuid" => [],
+                             "last_updated" => ["gen-on-insert", "timestamp"]];
     private const entity_class_name = "\Entities\Sensor";
 
     /**
@@ -59,7 +59,7 @@ class Sensors extends Query
 
     public function filterByPeripheral(string $operator, \Entities\Peripheral $peripheral): self
     {
-        return $this -> filterByEntity("peripheral_uuid", $operator, $peripheral);
+        return $this->filterByEntity("peripheral_uuid", $operator, $peripheral);
     }
 
     /**
@@ -70,6 +70,6 @@ class Sensors extends Query
 
     public function filterByPeripheralUUID(string $operator, string $peripheral_uuid): self
     {
-        return $this -> filterByColumn("peripheral_uuid", $operator, $peripheral_uuid);
+        return $this->filterByColumn("peripheral_uuid", $operator, $peripheral_uuid);
     }
 }

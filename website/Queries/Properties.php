@@ -47,7 +47,8 @@ class Properties extends Query
         return parent::saveEntity($property);
     }
 
-    public function filterByPropertyID(int $property_id){
+    public function filterByPropertyID(int $property_id)
+    {
         return $this->filterBy("email", $operator, $email);
     }
 }

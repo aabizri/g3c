@@ -9,12 +9,135 @@ namespace Controllers;
 class Properties
 {
 
+    /**
+     * @param \Entities\Request $req
+     * @throws \Exception
+     */
+    public function getDashboard(\Entities\Request $req): void
+    {
+        //On recupere l'user_id et le property_id:
+        $user_id=$req->getUserID();
+        $property_id = $req->getPropertyID();
+
+        //Trouve le role ayant en commun cet user_id et property_id
+        $count=(new \Queries\Roles)
+            ->filterByColumn("user_id","=",$user_id,"AND")
+            ->filterByColumn("property_id","=",$property_id,"AND")
+            ->count();
+
+        //Si aucun role n'existe afficher une erreur.
+        if ($count!==1)
+        {
+            Error::getBadRequest400($req,"Propriété non associé à l'utilisateur");
+            return;
+        }
+
+        // Si la requête n'est pas associée à une propriété, retourner une erreur
+        if (empty($property_id))
+        {
+            Error::getBadRequest400($req, "ID de propriété non-indiqué");
+            return;
+        }
+
+        //Récupérer liste des pièces de la propriété
+        $rooms = null;
+        try {
+            $rooms = (new \Queries\Rooms)
+                ->filterByPropertyID("=", $property_id)
+                ->find();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Queries des pièces ratée :(");
+            return;
+        }
+
+
+        $last_measures_for_room_by_room_id = [];
+        //Pour chaque pièce recuperer les peripheriques, puis les capteurs, puis leur dernière mesures;
+        foreach ($rooms as $room) {
+            $room_sensors = [];
+            $last_measures_for_room_by_sensor_id = [];
+            $rid = $room->getID();
+
+            //On récupère tout les périphériques d'une pièce.
+            $peripherals = null;
+            try {
+                $peripherals = (new \Queries\Peripherals)
+                    ->filterByRoomID('=', $rid)
+                    ->find();
+            } catch (\Throwable $t) {
+                Error::getInternalError500Throwables($req, $t, "Error while querying peripherals for room " . $rid);
+                return;
+            }
+
+            // Pour chaque péripérique, on récupère tous les capteurs associés
+            foreach ($peripherals as $peripheral) {
+                // Récupère la liste des capteurs associés au péiphérique
+                $room_sensors_for_peripheral = null;
+                try {
+                    $room_sensors_for_peripheral = (new \Queries\Sensors)
+                        ->filterbyPeripheral('=', $peripheral)
+                        ->find();
+                } catch (\Throwable $t) {
+                    Error::getInternalError500Throwables($req, $t, "Error while querying sensors for peripheral " . $peripheral->getUUID());
+                    return;
+                }
+
+                // Push les valeurs dans l'array
+                if (count($room_sensors_for_peripheral) !== 0) {
+                    array_push($room_sensors, ...$room_sensors_for_peripheral);
+                }
+            }
+
+
+            /**
+             * Pour chacun des capteurs on récupère la dernière \Entities\Measure
+             */
+            foreach ($room_sensors as $sensor) {
+
+                // Récupérer la dernière mesure du capteur
+                $last_measure_for_sensor = null;
+                try {
+                    $last_measure_for_sensor = (new \Queries\Measures)
+                        ->filterLastMeasureBySensor('=', $sensor)
+                        ->findOne();
+                } catch (\Throwable $t) {
+                    Error::getInternalError500Throwables($req, $t, "Error while getting last measure for sensor " . $sensor . getID());
+                    return;
+                }
+
+                // Cette dernière mesure est la dernière mesure du capteur
+                $last_measures_for_room_by_sensor_id[$sensor->getID()] = $last_measure_for_sensor;
+            }
+
+            $last_measures_for_room_by_room_id[$rid] = $last_measures_for_room_by_sensor_id;
+
+        }
+
+
+        /*
+         * La liste des \Entities\Rooms
+         * @var
+         */
+        $data["rooms"] = $rooms;
+        $data["pid"] = $property_id;
+
+        /*
+         * [ID de Room =>
+         *      ID de Capteur => Dernière mesure]
+         */
+        $data["last_measures"] = $last_measures_for_room_by_room_id;
+
+
+        \Helpers\DisplayManager::display("dashboard", $data);
+
+    }
+
     //Afficher les utilisateurs d'une propriété
     public static function getProperty(\Entities\Request $req): void
     {
         //On récupère les données
         $property = $req->getProperty();
-        if ($property === null) {
+        if (empty($property)) {
             Error::getBadRequest400($req, "ID de propriété non-indiqué");
             return;
         }
@@ -135,7 +258,7 @@ class Properties
             Error::getInternalError500Throwables($req, $t, "Erreur lors de l'insertion du nouveau rôle");
         }
 
-        \Helpers\DisplayManager::redirect302("properties/" . $property_id);
+        \Helpers\DisplayManager::redirect302("properties/$property_id/settings");
     }
 
 
@@ -175,7 +298,7 @@ class Properties
         }
 
         //On affiche la page avec l'utilisateur supprimé
-        \Helpers\DisplayManager::redirect302("properties/" . $property_id);
+        \Helpers\DisplayManager::redirect302("properties/$property_id/settings");
     }
 
     public static function getSelect(\Entities\Request $req): void
@@ -194,18 +317,21 @@ class Properties
             Error::getInternalError500Throwables($req, $t, "Erreur dans la récupération des roles");
             return;
         }
-
-        // Pour chaque rôle, tu récupère la propriété associé, et tu l'ajoute à une liste
         $properties = null;
-        try {
-            $properties_query = new \Queries\Properties;
-            foreach ($roles as $role) {
-                $property_id = $role->getPropertyID();
-                $properties[] = $properties_query->filterByColumn("id", "=", $property_id, "OR");
+        if(!empty($roles))
+        {
+            // Pour chaque rôle, tu récupère la propriété associé, et tu l'ajoute à une liste
+
+            try {
+                $properties_query = new \Queries\Properties;
+                foreach ($roles as $role) {
+                    $property_id = $role->getPropertyID();
+                    $properties[] = $properties_query->filterByColumn("id", "=", $property_id, "OR");
+                }
+                $properties = $properties_query->find();
+            } catch (\Throwable $t) {
+                Error::getInternalError500Throwables($req, $t, "Erreur lors de la récupération des propriétés");
             }
-            $properties = $properties_query->find();
-        } catch (\Throwable $t) {
-            Error::getInternalError500Throwables($req, $t, "Erreur lors de la récupération des propriétés");
         }
 
         // Ajout aux données destinées à la vue

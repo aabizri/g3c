@@ -24,6 +24,7 @@ class Users extends Query
                              "email" => [],
                              "password" => [],
                              "phone" => [],
+                             "admin" => [],
                              "last_updated" => ["gen-on-insert", "timestamp"]];
     private const entity_class_name = "\Entities\User";
 

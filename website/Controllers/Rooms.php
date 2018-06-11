@@ -17,8 +17,23 @@ class Rooms
      */
     public function postCreate(\Entities\Request $req): void
     {
-        // Récupére l'ID de la propriété liée
+        //On recupere l'user_id et le property_id:
+        $user_id=$req->getUserID();
         $property_id = $req->getPropertyID();
+
+        //Trouve le role ayant en commun cet user_id et property_id
+        $count=(new \Queries\Roles)
+            ->filterByColumn("user_id","=",$user_id,"AND")
+            ->filterByColumn("property_id","=",$property_id,"AND")
+            ->count();
+
+        //Si aucun role n'existe afficher une erreur.
+        if ($count!==1)
+        {
+            Error::getBadRequest400($req,"Propriété non associé à l'utilisateur");
+            return;
+        }
+
 
         // Si celle-ci n'est pas set, erreur
         if (empty($property_id)) {
@@ -56,7 +71,7 @@ class Rooms
         // Crée ! See other
         try {
             http_response_code(303); // HTTP Created (See other)
-            header("Location: " . \Helpers\DisplayManager::absolutifyURL("properties/" . $property_id . "/rooms/" . $r->getID()));
+            header("Location: " . \Helpers\DisplayManager::absolutifyURL("properties/" . $property_id . "/rooms"));
         } catch (\Throwable $t) {
             Error::getInternalError500Throwables($req, $t, "Erreur lors de la redirection");
         }
@@ -69,8 +84,23 @@ class Rooms
      */
     public function getRooms(\Entities\Request $req): void
     {
-        // Récupére l'ID de la propriété liée
+        //On recupere l'user_id et le property_id:
+        $user_id=$req->getUserID();
         $property_id = $req->getPropertyID();
+
+        //Trouve le role ayant en commun cet user_id et property_id
+        $count=(new \Queries\Roles)
+            ->filterByColumn("user_id","=",$user_id,"AND")
+            ->filterByColumn("property_id","=",$property_id,"AND")
+            ->count();
+
+        //Si aucun role n'existe afficher une erreur.
+        if ($count!==1)
+        {
+            Error::getBadRequest400($req,"Propriété non associé à l'utilisateur");
+            return;
+        }
+
 
         // Si celle-ci n'est pas set, erreur
         if (empty($property_id)) {
@@ -104,8 +134,22 @@ class Rooms
      */
     public function getRoom(\Entities\Request $req): void
     {
-        // Récupére l'ID de la propriété liée
+        //On recupere l'user_id et le property_id:
+        $user_id=$req->getUserID();
         $property_id = $req->getPropertyID();
+
+        //Trouve le role ayant en commun cet user_id et property_id
+        $count=(new \Queries\Roles)
+            ->filterByColumn("user_id","=",$user_id,"AND")
+            ->filterByColumn("property_id","=",$property_id,"AND")
+            ->count();
+
+        //Si aucun role n'existe afficher une erreur.
+        if ($count!==1)
+        {
+            Error::getBadRequest400($req,"Propriété non associé à l'utilisateur");
+            return;
+        }
 
         // Si celle-ci n'est pas set, erreur
         if (empty($property_id)) {
@@ -211,4 +255,99 @@ class Rooms
     }
 
 
+    public function postDelete(\Entities\Request $req): void
+    {
+        //On recupere l'user_id et le property_id:
+        $user_id=$req->getUserID();
+        $property_id = $req->getPropertyID();
+
+        //Trouve le role ayant en commun cet user_id et property_id
+        $count=(new \Queries\Roles)
+            ->filterByColumn("user_id","=",$user_id,"AND")
+            ->filterByColumn("property_id","=",$property_id,"AND")
+            ->count();
+
+        //Si aucun role n'existe afficher une erreur.
+        if ($count!==1)
+        {
+            Error::getBadRequest400($req,"Propriété non associé à l'utilisateur");
+            return;
+        }
+
+        // Récuperation du pid
+        $pid = $req->getPropertyID();
+        if (empty($pid)) {
+            Error::getBadRequest400($req, "Il manque le property ID pour la suppression");
+            return;
+        }
+
+        // On récupère les room_id via le formulaire
+        $rids = $req->getPOST("rid");
+        if (empty($rids)) {
+            Error::getBadRequest400($req, "Rooms IDs Manquant");
+            return;
+        }
+        if (!is_array($rids)) {
+            Error::getBadRequest400($req, "Rids isn't an array");
+            return;
+        }
+
+        foreach ($rids as $rid) {
+            // On vérfie que les room_id appartient bien à cette propriété
+            $room = null;
+            try {
+                $room = (new \Queries\Rooms)->retrieve($rid);
+            } catch (\Throwable $t) {
+                Error::getInternalError500Throwables($req, $t, "Erreur lors de la récupération de la pièce");
+                return;
+            }
+
+            // On récupère les périphérique liée à la pièce
+            $peripheral_list = null;
+            try {
+                $peripheral_list = (new \Queries\Peripherals)
+                    ->filterByRoomID("=", $rid)
+                    ->find();
+            } catch (\Throwable $t) {
+                Error::getInternalError500Throwables($req, $t, "Erreur lors de la récupération des périphériques");
+                return;
+            }
+
+            // On set null en room_id pour désassocier chaque périphérique à la pièce
+            foreach ($peripheral_list as $peripheral) {
+                // Supprimer le périphérique
+                $peripheral->setRoomID(null);
+
+                // Push
+                try {
+                    (new \Queries\Peripherals)->update($peripheral);
+                } catch (\Throwable $t) {
+                    Error::getInternalError500Throwables($req, $t, "Erreur lors de la mise à jour du périphérique " . $peripheral->getUUID());
+                    return;
+                }
+            }
+
+            // Suppression de la pièce
+            try {
+                (new \Queries\Rooms)
+                    ->filterByColumn("id", "=", $rid)
+                    ->delete();
+            } catch (\Throwable $t) {
+                Error::getInternalError500Throwables($req, $t, "Erreur lors de l'éxécution de la query de suppression de pièce");
+                return;
+            }
+        }
+
+        // Récupération des pièces
+        $rooms = null;
+        try {
+            $rooms = (new \Queries\Rooms)->filterByPropertyID("=", $pid)->find();
+        } catch (\Throwable $t) {
+            Error::getInternalError500Throwables($req, $t, "Erreur lors de l'éxecution de la query de récupération des pièces");
+            return;
+        }
+
+        $data["rooms"] = $rooms;
+        \Helpers\DisplayManager::redirect303("properties/" . $pid . "/rooms");
+    }
 }

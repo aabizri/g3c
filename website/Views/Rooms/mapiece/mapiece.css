@@ -1,12 +1,12 @@
 body {
     position : relative;
-    background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
     background-size: cover;
     background-position: center;
     width: auto;
     font-family: Verdana;
     overflow-x: hidden;
     height: 715px;
+    overflow-y: hidden;
 }
 
 #Menu  {
@@ -35,13 +35,19 @@ body {
     width: 100%;
 }
 
+.button
+{
+    text-decoration: none;
+    color: #955252;
+}
+
 /*Mes pièces*/
 
 #nomdelapièce
 {
     position: relative;
     left: 20%;
-    top:100px;
+    top:70px;
 }
 
 
@@ -52,6 +58,16 @@ body {
     border: 1px solid #955252 ;
     background-color: rgb(217,196,177);
     border-radius: 5px;;
+}
+.temperatureName
+{
+    font-size: x-small;
+}
+#informationspiece
+{
+
+    display: flex;
+    justify-content: center;
 }
 
 
@@ -65,20 +81,35 @@ body {
     width:70%;
     background-color: rgb(217,196,177);
     text-align: center;
-    height: 100px;
+    padding-bottom: 20px;
+    margin-bottom: 510px;
 }
 
-#choixsalle
+
+#lienhistorique
 {
     position: relative;
-    top: 80px;
-    left:20%;
+    top:185px;
+    left: 20%;
 }
 
-#choixsalle input,#choixsalle select
+#lienconsigne
 {
-    border-radius:1px;
-    font-size: medium;
+    position: relative;
+    top:185px;
+    left: 20%;
 }
 
+#boutonhistorique
+{
+    position: relative;
+    top: 20px;
+    border-radius: 5px;
+}
 
+#boutonconsigne
+{
+    position: relative;
+    top: 20px;
+    border-radius: 5px;
+}

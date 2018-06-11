@@ -1,0 +1,11 @@
+body{
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+div{
+    position: relative;
+    text-align: center;
+    top: 90px;
+    margin-bottom: 580px;
+}

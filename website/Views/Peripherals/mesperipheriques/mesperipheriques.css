@@ -1,6 +1,5 @@
 body {
 	position : relative;
-	background-image: url("https://photoag.fr/wp-content/uploads/2016/12/fond-site.jpg");
 	background-size: cover;
 	background-position: center;
 	font-family: Verdana;
@@ -12,6 +11,7 @@ body {
 	list-style: none;
 	left:-49px;
 	top: 20px;
+	width: 12%;
 }
 
 #Menu input
@@ -36,6 +36,11 @@ body {
 {
 	position: relative;
 	margin: 50px 10px;
+}
+.button
+{
+	text-decoration: none;
+	color: #955252;
 }
 
 #nombrepc
