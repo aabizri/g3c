@@ -40,7 +40,7 @@
                 </li>
             </ul>
         </div>
-    }
+    
 
     <?php endif; ?>
 
