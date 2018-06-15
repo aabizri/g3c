@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le :  mer. 31 jan. 2018 à 21:11
+-- Généré le :  ven. 15 juin 2018 à 14:18
 -- Version du serveur :  10.1.28-MariaDB
 -- Version de PHP :  7.1.11
 
@@ -159,6 +159,7 @@ CREATE TABLE `measures` (
 
 CREATE TABLE `measure_types` (
   `id` int(11) NOT NULL,
+  `hardware_code` int(11) DEFAULT NULL COMMENT 'max: 0xFF',
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Température °C"',
   `description` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Température en Celsius"',
   `unit_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL COMMENT 'Par exemple: "Celsius"',
@@ -171,10 +172,10 @@ CREATE TABLE `measure_types` (
 -- Déchargement des données de la table `measure_types`
 --
 
-INSERT INTO `measure_types` (`id`, `name`, `description`, `unit_name`, `unit_symbol`, `min`, `max`) VALUES
-(1, 'Température (*C)', 'Température en degrés Celsius', 'Celsius', '°C', -274, NULL),
-(2, 'Luminosité (lux)', 'Luminosité en lumens', 'lux', 'lux', NULL, NULL),
-(3, 'Pression (bar)', 'Pression en bar', 'bar', 'bar', NULL, NULL);
+INSERT INTO `measure_types` (`id`, `hardware_code`, `name`, `description`, `unit_name`, `unit_symbol`, `min`, `max`) VALUES
+(1, 51, 'Température (*C)', 'Température en degrés Celsius', 'Celsius', '°C', -274, NULL),
+(2, 53, 'Luminosité (lux)', 'Luminosité en lumens', 'lux', 'lux', NULL, NULL),
+(3, 86, 'Pression (bar)', 'Pression en bar', 'bar', 'bar', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -215,7 +216,7 @@ CREATE TABLE `peripherals` (
 
 INSERT INTO `peripherals` (`uuid`, `display_name`, `build_date`, `add_date`, `status`, `property_id`, `room_id`, `last_updated`) VALUES
 ('017de9be-3fe8-4613-98b1-d0eeefbe4887', NULL, '2017-11-20', NULL, '', NULL, NULL, '2017-11-20 16:45:33.000'),
-('02c7de4f-5bea-4694-86ba-90116acc8d19', 'PÃ©riphÃ©rique de Test', '1997-04-09', '2017-12-05 11:53:45', '', 1, 1, '2017-12-05 10:53:45.000'),
+('02c7de4f-5bea-4694-86ba-90116acc8d19', NULL, '1997-04-09', NULL, '', NULL, NULL, '2018-02-11 12:25:17.098'),
 ('02effb34-ffd9-4e8b-88f5-a6e73d002b07', NULL, '2017-11-20', NULL, '', NULL, NULL, '2017-11-20 15:56:59.000'),
 ('042303f8-3ae7-49cd-851e-9b789523808e', NULL, '2017-11-20', NULL, '', NULL, NULL, '2017-11-20 15:59:32.000'),
 ('061ab7ac-abd8-445a-8e8b-d61dea5ff660', NULL, '2017-11-20', NULL, '', NULL, NULL, '2017-11-20 16:45:21.000'),
@@ -478,8 +479,9 @@ CREATE TABLE `properties` (
 INSERT INTO `properties` (`id`, `name`, `address`, `creation_date`, `last_updated`) VALUES
 (1, 'Chez Bizri Le Gr', '54 Boulevard de Grenelle', '2017-11-20 14:20:18.000', '2018-01-28 01:55:38.155'),
 (3, 'Chez l\'autre', 'OÃ¹ ?', '2018-01-27 17:14:17.492', '2018-01-27 17:14:17.492'),
-(4, 'Chez Bryan', 'patat', '2018-01-27 17:15:35.884', '2018-01-31 20:03:47.168'),
-(5, 'Chez Bidule', 'Test', '2018-01-27 17:24:17.681', '2018-01-31 16:41:54.635');
+(4, 'Chez Bryan 2', 'test', '2018-01-27 17:15:35.884', '2018-02-01 13:25:25.230'),
+(5, 'Chez Bidule', 'LOL', '2018-01-27 17:24:17.681', '2018-02-01 13:24:12.958'),
+(6, 'Chez Bizri', '54 Boulevard de Grenelle', '2018-02-11 12:30:43.283', '2018-02-11 12:30:43.283');
 
 -- --------------------------------------------------------
 
@@ -4109,7 +4111,172 @@ INSERT INTO `requests` (`id`, `ip`, `user_agent_txt`, `user_agent_hash`, `sessio
 (4068, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'cd4d18934ebca063767217f6fd402401', 'Admin', 'GET', 'Property', 1, '2018-01-31 20:00:47.846', 71007, 4, 4, '', '/g3c/admin/properties/4', -1, 1267),
 (4069, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'cd4d18934ebca063767217f6fd402401', 'Admin', 'GET', 'Property', 1, '2018-01-31 20:02:05.120', 96601, 4, 4, '', '/g3c/admin/properties/4', -1, 1267),
 (4070, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'cd4d18934ebca063767217f6fd402401', 'Admin', 'GET', 'Property', 1, '2018-01-31 20:03:38.559', 275085, 4, 4, '', '/g3c/admin/properties/4', -1, 1267),
-(4071, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'cd4d18934ebca063767217f6fd402401', 'Admin', 'POST', 'Property', 1, '2018-01-31 20:03:47.107', 75426, 4, 4, '', '/g3c/admin/properties/4', 147, 20);
+(4071, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'cd4d18934ebca063767217f6fd402401', 'Admin', 'POST', 'Property', 1, '2018-01-31 20:03:47.107', 75426, 4, 4, '', '/g3c/admin/properties/4', 147, 20),
+(4072, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '34ad2b634508134588b87034da6f3e88', '', 'GET', '', 1, '2018-02-01 13:12:31.761', 34872, NULL, NULL, '', '/', -1, 135),
+(4073, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '34ad2b634508134588b87034da6f3e88', '', 'GET', '', 1, '2018-02-01 13:12:37.043', 6196, NULL, NULL, '', '/', -1, 135),
+(4074, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '34ad2b634508134588b87034da6f3e88', '', 'GET', '', 1, '2018-02-01 13:18:11.836', 4835, NULL, NULL, '', '/g3c/', -1, 137),
+(4075, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '34ad2b634508134588b87034da6f3e88', 'User', 'GET', 'Login', 1, '2018-02-01 13:18:11.852', 14653, NULL, NULL, '', '/g3c/login', -1, 1307),
+(4076, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '34ad2b634508134588b87034da6f3e88', 'User', 'POST', 'Login', 1, '2018-02-01 13:18:20.928', 87306, 4, NULL, '', '/g3c/login', 27, 141),
+(4077, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '34ad2b634508134588b87034da6f3e88', 'Properties', 'GET', 'Select', 1, '2018-02-01 13:18:21.044', 20857, 4, NULL, '', '/g3c/properties', -1, 1206),
+(4078, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '34ad2b634508134588b87034da6f3e88', 'User', 'GET', 'Login', 1, '2018-02-01 13:18:25.061', 8586, 4, NULL, '', '/g3c/login', -1, 1507),
+(4079, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '34ad2b634508134588b87034da6f3e88', 'User', 'GET', 'Join', 1, '2018-02-01 13:18:26.358', 7421, 4, NULL, '', '/g3c/join', -1, 1504),
+(4080, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '34ad2b634508134588b87034da6f3e88', 'User', 'POST', 'Join', 1, '2018-02-01 13:18:49.702', 87162, 4, NULL, '', '/g3c/join', 156, 981),
+(4081, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '34ad2b634508134588b87034da6f3e88', 'User', 'POST', 'Join', 1, '2018-02-01 13:19:47.632', 96725, 4, NULL, '', '/g3c/join', 156, 1507),
+(4082, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '34ad2b634508134588b87034da6f3e88', 'User', 'POST', 'Login', 1, '2018-02-01 13:20:14.948', 7770, 4, NULL, '', '/g3c/login', 26, 141),
+(4083, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '34ad2b634508134588b87034da6f3e88', 'Properties', 'GET', 'Select', 1, '2018-02-01 13:20:14.973', 9688, 4, NULL, '', '/g3c/properties', -1, 1206),
+(4084, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '34ad2b634508134588b87034da6f3e88', 'User', 'POST', 'Logout', 1, '2018-02-01 13:20:25.276', 19789, 4, NULL, '', '/g3c/logout', -1, 137),
+(4085, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'User', 'GET', 'Login', 1, '2018-02-01 13:20:25.313', 19768, NULL, NULL, '', '/g3c/login', -1, 1307),
+(4086, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'User', 'POST', 'Login', 1, '2018-02-01 13:20:28.936', 6999, NULL, NULL, '', '/g3c/login', 26, 547),
+(4087, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'User', 'GET', 'Login', 1, '2018-02-01 13:20:31.299', 7236, NULL, NULL, '', '/g3c/login', -1, 1307),
+(4088, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Console', 1, '2018-02-01 13:20:53.564', 14271, NULL, NULL, '', '/g3c/admin', -1, 989),
+(4089, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Users', 1, '2018-02-01 13:20:57.659', 6805, NULL, NULL, '', '/g3c/admin/users', -1, 522),
+(4090, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Console', 1, '2018-02-01 13:20:59.695', 6234, NULL, NULL, '', '/g3c/admin', -1, 989),
+(4091, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Properties', 1, '2018-02-01 13:21:01.951', 8561, NULL, NULL, '', '/g3c/admin/properties', -1, 522),
+(4092, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Console', 1, '2018-02-01 13:21:02.952', 6872, NULL, NULL, '', '/g3c/admin', -1, 989),
+(4093, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Properties', 1, '2018-02-01 13:21:04.465', 5706, NULL, NULL, '', '/g3c/admin/properties', -1, 522),
+(4094, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Console', 1, '2018-02-01 13:21:05.985', 6800, NULL, NULL, '', '/g3c/admin', -1, 989),
+(4095, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'User', 'POST', 'Login', 1, '2018-02-01 13:21:10.957', 80235, 4, NULL, '', '/g3c/login', 27, 141),
+(4096, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Properties', 'GET', 'Select', 1, '2018-02-01 13:21:11.061', 8860, 4, NULL, '', '/g3c/properties', -1, 1206),
+(4097, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Properties', 1, '2018-02-01 13:21:22.214', 14689, 4, NULL, '', '/g3c/admin/properties', -1, 1295),
+(4098, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Properties', 1, '2018-02-01 13:21:22.568', 24365, 4, NULL, '', '/g3c/admin/properties?v=json&=undefined', -1, 207),
+(4099, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Property', 1, '2018-02-01 13:21:25.234', 17004, 4, 4, '', '/g3c/admin/properties/4', -1, 1403),
+(4100, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Properties', 1, '2018-02-01 13:21:27.761', 8870, 4, NULL, '', '/g3c/admin/properties', -1, 1295),
+(4101, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Properties', 1, '2018-02-01 13:21:28.224', 12454, 4, NULL, '', '/g3c/admin/properties?v=json&=undefined', -1, 207),
+(4102, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Console', 1, '2018-02-01 13:21:28.465', 8224, 4, NULL, '', '/g3c/admin', -1, 1211),
+(4103, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Properties', 1, '2018-02-01 13:21:29.952', 9196, 4, NULL, '', '/g3c/admin/properties', -1, 1295),
+(4104, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Properties', 1, '2018-02-01 13:21:30.291', 20144, 4, NULL, '', '/g3c/admin/properties?v=json&=undefined', -1, 207),
+(4105, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Console', 1, '2018-02-01 13:21:44.127', 7454, 4, NULL, '', '/g3c/admin', -1, 1211),
+(4106, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Users', 1, '2018-02-01 13:21:45.197', 16610, 4, NULL, '', '/g3c/admin/users', -1, 1294),
+(4107, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Users', 1, '2018-02-01 13:21:45.573', 18924, 4, NULL, '', '/g3c/admin/users?v=json&=undefined', -1, 430);
+INSERT INTO `requests` (`id`, `ip`, `user_agent_txt`, `user_agent_hash`, `session_id`, `controller`, `method`, `action`, `in_debug`, `started_processing`, `duration`, `user_id`, `property_id`, `referer`, `request_uri`, `request_length`, `response_length`) VALUES
+(4108, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'User', 1, '2018-02-01 13:21:49.109', 15290, 4, NULL, '', '/g3c/admin/users/20', -1, 1498),
+(4109, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Users', 1, '2018-02-01 13:21:58.226', 11564, 4, NULL, '', '/g3c/admin/users', -1, 1294),
+(4110, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Users', 1, '2018-02-01 13:21:58.706', 15352, 4, NULL, '', '/g3c/admin/users?v=json&=undefined', -1, 430),
+(4111, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Users', 1, '2018-02-01 13:22:01.436', 28012, 4, NULL, '', '/g3c/admin/users?v=json&count=500', -1, 430),
+(4112, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Users', 1, '2018-02-01 13:22:01.481', 11754, 4, NULL, '', '/g3c/admin/users?v=json&count=500', -1, 430),
+(4113, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Users', 1, '2018-02-01 13:22:03.835', 12461, 4, NULL, '', '/g3c/admin/users?v=json&count=500', -1, 430),
+(4114, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'Users', 1, '2018-02-01 13:22:10.755', 11339, 4, NULL, '', '/g3c/admin/users?v=json&count=500', -1, 430),
+(4115, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'Admin', 'GET', 'User', 1, '2018-02-01 13:22:11.890', 9863, 4, NULL, '', '/g3c/admin/users/22', -1, 1502),
+(4116, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, 'c9d62afa160cdc3db96cd74db057accc', 'User', 'POST', 'Logout', 1, '2018-02-01 13:22:26.264', 17486, 4, NULL, '', '/g3c/logout', -1, 137),
+(4117, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '568cb6b64e6f29358762a81d75926306', 'User', 'GET', 'Login', 1, '2018-02-01 13:22:26.298', 18302, NULL, NULL, '', '/g3c/login', -1, 1307),
+(4118, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '568cb6b64e6f29358762a81d75926306', 'User', 'POST', 'Login', 1, '2018-02-01 13:22:31.147', 79877, NULL, NULL, '', '/g3c/login', 26, 557),
+(4119, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '568cb6b64e6f29358762a81d75926306', 'User', 'GET', 'Login', 1, '2018-02-01 13:22:33.044', 7424, NULL, NULL, '', '/g3c/login', -1, 1307),
+(4120, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '568cb6b64e6f29358762a81d75926306', 'User', 'POST', 'Login', 1, '2018-02-01 13:22:40.408', 81427, 22, NULL, '', '/g3c/login', 28, 141),
+(4121, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '568cb6b64e6f29358762a81d75926306', 'Properties', 'GET', 'Select', 1, '2018-02-01 13:22:40.515', 13645, 22, NULL, '', '/g3c/properties', -1, 1613),
+(4122, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '568cb6b64e6f29358762a81d75926306', 'Properties', 'GET', 'Select', 1, '2018-02-01 13:23:12.749', 10576, 22, NULL, '', '/g3c/properties', -1, 1616),
+(4123, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '568cb6b64e6f29358762a81d75926306', 'Properties', 'GET', 'Select', 1, '2018-02-01 13:23:17.205', 8430, 22, NULL, '', '/g3c/properties', -1, 1002),
+(4124, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '568cb6b64e6f29358762a81d75926306', 'User', 'POST', 'Logout', 1, '2018-02-01 13:23:55.864', 18666, 22, NULL, '', '/g3c/logout', -1, 137),
+(4125, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'User', 'GET', 'Login', 1, '2018-02-01 13:23:55.899', 16678, NULL, NULL, '', '/g3c/login', -1, 1307),
+(4126, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'User', 'POST', 'Login', 1, '2018-02-01 13:24:00.005', 80029, 4, NULL, '', '/g3c/login', 27, 141),
+(4127, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Properties', 'GET', 'Select', 1, '2018-02-01 13:24:00.111', 8762, 4, NULL, '', '/g3c/properties', -1, 1206),
+(4128, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Console', 1, '2018-02-01 13:24:03.962', 8349, 4, NULL, '', '/g3c/admin', -1, 1211),
+(4129, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Properties', 1, '2018-02-01 13:24:07.878', 9386, 4, NULL, '', '/g3c/admin/properties', -1, 1295),
+(4130, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Properties', 1, '2018-02-01 13:24:08.208', 12225, 4, NULL, '', '/g3c/admin/properties?v=json&=undefined', -1, 207),
+(4131, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Property', 1, '2018-02-01 13:24:08.784', 9078, 4, 5, '', '/g3c/admin/properties/5', -1, 1405),
+(4132, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'POST', 'Property', 1, '2018-02-01 13:24:12.950', 20508, 4, 5, '', '/g3c/admin/properties/5', 145, 20),
+(4133, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Property', 1, '2018-02-01 13:24:15.266', 9317, 4, 5, '', '/g3c/admin/properties/5', -1, 1404),
+(4134, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Property', 1, '2018-02-01 13:24:16.663', 14759, 4, 5, '', '/g3c/admin/properties/5', -1, 1404),
+(4135, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Console', 1, '2018-02-01 13:24:37.720', 10875, 4, NULL, '', '/g3c/admin', -1, 1211),
+(4136, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Users', 1, '2018-02-01 13:24:38.870', 10213, 4, NULL, '', '/g3c/admin/users', -1, 1294),
+(4137, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Users', 1, '2018-02-01 13:24:39.183', 13702, 4, NULL, '', '/g3c/admin/users?v=json&=undefined', -1, 430),
+(4138, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'User', 1, '2018-02-01 13:24:40.265', 10108, 4, NULL, '', '/g3c/admin/users/18', -1, 1507),
+(4139, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'UserProperties', 1, '2018-02-01 13:24:42.531', 15999, 4, NULL, '', '/g3c/admin/users/18/properties', -1, 1979),
+(4140, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'UserProperties', 1, '2018-02-01 13:24:42.857', 21234, 4, NULL, '', '/g3c/admin/users/18/properties?v=json&=undefined', -1, 62),
+(4141, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'User', 1, '2018-02-01 13:24:44.414', 11574, 4, NULL, '', '/g3c/admin/users/18', -1, 1507),
+(4142, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Users', 1, '2018-02-01 13:24:45.583', 12426, 4, NULL, '', '/g3c/admin/users', -1, 1294),
+(4143, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Users', 1, '2018-02-01 13:24:46.006', 21286, 4, NULL, '', '/g3c/admin/users?v=json&=undefined', -1, 430),
+(4144, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'User', 1, '2018-02-01 13:24:47.812', 8991, 4, NULL, '', '/g3c/admin/users/4', -1, 1501),
+(4145, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'UserProperties', 1, '2018-02-01 13:24:48.906', 11773, 4, NULL, '', '/g3c/admin/users/4/properties', -1, 1975),
+(4146, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'UserProperties', 1, '2018-02-01 13:24:49.221', 14236, 4, NULL, '', '/g3c/admin/users/4/properties?v=json&=undefined', -1, 245),
+(4147, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Property', 1, '2018-02-01 13:24:51.157', 9651, 4, 4, '', '/g3c/admin/properties/4', -1, 1403),
+(4148, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'UserProperties', 1, '2018-02-01 13:24:53.506', 14210, 4, NULL, '', '/g3c/admin/users/4/properties', -1, 1976),
+(4149, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'UserProperties', 1, '2018-02-01 13:24:53.917', 17199, 4, NULL, '', '/g3c/admin/users/4/properties?v=json&=undefined', -1, 245),
+(4150, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Property', 1, '2018-02-01 13:24:54.767', 9392, 4, 4, '', '/g3c/admin/properties/4', -1, 1403),
+(4151, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'POST', 'Property', 1, '2018-02-01 13:24:57.531', 19639, 4, 4, '', '/g3c/admin/properties/4', 146, 20),
+(4152, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Property', 1, '2018-02-01 13:24:59.147', 11123, 4, 4, '', '/g3c/admin/properties/4', -1, 1403),
+(4153, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Console', 1, '2018-02-01 13:25:03.999', 8756, 4, NULL, '', '/g3c/admin', -1, 1211),
+(4154, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Properties', 1, '2018-02-01 13:25:05.910', 9480, 4, NULL, '', '/g3c/admin/properties', -1, 1295),
+(4155, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Properties', 1, '2018-02-01 13:25:06.240', 12227, 4, NULL, '', '/g3c/admin/properties?v=json&=undefined', -1, 207),
+(4156, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Property', 1, '2018-02-01 13:25:08.841', 10375, 4, 4, '', '/g3c/admin/properties/4', -1, 1403),
+(4157, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Properties', 1, '2018-02-01 13:25:11.243', 9614, 4, NULL, '', '/g3c/admin/properties', -1, 1295),
+(4158, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Properties', 1, '2018-02-01 13:25:11.699', 11092, 4, NULL, '', '/g3c/admin/properties?v=json&=undefined', -1, 207),
+(4159, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Property', 1, '2018-02-01 13:25:13.707', 10480, 4, 4, '', '/g3c/admin/properties/4', -1, 1403),
+(4160, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'POST', 'Property', 1, '2018-02-01 13:25:25.221', 20463, 4, 4, '', '/g3c/admin/properties/4', 151, 20),
+(4161, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Property', 1, '2018-02-01 13:37:39.370', 30369, 4, 4, '', '/g3c/admin/properties/4', -1, 1413),
+(4162, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Properties', 'GET', 'Select', 1, '2018-02-01 13:37:46.852', 9896, 4, NULL, '', '/g3c/properties', -1, 1216),
+(4163, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Property', 1, '2018-02-01 13:37:48.700', 11193, 4, 4, '', '/g3c/admin/properties/4', -1, 1413),
+(4164, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Property', 1, '2018-02-01 13:39:35.432', 11155, 4, 4, '', '/g3c/admin/properties/4', -1, 1420),
+(4165, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'Admin', 'GET', 'Console', 1, '2018-02-01 13:39:45.665', 10360, 4, NULL, '', '/g3c/admin', -1, 1227),
+(4166, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', '', 'GET', '', 1, '2018-02-01 16:24:11.707', 37961, 4, NULL, '', '/g3c/', -1, 138),
+(4167, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'User', 'GET', 'Account', 1, '2018-02-01 16:24:11.762', 28371, 4, NULL, '', '/g3c/account', -1, 1575),
+(4168, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '19a6c7471986a0f5e691f465cc26bdb8', 'User', 'POST', 'Logout', 1, '2018-02-01 16:24:17.424', 16474, 4, NULL, '', '/g3c/logout', -1, 137),
+(4169, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '3d6baddf6bf0b6393a72c2f924fcafa0', 'User', 'GET', 'Login', 1, '2018-02-01 16:24:17.458', 24914, NULL, NULL, '', '/g3c/login', -1, 1307),
+(4170, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '3d6baddf6bf0b6393a72c2f924fcafa0', 'User', 'GET', 'Join', 1, '2018-02-01 16:24:19.069', 14549, NULL, NULL, '', '/g3c/join', -1, 1302),
+(4171, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '3d6baddf6bf0b6393a72c2f924fcafa0', 'User', 'GET', 'Join', 1, '2018-02-01 16:24:25.308', 14869, NULL, NULL, '', '/g3c/join', -1, 1362),
+(4172, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'User', 'GET', 'ConnectionPage', 1, '2018-02-11 12:24:21.345', 40019, NULL, NULL, '', '/g3c/index.php?c=User&a=ConnectionPage', -1, -1),
+(4173, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', '', 'GET', '', 1, '2018-02-11 12:24:25.475', 6261, NULL, NULL, '', '/g3c/', -1, 137),
+(4174, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'User', 'GET', 'Login', 1, '2018-02-11 12:24:25.502', 13007, NULL, NULL, '', '/g3c/login', -1, 1307),
+(4175, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'User', 'POST', 'Login', 1, '2018-02-11 12:24:32.726', 93302, 4, NULL, '', '/g3c/login', 40, 141),
+(4176, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'Select', 1, '2018-02-11 12:24:32.843', 28233, 4, NULL, '', '/g3c/properties', -1, 1271),
+(4177, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'Dashboard', 1, '2018-02-11 12:24:34.654', 63246, 4, 1, '', '/g3c/properties/1', -1, 1307),
+(4178, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Rooms', 'GET', 'Rooms', 1, '2018-02-11 12:24:37.256', 22654, 4, 1, '', '/g3c/properties/1/rooms', -1, 2038),
+(4179, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Rooms', 'GET', 'Room', 1, '2018-02-11 12:24:38.975', 30449, 4, 1, '', '/g3c/properties/1/rooms/1', -1, 1241),
+(4180, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Sensorstats', 'GET', 'Selectsensor', 1, '2018-02-11 12:24:40.467', 35208, 4, 1, '', '/g3c/properties/1/rooms/1/stats', -1, 1190),
+(4181, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'Dashboard', 1, '2018-02-11 12:24:43.802', 26363, 4, 1, '', '/g3c/properties/1', -1, 1307),
+(4182, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'Property', 1, '2018-02-11 12:24:45.104', 15951, 4, 1, '', '/g3c/properties/1/settings', -1, 1553),
+(4183, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'POST', 'RemoveUser', 1, '2018-02-11 12:25:08.871', 21009, 4, 1, '', '/g3c/properties/1/removeuser', 10, 149),
+(4184, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'Property', 1, '2018-02-11 12:25:08.908', 9112, 4, 1, '', '/g3c/properties/1/settings', -1, 1528),
+(4185, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'POST', 'AddUser', 1, '2018-02-11 12:25:13.226', 21977, 4, 1, '', '/g3c/properties/1/adduser', 17, 149),
+(4186, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'Property', 1, '2018-02-11 12:25:13.272', 8785, 4, 1, '', '/g3c/properties/1/settings', -1, 1553),
+(4187, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Peripherals', 'GET', 'List', 1, '2018-02-11 12:25:14.916', 58397, 4, 1, '', '/g3c/properties/1/peripherals', -1, 4182),
+(4188, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Peripherals', 'POST', 'Remove', 1, '2018-02-11 12:25:17.090', 19937, 4, 1, '', '/g3c/properties/1/peripherals/02c7de4f-5bea-4694-86ba-90116acc8d19/remove', 50, 151),
+(4189, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Peripherals', 'GET', 'List', 1, '2018-02-11 12:25:17.128', 42283, 4, 1, '', '/g3c/properties/1/peripherals', -1, 4136),
+(4190, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'Dashboard', 1, '2018-02-11 12:25:19.339', 33384, 4, 1, '', '/g3c/properties/1', -1, 1307),
+(4191, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Rooms', 'GET', 'Rooms', 1, '2018-02-11 12:25:21.033', 12923, 4, 1, '', '/g3c/properties/1/rooms', -1, 2038),
+(4192, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Peripherals', 'GET', 'List', 1, '2018-02-11 12:25:22.803', 43388, 4, 1, '', '/g3c/properties/1/peripherals', -1, 4136),
+(4193, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'Dashboard', 1, '2018-02-11 12:25:24.856', 27199, 4, 1, '', '/g3c/properties/1', -1, 1307),
+(4194, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Peripherals', 'GET', 'List', 1, '2018-02-11 12:25:26.632', 47815, 4, 1, '', '/g3c/properties/1/peripherals', -1, 4136),
+(4195, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Rooms', 'GET', 'Rooms', 1, '2018-02-11 12:25:27.920', 11710, 4, 1, '', '/g3c/properties/1/rooms', -1, 2038),
+(4196, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Rooms', 'POST', 'Create', 1, '2018-02-11 12:25:36.218', 19313, 4, 1, '', '/g3c/properties/1/rooms/create', 22, 20),
+(4197, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Rooms', 'GET', 'Rooms', 1, '2018-02-11 12:25:36.250', 10097, 4, 1, '', '/g3c/properties/1/rooms', -1, 2075),
+(4198, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Rooms', 'GET', 'Room', 1, '2018-02-11 12:25:39.104', 11323, 4, 1, '', '/g3c/properties/1/rooms/40', -1, 1249),
+(4199, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Peripherals', 'GET', 'List', 1, '2018-02-11 12:25:44.299', 47219, 4, 1, '', '/g3c/properties/1/peripherals', -1, 4153),
+(4200, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'FAQ', 'GET', 'FAQ', 1, '2018-02-11 12:25:47.802', 21860, 4, NULL, '', '/g3c/faq', -1, 1063),
+(4201, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Admin', 'GET', 'Console', 1, '2018-02-11 12:25:57.163', 20923, 4, NULL, '', '/g3c/admin', -1, 1263),
+(4202, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Admin', 'GET', 'Users', 1, '2018-02-11 12:25:58.944', 16021, 4, NULL, '', '/g3c/admin/users', -1, 1352),
+(4203, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Admin', 'GET', 'Users', 1, '2018-02-11 12:25:59.270', 18049, 4, NULL, '', '/g3c/admin/users?v=json&=undefined', -1, 430),
+(4204, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Admin', 'GET', 'User', 1, '2018-02-11 12:26:02.052', 15985, 4, NULL, '', '/g3c/admin/users/20', -1, 1549),
+(4205, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Admin', 'POST', 'User', 1, '2018-02-11 12:26:05.495', 20963, 4, NULL, '', '/g3c/admin/users/20', 152, 20),
+(4206, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Admin', 'POST', 'User', 1, '2018-02-11 12:26:09.601', 19840, 4, NULL, '', '/g3c/admin/users/20', 143, 20),
+(4207, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Admin', 'POST', 'User', 1, '2018-02-11 12:26:15.681', 22974, 4, NULL, '', '/g3c/admin/users/20', 157, 20),
+(4208, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Admin', 'GET', 'UserProperties', 1, '2018-02-11 12:26:19.302', 17531, 4, NULL, '', '/g3c/admin/users/20/properties', -1, 2022),
+(4209, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Admin', 'GET', 'UserProperties', 1, '2018-02-11 12:26:20.641', 14819, 4, NULL, '', '/g3c/admin/users/20/properties?v=json&=undefined', -1, 62),
+(4210, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Admin', 'GET', 'User', 1, '2018-02-11 12:26:22.523', 8620, 4, NULL, '', '/g3c/admin/users/20', -1, 1551),
+(4211, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Admin', 'GET', 'Users', 1, '2018-02-11 12:26:23.697', 12362, 4, NULL, '', '/g3c/admin/users', -1, 1352),
+(4212, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Admin', 'GET', 'Users', 1, '2018-02-11 12:26:24.025', 16881, 4, NULL, '', '/g3c/admin/users?v=json&=undefined', -1, 435),
+(4213, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Admin', 'GET', 'User', 1, '2018-02-11 12:26:27.253', 9105, 4, NULL, '', '/g3c/admin/users/4', -1, 1553),
+(4214, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', '', 'GET', '', 1, '2018-02-11 12:28:29.015', 5468, 4, NULL, '', '/g3c/', -1, 138),
+(4215, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'User', 'GET', 'Account', 1, '2018-02-11 12:28:29.036', 15485, 4, NULL, '', '/g3c/account', -1, 1575),
+(4216, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'User', 'POST', 'DeleteUser', 1, '2018-02-11 12:28:34.620', 41023, 4, NULL, '', '/g3c/account/delete', -1, 1921),
+(4217, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'User', 'GET', 'Account', 1, '2018-02-11 12:28:50.614', 9341, 4, NULL, '', '/g3c/account', -1, 1575),
+(4218, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'User', 'POST', 'DeleteUser', 1, '2018-02-11 12:28:57.746', 18307, 4, NULL, '', '/g3c/account/delete', -1, 1921),
+(4219, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', '', 'GET', '', 1, '2018-02-11 12:30:13.891', 7811, 4, NULL, '', '/g3c/', -1, 138),
+(4220, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'User', 'GET', 'Account', 1, '2018-02-11 12:30:13.916', 9609, 4, NULL, '', '/g3c/account', -1, 1507),
+(4221, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'Select', 1, '2018-02-11 12:30:17.630', 8737, 4, NULL, '', '/g3c/properties', -1, 1003),
+(4222, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'New', 1, '2018-02-11 12:30:20.091', 16706, 4, NULL, '', '/g3c/properties/new', -1, 1005),
+(4223, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'Select', 1, '2018-02-11 12:30:24.336', 8413, 4, NULL, '', '/g3c/properties', -1, 1003),
+(4224, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'New', 1, '2018-02-11 12:30:33.184', 9008, 4, NULL, '', '/g3c/properties/new', -1, 1005),
+(4225, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'POST', 'New', 1, '2018-02-11 12:30:43.276', 25712, 4, NULL, '', '/g3c/properties/new', 48, 144),
+(4226, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'Dashboard', 1, '2018-02-11 12:30:43.318', 8790, 4, 6, '', '/g3c/properties/6', -1, 1138),
+(4227, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'Dashboard', 1, '2018-02-11 12:30:49.083', 7200, 4, 5, '', '/g3c/properties/5', -1, -1),
+(4228, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'Dashboard', 1, '2018-02-11 12:30:51.364', 6120, 4, 4, '', '/g3c/properties/4', -1, -1),
+(4229, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'Dashboard', 1, '2018-02-11 12:31:00.134', 9709, 4, 6, '', '/g3c/properties/6', -1, 1138),
+(4230, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'Dashboard', 1, '2018-02-11 12:32:32.708', 6787, 4, 3, '', '/g3c/properties/3', -1, -1),
+(4231, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'Properties', 'GET', 'Dashboard', 1, '2018-02-11 12:32:36.049', 8595, 4, 6, '', '/g3c/properties/6', -1, 1138),
+(4232, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '2f05ec6c5a14a6358e514844a5862492', 'User', 'POST', 'Logout', 1, '2018-02-11 12:32:37.718', 18749, 4, NULL, '', '/g3c/logout', -1, 137),
+(4233, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '0f63adb7e2d7e527c9fa614817e28136', 'User', 'GET', 'Login', 1, '2018-02-11 12:32:37.753', 19190, NULL, NULL, '', '/g3c/login', -1, 1307),
+(4234, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '0f63adb7e2d7e527c9fa614817e28136', 'Properties', 'GET', 'Dashboard', 1, '2018-02-11 12:32:43.325', 6463, NULL, 1, '', '/g3c/properties/1', -1, -1),
+(4235, '::1', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.81 Safari/537.36', 0x3364366361663038643663643738316430653265663563643332633334376365, '0f63adb7e2d7e527c9fa614817e28136', 'Admin', 'GET', 'User', 1, '2018-02-11 12:41:03.747', 31776, NULL, NULL, '', '/g3c/admin/users/4', -1, 531);
 
 -- --------------------------------------------------------
 
@@ -4130,11 +4297,8 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`id`, `user_id`, `property_id`, `creation_date`, `last_updated`) VALUES
-(1, 4, 1, '0000-00-00 00:00:00.000', '0000-00-00 00:00:00.000'),
-(8, 4, 3, '2018-01-27 17:14:17.504', '2018-01-27 17:14:17.504'),
-(9, 4, 4, '2018-01-27 17:15:35.894', '2018-01-27 17:15:35.894'),
-(10, 4, 5, '2018-01-27 17:24:17.694', '2018-01-27 17:24:17.694'),
-(11, 14, 1, '2018-01-27 20:00:40.195', '2018-01-27 20:00:40.195');
+(12, 14, 1, '2018-02-11 12:25:13.235', '2018-02-11 12:25:13.235'),
+(13, 4, 6, '2018-02-11 12:30:43.292', '2018-02-11 12:30:43.292');
 
 -- --------------------------------------------------------
 
@@ -4190,7 +4354,8 @@ INSERT INTO `rooms` (`id`, `property_id`, `name`, `creation_date`, `last_updated
 (36, 1, 'Patate', '2018-01-27 12:27:58.354', '2018-01-27 12:27:58.354'),
 (37, 1, 'Patate', '2018-01-27 12:28:08.208', '2018-01-27 12:28:08.208'),
 (38, 1, 'Patate', '2018-01-27 12:30:03.729', '2018-01-27 12:30:03.729'),
-(39, 1, 'Salle de séjour', '2018-01-28 16:41:01.306', '2018-01-28 16:41:01.306');
+(39, 1, 'Salle de séjour', '2018-01-28 16:41:01.306', '2018-01-28 16:41:01.306'),
+(40, 1, 'Chambre de Yaliss', '2018-02-11 12:25:36.226', '2018-02-11 12:25:36.226');
 
 -- --------------------------------------------------------
 
@@ -4200,6 +4365,7 @@ INSERT INTO `rooms` (`id`, `property_id`, `name`, `creation_date`, `last_updated
 
 CREATE TABLE `sensors` (
   `id` int(11) NOT NULL,
+  `hardware_code` int(11) NOT NULL,
   `measure_type_id` int(11) NOT NULL,
   `last_measure_id` int(11) DEFAULT NULL,
   `peripheral_uuid` varchar(36) COLLATE utf8_unicode_ci NOT NULL,
@@ -4288,6 +4454,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled
 ('0ee0bd41b27e8fba82e56fe09cfd5484', NULL, '', '2018-01-12 13:34:52.292', '2018-01-19 13:34:52.292', 0, '2018-01-12 13:34:52.292'),
 ('0f4588dde57415d2a455f9732e2b51d3', NULL, '', '2018-01-22 16:35:12.046', '2018-01-29 16:35:12.046', 0, '2018-01-22 16:35:12.047'),
 ('0f4b9ede16273eb72362f4339c326bcc', NULL, '', '2017-12-13 22:32:07.602', '2017-12-20 22:32:07.602', 0, '2017-12-13 22:32:07.603'),
+('0f63adb7e2d7e527c9fa614817e28136', NULL, '', '2018-02-11 12:32:37.772', '2018-02-18 12:32:37.772', 0, '2018-02-11 12:32:37.772'),
 ('10638add63686e01211c1e3e53a8f70b', NULL, '', '2018-01-09 16:45:18.692', '2018-01-16 16:45:18.692', 0, '2018-01-09 16:45:18.693'),
 ('109804e8176c0b475499bcae895ef677', NULL, '', '2018-01-24 00:15:32.243', '2018-01-31 00:15:32.243', 0, '2018-01-24 00:15:32.244'),
 ('111dc68493f853d22560cf418348ae77', NULL, '', '2018-01-28 01:55:15.650', '2018-02-04 01:55:15.650', 0, '2018-01-28 01:55:15.650'),
@@ -4315,6 +4482,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled
 ('17cb8dead43bfee49463546a3ba61993', NULL, '', '2018-01-09 16:40:34.483', '2018-01-16 16:40:34.483', 0, '2018-01-09 16:40:34.484'),
 ('186878d3db03ff134f2cae46e6a18f53', NULL, '', '2018-01-22 16:34:47.292', '2018-01-29 16:34:47.292', 0, '2018-01-22 16:34:47.292'),
 ('18cc4f680b57ab6b96557ffe61463dc1', NULL, '', '2018-01-31 18:45:31.185', '2018-02-07 18:45:31.185', 0, '2018-01-31 18:45:31.185'),
+('19a6c7471986a0f5e691f465cc26bdb8', NULL, '', '2018-02-01 13:23:55.915', '2018-02-08 13:23:55.915', 1, '2018-02-01 16:24:17.464'),
 ('1a10d7265e4e4ef31e5c89a130004af9', NULL, '', '2018-01-06 00:12:57.012', '2018-01-13 00:12:57.012', 0, '2018-01-06 00:12:57.012'),
 ('1a194d41b1f4b0e7408856948030a475', NULL, '', '0000-00-00 00:00:00.000', '0000-00-00 00:00:00.000', 0, '0000-00-00 00:00:00.000'),
 ('1a1d5e503917576ff6e61fc56e9e616e', NULL, '', '2018-01-27 21:59:07.265', '2018-02-03 21:59:07.265', 0, '2018-01-27 21:59:07.265'),
@@ -4384,6 +4552,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled
 ('2e3569064b6929b7cbe812f6f823d5b6', NULL, '', '2018-01-22 16:33:01.592', '2018-01-29 16:33:01.592', 0, '2018-01-22 16:33:01.593'),
 ('2e92d6baa7dd26353b257725386e55b0', NULL, '', '2018-01-16 09:51:28.405', '2018-01-23 09:51:28.405', 0, '2018-01-16 09:51:28.405'),
 ('2eb58fb555ea2931fb2b72dce86b49cf', NULL, '', '2018-01-28 01:13:14.343', '2018-02-04 01:13:14.343', 0, '2018-01-28 01:13:14.344'),
+('2f05ec6c5a14a6358e514844a5862492', NULL, '', '2018-02-11 12:24:21.385', '2018-02-18 12:24:21.385', 1, '2018-02-11 12:32:37.757'),
 ('2f0c171262c411a60c283db7f05a74e6', NULL, '', '2018-01-06 00:22:23.279', '2018-01-13 00:22:23.279', 0, '2018-01-06 00:22:23.279'),
 ('2f33d3a4c672a6c5672c1ea4f7a6f02c', NULL, '', '2018-01-16 09:15:58.518', '2018-01-23 09:15:58.518', 0, '2018-01-16 09:15:58.518'),
 ('2f7c6fcdfce439bcbae42e306a9efbd0', NULL, '', '2018-01-05 23:41:12.026', '2018-01-12 23:41:12.026', 0, '2018-01-05 23:41:12.027'),
@@ -4411,6 +4580,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled
 ('34351e10f0c3c20be930414266915459', NULL, '', '0000-00-00 00:00:00.000', '0000-00-00 00:00:00.000', 0, '0000-00-00 00:00:00.000'),
 ('34a30146f79be8684b4db0e0b9dd7f8d', NULL, '', '2018-01-06 00:37:36.668', '2018-01-13 00:37:36.668', 0, '2018-01-06 00:37:36.668'),
 ('34a36bae686b8bd7c22d7d81340cde14', NULL, '', '2018-01-05 22:58:04.236', '2018-01-12 22:58:04.236', 0, '2018-01-05 22:58:04.236'),
+('34ad2b634508134588b87034da6f3e88', NULL, '', '2018-02-01 13:12:31.796', '2018-02-08 13:12:31.796', 1, '2018-02-01 13:20:25.318'),
 ('353b065982f84185e7c020d6befbedfa', NULL, '', '2018-01-11 23:12:55.798', '2018-01-18 23:12:55.798', 0, '2018-01-11 23:12:55.798'),
 ('3540f71a682e26605e51e4d59ad16506', NULL, '', '2018-01-06 02:00:53.713', '2018-01-13 02:00:53.713', 0, '2018-01-06 02:00:53.713'),
 ('35787c833413232c66245b3f93b8a65f', NULL, '', '2018-01-09 16:00:14.057', '2018-01-16 16:00:14.057', 0, '2018-01-09 16:00:14.057'),
@@ -4437,6 +4607,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled
 ('3bb748a4d756a33fe2522179b7e8aef8', NULL, '', '2018-01-05 23:48:05.418', '2018-01-12 23:48:05.418', 0, '2018-01-05 23:48:05.418'),
 ('3d2e4e6110ef48fce47029ddb3b7ee53', NULL, '', '2018-01-27 21:58:58.506', '2018-02-03 21:58:58.506', 0, '2018-01-27 21:58:58.506'),
 ('3d5ea77b10c20a19c585487271ec653f', NULL, '', '2018-01-27 21:59:01.897', '2018-02-03 21:59:01.897', 0, '2018-01-27 21:59:01.898'),
+('3d6baddf6bf0b6393a72c2f924fcafa0', NULL, '', '2018-02-01 16:24:17.483', '2018-02-08 16:24:17.483', 0, '2018-02-01 16:24:17.483'),
 ('3d7acc3fe178187de91123c66fb262eb', NULL, '', '2018-01-11 12:59:36.195', '2018-01-18 12:59:36.195', 0, '2018-01-11 12:59:36.195'),
 ('3d921cc83aee16c497bb09dfb1fc8e83', NULL, '', '0000-00-00 00:00:00.000', '0000-00-00 00:00:00.000', 0, '0000-00-00 00:00:00.000'),
 ('3e3a74c5e06ef4b448eae99ff6a44896', NULL, '', '2018-01-05 23:50:51.564', '2018-01-12 23:50:51.564', 0, '2018-01-05 23:50:51.565'),
@@ -4521,6 +4692,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled
 ('55dcdd53b577bb846f2fee2082ba7f11', NULL, '', '2018-01-22 16:29:19.729', '2018-01-29 16:29:19.729', 0, '2018-01-22 16:29:19.729'),
 ('563a1836a3170e79b6ad1f900520174a', NULL, '', '0000-00-00 00:00:00.000', '0000-00-00 00:00:00.000', 0, '0000-00-00 00:00:00.000'),
 ('564a0d2ced4961a75b5998f44a8bcb78', NULL, '', '2018-01-28 01:08:56.939', '2018-02-04 01:08:56.939', 0, '2018-01-28 01:08:56.940'),
+('568cb6b64e6f29358762a81d75926306', NULL, '', '2018-02-01 13:22:26.316', '2018-02-08 13:22:26.316', 1, '2018-02-01 13:23:55.903'),
 ('56ec1d6f6bd4fb5139c7d06107f6191f', NULL, 'user_id|i:4;', '2017-12-29 00:06:09.379', '2018-01-05 00:06:09.379', 0, '2017-12-29 00:08:39.873'),
 ('573ec0a01310764d43e35d5381202a3d', NULL, '', '2018-01-28 16:15:19.814', '2018-02-04 16:15:19.814', 0, '2018-01-28 16:15:19.814'),
 ('57ce49f7be0be3c43bc8aec4a97a964d', NULL, '', '2018-01-18 11:01:25.429', '2018-01-25 11:01:25.429', 0, '2018-01-18 11:01:25.429'),
@@ -4603,14 +4775,14 @@ INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled
 ('6db9e96159821953b49cf63bcc70ce4e', NULL, '', '2018-01-31 16:41:54.652', '2018-02-07 16:41:54.652', 0, '2018-01-31 16:41:54.652'),
 ('6e90bde0b9ad71c094bb88d303f0470c', NULL, '', '2018-01-27 23:08:36.602', '2018-02-03 23:08:36.602', 0, '2018-01-27 23:08:36.602'),
 ('6eb4524acf2d422b249c501d79f2475c', NULL, '', '2018-01-16 08:57:16.992', '2018-01-23 08:57:16.992', 0, '2018-01-16 08:57:16.992'),
-('6f0ec90592ec2ec324b9bd70b06419e7', NULL, '', '2018-01-16 09:11:53.866', '2018-01-23 09:11:53.866', 0, '2018-01-16 09:11:53.866'),
+('6f0ec90592ec2ec324b9bd70b06419e7', NULL, '', '2018-01-16 09:11:53.866', '2018-01-23 09:11:53.866', 0, '2018-01-16 09:11:53.866');
+INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled`, `last_updated`) VALUES
 ('6f1eb7dda580fc7f512d32d6ad7b94b4', NULL, '', '2018-01-06 00:50:59.701', '2018-01-13 00:50:59.701', 0, '2018-01-06 00:50:59.701'),
 ('6f999707ff620682e24ff0d01ddf10c4', NULL, '', '2018-01-09 16:00:12.739', '2018-01-16 16:00:12.739', 0, '2018-01-09 16:00:12.740'),
 ('6ff6e1c91f32aad9b42e9050c390d654', NULL, '', '2018-01-05 23:50:47.474', '2018-01-12 23:50:47.474', 0, '2018-01-05 23:50:47.474'),
 ('7053545d65cf9fa41f88f629553ea5c4', NULL, '', '0000-00-00 00:00:00.000', '0000-00-00 00:00:00.000', 0, '0000-00-00 00:00:00.000'),
 ('7094accd9134572c348769307373df1d', NULL, '', '2018-01-22 15:34:20.327', '2018-01-29 15:34:20.327', 0, '2018-01-22 15:34:20.327'),
-('709cfd682727d6f07ae55269a7a88be3', NULL, '', '2018-01-15 10:00:12.095', '2018-01-22 10:00:12.095', 0, '2018-01-15 10:00:12.095');
-INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled`, `last_updated`) VALUES
+('709cfd682727d6f07ae55269a7a88be3', NULL, '', '2018-01-15 10:00:12.095', '2018-01-22 10:00:12.095', 0, '2018-01-15 10:00:12.095'),
 ('70c571a5c84ddde80ffdb5ea6b4d2c32', NULL, '', '2018-01-31 16:39:36.888', '2018-02-07 16:39:36.888', 0, '2018-01-31 16:39:36.888'),
 ('70f4b40883c387d19cacf984229c09b3', NULL, '', '2018-01-05 23:36:45.010', '2018-01-12 23:36:45.010', 0, '2018-01-05 23:36:45.011'),
 ('717b14fe09b8b4df780213773397a4c5', NULL, '', '2018-01-09 16:34:02.562', '2018-01-16 16:34:02.562', 0, '2018-01-09 16:34:02.562'),
@@ -4904,6 +5076,7 @@ INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled
 ('c945ba0681d38d8575b27b708d1d3a9a', NULL, '', '2018-01-06 00:13:33.110', '2018-01-13 00:13:33.110', 0, '2018-01-06 00:13:33.111'),
 ('c9510ed8292b6b4d40d858ad3275d138', NULL, '', '2018-01-27 21:59:10.214', '2018-02-03 21:59:10.214', 0, '2018-01-27 21:59:10.214'),
 ('c9c8811b876a771882c5431da2c33e52', NULL, '', '2018-01-11 12:59:32.178', '2018-01-18 12:59:32.178', 0, '2018-01-11 12:59:32.179'),
+('c9d62afa160cdc3db96cd74db057accc', NULL, '', '2018-02-01 13:20:25.333', '2018-02-08 13:20:25.333', 1, '2018-02-01 13:22:26.303'),
 ('ca23eb3d5cdaf98d888b3ff992119645', NULL, '', '2018-01-09 16:42:50.017', '2018-01-16 16:42:50.017', 0, '2018-01-09 16:42:50.017'),
 ('ca5e7b0dc22d9448de76723de3047a74', NULL, '', '2018-01-28 01:15:11.588', '2018-02-04 01:15:11.588', 0, '2018-01-28 01:15:11.588'),
 ('ca9cc9822b0f62b2691f7334a2b99a1c', NULL, '', '2018-01-06 01:08:03.670', '2018-01-13 01:08:03.670', 0, '2018-01-06 01:08:03.671'),
@@ -4986,15 +5159,15 @@ INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled
 ('e3abd1a16fa5e11264f43e248265f95a', NULL, '', '2018-01-08 09:03:56.511', '2018-01-15 09:03:56.511', 0, '2018-01-08 09:03:56.511'),
 ('e3f61909df03553ccfcd3f24d6ce3f30', NULL, '', '2018-01-06 00:50:58.388', '2018-01-13 00:50:58.388', 0, '2018-01-06 00:50:58.388'),
 ('e43b3760e8d26b4bdc6a64d9c0a9268e', NULL, '', '2018-01-06 00:55:13.243', '2018-01-13 00:55:13.243', 0, '2018-01-06 00:55:13.243'),
-('e454e45eddd99b3ad5c3d27fb3dbe5f1', NULL, '', '2018-01-05 23:48:57.469', '2018-01-12 23:48:57.469', 0, '2018-01-05 23:48:57.469'),
+('e454e45eddd99b3ad5c3d27fb3dbe5f1', NULL, '', '2018-01-05 23:48:57.469', '2018-01-12 23:48:57.469', 0, '2018-01-05 23:48:57.469');
+INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled`, `last_updated`) VALUES
 ('e510c9bd50f3b6d7df7eb5a5f8621234', NULL, '', '2018-01-05 23:04:58.643', '2018-01-12 23:04:58.643', 0, '2018-01-05 23:04:58.643'),
 ('e53e1cb931b274b4fe1319a90d982a33', NULL, '', '2018-01-27 23:09:25.606', '2018-02-03 23:09:25.606', 0, '2018-01-27 23:09:25.606'),
 ('e53e303e102cb52b6e71106d112e69ce', NULL, '', '2018-01-06 00:17:21.597', '2018-01-13 00:17:21.597', 0, '2018-01-06 00:17:21.597'),
 ('e559bb70b12c0b89e78adee7cd23debd', NULL, '', '2018-01-06 00:28:56.138', '2018-01-13 00:28:56.138', 0, '2018-01-06 00:28:56.138'),
 ('e61da1f0f3a7d7875ffa868d399d347e', NULL, '', '2018-01-27 21:47:48.205', '2018-02-03 21:47:48.205', 0, '2018-01-27 21:47:48.206'),
 ('e63d39ed8c58ed97639da5558b22edf1', NULL, '', '2018-01-06 00:09:37.032', '2018-01-13 00:09:37.032', 0, '2018-01-06 00:09:37.032'),
-('e6485c2cb3ef511f3e76480ab6ab782e', NULL, '', '2018-01-28 01:48:06.650', '2018-02-04 01:48:06.650', 0, '2018-01-28 01:48:06.650');
-INSERT INTO `sessions` (`id`, `user_id`, `value`, `started`, `expiry`, `canceled`, `last_updated`) VALUES
+('e6485c2cb3ef511f3e76480ab6ab782e', NULL, '', '2018-01-28 01:48:06.650', '2018-02-04 01:48:06.650', 0, '2018-01-28 01:48:06.650'),
 ('e6caef55e3382f9b6165248b774a577b', NULL, '', '2018-01-22 15:35:14.103', '2018-01-29 15:35:14.103', 0, '2018-01-22 15:35:14.103'),
 ('e72dfe65d75349301616bdae7db6f8a5', NULL, '', '2018-01-28 16:15:53.509', '2018-02-04 16:15:53.509', 0, '2018-01-28 16:15:53.510'),
 ('e7812b7ea5ebf3dbdea564f357970b72', NULL, '', '2018-01-06 00:16:30.309', '2018-01-13 00:16:30.309', 0, '2018-01-06 00:16:30.309'),
@@ -5137,7 +5310,8 @@ INSERT INTO `users` (`id`, `display`, `nick`, `birth_date`, `creation_date`, `em
 (17, 'Le démon 666', 'bryanau6', NULL, '2018-01-19 12:54:07.634', 'bbbb5@b.fr', '$2y$10$wkLPk4ZOKFLpiGEUyT9xxugqkI.5o4bF7mSAAXi6BDvzSrleOkpgK', '0145771987', 0, '2018-01-28 16:15:53.498'),
 (18, 'Mr. 7ème Ciel', 'bryanau7', NULL, '2018-01-19 12:54:32.967', 'bbbb6@b.fr', '$2y$10$.eJx1hNQYl3TdSFj77OKlOzJo9NYzNJzPfCvKBRyGPKHx9Epk0hOK', '0145771987', 0, '2018-01-28 16:15:46.842'),
 (19, 'Le 8ème Bryan', 'bryanau8', NULL, '2018-01-19 12:55:22.896', 'bbbb7@b.fr', '$2y$10$mcsRmmPRvz61IK9w868ItObeioQQR38dGtQKo1ZjGFzcfyj7umH..', '0145771987', 0, '2018-01-28 16:15:30.083'),
-(20, 'Bryan Au', 'bryanau9', NULL, '2018-01-19 12:55:48.849', 'bbbb8@b.fr', '$2y$10$m5qti0PFbV3rG4eE2wJhlOnM2JwyNe0x5bNjBbp6aYLD25F/XnRsu', '0145771987', 0, '2018-01-28 01:48:31.601');
+(20, 'Bryan Au 3', 'bau3', NULL, '2018-01-19 12:55:48.849', 'patate@patate.com', '$2y$10$m5qti0PFbV3rG4eE2wJhlOnM2JwyNe0x5bNjBbp6aYLD25F/XnRsu', '0145771987', 0, '2018-02-11 12:26:15.691'),
+(22, 'Alexandre Pierre-Jean', 'apjaph', NULL, '2018-02-01 13:19:47.714', 'apj@apj.fr', '$2y$10$dQTwJlAEXKXuAaShiq1eAetNW0.HhSwUx3o/9BKaptUUA1Wr5YZ8q', '0145771987', 0, '2018-02-01 13:19:47.714');
 
 --
 -- Index pour les tables déchargées
@@ -5353,19 +5527,19 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT pour la table `properties`
 --
 ALTER TABLE `properties`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT pour la table `requests`
 --
 ALTER TABLE `requests`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4072;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4236;
 
 --
 -- AUTO_INCREMENT pour la table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT pour la table `roles_permissions`
@@ -5377,7 +5551,7 @@ ALTER TABLE `roles_permissions`
 -- AUTO_INCREMENT pour la table `rooms`
 --
 ALTER TABLE `rooms`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT pour la table `sensors`
@@ -5395,7 +5569,7 @@ ALTER TABLE `subscriptions`
 -- AUTO_INCREMENT pour la table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- Contraintes pour les tables déchargées
@@ -5412,8 +5586,7 @@ ALTER TABLE `events`
 --
 ALTER TABLE `measures`
   ADD CONSTRAINT `measures_ibfk_2` FOREIGN KEY (`actuator_id`) REFERENCES `actuators` (`id`),
-  ADD CONSTRAINT `measures_ibfk_3` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`),
-  ADD CONSTRAINT `measures_ibfk_4` FOREIGN KEY (`type_id`) REFERENCES `measure_types` (`ID`);
+  ADD CONSTRAINT `measures_ibfk_3` FOREIGN KEY (`sensor_id`) REFERENCES `sensors` (`id`);
 
 --
 -- Contraintes pour la table `notifications`
@@ -5453,7 +5626,7 @@ ALTER TABLE `rooms`
 ALTER TABLE `sensors`
   ADD CONSTRAINT `sensors_ibfk_1` FOREIGN KEY (`peripheral_uuid`) REFERENCES `peripherals` (`uuid`),
   ADD CONSTRAINT `sensors_ibfk_2` FOREIGN KEY (`last_measure_id`) REFERENCES `measures` (`id`),
-  ADD CONSTRAINT `sensors_ibfk_3` FOREIGN KEY (`measure_type_id`) REFERENCES `measure_types` (`ID`);
+  ADD CONSTRAINT `sensors_ibfk_3` FOREIGN KEY (`measure_type_id`) REFERENCES `measure_types` (`id`);
 
 --
 -- Contraintes pour la table `sessions`
