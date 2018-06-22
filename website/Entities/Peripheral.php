@@ -21,6 +21,11 @@ class Peripheral extends Entity
     private $uuid;
 
     /**
+     * @var int
+     */
+    private $obj_code;
+
+    /**
      * @var string
      */
     private $display_name;
@@ -100,6 +105,21 @@ class Peripheral extends Entity
         return true;
     }
 
+    /**
+     * @return int
+     */
+    public function getObjCode(): string
+    {
+        return $this->obj_code;
+    }
+
+    /**
+     * @param int $obj_code
+     */
+    public function setObjCode(int $obj_code): void
+    {
+        $this->obj_code = $obj_code;
+    }
 
     /**
      * @return string|null

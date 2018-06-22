@@ -16,6 +16,7 @@ class Actuators extends Query
     /* COMMON CONSTANTS */
     private const table = "actuators";
     private const columns = ["id" => ["id", "gen-on-insert"],
+                             "num_code" => [],
                              "measure_type_id" => [],
                              "last_action_started" => ["timestamp"],
                              "peripheral_uuid" => [],

@@ -23,6 +23,11 @@ class MeasureType extends Entity
     private $id;
 
     /**
+     * @var int
+     */
+    private $typ_code;
+
+    /**
      * @var string
      */
     private $name;
@@ -68,6 +73,22 @@ class MeasureType extends Entity
     public function setId(int $id): void
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getTypCode(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param int $typ_code
+     */
+    public function setTypCode(int $typ_code): void
+    {
+        $this->typ_code = $typ_code;
     }
 
     /**

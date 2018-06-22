@@ -18,6 +18,7 @@ class Peripherals extends Query
     /* COMMON CONSTANTS */
     private const table = "peripherals";
     private const columns = ["uuid" => ["id"],
+                             "obj_code" => [],
                              "display_name" => [],
                              "build_date" => [],
                              "add_date" => [],
