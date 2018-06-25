@@ -24,32 +24,38 @@ class FrameCODEC implements CODEC
             case Frame::TRA_SYNCHRO:
                 return new TrameSynchroCODEC();*/
             default:
-                throw new \Exception(sprintf("Frame Type (FRA = 0x%s) not supported or invalid", dechex($tra)));
+                throw new \Exception(sprintf("Frame Type (FRA = %d | 0x%s) not supported or invalid", $tra, dechex($tra)));
         }
     }
 
     /**
      * @param $stream
-     * @throws \Exception
+     * @throws EOFException | UnexpectedEOFException | \Exception
      */
     public function decode(Frame $frame, $stream): void
     {
+        // Decode frame number
         $tra = fgetc($stream);
         if ($tra === false) { // EOF
             throw new EOFException();
         }
         $frame->tra = ord($tra);
 
+        // Decode inner
         self::selectSubCodec($frame->tra)->decode($frame, $stream);
 
-        // YYYYMMDDHHmmss
-        $date_raw = fgets($stream, Frame::TIMESTAMP_SIZE);
+        // Decode timestamp
+        $date_raw = fread($stream, Frame::TIMESTAMP_SIZE);
         if ($date_raw === false) {
             throw new UnexpectedEOFException();
         }
 
         $date_format = "YmdGis";
         $date_datetime = \DateTime::createFromFormat($date_format, $date_raw);
+        if ($date_datetime === false) {
+            var_dump($frame);
+            throw new \Exception(sprintf("Error while parsing date starting at byte %d: %s", ftell($stream), $date_raw));
+        }
         $date_string = $date_datetime->format(\DateTime::ATOM);
         $frame->timestamp = $date_string;
     }

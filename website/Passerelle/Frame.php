@@ -106,7 +106,7 @@ class Frame
      */
     public $timestamp;
 
-    public const TIMESTAMP_SIZE = 14;
+    public const TIMESTAMP_SIZE = 14; // YYYYMMDDhhmmss
 
     /**
      * @param $stream
