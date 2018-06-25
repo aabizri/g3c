@@ -76,9 +76,11 @@ class Passerelle
 
         return $frames;
     }
+
     /**
      * @param string $object_id
      * @return \Passerelle\Frame[]
+     * @throws \Exception
      */
     public function pullFrames(string $object_id): array
     {
@@ -92,14 +94,18 @@ class Passerelle
         return $frames;
     }
 
+
     /**
      * @param Frame $trame
      */
     public static function pushFrame(Frame $trame)
     {
-
+        // First upload
     }
 
+    /**
+     * @throws \Exception
+     */
     public static function test()
     {
         $passerelle = new Passerelle();
