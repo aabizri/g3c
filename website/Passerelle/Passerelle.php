@@ -92,11 +92,43 @@ class Passerelle
     }
 
     /**
+     * @param string $object_id
      * @param Frame $trame
+     * @throws \Exception
      */
-    public static function pushFrame(Frame $trame)
+    public function pushFrame(string $object_id, Frame $frame)
     {
+        // Frame marshalling
+        $destination_path = "php://memory";
+        $dst = fopen($destination_path, "r+");
+        try {
+            $frame->encode($dst);
+        } catch (\Exception $e) {
+            // TODO: wrap
+            throw $e;
+        }
 
+        // Marshalled
+        $str = file_get_contents($destination_path);
+
+        // Etablissement des paramêtres
+        $params = [
+            "ACTION" => "COMMAND",
+            "TEAM" => $object_id,
+            "TRAME" => $str,
+        ];
+
+        // Build the URL
+        $url = $this->endpoint . "?" . http_build_query($params);
+
+        // Download results
+        $res_stream = fopen($url, 'r');
+
+        // Check for error
+        $res_str = stream_get_contents($res_stream);
+        if (strpos($res_str, "ERROR") !== false) {
+            throw new \Exception(sprintf("ERROR returned by passerelle in response to trame sent: %s", $res_str));
+        }
     }
 
     public static function test()
@@ -112,7 +144,16 @@ class Passerelle
 
         // TEST FRAME PULLING
         $frames = $passerelle->pullFrames("3C3C");
-        var_dump($frames);
+        // var_dump($frames)
+
+        // TEST FRAME PUSHING
+        $testFrame = new Frame();
+        $testFrame->tra = Frame::TRA_COURANTE;
+        $testFrame->obj = "3C3C";
+        $testFrame->num = 2;
+        $testFrame->timestamp = 0;
+        $testFrame->ans = "1111";
+        $passerelle->pushFrame("3C3C", $testFrame);
     }
 }
 
