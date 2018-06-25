@@ -13,6 +13,7 @@ class Sensors extends Query
     /* COMMON CONSTANTS */
     private const table = "sensors";
     private const columns = ["id" => ["id", "gen-on-insert"],
+                             "num_code" => [],
                              "measure_type_id" => [],
                              "peripheral_uuid" => [],
                              "last_updated" => ["gen-on-insert", "timestamp"]];

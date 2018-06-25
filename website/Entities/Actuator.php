@@ -22,6 +22,10 @@ class Actuator extends Entity
     /**
      * @var int
      */
+    private $num_code;
+    /**
+     * @var int
+     */
     private $measure_type_id;
     /**
      * @var \Entities\MeasureType|null
@@ -54,6 +58,22 @@ class Actuator extends Entity
     public function setID(int $id)
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumCode(): int
+    {
+        return $this->num_code;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setNumCode(int $num_code)
+    {
+        $this->num_code = $num_code;
     }
 
     /**

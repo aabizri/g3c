@@ -14,6 +14,7 @@ class MeasureTypes extends Query
     /* COMMON CONSTANTS */
     private const table = "measure_types";
     private const columns = ["id" => ["id", "gen-on-insert"],
+                             "typ_code" => [],
                              "name" => [],
                              "description" => [],
                              "unit_name" => [],
