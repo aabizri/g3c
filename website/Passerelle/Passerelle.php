@@ -44,7 +44,6 @@ class Passerelle
         // Download all
         $stream = fopen($url, 'r');
 
-
         // Return it
         return $stream;
     }
@@ -56,10 +55,10 @@ class Passerelle
      * @return Frame[]
      * @throws \Exception
      */
-    private static function decodeFrames($stream): array
+    private static function decodeFrames($stream, $max_amount = 688): array
     {
         $frames = [];
-        for ($i = 0; ; $i++) {
+        for ($i = 0; $i < $max_amount; $i++) {
             // Create a new frame to be unmarshalled
             $frame = new Frame();
             $frames[$i] = $frame;
@@ -70,17 +69,15 @@ class Passerelle
             } catch (\Exceptions\EOFException $e) {
                 break;
             } catch (\Exception $e) {
-                throw new \Exception(sprintf("Error while decoding frame %d, at byte %d of file", $i, ftell($stream)), 0, $e);
+                throw new \Exception(sprintf("Error while decoding frame %d (start-at-0), at byte %d of file", $i, ftell($stream)), 0, $e);
             }
         }
 
         return $frames;
     }
-
     /**
      * @param string $object_id
      * @return \Passerelle\Frame[]
-     * @throws \Exception
      */
     public function pullFrames(string $object_id): array
     {
@@ -94,20 +91,49 @@ class Passerelle
         return $frames;
     }
 
-
     /**
+     * @param string $object_id
      * @param Frame $trame
-     */
-    public static function pushFrame(Frame $trame)
-    {
-        // First upload
-    }
-
-    /**
      * @throws \Exception
      */
+    public function pushFrame(string $object_id, Frame $frame)
+    {
+        // Frame marshalling
+        $destination_path = "php://memory";
+        $dst = fopen($destination_path, "r+");
+        try {
+            $frame->encode($dst);
+        } catch (\Exception $e) {
+            // TODO: wrap
+            throw $e;
+        }
+
+        // Marshalled
+        $str = file_get_contents($destination_path);
+
+        // Etablissement des paramêtres
+        $params = [
+            "ACTION" => "COMMAND",
+            "TEAM" => $object_id,
+            "TRAME" => $str,
+        ];
+
+        // Build the URL
+        $url = $this->endpoint . "?" . http_build_query($params);
+
+        // Download results
+        $res_stream = fopen($url, 'r');
+
+        // Check for error
+        $res_str = stream_get_contents($res_stream);
+        if (strpos($res_str, "ERROR") !== false) {
+            throw new \Exception(sprintf("ERROR returned by passerelle in response to trame sent: %s", $res_str));
+        }
+    }
+
     public static function test()
     {
+        // TEST LOG DOWNLOAD
         $passerelle = new Passerelle();
         $log = $passerelle->downloadLog("3C3C");
         while (true) {
@@ -115,8 +141,19 @@ class Passerelle
             if ($res === false) break;
             echo $res;
         }
+
+        // TEST FRAME PULLING
         $frames = $passerelle->pullFrames("3C3C");
-        var_dump($frames);
+        // var_dump($frames)
+
+        // TEST FRAME PUSHING
+        $testFrame = new Frame();
+        $testFrame->tra = Frame::TRA_COURANTE;
+        $testFrame->obj = "3C3C";
+        $testFrame->num = 2;
+        $testFrame->timestamp = 0;
+        $testFrame->ans = "1111";
+        $passerelle->pushFrame("3C3C", $testFrame);
     }
 }
 
