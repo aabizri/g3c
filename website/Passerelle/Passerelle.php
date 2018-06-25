@@ -26,11 +26,11 @@ class Passerelle
 
     /**
      * Download the log from the endpoint in raw form
-     *
+     **
      * @param string $object_id
-     * @return string
+     * @return resource
      */
-    private function downloadLog(string $object_id): string
+    private function downloadLog(string $object_id)
     {
         // Etablissement des paramêtres
         $params = [
@@ -39,79 +39,63 @@ class Passerelle
         ];
 
         // Build the URL
-        $url = self::DEFAULT_ENDPOINT . "?" . http_build_query($params);
+        $url = $this->endpoint . "?" . http_build_query($params);
 
-        // Creare the Endpoint cURL ressoucrce
-        $ch = curl_init($url);
+        // Download all
+        $stream = fopen($url, 'r');
 
-        // Set up immediate return
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-        // Execute & get results
-        $data = curl_exec($ch);
-
-        // Close
-        curl_close($ch);
-
-        // Return
-        return $data;
+        // Return it
+        return $stream;
     }
 
     /**
-     * Parses the log extracts it into an array of raw frames
+     * Parses the log and extracts it into an array of frames
      *
      * @param string $object_id
-     * @return string[]
+     * @return Frame[]
+     * @throws \Exception
      */
-    private static function splitLogIntoRawFrames(string $object_id): array
-    {
-        $set = str_split($object_id, 33);
-        if ($set[count($set) - 1] === "\n") {
-            unset($set[count($set) - 1]);
-        }
-        return $set;
-    }
-
-    /**
-     * Parses each frame and return them
-     *
-     * @param string[] $raw_frames
-     * @return \Passerelle\Trame[]
-     */
-    private static function parseFrames(array $raw_frames): array
+    private static function decodeFrames($stream): array
     {
         $frames = [];
-        foreach ($raw_frames as $raw_frame) {
-            $frame = new TrameCouranteRequete;
-            $frame->parse($raw_frame);
-            $frames[] = $frame;
+        for ($i = 0; ; $i++) {
+            // Create a new frame to be unmarshalled
+            $frame = new Frame();
+            $frames[$i] = $frame;
+
+            // Decode from the stream
+            try {
+                $frame->decode($stream);
+            } catch (\Exceptions\EOFException $e) {
+                break;
+            } catch (\Exception $e) {
+                throw new \Exception(sprintf("Error while decoding frame %d, at byte %d of file", $i, ftell($stream)), 0, $e);
+            }
         }
+
         return $frames;
     }
-
     /**
      * @param string $object_id
-     * @return \Passerelle\Trame[]
+     * @return \Passerelle\Frame[]
      */
     public function pullFrames(string $object_id): array
     {
         // First download log
-        $log = $this->downloadLog($object_id);
-
-        // Then split into frames
-        $raw_frames = $this->splitLogIntoRawFrames($log);
+        $stream = $this->downloadLog($object_id);
 
         // Parse each frame
-        $frames = $this->parseFrames($raw_frames);
+        $frames = $this->decodeFrames($stream);
 
         // Return them
         return $frames;
     }
 
     /**
-     * @param Trame $trame
+     * @param Frame $trame
      */
-    public static function pushFrame(Trame $trame)
+    public static function pushFrame(Frame $trame)
     {
 
     }
@@ -119,8 +103,14 @@ class Passerelle
     public static function test()
     {
         $passerelle = new Passerelle();
-        $data = $passerelle->pullFrames("0002");
-        var_dump($data);
+        $log = $passerelle->downloadLog("3C3C");
+        while (true) {
+            $res = fgets($log);
+            if ($res === false) break;
+            echo $res;
+        }
+        $frames = $passerelle->pullFrames("3C3C");
+        var_dump($frames);
     }
 }
 
