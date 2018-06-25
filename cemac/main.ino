@@ -116,8 +116,6 @@ public:
     }
 };
 
-const int DEFAULT_PROXIMITY_SENSOR_PIN = 25;
-
 /**
 * interpretation class for the Proximity Sensor
 */
@@ -575,15 +573,20 @@ public:
 
 
 /* CURRENT PIN CONFIGURATION */
-const int DEFAULT_BARGRAPH_LEDS_PINS[5] = {2, 34, 35, 36, 37};
+
+const int DEFAULT_RGB_LEDS_PINS[3] = {30, 39, 40}; // CONNECTOR: N/A [A RW]
+const int DEFAULT_BARGRAPH_LEDS_PINS[5] = {2, 34, 35, 36, 37}; // CONNECTOR: N/A
 const int DEFAULT_FAN_PIN = 27; // CONNECTOR: 10
 const int DEFAULT_CW_PIN = 11; // CONNECTOR: 21
 const int DEFAULT_CC_PIN = 13; // CONNECTOR: 17
-const int DEFAULT_POTENTIOMETER_PIN = 28;
+const int DEFAULT_POTENTIOMETER_PIN = 28; // CONNECTOR: N/A
 const int DEFAULT_LIGHT_DETECTOR_PIN = 0; // TODO: FIX
+const int DEFAULT_JACK_PIN = 23; // CONNECTOR: N/A
+const int DEFAULT_SERVO_PIN = 39; // CONNECTOR: N/A 
+const int DEFAULT_PROXIMITY_SENSOR_PIN = 25; // CONNECTOR: 7 [A RW]
 
 /* SENSOR/ACTUATOR NUM MAPPING */
-const char *BARGRAPH_NUM = "12";
+const char *BARGRAPH_NUM = "";
 const char *FAN_NUM = "11";
 const char *MOTOR_NUM = "10";
 const char *POTENTIOMETER_NUM = "9";
