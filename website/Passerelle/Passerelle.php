@@ -44,7 +44,6 @@ class Passerelle
         // Download all
         $stream = fopen($url, 'r');
 
-
         // Return it
         return $stream;
     }
@@ -56,10 +55,10 @@ class Passerelle
      * @return Frame[]
      * @throws \Exception
      */
-    private static function decodeFrames($stream): array
+    private static function decodeFrames($stream, $max_amount = 688): array
     {
         $frames = [];
-        for ($i = 0; ; $i++) {
+        for ($i = 0; $i < $max_amount; $i++) {
             // Create a new frame to be unmarshalled
             $frame = new Frame();
             $frames[$i] = $frame;
@@ -70,7 +69,7 @@ class Passerelle
             } catch (\Exceptions\EOFException $e) {
                 break;
             } catch (\Exception $e) {
-                throw new \Exception(sprintf("Error while decoding frame %d, at byte %d of file", $i, ftell($stream)), 0, $e);
+                throw new \Exception(sprintf("Error while decoding frame %d (start-at-0), at byte %d of file", $i, ftell($stream)), 0, $e);
             }
         }
 
@@ -102,6 +101,7 @@ class Passerelle
 
     public static function test()
     {
+        // TEST LOG DOWNLOAD
         $passerelle = new Passerelle();
         $log = $passerelle->downloadLog("3C3C");
         while (true) {
@@ -109,6 +109,8 @@ class Passerelle
             if ($res === false) break;
             echo $res;
         }
+
+        // TEST FRAME PULLING
         $frames = $passerelle->pullFrames("3C3C");
         var_dump($frames);
     }

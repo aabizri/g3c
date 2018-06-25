@@ -42,8 +42,7 @@ class FrameCouranteCODEC implements CODEC
         // Read the OBJ, REQ, TYP & NUM
         $before_read_pos = ftell($stream);
         $read_size = Frame::OBJ_SIZE + Frame::REQ_SIZE + Frame::TYP_SIZE + Frame::NUM_SIZE;
-
-        $raw = fgets($stream, $read_size);
+        $raw = fread($stream, $read_size);
         if ($raw === false) {
             throw new \Exception("Error reading Frame Courante between byte %d and %d", $before_read_pos, $before_read_pos + $read_size);
         }
@@ -57,12 +56,12 @@ class FrameCouranteCODEC implements CODEC
         // Find codec according to $req
         $subCODEC = self::selectSubCodec($frame->req);
 
-        // Decode further down
+        // Decode the inner
         $subCODEC->decode($frame, $stream);
 
-        // Parse checksum
+        // Parse checksum which at the end
         $before_read_pos = ftell($stream);
-        $chk = fgets($stream, Frame::CHK_SIZE);
+        $chk = fread($stream, Frame::CHK_SIZE);
         if ($chk === false) {
             throw new \Exception("Error reading Checksum between byte %d and %d", $before_read_pos, $before_read_pos + Frame::CHK_SIZE);
         }

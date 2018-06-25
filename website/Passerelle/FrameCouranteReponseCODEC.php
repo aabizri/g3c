@@ -14,7 +14,7 @@ class FrameCouranteReponseCODEC implements CODEC
     public function decode(Frame $frame, $stream): void
     {
         $pos_before_read = ftell($stream);
-        $ans_raw = fgets($stream, Frame::ANS_SIZE);
+        $ans_raw = fread($stream, Frame::ANS_SIZE);
         if ($ans_raw === false) {
             throw new \Exception("[FrameCouranteReponseCODEC::decode] Failed read between byte %d and %d in frame", $pos_before_read, Frame::ANS_SIZE);
         }
