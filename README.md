@@ -1,5 +1,11 @@
 # LiveWell by G3C Technologies for DomISEP
 
+This is a group school project done for the APP course of the ISEP engineering school.
+
+In a few words, this is a PHP-based website with its own framework, communicating with a hardware module controlling some actuators and reading some sensors.
+
+For more information, contact Alexandre Bizri and/or another member of the group.
+
 ## Auteurs
 
 - Dinesh Anthonipillai
