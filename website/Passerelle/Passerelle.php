@@ -134,6 +134,8 @@ class Passerelle
     public static function test()
     {
         // TEST LOG DOWNLOAD
+        echo "<pre>Trames Avant Traitement:
+";
         $passerelle = new Passerelle();
         $log = $passerelle->downloadLog("3C3C");
         while (true) {
@@ -143,17 +145,33 @@ class Passerelle
         }
 
         // TEST FRAME PULLING
+        echo "Télechargement & traitement des trames...";
         $frames = $passerelle->pullFrames("3C3C");
-        // var_dump($frames)
+        echo "DONE\n";
+
+        echo "Résultats: " . count($frames) . " trames reçues\n";
+        echo "</pre>";
+
+        echo "Première trame:\n";
+        var_dump($frames[0]);
 
         // TEST FRAME PUSHING
         $testFrame = new Frame();
         $testFrame->tra = Frame::TRA_COURANTE;
         $testFrame->obj = "3C3C";
+        $testFrame->typ = 53aaaa;
+        $testFrame->req = Frame::REQ_WRITE;
         $testFrame->num = 2;
+        $testFrame->tim = 4132;
+        $testFrame->chk = 0;
         $testFrame->timestamp = 0;
         $testFrame->ans = "1111";
+        echo "Trame de push:";
+        var_dump($testFrame);
+
+        echo "<pre>Push de la trame...";
         $passerelle->pushFrame("3C3C", $testFrame);
+        echo "DONE</pre>";
     }
 }
 
